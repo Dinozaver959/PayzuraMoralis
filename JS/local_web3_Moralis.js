@@ -1,20 +1,15 @@
 import Moralis from "moralis"
 import {ABI} from "./ABI.js"
 
-const ethers = Moralis.web3Library;
-
+ const ethers = Moralis.web3Library;
+ 
 const FactoryContractAddress = "0xB64791883c85544df448ac6c926dB7Ba5177fc82";
-
-
-// first 2 instances manually
-
 
 
 
 // READ Functions
 
 export async function clonedContractsIndex_Moralis_indexPage() {
-    // add a check for correct network
 
     const numberOfAgreements = await MoralisRead("clonedContractsIndex");
  
@@ -24,7 +19,6 @@ export async function clonedContractsIndex_Moralis_indexPage() {
 }
 
 export async function clonedContractsIndex_Moralis() {
-    // add a check for correct network
 
     const numberOfAgreements = await MoralisRead("clonedContractsIndex");
     console.log("numberOfAgreements: " + numberOfAgreements);
@@ -32,7 +26,6 @@ export async function clonedContractsIndex_Moralis() {
 }
 
 export async function GetAddress_Moralis() {
-    // add a check for correct network
 
     const index = GetIndex();
 
@@ -48,7 +41,6 @@ export async function GetAddress_Moralis() {
 }
 
 export async function GetBalance_Moralis() {
-    // add a check for correct network
 
     const index = GetIndex();
 
@@ -65,7 +57,6 @@ export async function GetBalance_Moralis() {
 }
 
 export async function GetTimeLeftToDeadline_Moralis() {
-    // add a check for correct network
 
     const index = GetIndex();
 
@@ -80,7 +71,6 @@ export async function GetTimeLeftToDeadline_Moralis() {
 }
 
 export async function GetArbiter_Moralis() {
-    // add a check for correct network
 
     const index = GetIndex();
 
@@ -95,7 +85,6 @@ export async function GetArbiter_Moralis() {
 }
 
 export async function GetBuyer_Moralis() {
-    // add a check for correct network
 
     const index = GetIndex();
 
@@ -110,7 +99,6 @@ export async function GetBuyer_Moralis() {
 }
 
 export async function GetSeller_Moralis() {
-    // add a check for correct network
 
     const index = GetIndex();
 
@@ -215,6 +203,9 @@ export async function GetGracePeriod_Moralis() {
  
 async function MoralisRead(method, params) {
   
+    // have it hard coded for now - all testing and MVP are going to be done on Rinkeby!
+    await HandleNetworkSwitch("rinkeby"); 
+
     // <-- this is needed if there was no authentication - good for read only
     await Moralis.enableWeb3();
   
@@ -403,6 +394,9 @@ async function MoralisWrite_(method, params) {
   
 async function MoralisWrite__(method, params, value) {
 
+    // have it hard coded for now - all testing and MVP are going to be done on Rinkeby!
+    await HandleNetworkSwitch("rinkeby"); 
+
     await Moralis.enableWeb3();
 
 
@@ -457,4 +451,188 @@ export async function GetWallet_NonMoralis(){
         console.log('error: ' + error);
       }
     }
-  }
+}
+
+
+async function HandleNetworkSwitch(networkName) {
+
+    try {
+        if (!window.ethereum) throw new Error("No crypto wallet found");
+
+        if (window.ethereum.networkVersion !== ConvertNetworkNameToChainID(networkName)) {
+
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: "0x" + (ConvertNetworkNameToChainID(networkName)).toString(16) }]
+                });
+
+            } catch (err) {
+                // This error code indicates that the chain has not been added to MetaMask
+                if (err.code === 4902) {
+                    await window.ethereum.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [
+                        {
+                            ...networks[networkName]
+                        }]
+                    });
+                }
+            }
+        }
+    } catch (err) {
+        console.log(err.message);
+    }
+}
+  
+function ConvertNetworkNameToChainID(networkName){
+  
+    switch (networkName) {
+        case "homestead":
+            return 1;
+
+        case "ropsten":
+            return 3;
+
+        case "rinkeby":
+            return 4;
+
+        case "goerli":
+            return 5;
+
+        case "kovan":
+            return 42;
+
+        case "polygon":
+            return 137;
+
+        case "mumbai":
+            return 80001;
+
+        case "bsc":
+            return 56;
+
+        case "bsct":
+            return 97;
+
+        default:
+            break;
+    }
+}
+  
+const networks = {
+
+    homestead: {
+        chainId: `0x${Number(1).toString(16)}`,
+        chainName: "Ethereum Mainnet",
+        nativeCurrency: {
+        name: "Ether",
+        symbol: "ETH",
+        decimals: 18
+        },
+        rpcUrls: ["https://api.mycryptoapi.com/eth/"],
+        blockExplorerUrls: ["https://etherscan.io/"]
+    },
+    ropsten: {
+        chainId: `0x${Number(3).toString(16)}`,
+        chainName: "Test Network Ropsten",
+        nativeCurrency: {
+        name: "Ether",
+        symbol: "ETH",
+        decimals: 18
+        },
+        rpcUrls: ["https://ropsten.infura.io/v3/"],
+        blockExplorerUrls: ["https://ropsten.etherscan.io/"]
+    },
+    rinkeby: {
+        chainId: `0x${Number(4).toString(16)}`,
+        chainName: "Test Network Rinkeby",
+        nativeCurrency: {
+        name: "Ether",
+        symbol: "ETH",
+        decimals: 18
+        },
+        rpcUrls: ["https://rinkeby.infura.io/v3/"],
+        blockExplorerUrls: ["https://rinkeby.etherscan.io/"]
+    },
+    goerli: {
+        chainId: `0x${Number(5).toString(16)}`,
+        chainName: "Test Network Goerli",
+        nativeCurrency: {
+        name: "Ether",
+        symbol: "ETH",
+        decimals: 18
+        },
+        rpcUrls: ["https://goerli.infura.io/v3/"],
+        blockExplorerUrls: ["https://goerli.etherscan.io/"]
+    },
+    kovan: {
+        chainId: `0x${Number(42).toString(16)}`,
+        chainName: "Test Network Kovan",
+        nativeCurrency: {
+        name: "Ether",
+        symbol: "ETH",
+        decimals: 18
+        },
+        rpcUrls: ["https://kovan.infura.io/v3/"],
+        blockExplorerUrls: ["https://kovan.etherscan.io/"]
+    },
+    bsct: {
+        chainId: `0x${Number(97).toString(16)}`,
+        chainName: "Binance Smart Chain Testnet",
+        nativeCurrency: {
+        name: "BNB",
+        symbol: "BNB",
+        decimals: 18
+        },
+        rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
+        blockExplorerUrls: ["https://testnet.bscscan.com/"]
+    },
+    polygon: {
+        chainId: `0x${Number(137).toString(16)}`,
+        chainName: "Polygon Mainnet",
+        nativeCurrency: {
+        name: "MATIC",
+        symbol: "MATIC",
+        decimals: 18
+        },
+        rpcUrls: ["https://polygon-rpc.com/"],
+        blockExplorerUrls: ["https://polygonscan.com/"]
+    },
+    polygon_Mumbai: {
+        chainId: `0x${Number(80001).toString(16)}`,
+        chainName: "Mumbai",
+        nativeCurrency: {
+        name: "MATIC",
+        symbol: "MATIC",
+        decimals: 18
+        },
+        rpcUrls: ["https://matic-mumbai.chainstacklabs.com/"],
+        blockExplorerUrls: ["https://mumbai.polygonscan.com/"]
+    },
+    bsc: {
+        chainId: `0x${Number(56).toString(16)}`,
+        chainName: "Binance Smart Chain Mainnet",
+        nativeCurrency: {
+        name: "Binance Chain Native Token",
+        symbol: "BNB",
+        decimals: 18
+        },
+        rpcUrls: [
+        "https://bsc-dataseed1.binance.org",
+        "https://bsc-dataseed2.binance.org",
+        "https://bsc-dataseed3.binance.org",
+        "https://bsc-dataseed4.binance.org",
+        "https://bsc-dataseed1.defibit.io",
+        "https://bsc-dataseed2.defibit.io",
+        "https://bsc-dataseed3.defibit.io",
+        "https://bsc-dataseed4.defibit.io",
+        "https://bsc-dataseed1.ninicoin.io",
+        "https://bsc-dataseed2.ninicoin.io",
+        "https://bsc-dataseed3.ninicoin.io",
+        "https://bsc-dataseed4.ninicoin.io",
+        "wss://bsc-ws-node.nariox.org"
+        ],
+        blockExplorerUrls: ["https://bscscan.com"]
+    }
+};
