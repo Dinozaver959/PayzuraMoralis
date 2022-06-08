@@ -5,8 +5,8 @@ import {MoralisProvider} from "react-moralis";
 function MyApp({ Component, pageProps }) {
 
   return <MoralisProvider 
-            appId="2usVTlONkHgHkToWJNY6WEaWsklpD2PD5bjkhZ8T" 
-            serverUrl="https://shwkwtgzxazu.usemoralis.com:2053/server">
+            appId="8AGWP86FEWcfCRwNLa0LGffGPs5kpcHxqRpEp4PF" 
+            serverUrl="https://fordrbswdskl.usemoralis.com:2053/server">
 
             <Head>
               <title>Payzura</title>

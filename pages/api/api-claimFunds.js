@@ -7,8 +7,8 @@ var fse = require('fs-extra')
 var path = require("path");
 const DOMPurify = require('isomorphic-dompurify');
 
-const serverUrl = "https://shwkwtgzxazu.usemoralis.com:2053/server";
-const appId = "2usVTlONkHgHkToWJNY6WEaWsklpD2PD5bjkhZ8T";
+const serverUrl = "https://fordrbswdskl.usemoralis.com:2053/server";
+const appId = "8AGWP86FEWcfCRwNLa0LGffGPs5kpcHxqRpEp4PF";
 Moralis.start({ serverUrl, appId });
 
 const apiRoute = nextConnect()
