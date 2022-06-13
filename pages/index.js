@@ -1,11 +1,12 @@
-import style from '../styles/Home.module.css'
+import style from '../styles/Home.module.scss'
 import styles from "../styles/CreateContent.module.scss";
 import {clonedContractsIndex_Moralis_indexPage, GetAddress_Moralis, GetBalance_Moralis, GetTimeLeftToDeadline_Moralis, GetArbiter_Moralis, GetBuyer_Moralis, 
   GetSeller_Moralis, GetState_Moralis, GetPrice_Moralis_indexPage, GetDeadline_Moralis, GetHashOfDescription_Moralis, GetGracePeriod_Moralis,
-  CreateEscrow_Moralis_indexPage, AcceptProposal_Moralis_indexPage, ReturnPayment_Moralis_indexPage, ClaimFunds_Moralis_indexPage, StartDispute_Moralis_indexPage, 
+  CreateEscrow_Moralis_indexPage, AcceptOffer_Moralis_indexPage, ReturnPayment_Moralis_indexPage, ClaimFunds_Moralis_indexPage, StartDispute_Moralis_indexPage, 
   ConfirmDelivery_Moralis_indexPage, HandleDispute_Moralis} from '../JS/local_web3_Moralis'
 import Authenticate from '../components/Authenticate';
 import LoginButton from '../components/LoginButton';
+import Navigation from "../components/Navigation.js"
 
 export default function Home() {
   return (
@@ -14,9 +15,9 @@ export default function Home() {
 
       <Authenticate>
 
+        <Navigation/>
 
         <div className={style.container}>
-
 
           <main className={style.main}>
 
@@ -75,14 +76,14 @@ export default function Home() {
               <div></div>
 
 
-              sample input for create proposal:  10000000000,1,a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6
-              {/* for the proposal description, just store description + hash(desription) to the Moralis DB */}
-              <input className={styles.interactButton} type="submit" value="Create Proposal (seller)" onClick={() => CreateEscrow_Moralis_indexPage()}></input>
+              sample input for create offer:  10000000000,1,a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6
+              {/* for the offer description, just store description + hash(desription) to the Moralis DB */}
+              <input className={styles.interactButton} type="submit" value="Create Offer (seller)" onClick={() => CreateEscrow_Moralis_indexPage()}></input>
               <input className={styles.interactButton} id="CreateEscrow_Input" type="string"></input>
               
 
 
-              <input className={styles.interactButton} type="submit" value="Accept Proposal (buyer)" onClick={() => AcceptProposal_Moralis_indexPage()}></input>
+              <input className={styles.interactButton} type="submit" value="Accept Offer (buyer)" onClick={() => AcceptOffer_Moralis_indexPage()}></input>
               <div></div>
 
               <input className={styles.interactButton} type="submit" value="Return payment (seller)" onClick={() => ReturnPayment_Moralis_indexPage()}></input>

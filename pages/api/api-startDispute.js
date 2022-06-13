@@ -33,7 +33,7 @@ apiRoute.post(async (req, res) => {
     
     await AddAgreementToCollectionMoralisDB(objectId, transactionHash)
 
-    res.status(201).end("Proposal created");
+    res.status(201).end("Offer created");
 })
 
 export const config = {

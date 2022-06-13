@@ -18,7 +18,9 @@ import {MdKeyboardArrowDown} from "react-icons/md";
 import { styled  } from '@mui/material/styles';
 import styles from "../styles/CreateContent.module.scss";
 import Moralis from 'moralis';
-import { GetWallet_NonMoralis, AcceptProposal_Moralis } from '../JS/local_web3_Moralis';
+import { GetWallet_NonMoralis, AcceptOffer_Moralis } from '../JS/local_web3_Moralis';
+import Navigation from "../components/Navigation.js"
+
 
 
 const StyledTableRow = styled(TableRow)({
@@ -73,13 +75,15 @@ const StyledInnerTableCell = styled(TableCell)({
 });
 
 
-export default function ListAvailableProposals() {
+export default function ListAvailableOffers() {
 
   const [data, setData] = useState([]);
 
   // load options using API call
   async function getCollectionsDetails() {
-    const data = await fetch(`./api/api-getAvailableProposals`)
+
+    const connectedAddress = await GetWallet_NonMoralis(); 
+    const data = await fetch(`./api/api-getPersonalizedOffers` + '?UserWallet=' + connectedAddress)
     .then(res => res.json())
     .then(json => setData(json));
 
@@ -95,55 +99,42 @@ export default function ListAvailableProposals() {
 
   return (
     <>
-        <div className={styles.FormContainer}>
-            <div className={styles.createTitle}>
-            Proposals Available
-            </div><br></br>
+      <Navigation/>
+      <div className={styles.FormContainer}>
+        <div className={styles.createTitle}>
+        Offers Available
+        </div><br></br>
 
-                {(data && data[0]) ? (
-                <>
-                    <Table_normal data={data} />
-                </>
-                ) : (
-                <>
-                    There are no available proposals. 
+          {(data && data[0]) ? (
+          <>
+              <Table_normal data={data} />
+          </>
+          ) : (
+          <>
+              There are no available offers. 
 
-                    <div className={styles.submitButtonOuter}> 
-                    <Link href="/creteProposal" passHref>
-                        <input className={styles.submitButton} type="submit" value="Create Proposal Now" ></input>
-                    </Link>
-                    </div>
-                </>
-                )} 
-        </div>        
+              <div className={styles.submitButtonOuter}> 
+              <Link href="/creteOffer" passHref>
+                  <input className={styles.submitButton} type="submit" value="Create Offer Now" ></input>
+              </Link>
+              </div>
+          </>
+          )} 
+      </div>        
     </>
   )
 }
 
-function wrapContractAddressWithScanner(contractAddress, chainId){
-  if(contractAddress && chainId){
-    return(GetScannerFromChainId(chainId) + contractAddress);
-  } else {
-    return "";
+function wrapPersonalized(wallets){
+  if(!wallets){return "Any"}
+  else {
+    return wallets.replace(",", "\n");
   }
 }
 
-function wrapReveal(revealed){
-  return (revealed) ? "yes" : "no";
-}
-
-function wrapPaymentOption(option){
-  if(option == "royalty") return "5% mint royalty";
-  if(option == "paid") return option;
-  return "1000 $BYTES";  // upfront
-}
-
-function wrapchainId(chainId){
-  if(chainId){
-    return GetChainNameFromChainId(chainId);
-  } else {
-    return "";
-  }
+function wrapEpochToDate(epoch){
+  var d = new Date(epoch * 1000);
+  return d.toString();   // d.toDateString();
 }
 
 function Table_normal(props) {
@@ -158,8 +149,9 @@ function Table_normal(props) {
                     <StyledTableCell />
                     <StyledTableCell>Title</StyledTableCell>
                     <StyledTableCell>Price (ETH)</StyledTableCell>
-                    <StyledTableCell>Time Allowed (hours)</StyledTableCell>
-                    <StyledTableCell>Accept Proposal</StyledTableCell>
+                    <StyledTableCell>Time to Deliver (hours)</StyledTableCell>
+                    <StyledTableCell>Valid Until</StyledTableCell>
+                    <StyledTableCell>Accept Offer</StyledTableCell>
                     </StyledTableRow>
                 </TableHead>
                 <TableBody>
@@ -195,22 +187,23 @@ function Row_normal(props) {
             </IconButton>
             </StyledTableCell>
             <StyledTableCell component="th" scope="row">
-            {item.ProposalTitle}
+            {item.OfferTitle}
             </StyledTableCell>
             <StyledTableCell>{item.Price}</StyledTableCell>
-            <StyledTableCell>{item.TimeAllowed}</StyledTableCell>
+            <StyledTableCell>{item.TimeToDeliver}</StyledTableCell>
+            <StyledTableCell>{wrapEpochToDate(item.OfferValidUntil)}</StyledTableCell>
 
 
             <StyledTableCell>
             
 
-                <input className={styles.interactButton} type="submit" value="Accept Proposal (buyer)" onClick={() => 
-                    AcceptProposal_Moralis(item.index)
+                <input className={styles.interactButton} type="submit" value="Accept Offer (buyer)" onClick={() => 
+                    AcceptOffer_Moralis(item.index)
                     .then(async (transactionHash) => {
 
                         // show the feedback text 
                         document.getElementById('submitFeedback').style.display = 'inline';
-                        document.getElementById('submitFeedback').innerText = 'Creating proposal...'
+                        document.getElementById('submitFeedback').innerText = 'Creating offer...'
 
                         var formData = new FormData();
                         formData.append('BuyerAccount', (Moralis.User.current()).id);
@@ -221,11 +214,11 @@ function Row_normal(props) {
                         formData.append('objectId', item.objectId);
 
                         var xhr = new XMLHttpRequest();
-                        xhr.open('POST', '/api/api-acceptedProposal', false);
+                        xhr.open('POST', '/api/api-acceptedOffer', false);
                         xhr.onload = function () {
                             // update the feedback text 
                             document.getElementById('submitFeedback').style.display = 'inline';
-                            document.getElementById('submitFeedback').innerText = 'proposal accepted'
+                            document.getElementById('submitFeedback').innerText = 'offer accepted'
 
                             // prevent the Submit button to be clickable and functionable
                             // removeHover()
@@ -233,14 +226,14 @@ function Row_normal(props) {
 
                             // think about also removing the hover effect
                             // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-                            console.log("proposal created")
+                            console.log("offer created")
                         };
                         xhr.send(formData);
                     }).
                     catch((error) => {
                         console.error(error);
-                        console.log("accept proposal error code: " + error.code);
-                        console.log("accept proposal error message: " + error.message);
+                        console.log("accept offer error code: " + error.code);
+                        console.log("accept offer error message: " + error.message);
                         if(error.data && error.data.message){document.getElementById('submitFeedback').innerText = error.data.message;}
                         else {document.getElementById('submitFeedback').innerText = error.message;}    
                         document.getElementById('submitFeedback').style.visibility = "visible";
@@ -264,13 +257,19 @@ function Row_normal(props) {
                     <TableRow>
                         <StyledInnerTableCell></StyledInnerTableCell>
                         <StyledInnerTableCell>Description</StyledInnerTableCell>
-                        <StyledInnerTableCell>{item.ProposalDescription}</StyledInnerTableCell>
+                        <StyledInnerTableCell>{item.OfferDescription}</StyledInnerTableCell>
                     </TableRow>
 
                     <TableRow>
                         <StyledInnerTableCell></StyledInnerTableCell>
                         <StyledInnerTableCell>Seller Wallet</StyledInnerTableCell>
                         <StyledInnerTableCell>{item.SellerWallet}</StyledInnerTableCell>
+                    </TableRow>
+
+                    <TableRow>
+                        <StyledInnerTableCell></StyledInnerTableCell>
+                        <StyledInnerTableCell>Wallets Allowed to Accept</StyledInnerTableCell>
+                        <StyledInnerTableCell>{wrapPersonalized(item.PersonalizedOffer)}</StyledInnerTableCell>
                     </TableRow>
 
                     </TableBody>

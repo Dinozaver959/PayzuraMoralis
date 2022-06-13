@@ -19,6 +19,8 @@ import { styled  } from '@mui/material/styles';
 import styles from "../styles/CreateContent.module.scss";
 import Moralis from 'moralis';
 import { GetWallet_NonMoralis, ReturnPayment_Moralis, ClaimFunds_Moralis, StartDispute_Moralis, ConfirmDelivery_Moralis } from '../JS/local_web3_Moralis';
+import Navigation from "../components/Navigation.js"
+
 
 
 const StyledTableRow = styled(TableRow)({
@@ -98,56 +100,33 @@ export default function MyAgreements() {
 
   return (
     <>
-        <div className={styles.FormContainerTable}>
-            <div className={styles.createTitle}>
-            My Agreements
-            </div><br></br>
+      <Navigation/>
+      <div className={styles.FormContainerTable}>
+        <div className={styles.createTitle}>
+        My Agreements
+        </div><br></br>
 
-                {(data && data[0]) ? (
-                <>
-                    <Table_normal data={data} />
-                </>
-                ) : (
-                <>
-                    There are no available proposals. 
+          {(data && data[0]) ? (
+          <>
+              <Table_normal data={data} />
+          </>
+          ) : (
+          <>
+              There are no available offers. 
 
-                    <div className={styles.submitButtonOuter}> 
-                    <Link href="/creteProposal" passHref>
-                        <input className={styles.submitButton} type="submit" value="Create Proposal Now" ></input>
-                    </Link>
-                    </div>
-                </>
-                )} 
-        </div>        
+              <div className={styles.submitButtonOuter}> 
+              <Link href="/creteOffer" passHref>
+                  <input className={styles.submitButton} type="submit" value="Create Offer Now" ></input>
+              </Link>
+              </div>
+          </>
+          )} 
+      </div>        
     </>
   )
 }
 
-function wrapContractAddressWithScanner(contractAddress, chainId){
-  if(contractAddress && chainId){
-    return(GetScannerFromChainId(chainId) + contractAddress);
-  } else {
-    return "";
-  }
-}
 
-function wrapReveal(revealed){
-  return (revealed) ? "yes" : "no";
-}
-
-function wrapPaymentOption(option){
-  if(option == "royalty") return "5% mint royalty";
-  if(option == "paid") return option;
-  return "1000 $BYTES";  // upfront
-}
-
-function wrapchainId(chainId){
-  if(chainId){
-    return GetChainNameFromChainId(chainId);
-  } else {
-    return "";
-  }
-}
 
 function Table_normal(props) {
     const { data } = props;
@@ -162,7 +141,7 @@ function Table_normal(props) {
                     <StyledTableCell>Title</StyledTableCell>
                     <StyledTableCell>State</StyledTableCell>
                     <StyledTableCell>Price (ETH)</StyledTableCell>
-                    <StyledTableCell>Time Allowed (hours)</StyledTableCell>
+                    <StyledTableCell>Time to Deliver (hours)</StyledTableCell>
                     <StyledTableCell>Return Payment</StyledTableCell>
                     <StyledTableCell>Claim Funds</StyledTableCell>
                     <StyledTableCell>Start Dispute</StyledTableCell>
@@ -202,11 +181,11 @@ function Row_normal(props) {
             </IconButton>
             </StyledTableCell>
             <StyledTableCell component="th" scope="row">
-            {item.ProposalTitle}
+              {item.OfferTitle}
             </StyledTableCell>
             <StyledTableCell>{item.State}</StyledTableCell>
             <StyledTableCell>{item.Price}</StyledTableCell>
-            <StyledTableCell>{item.TimeAllowed}</StyledTableCell>
+            <StyledTableCell>{item.TimeToDeliver}</StyledTableCell>
 
 
             <StyledTableCell>
@@ -245,8 +224,8 @@ function Row_normal(props) {
                     }).
                     catch((error) => {
                         console.error(error);
-                        console.log("accept proposal error code: " + error.code);
-                        console.log("accept proposal error message: " + error.message);
+                        console.log("accept Offer error code: " + error.code);
+                        console.log("accept Offer error message: " + error.message);
                         if(error.data && error.data.message){document.getElementById('submitFeedback').innerText = error.data.message;}
                         else {document.getElementById('submitFeedback').innerText = error.message;}    
                         document.getElementById('submitFeedback').style.visibility = "visible";
@@ -291,8 +270,8 @@ function Row_normal(props) {
                   }).
                   catch((error) => {
                       console.error(error);
-                      console.log("accept proposal error code: " + error.code);
-                      console.log("accept proposal error message: " + error.message);
+                      console.log("accept Offer error code: " + error.code);
+                      console.log("accept Offer error message: " + error.message);
                       if(error.data && error.data.message){document.getElementById('submitFeedback').innerText = error.data.message;}
                       else {document.getElementById('submitFeedback').innerText = error.message;}    
                       document.getElementById('submitFeedback').style.visibility = "visible";
@@ -337,8 +316,8 @@ function Row_normal(props) {
                   }).
                   catch((error) => {
                       console.error(error);
-                      console.log("accept proposal error code: " + error.code);
-                      console.log("accept proposal error message: " + error.message);
+                      console.log("accept Offer error code: " + error.code);
+                      console.log("accept Offer error message: " + error.message);
                       if(error.data && error.data.message){document.getElementById('submitFeedback').innerText = error.data.message;}
                       else {document.getElementById('submitFeedback').innerText = error.message;}    
                       document.getElementById('submitFeedback').style.visibility = "visible";
@@ -383,8 +362,8 @@ function Row_normal(props) {
                   }).
                   catch((error) => {
                       console.error(error);
-                      console.log("accept proposal error code: " + error.code);
-                      console.log("accept proposal error message: " + error.message);
+                      console.log("accept Offer error code: " + error.code);
+                      console.log("accept Offer error message: " + error.message);
                       if(error.data && error.data.message){document.getElementById('submitFeedback').innerText = error.data.message;}
                       else {document.getElementById('submitFeedback').innerText = error.message;}    
                       document.getElementById('submitFeedback').style.visibility = "visible";
@@ -407,7 +386,7 @@ function Row_normal(props) {
                       <TableRow>
                           <StyledInnerTableCell></StyledInnerTableCell>
                           <StyledInnerTableCell>Description</StyledInnerTableCell>
-                          <StyledInnerTableCell>{item.ProposalDescription}</StyledInnerTableCell>
+                          <StyledInnerTableCell>{item.OfferDescription}</StyledInnerTableCell>
                       </TableRow>
 
                       <TableRow>

@@ -1,14 +1,14 @@
 
 .FormContainer {
-  width:  600px;
+  width:  800px;
   margin: auto;
-  margin-top: 200px;
+  margin-top: 100px;
 }
 
 .FormContainerTable {
   width:  1400px;
   margin: auto;
-  margin-top: 200px;
+  margin-top: 100px;
 }
 
 
@@ -28,6 +28,9 @@
   margin: 0 auto;
   max-width: 180px;
   width: 100px;
+
+  border-width: 1px;
+  border-color: black;
 }
 
 .submitButton_noHover {
@@ -40,15 +43,9 @@
   max-width: 180px;
   width: 100px;
   opacity: 0.3;
-}
 
-.postDeploymentLink {
-  font-size: 14px;
-  border-radius: 40px;
-  padding: 2px 10px;
-  position:center;
-  margin: 5px;
-  width: 120px;
+  border-width: 1px;
+  border-color: black;
 }
 
 .interactButton {
@@ -61,36 +58,15 @@
   max-width: 180px;
   width: 180px;
   max-height: 35px;
+
+  border-width: 1px;
+  border-color: black;
 }
 
-.interactButtonMint {
-  font-size: 14px;
-  border-radius: 40px;
-  padding: 5px 10px;
-  margin: 2px 5px;
-  max-width: 110px;
-  width: 110px;
-  max-height: 35px;
-}
 
-.downloadSample {
-  font-size: 12px;
-  border-radius: 40px;
-  padding: 3px 3px;
-  margin: 7px;
-  max-width: 120px;
-  width: 120px;
-  max-height: 35px;
-}
-
-.submitButton:hover, .postDeploymentLink:hover, .interactButton:hover, .interactButtonMint:hover, .downloadSample:hover {
+.submitButton:hover, .interactButton:hover {
   /*color: rgb(230, 232, 235);*/
   cursor: pointer;
-}
-
-.postDeploymentDiv {
-  max-width: 300px;
-  font-size: 12px;
 }
 
 
@@ -150,6 +126,9 @@
 .inlineFieldShort[type="text"], .inlineFieldShort[type="number"]{
   
   padding: 0px 4px;
+
+  border-width: 1px;
+  border-color: black;
 }
 
 

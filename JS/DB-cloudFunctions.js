@@ -5,8 +5,13 @@ const appId = "8AGWP86FEWcfCRwNLa0LGffGPs5kpcHxqRpEp4PF";
 Moralis.start({ serverUrl, appId });
 
 
-export async function GetAvailableProposals(){
-    return Moralis.Cloud.run("GetAvailableProposals");
+export async function GetPublicOffers(){
+    return Moralis.Cloud.run("GetPublicOffers");
+}
+
+export async function GetPersonalizedOffers(UserWallet){
+    const params =  { UserWallet : UserWallet };
+    return Moralis.Cloud.run("GetPersonalizedOffers", params);
 }
 
 

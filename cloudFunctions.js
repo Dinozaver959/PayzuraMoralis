@@ -1,16 +1,19 @@
 
-Moralis.Cloud.define("GetAvailableProposals", async (request) => {
+Moralis.Cloud.define("GetPublicOffers", async (request) => {
 
   const pipeline = [
-    { match: { State: "Available" } },
+    { match: { State: "Available" } }, 
+    { match: { PersonalizedOffer: "" } },
     { project: { 
       objectId : 1,
-      ProposalTitle : 1,
-      ProposalDescription: 1,
-      Price: 1,
-      TimeAllowed: 1,
-      SellerWallet: 1,
+      OfferTitle : 1,
+      OfferDescription: 1,
       hashDescription: 1,
+      Price: 1,
+      TimeToDeliver: 1,
+      OfferValidUntil: 1,
+      PersonalizedOffer : 1,
+      SellerWallet: 1,
       State: 1,
       index: 1
     }}
@@ -18,6 +21,13 @@ Moralis.Cloud.define("GetAvailableProposals", async (request) => {
     
   const query = new Moralis.Query("Agreements");    
   return await query.aggregate(pipeline);
+});
+
+Moralis.Cloud.define("GetPersonalizedOffers", async (request) => {    
+  const query = new Moralis.Query("Agreements");    
+  query.equalTo("State", "Available");
+  query.fullText("PersonalizedOffer", request.params.UserWallet)
+  return await query.find();                  
 });
 
 

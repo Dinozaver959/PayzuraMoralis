@@ -1,9 +1,9 @@
 import Moralis from "moralis"
 import {ABI} from "./ABI.js"
 
- const ethers = Moralis.web3Library;
+//const ethers = Moralis.web3Library;
  
-const FactoryContractAddress = "0xB64791883c85544df448ac6c926dB7Ba5177fc82";
+const FactoryContractAddress = "0x5D023afC16961d44E5fB3F29fe17fd54cE8D3487";
 
 
 
@@ -233,19 +233,19 @@ export async function CreateEscrow_Moralis_indexPage() {
     // 10000000000,1,a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6
     const input = document.getElementById('CreateEscrow_Input').value.split(",");
     const price = input[0];
-    const timeAllowedInHours = input[1]; 
+    const timeToDeliver = input[1]; 
     const hashOfDescription = input[2];
 
     const params = {
         price: price,
-        timeAllowedInHours: timeAllowedInHours,
+        timeToDeliver: timeToDeliver,
         hashOfDescription: hashOfDescription,
     }
   
     return await MoralisWrite_("CreateEscrow", params);
 }
 
-export async function AcceptProposal_Moralis_indexPage() {
+export async function AcceptOffer_Moralis_indexPage() {
 
     const index = GetIndex();
 
@@ -257,7 +257,7 @@ export async function AcceptProposal_Moralis_indexPage() {
         index: index,
     }
 
-    return await MoralisWrite__("AcceptProposal", params, price); // price * 
+    return await MoralisWrite__("AcceptOffer", params, price); // price * 
 }
 
 export async function ReturnPayment_Moralis_indexPage() {
@@ -306,20 +306,31 @@ export async function ConfirmDelivery_Moralis_indexPage() {
 
 
 
-export async function CreateEscrow_Moralis(price, timeAllowedInHours, hashOfDescription) {
+export async function CreateEscrow_Moralis(price, timeToDeliver, hashOfDescription, offerValidUntil, personalizedOffer) {
 
-    // 10000000000,1,a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6
+    console.log("offerValidUntil:");
+    console.log(offerValidUntil);
+
+
+    var personalizedOffer_parts = personalizedOffer.split(",");
+
+    if(!personalizedOffer){
+        personalizedOffer_parts = [];
+    }
+
 
     const params = {
         price: price,
-        timeAllowedInHours: timeAllowedInHours,
+        timeToDeliver: timeToDeliver,
         hashOfDescription: hashOfDescription,
+        offerValidUntil: offerValidUntil,       //offerValidFor: offerValidFor,
+        personalizedOffer: personalizedOffer_parts
     }
   
     return await MoralisWrite_("CreateEscrow", params);
 }
 
-export async function AcceptProposal_Moralis(index) {
+export async function AcceptOffer_Moralis(index) {
 
     // get the mint price
     const price = await GetPrice_Moralis(index); // will give an array with a hex value
@@ -331,7 +342,7 @@ export async function AcceptProposal_Moralis(index) {
         index: index,
     }
 
-    return await MoralisWrite__("AcceptProposal", params, price); //    2000000000000000
+    return await MoralisWrite__("AcceptOffer", params, price); //    2000000000000000
 }
 
 export async function ReturnPayment_Moralis(index) {

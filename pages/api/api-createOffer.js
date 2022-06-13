@@ -21,27 +21,31 @@ apiRoute.post(async (req, res) => {
 
     const SellerAccount = DOMPurify.sanitize(req.body.SellerAccount[0].toString());
     const SellerWallet = DOMPurify.sanitize(req.body.SellerWallet[0].toString());
-    const ProposalTitle = DOMPurify.sanitize(req.body.ProposalTitle[0].toString());
-    const ProposalDescription = DOMPurify.sanitize(req.body.ProposalDescription[0].toString());
+    const OfferTitle = DOMPurify.sanitize(req.body.OfferTitle[0].toString());
+    const OfferDescription = DOMPurify.sanitize(req.body.OfferDescription[0].toString());
     const hashDescription = DOMPurify.sanitize(req.body.hashDescription[0].toString());
     const Price = DOMPurify.sanitize(req.body.Price[0].toString());
-    const TimeAllowed = DOMPurify.sanitize(req.body.TimeAllowed[0].toString());
+    const TimeToDeliver = DOMPurify.sanitize(req.body.TimeToDeliver[0].toString());
     const transactionHash = DOMPurify.sanitize(req.body.transactionHash[0].toString());
     const index = DOMPurify.sanitize(req.body.index[0].toString());
+    const OfferValidUntil = DOMPurify.sanitize(req.body.OfferValidUntil[0].toString());
+    const PersonalizedOffer = DOMPurify.sanitize(req.body.PersonalizedOffer[0].toString());
 
     console.log("SellerAccount: " + SellerAccount);
     console.log("SellerWallet: " + SellerWallet);
-    console.log("ProposalTitle: " + ProposalTitle);
-    console.log("ProposalDescription: " + ProposalDescription);
+    console.log("OfferTitle: " + OfferTitle);
+    console.log("OfferDescription: " + OfferDescription);
     console.log("hashDescription: " + hashDescription);
     console.log("Price: " + Price);
-    console.log("TimeAllowed: " + TimeAllowed);
+    console.log("TimeToDeliver: " + TimeToDeliver);
     console.log("transactionHash: " + transactionHash);
     console.log("index: " + index);
-    
-    await AddAgreementToCollectionMoralisDB(SellerAccount, SellerWallet, ProposalTitle, ProposalDescription, hashDescription, Price, TimeAllowed, transactionHash, index)
+    console.log("OfferValidUntil: " + OfferValidUntil);
+    console.log("PersonalizedOffer: " + PersonalizedOffer);
 
-    res.status(201).end("Proposal created");
+    await AddAgreementToCollectionMoralisDB(SellerAccount, SellerWallet, OfferTitle, OfferDescription, hashDescription, Price, TimeToDeliver, transactionHash, index, OfferValidUntil, PersonalizedOffer)
+
+    res.status(201).end("Offer created");
 })
 
 export const config = {
@@ -54,20 +58,23 @@ export default apiRoute
 
 
 
-async function AddAgreementToCollectionMoralisDB(SellerAccount, SellerWallet, ProposalTitle, ProposalDescription, hashDescription, Price, TimeAllowed, transactionHash, index) {
+async function AddAgreementToCollectionMoralisDB(SellerAccount, SellerWallet, OfferTitle, OfferDescription, hashDescription, Price, TimeToDeliver, transactionHash, index, OfferValidUntil, PersonalizedOffer) {
 
   const Agreements = Moralis.Object.extend("Agreements");
   const agreement = new Agreements();
   agreement.set("SellerAccount", SellerAccount);
   agreement.set("SellerWallet", SellerWallet);
-  agreement.set("ProposalTitle", ProposalTitle);
-  agreement.set("ProposalDescription", ProposalDescription);
+  agreement.set("OfferTitle", OfferTitle);
+  agreement.set("OfferDescription", OfferDescription);
   agreement.set("hashDescription", hashDescription);
   agreement.set("Price", Price);
-  agreement.set("TimeAllowed", TimeAllowed);
+  agreement.set("TimeToDeliver", TimeToDeliver);
+  agreement.set("OfferValidUntil", OfferValidUntil);
+  agreement.set("PersonalizedOffer", PersonalizedOffer);  
   agreement.set("CreatedTxHash", transactionHash);
   agreement.set("State", "Available");
   agreement.set("index", index);
+
 
   await agreement.save()
       .then((agreement) => {
