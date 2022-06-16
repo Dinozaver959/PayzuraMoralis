@@ -1,0 +1,87 @@
+header {
+  @include Flexbox;
+  @include FlexFlow(nowrap);
+  background: $WhiteColor;
+  height: 64px;
+  border-bottom: 1px solid $BorderDark;
+
+  .logo {
+    width: 200px;
+    @extend %FlexCol-CenterCenter;
+    border-right: 1px solid $BorderDark;
+
+    svg {
+      @include Size(150px, 40px);
+
+      path {
+        fill: $PrimaryColor;
+      }
+    }
+  }
+
+  nav.navbarMain {
+    flex: 2;
+
+    a {
+      @extend %FlexCol-CenterCenter;
+      display: inline-flex;
+      padding: 15px;
+      height: 100%;
+      color: $FontColorDark;
+      text-decoration: none;
+      font-size: 0.8rem;
+    }
+  }
+
+  .headerActions {
+    @extend %FlexRow-CenterCenter;
+    border-left: 1px solid $BorderDark;
+    padding: 0 10px;
+
+    > div {
+      padding: 0 10px;
+
+      &.headerNotification {
+
+        svg {
+          @include Size(22px, 22px);
+        }
+      }
+    }
+
+    svg {
+      @include Size(28px, 28px);
+
+      path {
+        fill: $PrimaryColor;
+      }
+    }
+  }
+}
+
+.darkMode {
+  header {
+    background: none;
+    border-bottom-color: $BorderLight;
+
+    .logo {
+      border-right-color: $BorderLight;
+    }
+
+    nav.navbarMain {
+      a {
+        color: $FontColorLight;
+      }
+    }
+
+    .headerActions {
+      border-left-color: $BorderLight;
+
+      svg {
+        path {
+          fill: $FontColorLight;
+        }
+      }
+    }
+  }
+}

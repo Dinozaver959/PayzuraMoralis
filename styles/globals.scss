@@ -1,20 +1,40 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-}
+/*-----------------------------------------------------------------
+[Legal Notice]
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+Copyright (c) Payzura
+Website Template by Champion Software Technologies Limited
+http://www.payzura.com
+-------------------------------------------------------------------*/
 
-* {
-  box-sizing: border-box;
-}
+/* Helpers */
+@import 'helpers/_mixins';
+@import 'helpers/_variables';
+@import 'helpers/_flex';
+
+/* Vendors */
+// @import 'vendors/bootstrap';
+// @import 'vendors/swiper-bundle';
+// @import 'vendors/uikit.scss';
+
+/* Bases */
+@import 'base/reset';
+@import 'base/spacing';
+@import 'base/common';
+@import 'base/fonts';
+@import 'base/base';
+@import 'base/svg-background';
+
+/* Componets */
+@import 'componets/typography';
+@import 'componets/buttons';
+@import 'componets/form';
+@import 'componets/RadioCheckbox';
+@import 'componets/keyframes';
+@import 'componets/dropDown';
+
+/* Layout */
+@import 'layout/header';
+
+/* Pages */
+@import 'pages/Index';

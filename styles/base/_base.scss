@@ -1,0 +1,27 @@
+body {
+    background: $LightBg;
+}
+
+.darkMode {
+    body {
+        color: $FontColorLight;
+        background: $DarkBg;
+    }
+}
+
+::-moz-selection {
+    background: $PrimaryColor;
+    color: $WhiteColor;
+}
+::selection {
+    background: $PrimaryColor;
+    color: $WhiteColor;
+}
+
+*,
+*:focus,
+.btn-check:focus + .btn,
+.btn:focus {
+    box-shadow: none;
+    outline: none;
+}
