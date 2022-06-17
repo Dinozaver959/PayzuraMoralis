@@ -32,9 +32,12 @@ http://www.payzura.com
 @import 'componets/RadioCheckbox';
 @import 'componets/keyframes';
 @import 'componets/dropDown';
+@import 'componets/cardUi';
 
 /* Layout */
 @import 'layout/header';
 
 /* Pages */
 @import 'pages/Index';
+@import 'pages/Login';
+@import 'pages/ListOffers';

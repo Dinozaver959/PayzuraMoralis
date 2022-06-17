@@ -1,20 +1,12 @@
-
-.FormContainer {
-  width:  800px;
-  margin: auto;
-  margin-top: 100px;
-}
-
 .FormContainerTable {
-  width:  1400px;
+  width: 1400px;
   margin: auto;
   margin-top: 100px;
 }
-
 
 .submitButtonOuter {
   margin-top: 15px;
-  width:100%;
+  width: 100%;
   display: flex;
   justify-content: center;
 }
@@ -22,7 +14,7 @@
 .submitButton {
   font-size: 14px;
   /*background-color: rgb(32, 34, 37);
-  color: rgb(138, 147, 155);*/
+    color: rgb(138, 147, 155);*/
   border-radius: 40px;
   padding: 2px 10px;
   margin: 0 auto;
@@ -36,7 +28,7 @@
 .submitButton_noHover {
   font-size: 14px;
   /*background-color: rgb(32, 34, 37);
-  color: rgb(138, 147, 155);*/
+    color: rgb(138, 147, 155);*/
   border-radius: 40px;
   padding: 2px 10px;
   margin: 0 auto;
@@ -51,7 +43,7 @@
 .interactButton {
   font-size: 14px;
   /*background-color: rgb(32, 34, 37);
-  color: rgb(138, 147, 155);*/
+    color: rgb(138, 147, 155);*/
   border-radius: 40px;
   padding: 5px 10px;
   margin: 2px 5px;
@@ -63,12 +55,11 @@
   border-color: black;
 }
 
-
-.submitButton:hover, .interactButton:hover {
+.submitButton:hover,
+.interactButton:hover {
   /*color: rgb(230, 232, 235);*/
   cursor: pointer;
 }
-
 
 /* for 3 columns */
 @media only screen and (max-width: 720px) {
@@ -83,7 +74,7 @@
   .gridContainer {
     display: grid;
     /*grid-template-columns: 1fr 2fr 1fr; */
-    grid-template-columns: 180px 240px 180px;   /* 180px 2fr 160px; */
+    grid-template-columns: 180px 240px 180px; /* 180px 2fr 160px; */
     padding: 10px;
   }
 }
@@ -99,7 +90,7 @@
 @media only screen and (min-width: 480px) {
   .gridContainer_2 {
     display: grid;
-    grid-template-columns: 200px 200px;     /* 180px 2fr */
+    grid-template-columns: 200px 200px; /* 180px 2fr */
     padding: 5px;
   }
 }
@@ -111,36 +102,41 @@
   padding: 10px;
 }
 
-.gridItem, .gridItemMint, .inlineField, .inlineFieldShort {
+.gridItem,
+.gridItemMint,
+.inlineField,
+.inlineFieldShort {
   font-size: 14px;
   margin: 3px;
   border-radius: 5px; /* will affect only the relevant elements, like the input text */
 
   /* not sure why we have this
-  padding-left: 5px;*/ 
+    padding-left: 5px;*/
 }
 
-.gridItem[type="text"], .gridItem[type="number"],
-.gridItemMint[type="text"], .gridItemMint[type="number"],
-.inlineField[type="text"], .inlineField[type="number"],
-.inlineFieldShort[type="text"], .inlineFieldShort[type="number"]{
-  
+.gridItem[type="text"],
+.gridItem[type="number"],
+.gridItemMint[type="text"],
+.gridItemMint[type="number"],
+.inlineField[type="text"],
+.inlineField[type="number"],
+.inlineFieldShort[type="text"],
+.inlineFieldShort[type="number"] {
   padding: 0px 4px;
 
   border-width: 1px;
   border-color: black;
 }
 
-
 .gridProcent {
   font-size: 14px;
   margin: 3px;
   border-radius: 5px;
-  max-width: 20px; 
+  max-width: 20px;
   float: right;
 
   //padding: 0px 4px;
-  color:#f3fbfe;
+  color: #f3fbfe;
   //background-color: #343a3f;
 }
 
@@ -149,7 +145,7 @@
   height: 28px;
 }
 
-.inlineField {    
+.inlineField {
   //max-width: 100px;   // need to see how it looks at the end with all different fields
   max-width: 65px;
   float: right;
@@ -166,18 +162,17 @@
 }
 
 // for error messages
-.gridItem > span, .gridItem > span > p  {
+.gridItem > span,
+.gridItem > span > p {
   color: red;
 }
-
-
 
 .display {
   padding: 5px;
   margin: 2px 5px;
   height: 21px;
 }
-  
+
 .verticalSpacer {
   height: 10px;
 }

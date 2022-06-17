@@ -2,8 +2,11 @@ body {
     background: $LightBg;
 }
 
-.darkMode {
-    body {
+.layoutMain {
+    @include Size(100%, 100%);
+    overflow: auto;
+
+    &.darkMode {
         color: $FontColorLight;
         background: $DarkBg;
     }

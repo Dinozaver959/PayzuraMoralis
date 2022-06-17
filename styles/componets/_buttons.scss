@@ -1,0 +1,25 @@
+.button {
+    padding: 0.7rem 1.3rem;
+    @include BorderRadius(3px);
+    border: 1px solid transparent;
+    @include Font(null, 0.8rem, null, null, 500);
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    cursor: pointer;
+
+    &.rounded {
+        @include BorderRadius(70px);
+    }
+
+    &.primary {
+        background: $PrimaryColor;
+        border-color: $PrimaryColor;
+        color: $WhiteColor;
+    }
+
+    &.secondary {
+        background: $SecondaryColor;
+        border-color: $SecondaryColor;
+        color: $BlackColor;
+    }
+}

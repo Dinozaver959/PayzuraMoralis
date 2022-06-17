@@ -6,7 +6,7 @@ header {
   border-bottom: 1px solid $BorderDark;
 
   .logo {
-    width: 200px;
+    @include Size(200px, 100%);
     @extend %FlexCol-CenterCenter;
     border-right: 1px solid $BorderDark;
 
@@ -38,11 +38,16 @@ header {
     border-left: 1px solid $BorderDark;
     padding: 0 10px;
 
+    .modeChange {
+      > span {
+        cursor: pointer;
+      }
+    }
+
     > div {
       padding: 0 10px;
 
       &.headerNotification {
-
         svg {
           @include Size(22px, 22px);
         }
@@ -66,6 +71,12 @@ header {
 
     .logo {
       border-right-color: $BorderLight;
+
+      svg {
+        path {
+          fill: $SecondaryColor;
+        }
+      }
     }
 
     nav.navbarMain {

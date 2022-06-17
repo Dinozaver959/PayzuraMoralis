@@ -4,8 +4,11 @@ import React from "react";
 import NotificationIc from "./icons/Notification";
 import UserProfileIc from "./icons/UserProfile";
 import MoonIc from "./icons/Moon";
+import SunIc from "./icons/Sun";
 
-export default function Navigation() {
+export default function Navigation(props) {
+  const darkMode = props.darkMode;
+
   return (
     <header>
       <div className="logo">
@@ -23,10 +26,21 @@ export default function Navigation() {
       </nav>
 
       <div className="headerActions">
-        <div>
-          <Link href="JavaScript:;">
+        <div onClick={props.changeDarkMode} className="modeChange">
+          <span
+            style={{
+              display: darkMode ? "block" : "none",
+            }}
+          >
             <MoonIc />
-          </Link>
+          </span>
+          <span
+            style={{
+              display: darkMode ? "none" : "block",
+            }}
+          >
+            <SunIc />
+          </span>
         </div>
         <div className="headerNotification">
           <Link href="JavaScript:;">

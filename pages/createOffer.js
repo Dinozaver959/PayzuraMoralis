@@ -1,5 +1,4 @@
 import React, { useRef } from 'react'
-import styles from "../styles/CreateContent.module.scss";
 import { useForm  } from "react-hook-form";
 import Moralis from 'moralis';
 import { sha256 } from 'js-sha256';
@@ -12,9 +11,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 
-
-
-export default function Description() {
+export default function Description(props) {
 
   // SUBMIT - validation
   const { register, handleSubmit, formState: { errors }, control } = useForm();
@@ -84,7 +81,6 @@ export default function Description() {
     })
   }
 
-
   // update Submit button
   const refButton = useRef(null);
   function removeHover(){
@@ -92,56 +88,57 @@ export default function Description() {
     b1.className = styles.submitButton_noHover;   // overwrite the style with no hover
   }
 
-
   return (
-
     <> 
-      <Navigation/>
-      <div className={styles.FormContainer}>
-        <div className={styles.createTitle}>
+      <Navigation
+        darkMode={props.darkMode}
+        changeDarkMode={props.changeDarkMode}
+      />
+      
+      <div className="FormContainer">
+        <div className="createTitle">
         Offer Creation
         </div><br></br>
 
         <form id="formToSubmit" method="post" encType="multipart/form-data"  onSubmit={handleSubmit(onSubmit)}>              
 
-          <div className={styles.gridContainer_1}> 
+          <div className="gridContainer_1"> 
 
 
-            <div className={styles.gridItem}> Offer&apos;s Title:  </div>
-            <input className={styles.gridItem} id="OfferTitle" type="text" {...register('OfferTitle', { required: true, minLength: 4, maxLength: 24, pattern: /^[a-z][a-z0-9_-]*/i })} ></input>
-            <div className={styles.gridItem}> 
+            <div className="gridItem"> Offer&apos;s Title:  </div>
+            <input className="gridItem" id="OfferTitle" type="text" {...register('OfferTitle', { required: true, minLength: 4, maxLength: 24, pattern: /^[a-z][a-z0-9_-]*/i })} ></input>
+            <div className="gridItem"> 
               {errors.OfferTitle && errors.OfferTitle.type === "required" && <span><p>required</p></span> }
               {errors.OfferTitle && errors.OfferTitle.type === "maxLength" && <span><p>Max length is 24 chars</p></span> }
               {errors.OfferTitle && errors.OfferTitle.type === "minLength" && <span><p>Min length is 4 chars</p></span>}
               {errors.OfferTitle && errors.OfferTitle.type === "pattern" && <span><p>Start with an alphabet character. No spaces or special characters</p></span> }
             </div>
 
-            <div className={styles.gridItem}> Offer&apos;s Description:  </div> 
-            <textarea cols="40" rows="10" className={styles.gridItem} id="OfferDescription" type="text" width="200" height="80" {...register('OfferDescription', { required: true, minLength: 4, maxLength: 440})} ></textarea>
-            <div className={styles.gridItem}> 
+            <div className="gridItem"> Offer&apos;s Description:  </div> 
+            <textarea cols="40" rows="10" className="gridItem" id="OfferDescription" type="text" width="200" height="80" {...register('OfferDescription', { required: true, minLength: 4, maxLength: 440})} ></textarea>
+            <div className="gridItem"> 
               {errors.OfferDescription && errors.OfferDescription.type === "required" && <span><p>required</p></span> }
               {errors.OfferDescription && errors.OfferDescription.type === "maxLength" && <span><p>Max length is 440 chars</p></span> }
               {errors.OfferDescription && errors.OfferDescription.type === "minLength" && <span><p>Min length is 4 chars</p></span>}
             </div>
 
-            <div className={styles.gridItem}> 
+            <div className="gridItem"> 
               Price (in ETH): 
-              <input className={styles.inlineField} id="Price" type="number" {...register('Price', { required: true, min : 0})} min="0" step="0.001" ></input> 
+              <input className="inlineField" id="Price" type="number" {...register('Price', { required: true, min : 0})} min="0" step="0.001" ></input> 
             </div>
-            <div className={styles.gridItem}> 
+            <div className="gridItem"> 
               {errors.Price && errors.Price.type === "required" && <span>required</span> }
               {errors.Price && errors.Price.type === "min" && <span>Min price is 0</span>}
             </div>
 
-            <div className={styles.gridItem}> 
+            <div className="gridItem"> 
               Time to Deliver (in Hours, following acceptance of the offer): 
-              <input className={styles.inlineField} id="TimeToDeliver" type="number" {...register('TimeToDeliver', { required: true, min : 0})} min="0" step="1" ></input> 
+              <input className="inlineField" id="TimeToDeliver" type="number" {...register('TimeToDeliver', { required: true, min : 0})} min="0" step="1" ></input> 
             </div>
-            <div className={styles.gridItem}> 
+            <div className="gridItem"> 
               {errors.TimeToDeliver && errors.TimeToDeliver.type === "required" && <span>required</span> }
               {errors.TimeToDeliver && errors.TimeToDeliver.type === "min" && <span>Min time to deliver is 0</span>}
             </div>
-
 
             {/* 
             <div className={styles.gridItem}> 
@@ -153,7 +150,6 @@ export default function Description() {
               {errors.OfferValidUntil && errors.OfferValidUntil.type === "min" && <span>Min time for a valid offer is 0</span>}
             </div>
             */}
-            
 
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DateTimePicker
@@ -166,9 +162,8 @@ export default function Description() {
               />
             </LocalizationProvider>
 
-
-            <div className={styles.gridItem}> Offer valid for these wallets (empty=any):  </div>
-            <input className={styles.gridItem} id="PersonalizedOffer" type="text" name="PersonalizedOffer" ></input>
+            <div className="gridItem"> Offer valid for these wallets (empty=any):  </div>
+            <input className="gridItem" id="PersonalizedOffer" type="text" name="PersonalizedOffer" ></input>
 
             {/*
               <div className={styles.gridItem}> Offer valid for these wallets (empty=any):  </div>
@@ -178,14 +173,11 @@ export default function Description() {
               </div>
              */}
 
-            <div className={styles.submitButtonOuter}> 
-              <input id="SubmitButton" className={styles.submitButton} type="submit" value="Submit" ref={refButton} ></input>
+            <div className="submitButtonOuter"> 
+              <input id="SubmitButton" className="submitButton" type="submit" value="Submit" ref={refButton} ></input>
             </div>
 
           </div>
-
-                  
-
 
         </form>
 

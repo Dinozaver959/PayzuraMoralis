@@ -16,10 +16,10 @@ import {MdKeyboardArrowUp} from "react-icons/md";
 import {MdKeyboardArrowDown} from "react-icons/md";
 
 import { styled  } from '@mui/material/styles';
-import styles from "../styles/CreateContent.module.scss";
 import Moralis from 'moralis';
 import { GetWallet_NonMoralis, AcceptOffer_Moralis } from '../JS/local_web3_Moralis';
 import Navigation from "../components/Navigation.js"
+import Button from '../components/ui/Button';
 
 
 
@@ -75,7 +75,7 @@ const StyledInnerTableCell = styled(TableCell)({
 });
 
 
-export default function ListAvailableOffers() {
+export default function ListAvailableOffers(props) {
 
   const [data, setData] = useState([]);
 
@@ -97,11 +97,21 @@ export default function ListAvailableOffers() {
 
   return (
     <>
-      <Navigation/>
-      <div className={styles.FormContainer}>
-        <div className={styles.createTitle}>
-        Offers Available
-        </div><br></br>
+      <Navigation
+        darkMode={props.darkMode}
+        changeDarkMode={props.changeDarkMode}
+      />
+
+      <div className="containerMain">
+        <div className='pageHeader'>
+          <h1>Offers Available</h1>
+          <div className='headerAction'>
+            <Button link="/listPublicOffers" classes={"button secondary"}>
+              <i></i>
+              <span>Create New Offer</span>
+            </Button>
+          </div>
+        </div>
 
           {(data && data[0]) ? (
           <>
@@ -111,9 +121,9 @@ export default function ListAvailableOffers() {
           <>
               There are no available offers. 
 
-              <div className={styles.submitButtonOuter}> 
+              <div className="submitButtonOuter"> 
               <Link href="/creteOffer" passHref>
-                  <input className={styles.submitButton} type="submit" value="Create Offer Now" ></input>
+                  <input className="submitButton" type="submit" value="Create Offer Now" ></input>
               </Link>
               </div>
           </>
@@ -195,7 +205,7 @@ function Row_normal(props) {
             <StyledTableCell>
             
 
-                <input className={styles.interactButton} type="submit" value="Accept Offer (buyer)" onClick={() => 
+                <input className="interactButton" type="submit" value="Accept Offer (buyer)" onClick={() => 
                     AcceptOffer_Moralis(item.index)
                     .then(async (transactionHash) => {
 

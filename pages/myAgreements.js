@@ -16,7 +16,6 @@ import {MdKeyboardArrowUp} from "react-icons/md";
 import {MdKeyboardArrowDown} from "react-icons/md";
 
 import { styled  } from '@mui/material/styles';
-import styles from "../styles/CreateContent.module.scss";
 import Moralis from 'moralis';
 import { GetWallet_NonMoralis, ReturnPayment_Moralis, ClaimFunds_Moralis, StartDispute_Moralis, ConfirmDelivery_Moralis } from '../JS/local_web3_Moralis';
 import Navigation from "../components/Navigation.js"
@@ -75,7 +74,7 @@ const StyledInnerTableCell = styled(TableCell)({
 });
 
 
-export default function MyAgreements() {
+export default function MyAgreements(props) {
 
   const [data, setData] = useState([]);
 
@@ -100,9 +99,13 @@ export default function MyAgreements() {
 
   return (
     <>
-      <Navigation/>
-      <div className={styles.FormContainerTable}>
-        <div className={styles.createTitle}>
+      <Navigation
+        darkMode={props.darkMode}
+        changeDarkMode={props.changeDarkMode}
+      />
+
+      <div className="FormContainerTable">
+        <div className="createTitle">
         My Agreements
         </div><br></br>
 
@@ -114,9 +117,9 @@ export default function MyAgreements() {
           <>
               There are no available offers. 
 
-              <div className={styles.submitButtonOuter}> 
+              <div className="submitButtonOuter"> 
               <Link href="/creteOffer" passHref>
-                  <input className={styles.submitButton} type="submit" value="Create Offer Now" ></input>
+                  <input className="submitButton" type="submit" value="Create Offer Now" ></input>
               </Link>
               </div>
           </>
@@ -189,7 +192,7 @@ function Row_normal(props) {
 
 
             <StyledTableCell>
-                <input className={styles.interactButton} type="submit" value="Return Payment (seller)" onClick={() => 
+                <input className="interactButton" type="submit" value="Return Payment (seller)" onClick={() => 
                     ReturnPayment_Moralis(item.index)
                     .then(async (transactionHash) => {
 
@@ -235,7 +238,7 @@ function Row_normal(props) {
             </StyledTableCell>
 
             <StyledTableCell>
-              <input className={styles.interactButton} type="submit" value="Claim funds (seller)" onClick={() => 
+              <input className="interactButton" type="submit" value="Claim funds (seller)" onClick={() => 
                   ClaimFunds_Moralis(item.index)
                   .then(async (transactionHash) => {
 
@@ -281,7 +284,7 @@ function Row_normal(props) {
             </StyledTableCell>
 
             <StyledTableCell>
-              <input className={styles.interactButton} type="submit" value="Start Dispute (buyer)" onClick={() => 
+              <input className="interactButton" type="submit" value="Start Dispute (buyer)" onClick={() => 
                   StartDispute_Moralis(item.index)
                   .then(async (transactionHash) => {
 
@@ -327,7 +330,7 @@ function Row_normal(props) {
             </StyledTableCell>
 
             <StyledTableCell>
-              <input className={styles.interactButton} type="submit" value="Confirm Delivery (buyer)" onClick={() => 
+              <input className="interactButton" type="submit" value="Confirm Delivery (buyer)" onClick={() => 
                   ConfirmDelivery_Moralis(item.index)
                   .then(async (transactionHash) => {
 

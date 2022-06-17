@@ -1,0 +1,40 @@
+#__next {
+  @include Size(100%, 100%);
+}
+
+.containerMain {
+  width: 100%;
+  padding: 1.7rem 2%;
+}
+
+.pageHeader {
+  width: 100%;
+  @extend %FlexRow-CenterBetween;
+  padding-bottom: 1rem;
+
+  h1 {
+    flex: 2;
+    @include Font(null, 1.7rem, $FontColorDark, null, 500);
+  }
+
+  .headerAction {
+    margin-left: 1rem;
+  }
+}
+
+.error {
+  color: red;
+  font-size: 10px;
+  font-style: italic;
+  margin: 5px;
+  text-align: center;
+}
+
+.darkMode {
+  .pageHeader {
+    h1 {
+      flex: 2;
+      color: $WhiteColor;
+    }
+  }
+}
