@@ -1,5 +1,6 @@
-import Link from "next/link";
 import React from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 import NotificationIc from "./icons/Notification";
 import UserProfileIc from "./icons/UserProfile";
@@ -8,6 +9,7 @@ import SunIc from "./icons/Sun";
 
 export default function Navigation(props) {
   const darkMode = props.darkMode;
+  const router = useRouter();
 
   return (
     <header>
@@ -18,11 +20,23 @@ export default function Navigation(props) {
       </div>
 
       <nav className="navbarMain">
-        <Link href="/">index-test</Link>
-        <Link href="/createOffer">createOffer</Link>
-        <Link href="/listPublicOffers">listPublicOffers</Link>
-        <Link href="/listPersonalizedOffers">listPersonalizedOffers</Link>
-        <Link href="/myAgreements">myAgreements</Link>
+        <ul>
+          <li className={router.pathname == "/" ? "active" : ""}>
+            <Link href="/">index-test</Link>
+          </li>
+          <li className={router.pathname == "/createOffer" ? "active" : ""}>
+            <Link href="/createOffer">createOffer</Link>
+          </li>
+          <li className={router.pathname == "/listPublicOffers" ? "active" : ""}>
+            <Link href="/listPublicOffers">listPublicOffers</Link>
+          </li>
+          <li className={router.pathname == "/listPersonalizedOffers" ? "active" : ""}>
+            <Link href="/listPersonalizedOffers">listPersonalizedOffers</Link>
+          </li>
+          <li className={router.pathname == "/myAgreements" ? "active" : ""}>
+            <Link href="/myAgreements">myAgreements</Link>
+          </li>
+        </ul>
       </nav>
 
       <div className="headerActions">

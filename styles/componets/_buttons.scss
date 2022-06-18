@@ -7,6 +7,34 @@
     text-decoration: none;
     cursor: pointer;
 
+    &.withIcon {
+        @extend %FlexRow-CenterStart;
+        display: inline-flex;
+        padding-left: 0.6rem;
+
+        i {
+            width: 24px;
+            @extend %FlexCol-CenterCenter;
+
+            svg {
+                @include Size(18px, 18px);
+            }
+
+            + span {
+                flex: 2;
+                margin-left: 7px;
+            }
+        }
+
+        span {
+            margin-left: 10px;
+
+            + i {
+                margin-left: 7px;
+            }
+        }
+    }
+
     &.rounded {
         @include BorderRadius(70px);
     }

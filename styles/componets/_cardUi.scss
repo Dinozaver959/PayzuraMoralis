@@ -1,7 +1,55 @@
 .card {
   @include Size(100%, auto);
   background: $WhiteColor;
+  border: 1px solid $WhiteColor;
   padding: 24px;
-  @include BorderRadius(16px);
+  @include BorderRadius($CardRounded);
   @include BoxShadow(1px 1px 10px rgba($PrimaryColor, 0.1));
+
+  .cardHeader {
+    padding-bottom: 24px;
+    @extend %FlexRow-CenterBetween;
+
+    .cardTitle {
+      flex: 2;
+
+      h2 {
+        @include Font(null, 1.4rem, $BlackColor, null, 500);
+        margin: 0;
+      }
+
+      p {
+        @include Font(null, 1rem, $FontColorDark, null, 400);
+        margin: 7px 0;
+      }
+    }
+
+    .cardAction {}
+  }
+
+  .cardBody {
+    width: 100%;
+  }
+}
+
+.darkMode {
+  .card {
+    background: none;
+    border-color: $BorderLight;
+    box-shadow: none;
+
+    .cardHeader {
+      .cardTitle {
+        flex: 2;
+  
+        h2 {
+          color: $WhiteColor;
+        }
+  
+        p {
+          color: $FontColorLight;
+        }
+      }
+    }
+  }
 }

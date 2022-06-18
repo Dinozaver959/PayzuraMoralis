@@ -1,0 +1,65 @@
+.offerTemplateMain {
+  @include Flexbox;
+  @include FlexFlow(wrap);
+  @include JustifyContent(center);
+  padding: 15px 0;
+
+  .offerCard {
+    width: 30%;
+    max-width: 420px;
+    background: $LightBlueBg;
+    @include BorderRadius($CardRounded);
+    padding: 18px;
+
+    .offerCardHeader {
+      @include Font(null, 1.2rem, $FontColorDark, null, 500);
+      padding-bottom: 15px;
+      text-align: center;
+    }
+
+    .offerCardBody {
+      min-height: 180px;
+
+      .offerBodyRow {
+        .labelData {
+          color: $LightBlueColor;
+        }
+
+        .valueData {
+          color: rgba($FontColorDark, 0.75);
+          font-size: 1rem;
+          font-weight: 400;
+        }
+      }
+    }
+
+    .offerCardFooter {
+      padding-top: 15px;
+      text-align: center;
+
+      .button {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.darkMode {
+  .offerTemplateMain {
+    .offerCard {
+      background: $BorderLight;
+
+      .offerCardHeader {
+        color: $WhiteColor;
+      }
+
+      .offerCardBody {
+        .offerBodyRow {
+          .valueData {
+            color: rgba($FontColorLight, 0.75);
+          }
+        }
+      }
+    }
+  }
+}

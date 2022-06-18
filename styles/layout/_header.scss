@@ -22,14 +22,32 @@ header {
   nav.navbarMain {
     flex: 2;
 
-    a {
-      @extend %FlexCol-CenterCenter;
-      display: inline-flex;
-      padding: 15px;
-      height: 100%;
-      color: $FontColorDark;
-      text-decoration: none;
-      font-size: 0.8rem;
+    ul {
+      @include Size(100%, 100%);
+      @extend %FlexRow-CenterStart;
+
+      li {
+        height: 100%;
+        padding: 0 7px;
+
+        a {
+          @extend %FlexCol-CenterCenter;
+          display: inline-flex;
+          height: 100%;
+          padding: 10px;
+          color: $FontColorDark;
+          text-decoration: none;
+          font-size: 0.8rem;
+          border-bottom: 2px solid transparent;
+        }
+
+        &.active {
+          a {
+            border-bottom-color: $PrimaryColor;
+            color: $PrimaryColor;
+          }
+        }
+      }
     }
   }
 
@@ -80,8 +98,19 @@ header {
     }
 
     nav.navbarMain {
-      a {
-        color: $FontColorLight;
+      ul {
+        li {
+          a {
+            color: $FontColorLight;
+          }
+  
+          &.active {
+            a {
+              border-bottom-color: $SecondaryColor;
+              color: $SecondaryColor;
+            }
+          }
+        }
       }
     }
 
