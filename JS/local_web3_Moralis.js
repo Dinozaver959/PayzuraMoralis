@@ -3,7 +3,7 @@ import {ABI} from "./ABI.js"
 
 //const ethers = Moralis.web3Library;
  
-const FactoryContractAddress = "0x5D023afC16961d44E5fB3F29fe17fd54cE8D3487";
+const FactoryContractAddress = "0xCbf6B1D117962ba144163aF321e8e9E30BAc6c98"; //"0x5Fc12E3eC96dd2F008DB5f32497cbAbefB049B60";   // 0x5D023afC16961d44E5fB3F29fe17fd54cE8D3487 - checked in
 
 
 
@@ -304,9 +304,20 @@ export async function ConfirmDelivery_Moralis_indexPage() {
     await MoralisWrite__("ConfirmDelivery", params);
 }
 
+export async function HandleDispute_Moralis_indexPage(returnFundsToBuyer) {
+
+    const index = GetIndex();
+
+    const params = {
+        index: index,
+        returnFundsToBuyer: returnFundsToBuyer,
+    }
+
+    await MoralisWrite__("HandleDispute", params);
+}
 
 
-export async function CreateEscrow_Moralis(price, timeToDeliver, hashOfDescription, offerValidUntil, personalizedOffer) {
+export async function CreateEscrow_Moralis(price, timeToDeliver, hashOfDescription, offerValidUntil, personalizedOffer, arbiters) {
 
     console.log("offerValidUntil:");
     console.log(offerValidUntil);
@@ -318,13 +329,29 @@ export async function CreateEscrow_Moralis(price, timeToDeliver, hashOfDescripti
         personalizedOffer_parts = [];
     }
 
+    var arbiters_parts = arbiters.split(",");
+
+    if(!arbiters){
+        arbiters_parts = ["0x80038953cE1CdFCe7561Abb73216dE83F8baAEf0"];  // Payzura Team/Platform address
+    }
+
+
+    for (let i = 0; i < personalizedOffer_parts.length; i++){
+        console.log("personalizedOffer_parts[i]: " + personalizedOffer_parts[i])
+    }
+    for (let i = 0; i < arbiters_parts.length; i++){
+        console.log("arbiters_parts[i]: " + arbiters_parts[i])
+    }
+
 
     const params = {
+        
         price: price,
         timeToDeliver: timeToDeliver,
         hashOfDescription: hashOfDescription,
-        offerValidUntil: offerValidUntil,       //offerValidFor: offerValidFor,
-        personalizedOffer: personalizedOffer_parts
+        offerValidUntil: offerValidUntil, 
+        personalizedOffer: personalizedOffer_parts,
+        arbiters: arbiters_parts
     }
   
     return await MoralisWrite_("CreateEscrow", params);
@@ -381,19 +408,19 @@ export async function ConfirmDelivery_Moralis(index) {
     await MoralisWrite__("ConfirmDelivery", params);
 }
 
-
-
-export async function HandleDispute_Moralis(returnFundsToBuyer) {
-
-    const index = GetIndex();
+export async function HandleDispute_Moralis(index, returnFundsToBuyer) {
 
     const params = {
         index: index,
-        returnFundsToBuyer: returnFundsToBuyer,
+        returnFundsToBuyer: true,
     }
 
+    //const web3 = await Moralis.enableWeb3();
     await MoralisWrite__("HandleDispute", params);
 }
+
+
+
 
 async function MoralisWrite(method) {
     return await MoralisWrite_(method, {});
@@ -417,6 +444,7 @@ async function MoralisWrite__(method, params, value) {
     //const web3Provider = await Moralis.enableWeb3();
   
     console.log("method: " + method);
+    console.log("params: " + JSON. stringify(params));
   
     const writeOptions = {
       contractAddress: FactoryContractAddress,
@@ -427,14 +455,34 @@ async function MoralisWrite__(method, params, value) {
     };
   
     const transaction = await Moralis.executeFunction(writeOptions);
-  
+
+
     // need to check if Tx was rejected or if something else went wrong (on success we can return the Tx hash -> which we could store in DB)
-  
-  
     console.log("transaction hash: " + transaction.hash);
   
-    await transaction.wait();
+    const tx = await transaction.wait();
     console.log("transaction is confirmed");
+
+    console.log("tx: " + JSON.stringify(tx));
+
+
+
+    if(method == "HandleDispute"){
+
+        console.log("tx.events: " + JSON.stringify(tx.events));
+        console.log("tx.events[0].event: " + JSON.stringify(tx.events[0].event)); // if = ArbitersVoteConcluded
+
+        if(tx.events[0].event && tx.events[0].event == "ArbitersVoteConcluded")
+        {
+            console.log("ArbitersVoteConcluded = true");
+            //return {"transactionHash" : transaction.hash, "ArbitersVoteConcluded" : "true"};
+            return "true";
+        }
+   
+        //return {"transactionHash" : transaction.hash, "ArbitersVoteConcluded" : "false"};
+        return "false";
+    }
+
 
 
     return transaction.hash;

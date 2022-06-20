@@ -31,15 +31,21 @@ export default function Navigation() {
 
                     <Link href="/listPublicOffers" passHref >
                         <div className={style.headerItem}> 
-                            listPublicOffers 
+                            PublicOffers 
                         </div>   
                     </Link>       
 
                     <Link href="/listPersonalizedOffers" passHref >
                         <div className={style.headerItem}> 
-                            listPersonalizedOffers 
+                            PersonalizedOffers 
                         </div>   
-                    </Link>                       
+                    </Link>       
+
+                    <Link href="/listDisputesToHandle" passHref >
+                        <div className={style.headerItem}> 
+                            handleDisputes 
+                        </div>   
+                    </Link>                
 
                     <Link href="/myAgreements" passHref >
                         <div className={style.headerItem}> 

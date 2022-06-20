@@ -13,7 +13,7 @@ apiRoute.get(async (req, res) => {
 
     var packagedOffers = []
 
-    console.log("packagedOffers.length: " + packagedOffers.length);
+    console.log("offers.length: " + offers.length);
     
 
     for(let i = 0; i < offers.length; i++){

@@ -15,11 +15,11 @@ apiRoute.get(async (req, res) => {
 
     console.log("UserWallet: " + UserWallet);
 
-    const offers = await GetPersonalizedOffers(UserWallet);
+    const offers = await GetPersonalizedOffers(UserWallet.toLowerCase());
 
     var packagedOffers = []
 
-    console.log("packagedOffers.length: " + packagedOffers.length);
+    console.log("offers.length: " + offers.length);
     
 
     for(let i = 0; i < offers.length; i++){

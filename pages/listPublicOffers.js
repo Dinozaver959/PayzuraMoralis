@@ -126,7 +126,14 @@ export default function ListAvailableOffers() {
 function wrapPersonalized(wallets){
   if(!wallets){return "Any"}
   else {
-    return wallets.replace(",", "\n");
+    return wallets.replaceAll(",", "\n");
+  }
+}
+
+function wrapArbiters(wallets){
+  if(!wallets){return "Payzura Platform"}
+  else {
+    return wallets.replaceAll(",", "\n");
   }
 }
 
@@ -154,7 +161,7 @@ function Table_normal(props) {
                 </TableHead>
                 <TableBody>
                     {data.map((item) => (
-                    <Row_normal key={item.id} item={item.name} />
+                      <Row_normal key={item.id} item={item.name} />
                     ))}
                 </TableBody>
                 </Table>
@@ -201,13 +208,14 @@ function Row_normal(props) {
 
                         // show the feedback text 
                         document.getElementById('submitFeedback').style.display = 'inline';
-                        document.getElementById('submitFeedback').innerText = 'Creating offer...'
+                        document.getElementById('submitFeedback').innerText = 'Accepting offer...'
 
                         var formData = new FormData();
                         formData.append('BuyerAccount', (Moralis.User.current()).id);
 
                         const connectedAddress = await GetWallet_NonMoralis();
                         formData.append('BuyerWallet', connectedAddress);
+                        formData.append('SellerWallet', item.SellerWallet);
                         formData.append('transactionHash', transactionHash);
                         formData.append('objectId', item.objectId);
 
@@ -268,6 +276,12 @@ function Row_normal(props) {
                         <StyledInnerTableCell></StyledInnerTableCell>
                         <StyledInnerTableCell>Wallets Allowed to Accept</StyledInnerTableCell>
                         <StyledInnerTableCell>{wrapPersonalized(item.PersonalizedOffer)}</StyledInnerTableCell>
+                    </TableRow>
+
+                    <TableRow>
+                        <StyledInnerTableCell></StyledInnerTableCell>
+                        <StyledInnerTableCell>Arbiters</StyledInnerTableCell>
+                        <StyledInnerTableCell>{wrapArbiters(item.Arbiters)}</StyledInnerTableCell>
                     </TableRow>
 
                     </TableBody>

@@ -1,4 +1,5 @@
 
+/*
 Moralis.Cloud.define("GetPublicOffers", async (request) => {
 
   const pipeline = [
@@ -13,6 +14,7 @@ Moralis.Cloud.define("GetPublicOffers", async (request) => {
       TimeToDeliver: 1,
       OfferValidUntil: 1,
       PersonalizedOffer : 1,
+      Arbiters: 1,
       SellerWallet: 1,
       State: 1,
       index: 1
@@ -22,13 +24,43 @@ Moralis.Cloud.define("GetPublicOffers", async (request) => {
   const query = new Moralis.Query("Agreements");    
   return await query.aggregate(pipeline);
 });
+*/
+
+Moralis.Cloud.define("GetPublicOffers", async (request) => {    
+  const query = new Moralis.Query("Agreements");    
+  query.equalTo("State", "Available");
+  query.equalTo("PersonalizedOffer", "");
+  return await query.find();                  
+});
+
+
+Moralis.Cloud.define("GetDisputesToManage", async (request) => {    
+  /*
+    const query = new Moralis.Query("Agreements");    
+    //query.equalTo("State", "dispute"); // optional - should include the complited state as well
+    query.fullText("Arbiters", request.params.UserWallet);
+    return await query.find();     
+  */
+  
+  const query1 = new Moralis.Query("Agreements");    
+  query1.equalTo("State", "dispute"); 
+  
+  const query2 = new Moralis.Query("Agreements");    
+  query2.equalTo("State", "complete"); 
+  
+  const mainQuery = Moralis.Query.or(query1, query2);
+  //mainQuery.fullText("Arbiters", request.params.UserWallet);    // comment out for testing - no idea why it is causing problems
+  return await mainQuery.find();  
+});
+
 
 Moralis.Cloud.define("GetPersonalizedOffers", async (request) => {    
   const query = new Moralis.Query("Agreements");    
   query.equalTo("State", "Available");
-  query.fullText("PersonalizedOffer", request.params.UserWallet)
+  query.fullText("PersonalizedOffer", request.params.UserWallet);
   return await query.find();                  
 });
+
 
 
 

@@ -21,17 +21,20 @@ apiRoute.post(async (req, res) => {
 
     const BuyerAccount = DOMPurify.sanitize(req.body.BuyerAccount[0].toString());
     const BuyerWallet = DOMPurify.sanitize(req.body.BuyerWallet[0].toString());
+    const SellerWallet = DOMPurify.sanitize(req.body.SellerWallet[0].toString());
     const objectId = DOMPurify.sanitize(req.body.objectId[0].toString());
     const transactionHash = DOMPurify.sanitize(req.body.transactionHash[0].toString());
     
 
     console.log("BuyerAccount: " + BuyerAccount);
     console.log("BuyerWallet: " + BuyerWallet);
+    console.log("SellerWallet: " + SellerWallet);
     console.log("objectId: " + objectId);
     console.log("transactionHash: " + transactionHash);
     
     
-    await AddAgreementToCollectionMoralisDB(objectId, transactionHash)
+    await AddAgreementToCollectionMoralisDB(objectId, transactionHash);
+    await UpdateDisputeMeter(BuyerAccount, SellerWallet);
 
     res.status(201).end("Offer created");
 })
@@ -67,3 +70,40 @@ async function AddAgreementToCollectionMoralisDB(objectId, transactionHash) {
     }
 }
 
+async function UpdateDisputeMeter(BuyerAccount, SellerWallet){
+
+    const DisputeMeter = Moralis.Object.extend("DisputeMeter");
+
+    const query1 = new Moralis.Query(DisputeMeter);
+    query1.equalTo("userAddress", BuyerAccount.toLowerCase());
+    const results1 = await query1.find();
+
+    if (results1.length > 0) {
+        const agreement = results1[0];
+        agreement.increment("DisputesInvolved");
+
+        await agreement.save()
+        .then((agreement) => {
+            console.log('Number of agreements updated, with objectId: ' + agreement.id);
+        }, (error) => {
+            console.log('Failed to update number of agreements, with error code: ' + error.message);
+        });
+    }
+
+
+    const query2 = new Moralis.Query(DisputeMeter);
+    query2.equalTo("userAddress", SellerWallet.toLowerCase());
+    const results2 = await query2.find();
+
+    if (results2.length > 0) {
+        const agreement = results2[0];
+        agreement.increment("DisputesInvolved");
+
+        await agreement.save()
+        .then((agreement) => {
+            console.log('Number of agreements updated, with objectId: ' + agreement.id);
+        }, (error) => {
+            console.log('Failed to update number of agreements, with error code: ' + error.message);
+        });
+    }
+}

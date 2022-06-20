@@ -74,6 +74,12 @@ const StyledInnerTableCell = styled(TableCell)({
   
 });
 
+function wrapArbiters(wallets){
+  if(!wallets){return "Payzura Platform"}
+  else {
+    return wallets.replaceAll(",", "\n");
+  }
+}
 
 export default function MyAgreements() {
 
@@ -294,6 +300,7 @@ function Row_normal(props) {
 
                       const connectedAddress = await GetWallet_NonMoralis();
                       formData.append('BuyerWallet', connectedAddress);
+                      formData.append('SellerWallet', item.SellerWallet);
                       formData.append('transactionHash', transactionHash);
                       formData.append('objectId', item.objectId);
 
@@ -399,6 +406,12 @@ function Row_normal(props) {
                           <StyledInnerTableCell></StyledInnerTableCell>
                           <StyledInnerTableCell>Buyer Wallet</StyledInnerTableCell>
                           <StyledInnerTableCell>{item.BuyerWallet}</StyledInnerTableCell>
+                      </TableRow>
+
+                      <TableRow>
+                        <StyledInnerTableCell></StyledInnerTableCell>
+                        <StyledInnerTableCell>Arbiters</StyledInnerTableCell>
+                        <StyledInnerTableCell>{wrapArbiters(item.Arbiters)}</StyledInnerTableCell>
                       </TableRow>
 
                     </TableBody>

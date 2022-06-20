@@ -21,17 +21,19 @@ apiRoute.post(async (req, res) => {
 
     const BuyerAccount = DOMPurify.sanitize(req.body.BuyerAccount[0].toString());
     const BuyerWallet = DOMPurify.sanitize(req.body.BuyerWallet[0].toString());
+    const SellerWallet = DOMPurify.sanitize(req.body.SellerWallet[0].toString());
     const objectId = DOMPurify.sanitize(req.body.objectId[0].toString());
     const transactionHash = DOMPurify.sanitize(req.body.transactionHash[0].toString());
     
-
     console.log("BuyerAccount: " + BuyerAccount);
     console.log("BuyerWallet: " + BuyerWallet);
+    console.log("SellerWallet: " + SellerWallet);
     console.log("objectId: " + objectId);
     console.log("transactionHash: " + transactionHash);
     
-    
-    await AddAgreementToCollectionMoralisDB(BuyerAccount, BuyerWallet, objectId, transactionHash)
+    await AddAgreementToCollectionMoralisDB(BuyerAccount, BuyerWallet, objectId, transactionHash);
+    await UpdateDisputeMeter_AgreementsMade(BuyerWallet);
+    await UpdateDisputeMeter_AgreementsMade(SellerWallet);
 
     res.status(201).end("Offer created");
 })
@@ -57,7 +59,7 @@ async function AddAgreementToCollectionMoralisDB(BuyerAccount, BuyerWallet, obje
         const agreement = results_[0];
         agreement.set("State", "paid");
         agreement.set("BuyerAccount", BuyerAccount);
-        agreement.set("BuyerWallet", BuyerWallet);
+        agreement.set("BuyerWallet", BuyerWallet.toLowerCase());
         agreement.set("AcceptedTxHash", transactionHash);
 
         await agreement.save()
@@ -69,3 +71,36 @@ async function AddAgreementToCollectionMoralisDB(BuyerAccount, BuyerWallet, obje
     }
 }
 
+async function UpdateDisputeMeter_AgreementsMade(wallet){
+
+    const DisputeMeter = Moralis.Object.extend("DisputeMeter");
+
+    const query1 = new Moralis.Query(DisputeMeter);
+    query1.equalTo("userAddress", wallet);
+    const results1 = await query1.find();
+
+    if (results1.length > 0) {
+
+        const agreement = results1[0];
+        agreement.increment("AgreementsMade");
+
+        await agreement.save()
+        .then((agreement) => {
+            console.log('Number of agreements updated, with objectId: ' + agreement.id);
+        }, (error) => {
+            console.log('Failed to update number of agreements, with error code: ' + error.message);
+        });
+    } else {
+
+        const agreement = new DisputeMeter();
+        agreement.set("userAddress", wallet.toLowerCase());
+        agreement.set("AgreementsMade", 1);
+
+        await agreement.save()
+            .then((agreement) => {
+                console.log('Number of agreements updated, with objectId: ' + agreement.id);
+            }, (error) => {
+                console.log('Failed to update number of agreements, with error code: ' + error.message);
+            });
+    }
+}

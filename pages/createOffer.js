@@ -24,11 +24,12 @@ export default function Description() {
   async function SubmitForm(){
     
     // call Smart Contract function
-    CreateEscrow_Moralis( (10**18) *  document.getElementById('Price').value, 
+    CreateEscrow_Moralis( (10**18) * document.getElementById('Price').value, 
                                 document.getElementById('TimeToDeliver').value, 
                                 sha256(document.getElementById('OfferDescription').value),
                                 OfferValidUntil.getTime() / 1000,
-                                document.getElementById('PersonalizedOffer').value) 
+                                document.getElementById('PersonalizedOffer').value,
+                                document.getElementById('Arbiters').value) 
     .then(async (transactionHash) => {
 
       // show the feedback text 
@@ -169,6 +170,11 @@ export default function Description() {
 
             <div className={styles.gridItem}> Offer valid for these wallets (empty=any):  </div>
             <input className={styles.gridItem} id="PersonalizedOffer" type="text" name="PersonalizedOffer" ></input>
+
+
+            <div className={styles.gridItem}> Arbiters (empty=Payzura Platform):  </div>
+            <input className={styles.gridItem} id="Arbiters" type="text" name="Arbiters" ></input>
+
 
             {/*
               <div className={styles.gridItem}> Offer valid for these wallets (empty=any):  </div>

@@ -14,6 +14,11 @@ export async function GetPersonalizedOffers(UserWallet){
     return Moralis.Cloud.run("GetPersonalizedOffers", params);
 }
 
+export async function GetDisputesToManage(UserWallet){
+    const params =  { UserWallet : UserWallet };
+    return Moralis.Cloud.run("GetDisputesToManage", params);
+}
+
 
 export async function GetUsersAgreements(UserWallet){
     const params =  { UserWallet : UserWallet };

@@ -30,6 +30,7 @@ apiRoute.post(async (req, res) => {
     const index = DOMPurify.sanitize(req.body.index[0].toString());
     const OfferValidUntil = DOMPurify.sanitize(req.body.OfferValidUntil[0].toString());
     const PersonalizedOffer = DOMPurify.sanitize(req.body.PersonalizedOffer[0].toString());
+    const Arbiters = DOMPurify.sanitize(req.body.Arbiters[0].toString());
 
     console.log("SellerAccount: " + SellerAccount);
     console.log("SellerWallet: " + SellerWallet);
@@ -42,8 +43,10 @@ apiRoute.post(async (req, res) => {
     console.log("index: " + index);
     console.log("OfferValidUntil: " + OfferValidUntil);
     console.log("PersonalizedOffer: " + PersonalizedOffer);
+    console.log("Arbiters: " + Arbiters);
 
-    await AddAgreementToCollectionMoralisDB(SellerAccount, SellerWallet, OfferTitle, OfferDescription, hashDescription, Price, TimeToDeliver, transactionHash, index, OfferValidUntil, PersonalizedOffer)
+
+    await AddAgreementToCollectionMoralisDB(SellerAccount, SellerWallet, OfferTitle, OfferDescription, hashDescription, Price, TimeToDeliver, transactionHash, index, OfferValidUntil, PersonalizedOffer, Arbiters)
 
     res.status(201).end("Offer created");
 })
@@ -58,19 +61,20 @@ export default apiRoute
 
 
 
-async function AddAgreementToCollectionMoralisDB(SellerAccount, SellerWallet, OfferTitle, OfferDescription, hashDescription, Price, TimeToDeliver, transactionHash, index, OfferValidUntil, PersonalizedOffer) {
+async function AddAgreementToCollectionMoralisDB(SellerAccount, SellerWallet, OfferTitle, OfferDescription, hashDescription, Price, TimeToDeliver, transactionHash, index, OfferValidUntil, PersonalizedOffer, Arbiters) {
 
   const Agreements = Moralis.Object.extend("Agreements");
   const agreement = new Agreements();
   agreement.set("SellerAccount", SellerAccount);
-  agreement.set("SellerWallet", SellerWallet);
+  agreement.set("SellerWallet", SellerWallet.toLowerCase());
   agreement.set("OfferTitle", OfferTitle);
   agreement.set("OfferDescription", OfferDescription);
   agreement.set("hashDescription", hashDescription);
   agreement.set("Price", Price);
   agreement.set("TimeToDeliver", TimeToDeliver);
   agreement.set("OfferValidUntil", OfferValidUntil);
-  agreement.set("PersonalizedOffer", PersonalizedOffer);  
+  agreement.set("PersonalizedOffer", PersonalizedOffer.toLowerCase());  
+  agreement.set("Arbiters", Arbiters.toLowerCase());  
   agreement.set("CreatedTxHash", transactionHash);
   agreement.set("State", "Available");
   agreement.set("index", index);

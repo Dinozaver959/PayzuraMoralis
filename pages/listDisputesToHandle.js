@@ -18,7 +18,7 @@ import {MdKeyboardArrowDown} from "react-icons/md";
 import { styled  } from '@mui/material/styles';
 import styles from "../styles/CreateContent.module.scss";
 import Moralis from 'moralis';
-import { GetWallet_NonMoralis, AcceptOffer_Moralis } from '../JS/local_web3_Moralis';
+import { GetWallet_NonMoralis, HandleDispute_Moralis } from '../JS/local_web3_Moralis';
 import Navigation from "../components/Navigation.js"
 
 
@@ -81,11 +81,10 @@ export default function ListAvailableOffers() {
 
   // load options using API call
   async function getCollectionsDetails() {
-
     const connectedAddress = await GetWallet_NonMoralis(); 
-    const data = await fetch(`./api/api-getPersonalizedOffers` + '?UserWallet=' + connectedAddress)
+    const data = await fetch(`./api/api-getDisputesToManage` + '?UserWallet=' + connectedAddress)
     .then(res => res.json())
-    .then(json => setData(json));
+    .then(json => setData(json));    // uncomment this line to see the data in the console
 
     console.log(data);
 
@@ -102,7 +101,7 @@ export default function ListAvailableOffers() {
       <Navigation/>
       <div className={styles.FormContainer}>
         <div className={styles.createTitle}>
-        Offers Available
+        Vote on Disputes
         </div><br></br>
 
           {(data && data[0]) ? (
@@ -158,12 +157,13 @@ function Table_normal(props) {
                     <StyledTableCell>Price (ETH)</StyledTableCell>
                     <StyledTableCell>Time to Deliver (hours)</StyledTableCell>
                     <StyledTableCell>Valid Until</StyledTableCell>
-                    <StyledTableCell>Accept Offer</StyledTableCell>
+                    <StyledTableCell>Vote for Buyer</StyledTableCell>
+                    <StyledTableCell>Vote for Seller</StyledTableCell>
                     </StyledTableRow>
                 </TableHead>
                 <TableBody>
                     {data.map((item) => (
-                    <Row_normal key={item.id} item={item.name} />
+                      <Row_normal key={item.id} item={item.name} />
                     ))}
                 </TableBody>
                 </Table>
@@ -202,54 +202,103 @@ function Row_normal(props) {
 
 
             <StyledTableCell>
-            
+              <input className={styles.interactButton} type="submit" value="Vote for buyer" onClick={() => 
+                HandleDispute_Moralis(item.index, true)
+                .then(async (ArbitersVoteConcluded) => {   // {transactionHash, ArbitersVoteConcluded}      /// NOT FORWARDING THE value correctly, no idea why
 
-                <input className={styles.interactButton} type="submit" value="Accept Offer (buyer)" onClick={() => 
-                    AcceptOffer_Moralis(item.index)
-                    .then(async (transactionHash) => {
+                  // show the feedback text 
+                  document.getElementById('submitFeedback').style.display = 'inline';
+                  document.getElementById('submitFeedback').innerText = 'sending vote...'
 
-                        // show the feedback text 
-                        document.getElementById('submitFeedback').style.display = 'inline';
-                        document.getElementById('submitFeedback').innerText = 'Creating offer...'
+                  var formData = new FormData();
+                  formData.append('ArbiterAccount', (Moralis.User.current()).id);
 
-                        var formData = new FormData();
-                        formData.append('BuyerAccount', (Moralis.User.current()).id);
+                  const connectedAddress = await GetWallet_NonMoralis();
+                  formData.append('ArbiterWallet', connectedAddress);
+                  formData.append('votedForBuyer', 'true');          
+                  formData.append('ArbitersVoteConcluded', ArbitersVoteConcluded);                        /// maybe turn it into a string
+                  //formData.append('transactionHash', transactionHash);
+                  formData.append('objectId', item.objectId);
 
-                        const connectedAddress = await GetWallet_NonMoralis();
-                        formData.append('BuyerWallet', connectedAddress);
-                        formData.append('SellerWallet', item.SellerWallet);
-                        formData.append('transactionHash', transactionHash);
-                        formData.append('objectId', item.objectId);
+                  var xhr = new XMLHttpRequest();
+                  xhr.open('POST', '/api/api-votedOnDispute', false);
+                  xhr.onload = function () {
+                    // update the feedback text 
+                    document.getElementById('submitFeedback').style.display = 'inline';
+                    document.getElementById('submitFeedback').innerText = 'vote registered'
 
-                        var xhr = new XMLHttpRequest();
-                        xhr.open('POST', '/api/api-acceptedOffer', false);
-                        xhr.onload = function () {
-                            // update the feedback text 
-                            document.getElementById('submitFeedback').style.display = 'inline';
-                            document.getElementById('submitFeedback').innerText = 'offer accepted'
+                    // prevent the Submit button to be clickable and functionable
+                    // removeHover()
+                    // document.getElementById('SubmitButton').disabled = true
 
-                            // prevent the Submit button to be clickable and functionable
-                            // removeHover()
-                            // document.getElementById('SubmitButton').disabled = true
-
-                            // think about also removing the hover effect
-                            // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-                            console.log("offer created")
-                        };
-                        xhr.send(formData);
-                    }).
-                    catch((error) => {
-                        console.error(error);
-                        console.log("accept offer error code: " + error.code);
-                        console.log("accept offer error message: " + error.message);
-                        if(error.data && error.data.message){document.getElementById('submitFeedback').innerText = error.data.message;}
-                        else {document.getElementById('submitFeedback').innerText = error.message;}    
-                        document.getElementById('submitFeedback').style.visibility = "visible";
-                        process.exitCode = 1;
-                    })
-                }></input>
-
+                    // think about also removing the hover effect
+                    // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+                    console.log("vote registered")
+                  };
+                  xhr.send(formData);
+                }).
+                catch((error) => {
+                  console.error(error);
+                  console.log("accept offer error code: " + error.code);
+                  console.log("accept offer error message: " + error.message);
+                  if(error.data && error.data.message){document.getElementById('submitFeedback').innerText = error.data.message;}
+                  else {document.getElementById('submitFeedback').innerText = error.message;}    
+                  document.getElementById('submitFeedback').style.visibility = "visible";
+                  process.exitCode = 1;
+                })
+              }></input>
             </StyledTableCell>
+
+
+            <StyledTableCell>
+              <input className={styles.interactButton} type="submit" value="Vote for seller" onClick={() => 
+                HandleDispute_Moralis(item.index, false)
+                .then(async (ArbitersVoteConcluded) => {    // {transactionHash, ArbitersVoteConcluded}
+
+                  // show the feedback text 
+                  document.getElementById('submitFeedback').style.display = 'inline';
+                  document.getElementById('submitFeedback').innerText = 'sending vote...'
+
+                  var formData = new FormData();
+                  formData.append('ArbiterAccount', (Moralis.User.current()).id);
+
+                  const connectedAddress = await GetWallet_NonMoralis();
+                  formData.append('ArbiterWallet', connectedAddress);
+                  formData.append('votedForBuyer', 'false');
+                  formData.append('ArbitersVoteConcluded', ArbitersVoteConcluded);                        /// maybe turn it into a string
+                  //formData.append('transactionHash', transactionHash);
+                  formData.append('objectId', item.objectId);
+
+                  var xhr = new XMLHttpRequest();
+                  xhr.open('POST', '/api/api-votedOnDispute', false);
+                  xhr.onload = function () {
+                    // update the feedback text 
+                    document.getElementById('submitFeedback').style.display = 'inline';
+                    document.getElementById('submitFeedback').innerText = 'vote registered'
+
+                    // prevent the Submit button to be clickable and functionable
+                    // removeHover()
+                    // document.getElementById('SubmitButton').disabled = true
+
+                    // think about also removing the hover effect
+                    // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+                    console.log("vote registered")
+                  };
+                  xhr.send(formData);
+                }).
+                catch((error) => {
+                    console.error(error);
+                    console.log("accept offer error code: " + error.code);
+                    console.log("accept offer error message: " + error.message);
+                    if(error.data && error.data.message){document.getElementById('submitFeedback').innerText = error.data.message;}
+                    else {document.getElementById('submitFeedback').innerText = error.message;}    
+                    document.getElementById('submitFeedback').style.visibility = "visible";
+                    process.exitCode = 1;
+                })
+              }></input>
+            </StyledTableCell>
+
+
 
         </StyledTableRow>
 
@@ -266,6 +315,12 @@ function Row_normal(props) {
                         <StyledInnerTableCell></StyledInnerTableCell>
                         <StyledInnerTableCell>Description</StyledInnerTableCell>
                         <StyledInnerTableCell>{item.OfferDescription}</StyledInnerTableCell>
+                    </TableRow>
+
+                    <TableRow>
+                        <StyledInnerTableCell></StyledInnerTableCell>
+                        <StyledInnerTableCell>Buyer Wallet</StyledInnerTableCell>
+                        <StyledInnerTableCell>{item.BuyerWallet}</StyledInnerTableCell>
                     </TableRow>
 
                     <TableRow>
