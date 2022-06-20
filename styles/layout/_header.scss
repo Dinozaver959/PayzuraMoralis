@@ -64,10 +64,32 @@ header {
 
     > div {
       padding: 0 10px;
+      height: 100%;
+      @extend %FlexCol-CenterCenter;
 
       &.headerNotification {
-        svg {
-          @include Size(22px, 22px);
+        .notiIc {
+          position: relative;
+
+          svg {
+            @include Size(22px, 22px);
+          }
+
+          .notiIndicator {
+            @include Size(10px, 10px);
+            @include Absolute($Right: -2px, $Top: -2px);
+            @include BorderRadius(50%);
+            background: red;
+            border: 2px solid $WhiteColor;
+          }
+        }
+      }
+
+      &.headerUser {
+        position: relative;
+
+        .headerUserIc {
+          cursor: pointer;
         }
       }
     }
@@ -103,7 +125,7 @@ header {
           a {
             color: $FontColorLight;
           }
-  
+
           &.active {
             a {
               border-bottom-color: $SecondaryColor;
@@ -120,6 +142,15 @@ header {
       svg {
         path {
           fill: $FontColorLight;
+        }
+      }
+
+      .headerNotification {
+        .notiIc {
+          .notiIndicator {
+            background: red;
+            border-color: $DarkBg;
+          }
         }
       }
     }

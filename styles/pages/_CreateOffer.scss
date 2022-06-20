@@ -2,7 +2,6 @@
   @include Flexbox;
   @include FlexFlow(wrap);
   @include JustifyContent(center);
-  padding: 15px 0;
 
   .offerCard {
     width: 30%;
@@ -10,15 +9,40 @@
     background: $LightBlueBg;
     @include BorderRadius($CardRounded);
     padding: 18px;
+    margin: 15px;
 
     .offerCardHeader {
-      @include Font(null, 1.2rem, $FontColorDark, null, 500);
-      padding-bottom: 15px;
+      @include Font(null, 1.5rem, $FontColorDark, null, 500);
+      padding: 10px 0 20px 0;
       text-align: center;
     }
 
     .offerCardBody {
       min-height: 180px;
+
+      .blankCard {
+        @include Size(100%, auto);
+        @extend %FlexCol-CenterCenter;
+        padding: 50px 0;
+
+        i {
+          @include Size(150px, 150px);
+          @extend %FlexCol-CenterCenter;
+
+          svg {
+            @include Size(140px, 140px);
+
+            path {
+              fill: $FontColorLight;
+            }
+          }
+        }
+
+        .cardLabel {
+          @include Font(null, 1rem, $FontColorLight, null, 500);
+          margin-top: 0.5rem;
+        }
+      }
 
       .offerBodyRow {
         .labelData {
@@ -56,7 +80,7 @@
       .offerCardBody {
         .offerBodyRow {
           .valueData {
-            color: rgba($FontColorLight, 0.75);
+            color: rgba($FontColorLight, 1);
           }
         }
       }

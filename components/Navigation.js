@@ -1,14 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
+import Button from "./ui/Button";
 import NotificationIc from "./icons/Notification";
 import UserProfileIc from "./icons/UserProfile";
 import MoonIc from "./icons/Moon";
 import SunIc from "./icons/Sun";
+import UserIc from "./icons/User";
+import AgreementIc from "./icons/Agreement";
+import SettingsIc from "./icons/Settings";
+import LogoutIc from "./icons/Logout";
 
 export default function Navigation(props) {
   const darkMode = props.darkMode;
+  const dropdownOpen = props.dropdownOpen
+
   const router = useRouter();
 
   return (
@@ -27,10 +34,16 @@ export default function Navigation(props) {
           <li className={router.pathname == "/createOffer" ? "active" : ""}>
             <Link href="/createOffer">createOffer</Link>
           </li>
-          <li className={router.pathname == "/listPublicOffers" ? "active" : ""}>
+          <li
+            className={router.pathname == "/listPublicOffers" ? "active" : ""}
+          >
             <Link href="/listPublicOffers">listPublicOffers</Link>
           </li>
-          <li className={router.pathname == "/listPersonalizedOffers" ? "active" : ""}>
+          <li
+            className={
+              router.pathname == "/listPersonalizedOffers" ? "active" : ""
+            }
+          >
             <Link href="/listPersonalizedOffers">listPersonalizedOffers</Link>
           </li>
           <li className={router.pathname == "/myAgreements" ? "active" : ""}>
@@ -57,14 +70,52 @@ export default function Navigation(props) {
           </span>
         </div>
         <div className="headerNotification">
-          <Link href="JavaScript:;">
+          <div className="notiIc">
             <NotificationIc />
-          </Link>
+            <div className="notiIndicator"></div>
+          </div>
         </div>
-        <div>
-          <Link href="JavaScript:;">
-            <UserProfileIc color="black" />
-          </Link>
+        <div className="headerUser">
+          <div onClick={props.OpenDropdownFn} className="headerUserIc">
+            <UserProfileIc />
+          </div>
+
+          <div className={dropdownOpen ? "dropdownMenu right withIc show" : "dropdownMenu right withIc"}>
+            <ul>
+              <li>
+                <Button link="/">
+                  <i>
+                    <UserIc />
+                  </i>
+                  <span>My Profile</span>
+                </Button>
+              </li>
+              <li>
+                <Button link="/">
+                  <i>
+                    <AgreementIc />
+                  </i>
+                  <span>My Agreements</span>
+                </Button>
+              </li>
+              <li>
+                <Button link="/">
+                  <i>
+                    <SettingsIc />
+                  </i>
+                  <span>Settings</span>
+                </Button>
+              </li>
+              <li>
+                <Button link="/">
+                  <i>
+                    <LogoutIc />
+                  </i>
+                  <span>Logout</span>
+                </Button>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </header>

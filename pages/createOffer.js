@@ -15,6 +15,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import Button from "../components/ui/Button";
 import RightArrowIc from "../components/icons/RightArrow";
+import PlusIc from "./../components/icons/Plus"
 
 export default function Description(props) {
   // SUBMIT - validation
@@ -109,6 +110,8 @@ export default function Description(props) {
       <Navigation
         darkMode={props.darkMode}
         changeDarkMode={props.changeDarkMode}
+        dropdownOpen={props.dropdownOpen}
+        OpenDropdownFn={props.OpenDropdownFn}
       />
 
       <div className="containerMain">
@@ -139,11 +142,82 @@ export default function Description(props) {
           <div className="cardBody">
             <div className="offerTemplateMain">
               <div className="offerCard">
-                <div className="offerCardHeader">Alpha Template</div>
+                <div className="offerCardBody">
+                  <div className="blankCard">
+                    <i>
+                      <PlusIc />
+                    </i>
+                    <div className="cardLabel">Use Blank Description</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="offerCard">
+                <div className="offerCardHeader">Template A</div>
                 <div className="offerCardBody">
                   <div className="offerBodyRow">
                     <div className="labelData">Description</div>
-                    <div className="valueData">valueData</div>
+                    <div className="valueData">Some text for template A</div>
+                  </div>
+                </div>
+                <div className="offerCardFooter">
+                  <Button classes="button rounded primary" onClick={""}>
+                    Select Template
+                  </Button>
+                </div>
+              </div>
+
+              <div className="offerCard">
+                <div className="offerCardHeader">Template B</div>
+                <div className="offerCardBody">
+                  <div className="offerBodyRow">
+                    <div className="labelData">Description</div>
+                    <div className="valueData">Some text for template B</div>
+                  </div>
+                </div>
+                <div className="offerCardFooter">
+                  <Button classes="button rounded primary" onClick={""}>
+                    Select Template
+                  </Button>
+                </div>
+              </div>
+
+              <div className="offerCard">
+                <div className="offerCardHeader">Template C</div>
+                <div className="offerCardBody">
+                  <div className="offerBodyRow">
+                    <div className="labelData">Description</div>
+                    <div className="valueData">Some text for template C</div>
+                  </div>
+                </div>
+                <div className="offerCardFooter">
+                  <Button classes="button rounded primary" onClick={""}>
+                    Select Template
+                  </Button>
+                </div>
+              </div>
+
+              <div className="offerCard">
+                <div className="offerCardHeader">Template D</div>
+                <div className="offerCardBody">
+                  <div className="offerBodyRow">
+                    <div className="labelData">Description</div>
+                    <div className="valueData">Some text for template D</div>
+                  </div>
+                </div>
+                <div className="offerCardFooter">
+                  <Button classes="button rounded primary" onClick={""}>
+                    Select Template
+                  </Button>
+                </div>
+              </div>
+
+              <div className="offerCard">
+                <div className="offerCardHeader">Template E</div>
+                <div className="offerCardBody">
+                  <div className="offerBodyRow">
+                    <div className="labelData">Description</div>
+                    <div className="valueData">Some text for template E</div>
                   </div>
                 </div>
                 <div className="offerCardFooter">

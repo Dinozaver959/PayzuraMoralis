@@ -102,6 +102,9 @@ export default function MyAgreements(props) {
       <Navigation
         darkMode={props.darkMode}
         changeDarkMode={props.changeDarkMode}
+
+        dropdownOpen={props.dropdownOpen}
+        OpenDropdownFn={props.OpenDropdownFn}
       />
 
       <div className="FormContainerTable">
