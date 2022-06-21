@@ -15,7 +15,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import Button from "../components/ui/Button";
 import RightArrowIc from "../components/icons/RightArrow";
-import PlusIc from "./../components/icons/Plus"
+import PlusIc from "./../components/icons/Plus";
 
 export default function Description(props) {
   // SUBMIT - validation
@@ -27,6 +27,12 @@ export default function Description(props) {
   } = useForm();
   const onSubmit = (data) => SubmitForm(); // console.log(data);
   const [OfferValidUntil, setOfferValidUntil] = React.useState(new Date());
+
+  const [currentRadioValue, setCurrentValue] = React.useState("on");
+  const handleRadioChange = (value) => {
+    setCurrentValue(value);
+    console.log(setCurrentValue);
+  };
 
   async function SubmitForm() {
     // call Smart Contract function
@@ -111,6 +117,7 @@ export default function Description(props) {
         darkMode={props.darkMode}
         changeDarkMode={props.changeDarkMode}
         dropdownOpen={props.dropdownOpen}
+        setDropdownOpen={props.setDropdownOpen}
         OpenDropdownFn={props.OpenDropdownFn}
       />
 
@@ -141,223 +148,366 @@ export default function Description(props) {
 
           <div className="cardBody">
             <div className="offerTemplateMain">
-              <div className="offerCard">
-                <div className="offerCardBody">
-                  <div className="blankCard">
-                    <i>
-                      <PlusIc />
-                    </i>
-                    <div className="cardLabel">Use Blank Description</div>
+              <div
+                className={
+                  currentRadioValue === "blank"
+                    ? "offerCard selected"
+                    : "offerCard"
+                }
+              >
+                <input
+                  name="offerCardTemplates"
+                  value="blank"
+                  type="radio"
+                  onChange={(e) => setCurrentValue(e.target.value)}
+                  defaultChecked={currentRadioValue === "blank"}
+                  id="blankTemplate"
+                />
+                <label htmlFor="blankTemplate">
+                  <div className="offerCardBody">
+                    <div className="blankCard">
+                      <i>
+                        <PlusIc />
+                      </i>
+                      <div className="cardLabel">Use Blank Description</div>
+                    </div>
                   </div>
-                </div>
+                </label>
               </div>
 
-              <div className="offerCard">
-                <div className="offerCardHeader">Template A</div>
-                <div className="offerCardBody">
-                  <div className="offerBodyRow">
-                    <div className="labelData">Description</div>
-                    <div className="valueData">Some text for template A</div>
+              <div
+                className={
+                  currentRadioValue === "tempA"
+                    ? "offerCard selected"
+                    : "offerCard"
+                }
+              >
+                <input
+                  name="offerCardTemplates"
+                  value="tempA"
+                  type="radio"
+                  onChange={(e) => setCurrentValue(e.target.value)}
+                  defaultChecked={currentRadioValue === "tempA"}
+                  id="templateA"
+                />
+                <label htmlFor="templateA">
+                  <div className="offerCardHeader">Template A</div>
+                  <div className="offerCardBody">
+                    <div className="offerBodyRow">
+                      <div className="labelData">Description</div>
+                      <div className="valueData">Some text for template A</div>
+                    </div>
                   </div>
-                </div>
-                <div className="offerCardFooter">
-                  <Button classes="button rounded primary" onClick={""}>
-                    Select Template
-                  </Button>
-                </div>
+                  <div className="offerCardFooter">
+                    <div
+                      className={
+                        currentRadioValue === "tempA"
+                          ? "button rounded primary"
+                          : "button rounded secondary"
+                      }
+                    >
+                      {currentRadioValue === "tempA"
+                        ? "Selected"
+                        : "Select Template"}
+                    </div>
+                  </div>
+                </label>
               </div>
 
-              <div className="offerCard">
-                <div className="offerCardHeader">Template B</div>
-                <div className="offerCardBody">
-                  <div className="offerBodyRow">
-                    <div className="labelData">Description</div>
-                    <div className="valueData">Some text for template B</div>
+              <div
+                className={
+                  currentRadioValue === "tempB"
+                    ? "offerCard selected"
+                    : "offerCard"
+                }
+              >
+                <input
+                  name="offerCardTemplates"
+                  value="tempB"
+                  type="radio"
+                  onChange={(e) => setCurrentValue(e.target.value)}
+                  defaultChecked={currentRadioValue === "tempB"}
+                  id="templateB"
+                />
+                <label htmlFor="templateB">
+                  <div className="offerCardHeader">Template B</div>
+                  <div className="offerCardBody">
+                    <div className="offerBodyRow">
+                      <div className="labelData">Description</div>
+                      <div className="valueData">Some text for template B</div>
+                    </div>
                   </div>
-                </div>
-                <div className="offerCardFooter">
-                  <Button classes="button rounded primary" onClick={""}>
-                    Select Template
-                  </Button>
-                </div>
+                  <div className="offerCardFooter">
+                    <div
+                      className={
+                        currentRadioValue === "tempB"
+                          ? "button rounded primary"
+                          : "button rounded secondary"
+                      }
+                    >
+                      {currentRadioValue === "tempB"
+                        ? "Selected"
+                        : "Select Template"}
+                    </div>
+                  </div>
+                </label>
               </div>
 
-              <div className="offerCard">
-                <div className="offerCardHeader">Template C</div>
-                <div className="offerCardBody">
-                  <div className="offerBodyRow">
-                    <div className="labelData">Description</div>
-                    <div className="valueData">Some text for template C</div>
+              <div
+                className={
+                  currentRadioValue === "tempC"
+                    ? "offerCard selected"
+                    : "offerCard"
+                }
+              >
+                <input
+                  name="offerCardTemplates"
+                  value="tempC"
+                  type="radio"
+                  onChange={(e) => setCurrentValue(e.target.value)}
+                  defaultChecked={currentRadioValue === "tempC"}
+                  id="templateC"
+                />
+                <label htmlFor="templateC">
+                  <div className="offerCardHeader">Template C</div>
+                  <div className="offerCardBody">
+                    <div className="offerBodyRow">
+                      <div className="labelData">Description</div>
+                      <div className="valueData">Some text for template C</div>
+                    </div>
                   </div>
-                </div>
-                <div className="offerCardFooter">
-                  <Button classes="button rounded primary" onClick={""}>
-                    Select Template
-                  </Button>
-                </div>
+                  <div className="offerCardFooter">
+                    <div
+                      className={
+                        currentRadioValue === "tempC"
+                          ? "button rounded primary"
+                          : "button rounded secondary"
+                      }
+                    >
+                      {currentRadioValue === "tempC"
+                        ? "Selected"
+                        : "Select Template"}
+                    </div>
+                  </div>
+                </label>
               </div>
 
-              <div className="offerCard">
-                <div className="offerCardHeader">Template D</div>
-                <div className="offerCardBody">
-                  <div className="offerBodyRow">
-                    <div className="labelData">Description</div>
-                    <div className="valueData">Some text for template D</div>
+              <div
+                className={
+                  currentRadioValue === "tempD"
+                    ? "offerCard selected"
+                    : "offerCard"
+                }
+              >
+                <input
+                  name="offerCardTemplates"
+                  value="tempD"
+                  type="radio"
+                  onChange={(e) => setCurrentValue(e.target.value)}
+                  defaultChecked={currentRadioValue === "tempD"}
+                  id="templateD"
+                />
+                <label htmlFor="templateD">
+                  <div className="offerCardHeader">Template D</div>
+                  <div className="offerCardBody">
+                    <div className="offerBodyRow">
+                      <div className="labelData">Description</div>
+                      <div className="valueData">Some text for template D</div>
+                    </div>
                   </div>
-                </div>
-                <div className="offerCardFooter">
-                  <Button classes="button rounded primary" onClick={""}>
-                    Select Template
-                  </Button>
-                </div>
+                  <div className="offerCardFooter">
+                    <div
+                      className={
+                        currentRadioValue === "tempD"
+                          ? "button rounded primary"
+                          : "button rounded secondary"
+                      }
+                    >
+                      {currentRadioValue === "tempD"
+                        ? "Selected"
+                        : "Select Template"}
+                    </div>
+                  </div>
+                </label>
               </div>
 
-              <div className="offerCard">
-                <div className="offerCardHeader">Template E</div>
-                <div className="offerCardBody">
-                  <div className="offerBodyRow">
-                    <div className="labelData">Description</div>
-                    <div className="valueData">Some text for template E</div>
+              <div
+                className={
+                  currentRadioValue === "tempE"
+                    ? "offerCard selected"
+                    : "offerCard"
+                }
+              >
+                <input
+                  name="offerCardTemplates"
+                  value="tempE"
+                  type="radio"
+                  onChange={(e) => setCurrentValue(e.target.value)}
+                  defaultChecked={currentRadioValue === "tempE"}
+                  id="templateE"
+                />
+                <label htmlFor="templateE">
+                  <div className="offerCardHeader">Template E</div>
+                  <div className="offerCardBody">
+                    <div className="offerBodyRow">
+                      <div className="labelData">Description</div>
+                      <div className="valueData">Some text for template E</div>
+                    </div>
                   </div>
-                </div>
-                <div className="offerCardFooter">
-                  <Button classes="button rounded primary" onClick={""}>
-                    Select Template
-                  </Button>
-                </div>
+                  <div className="offerCardFooter">
+                    <div
+                      className={
+                        currentRadioValue === "tempE"
+                          ? "button rounded primary"
+                          : "button rounded secondary"
+                      }
+                    >
+                      {currentRadioValue === "tempE"
+                        ? "Selected"
+                        : "Select Template"}
+                    </div>
+                  </div>
+                </label>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="FormContainer">
-        <div className="createTitle">Offer Creation</div>
-        <br></br>
+        <div className="card mt-20 cardInnerSplit">
+          <div className="cardSidebar"></div>
+          
+          <div className="cardBody">
+            <div className="FormContainer">
+              <div className="createTitle">Offer Creation</div>
 
-        <form
-          id="formToSubmit"
-          method="post"
-          encType="multipart/form-data"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <div className="gridContainer_1">
-            <div className="gridItem"> Offer&apos;s Title: </div>
-            <input
-              className="gridItem"
-              id="OfferTitle"
-              type="text"
-              {...register("OfferTitle", {
-                required: true,
-                minLength: 4,
-                maxLength: 24,
-                pattern: /^[a-z][a-z0-9_-]*/i,
-              })}
-            ></input>
-            <div className="gridItem">
-              {errors.OfferTitle && errors.OfferTitle.type === "required" && (
-                <span>
-                  <p>required</p>
-                </span>
-              )}
-              {errors.OfferTitle && errors.OfferTitle.type === "maxLength" && (
-                <span>
-                  <p>Max length is 24 chars</p>
-                </span>
-              )}
-              {errors.OfferTitle && errors.OfferTitle.type === "minLength" && (
-                <span>
-                  <p>Min length is 4 chars</p>
-                </span>
-              )}
-              {errors.OfferTitle && errors.OfferTitle.type === "pattern" && (
-                <span>
-                  <p>
-                    Start with an alphabet character. No spaces or special
-                    characters
-                  </p>
-                </span>
-              )}
-            </div>
+              <form
+                id="formToSubmit"
+                method="post"
+                encType="multipart/form-data"
+                onSubmit={handleSubmit(onSubmit)}
+              >
+                <div className="gridContainer_1">
+                  <div className="gridItem"> Offer&apos;s Title: </div>
+                  <input
+                    className="gridItem"
+                    id="OfferTitle"
+                    type="text"
+                    {...register("OfferTitle", {
+                      required: true,
+                      minLength: 4,
+                      maxLength: 24,
+                      pattern: /^[a-z][a-z0-9_-]*/i,
+                    })}
+                  ></input>
+                  <div className="gridItem">
+                    {errors.OfferTitle &&
+                      errors.OfferTitle.type === "required" && (
+                        <span>
+                          <p>required</p>
+                        </span>
+                      )}
+                    {errors.OfferTitle &&
+                      errors.OfferTitle.type === "maxLength" && (
+                        <span>
+                          <p>Max length is 24 chars</p>
+                        </span>
+                      )}
+                    {errors.OfferTitle &&
+                      errors.OfferTitle.type === "minLength" && (
+                        <span>
+                          <p>Min length is 4 chars</p>
+                        </span>
+                      )}
+                    {errors.OfferTitle && errors.OfferTitle.type === "pattern" && (
+                      <span>
+                        <p>
+                          Start with an alphabet character. No spaces or special
+                          characters
+                        </p>
+                      </span>
+                    )}
+                  </div>
 
-            <div className="gridItem"> Offer&apos;s Description: </div>
-            <textarea
-              cols="40"
-              rows="10"
-              className="gridItem"
-              id="OfferDescription"
-              type="text"
-              width="200"
-              height="80"
-              {...register("OfferDescription", {
-                required: true,
-                minLength: 4,
-                maxLength: 440,
-              })}
-            ></textarea>
-            <div className="gridItem">
-              {errors.OfferDescription &&
-                errors.OfferDescription.type === "required" && (
-                  <span>
-                    <p>required</p>
-                  </span>
-                )}
-              {errors.OfferDescription &&
-                errors.OfferDescription.type === "maxLength" && (
-                  <span>
-                    <p>Max length is 440 chars</p>
-                  </span>
-                )}
-              {errors.OfferDescription &&
-                errors.OfferDescription.type === "minLength" && (
-                  <span>
-                    <p>Min length is 4 chars</p>
-                  </span>
-                )}
-            </div>
+                  <div className="gridItem"> Offer&apos;s Description: </div>
+                  <textarea
+                    cols="40"
+                    rows="10"
+                    className="gridItem"
+                    id="OfferDescription"
+                    type="text"
+                    width="200"
+                    height="80"
+                    {...register("OfferDescription", {
+                      required: true,
+                      minLength: 4,
+                      maxLength: 440,
+                    })}
+                  ></textarea>
+                  <div className="gridItem">
+                    {errors.OfferDescription &&
+                      errors.OfferDescription.type === "required" && (
+                        <span>
+                          <p>required</p>
+                        </span>
+                      )}
+                    {errors.OfferDescription &&
+                      errors.OfferDescription.type === "maxLength" && (
+                        <span>
+                          <p>Max length is 440 chars</p>
+                        </span>
+                      )}
+                    {errors.OfferDescription &&
+                      errors.OfferDescription.type === "minLength" && (
+                        <span>
+                          <p>Min length is 4 chars</p>
+                        </span>
+                      )}
+                  </div>
 
-            <div className="gridItem">
-              Price (in ETH):
-              <input
-                className="inlineField"
-                id="Price"
-                type="number"
-                {...register("Price", { required: true, min: 0 })}
-                min="0"
-                step="0.001"
-              ></input>
-            </div>
-            <div className="gridItem">
-              {errors.Price && errors.Price.type === "required" && (
-                <span>required</span>
-              )}
-              {errors.Price && errors.Price.type === "min" && (
-                <span>Min price is 0</span>
-              )}
-            </div>
+                  <div className="gridItem">
+                    Price (in ETH):
+                    <input
+                      className="inlineField"
+                      id="Price"
+                      type="number"
+                      {...register("Price", { required: true, min: 0 })}
+                      min="0"
+                      step="0.001"
+                    ></input>
+                  </div>
+                  <div className="gridItem">
+                    {errors.Price && errors.Price.type === "required" && (
+                      <span>required</span>
+                    )}
+                    {errors.Price && errors.Price.type === "min" && (
+                      <span>Min price is 0</span>
+                    )}
+                  </div>
 
-            <div className="gridItem">
-              Time to Deliver (in Hours, following acceptance of the offer):
-              <input
-                className="inlineField"
-                id="TimeToDeliver"
-                type="number"
-                {...register("TimeToDeliver", { required: true, min: 0 })}
-                min="0"
-                step="1"
-              ></input>
-            </div>
-            <div className="gridItem">
-              {errors.TimeToDeliver &&
-                errors.TimeToDeliver.type === "required" && (
-                  <span>required</span>
-                )}
-              {errors.TimeToDeliver && errors.TimeToDeliver.type === "min" && (
-                <span>Min time to deliver is 0</span>
-              )}
-            </div>
+                  <div className="gridItem">
+                    Time to Deliver (in Hours, following acceptance of the
+                    offer):
+                    <input
+                      className="inlineField"
+                      id="TimeToDeliver"
+                      type="number"
+                      {...register("TimeToDeliver", { required: true, min: 0 })}
+                      min="0"
+                      step="1"
+                    ></input>
+                  </div>
+                  <div className="gridItem">
+                    {errors.TimeToDeliver &&
+                      errors.TimeToDeliver.type === "required" && (
+                        <span>required</span>
+                      )}
+                    {errors.TimeToDeliver &&
+                      errors.TimeToDeliver.type === "min" && (
+                        <span>Min time to deliver is 0</span>
+                      )}
+                  </div>
 
-            {/* 
+                  {/* 
             <div className={styles.gridItem}> 
               Offer Valid for (in Hours, after publishing the offer, 0=infinity): 
               <input className={styles.inlineField} id="OfferValidUntil" type="number" {...register('OfferValidUntil', { required: true, min : 0})} min="0" step="1" ></input> 
@@ -368,29 +518,29 @@ export default function Description(props) {
             </div>
             */}
 
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DateTimePicker
-                label="Offer Valid Until"
-                renderInput={(params) => <TextField {...params} />}
-                value={OfferValidUntil}
-                onChange={(newValue) => {
-                  setOfferValidUntil(newValue);
-                }}
-              />
-            </LocalizationProvider>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateTimePicker
+                      label="Offer Valid Until"
+                      renderInput={(params) => <TextField {...params} />}
+                      value={OfferValidUntil}
+                      onChange={(newValue) => {
+                        setOfferValidUntil(newValue);
+                      }}
+                    />
+                  </LocalizationProvider>
 
-            <div className="gridItem">
-              {" "}
-              Offer valid for these wallets (empty=any):{" "}
-            </div>
-            <input
-              className="gridItem"
-              id="PersonalizedOffer"
-              type="text"
-              name="PersonalizedOffer"
-            ></input>
+                  <div className="gridItem">
+                    {" "}
+                    Offer valid for these wallets (empty=any):{" "}
+                  </div>
+                  <input
+                    className="gridItem"
+                    id="PersonalizedOffer"
+                    type="text"
+                    name="PersonalizedOffer"
+                  ></input>
 
-            {/*
+                  {/*
               <div className={styles.gridItem}> Offer valid for these wallets (empty=any):  </div>
               <input className={styles.gridItem} id="PersonalizedOffer" type="text" {...register('PersonalizedOffer', { pattern: /^[a-z0-9,] /i })} ></input>
               <div className={styles.gridItem}> 
@@ -398,19 +548,22 @@ export default function Description(props) {
               </div>
              */}
 
-            <div className="submitButtonOuter">
-              <input
-                id="SubmitButton"
-                className="submitButton"
-                type="submit"
-                value="Submit"
-                ref={refButton}
-              ></input>
+                  <div className="submitButtonOuter">
+                    <input
+                      id="SubmitButton"
+                      className="submitButton"
+                      type="submit"
+                      value="Submit"
+                      ref={refButton}
+                    ></input>
+                  </div>
+                </div>
+              </form>
+
+              <p id="submitFeedback" hidden></p>
             </div>
           </div>
-        </form>
-
-        <p id="submitFeedback" hidden></p>
+        </div>
       </div>
     </>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -12,11 +12,19 @@ import AgreementIc from "./icons/Agreement";
 import SettingsIc from "./icons/Settings";
 import LogoutIc from "./icons/Logout";
 
+import useOutsideClick from "./../components/useOutsideClick";
+
 export default function Navigation(props) {
   const darkMode = props.darkMode;
-  const dropdownOpen = props.dropdownOpen
+  const dropdownOpen = props.dropdownOpen;
+  const setDropdownOpen = props.setDropdownOpen;
 
   const router = useRouter();
+
+  const ref = useRef();
+  useOutsideClick(ref, () => {
+    if (dropdownOpen) setDropdownOpen(false);
+  });
 
   return (
     <header>
@@ -75,47 +83,52 @@ export default function Navigation(props) {
             <div className="notiIndicator"></div>
           </div>
         </div>
-        <div className="headerUser">
-          <div onClick={props.OpenDropdownFn} className="headerUserIc">
+        <div className="headerUser" ref={ref}>
+          <div
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            className="headerUserIc"
+          >
             <UserProfileIc />
           </div>
 
-          <div className={dropdownOpen ? "dropdownMenu right withIc show" : "dropdownMenu right withIc"}>
-            <ul>
-              <li>
-                <Button link="/">
-                  <i>
-                    <UserIc />
-                  </i>
-                  <span>My Profile</span>
-                </Button>
-              </li>
-              <li>
-                <Button link="/">
-                  <i>
-                    <AgreementIc />
-                  </i>
-                  <span>My Agreements</span>
-                </Button>
-              </li>
-              <li>
-                <Button link="/">
-                  <i>
-                    <SettingsIc />
-                  </i>
-                  <span>Settings</span>
-                </Button>
-              </li>
-              <li>
-                <Button link="/">
-                  <i>
-                    <LogoutIc />
-                  </i>
-                  <span>Logout</span>
-                </Button>
-              </li>
-            </ul>
-          </div>
+          {dropdownOpen && (
+            <div className="dropdownMenu right withIc">
+              <ul>
+                <li>
+                  <Button link="/">
+                    <i>
+                      <UserIc />
+                    </i>
+                    <span>My Profile</span>
+                  </Button>
+                </li>
+                <li>
+                  <Button link="/">
+                    <i>
+                      <AgreementIc />
+                    </i>
+                    <span>My Agreements</span>
+                  </Button>
+                </li>
+                <li>
+                  <Button link="/">
+                    <i>
+                      <SettingsIc />
+                    </i>
+                    <span>Settings</span>
+                  </Button>
+                </li>
+                <li>
+                  <Button link="/">
+                    <i>
+                      <LogoutIc />
+                    </i>
+                    <span>Logout</span>
+                  </Button>
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </header>

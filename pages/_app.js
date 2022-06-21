@@ -5,14 +5,14 @@ import { useState } from "react";
 
 function MyApp({ Component, pageProps }) {
   const [darkMode, setDarkMode] = useState(false);
-  const [dropdownOpen, setdropdownOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   function changeDarkModeHalndler() {
     setDarkMode(!darkMode);
   }
 
   function OpenDropdownHalndler() {
-    setdropdownOpen(!dropdownOpen);
+    setDropdownOpen(!dropdownOpen);
   }
 
   return (
@@ -51,8 +51,8 @@ function MyApp({ Component, pageProps }) {
           {...pageProps}
           darkMode={darkMode}
           changeDarkMode={changeDarkModeHalndler}
-
           dropdownOpen={dropdownOpen}
+          setDropdownOpen={setDropdownOpen}
           OpenDropdownFn={OpenDropdownHalndler}
         />
       </MoralisProvider>

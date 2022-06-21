@@ -4,7 +4,7 @@
   border: 1px solid $WhiteColor;
   padding: 24px;
   @include BorderRadius($CardRounded);
-  @include BoxShadow(1px 1px 10px rgba($PrimaryColor, 0.1));
+  @include BoxShadow(0px 0px $CardRounded rgba($PrimaryColor, 0.15));
 
   .cardHeader {
     padding-bottom: 24px;
@@ -24,11 +24,30 @@
       }
     }
 
-    .cardAction {}
+    .cardAction {
+    }
   }
 
   .cardBody {
     width: 100%;
+  }
+
+  &.cardInnerSplit {
+    padding: 0;
+    @include Flexbox;
+    @include FlexFlow(nowrap);
+    border-color: $LightBg;
+
+    .cardSidebar {
+      width: 300px;
+      background-color: $LightBg;
+      @include BorderRadius($CardRounded 0 0 $CardRounded);
+    }
+
+    .cardBody {
+      flex: 2;
+      padding: 24px;
+    }
   }
 }
 
@@ -41,14 +60,20 @@
     .cardHeader {
       .cardTitle {
         flex: 2;
-  
+
         h2 {
           color: $WhiteColor;
         }
-  
+
         p {
           color: $FontColorLight;
         }
+      }
+    }
+
+    &.cardInnerSplit {
+      .cardSidebar {
+        background-color: $BorderLight;
       }
     }
   }

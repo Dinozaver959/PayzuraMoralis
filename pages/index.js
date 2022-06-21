@@ -34,8 +34,8 @@ export default function Home(props) {
         <Navigation
           darkMode={props.darkMode}
           changeDarkMode={props.changeDarkMode}
-          
           dropdownOpen={props.dropdownOpen}
+          setDropdownOpen={props.setDropdownOpen}
           OpenDropdownFn={props.OpenDropdownFn}
         />
 

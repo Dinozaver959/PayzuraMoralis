@@ -6,11 +6,6 @@
   @include BoxShadow(1px 1px 10px rgba($PrimaryColor, 0.1));
   border: 1px solid $LightBg;
   z-index: 10;
-  display: none;
-
-  &.show {
-    display: block;
-  }
 
   &::before {
     @include Absolute($Top: -10px, $Left: 15px);
@@ -86,6 +81,71 @@
           background-color: lighten($BorderDark, 10%);
           color: $PrimaryColor;
           @include Transition(0.2s);
+        }
+      }
+    }
+  }
+}
+
+.darkMode {
+  .dropdownMenu {
+    background-color: $DarkBg;
+    @include BoxShadow(1px 1px 15px rgba($BlackColor, 0.3));
+    border: 1px solid $BorderLight;
+
+    &::before {
+      @include Triangle(Top, 10px, 7px, $BorderLight);
+    }
+
+    &::after {
+      left: 16px;
+      @include Triangle(Top, 8px, 6px, $DarkBg);
+    }
+
+    &.right {
+      &::after {
+        top: -8px;
+        left: auto;
+        right: 16px;
+      }
+    }
+
+    &.withIc {
+      li {
+        a {
+          display: flex;
+          color: $FontColorLight;
+
+          i {
+            svg {
+              path {
+                fill: $FontColorLight;
+              }
+            }
+          }
+
+          &:hover {
+            i {
+              svg {
+                path {
+                  fill: $LightBlueColor;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    ul {
+      li {
+        a {
+          border-bottom-color: $BorderLight;
+
+          &:hover {
+            background-color: darken($DarkBg, 2%);
+            color: $LightBlueColor;
+          }
         }
       }
     }
