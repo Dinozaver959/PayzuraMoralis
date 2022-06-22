@@ -4,7 +4,7 @@ import {ABI} from "./ABI.js"
 //const ethers = Moralis.web3Library;
  
 const FactoryContractAddress = "0xCbf6B1D117962ba144163aF321e8e9E30BAc6c98"; //"0x5Fc12E3eC96dd2F008DB5f32497cbAbefB049B60";   // 0x5D023afC16961d44E5fB3F29fe17fd54cE8D3487 - checked in
-
+const contractOnNetwork = "rinkeby";
 
 
 // READ Functions
@@ -203,8 +203,7 @@ export async function GetGracePeriod_Moralis() {
  
 async function MoralisRead(method, params) {
   
-    // have it hard coded for now - all testing and MVP are going to be done on Rinkeby!
-    await HandleNetworkSwitch("rinkeby"); 
+    await HandleNetworkSwitch(contractOnNetwork); 
 
     // <-- this is needed if there was no authentication - good for read only
     await Moralis.enableWeb3();
@@ -408,6 +407,33 @@ export async function ConfirmDelivery_Moralis(index) {
     await MoralisWrite__("ConfirmDelivery", params);
 }
 
+export async function UpdateDelegates_Moralis(index, areForBuyer, delegatesToAdd, delegatesToRemove){
+
+    var delegatesToAdd_parts = delegatesToAdd.split(",");
+    if(!delegatesToAdd){
+        delegatesToAdd_parts = [];
+    }
+
+    var delegatesToRemove_parts = delegatesToRemove.split(",");
+    if(!delegatesToRemove){
+        delegatesToRemove_parts = [];
+    }
+
+    const params = {
+        index: index,
+        delegatesToAdd: delegatesToAdd_parts,
+        delegatesToRemove: delegatesToRemove_parts,
+    }
+
+
+    if(areForBuyer){
+        return await MoralisWrite__("UpdateBuyerDelegates", params);
+    } else {
+        return await MoralisWrite__("UpdateSellerDelegates", params);
+    }
+    
+}
+
 export async function HandleDispute_Moralis(index, returnFundsToBuyer) {
 
     const params = {
@@ -432,8 +458,7 @@ async function MoralisWrite_(method, params) {
   
 async function MoralisWrite__(method, params, value) {
 
-    // have it hard coded for now - all testing and MVP are going to be done on Rinkeby!
-    await HandleNetworkSwitch("rinkeby"); 
+    await HandleNetworkSwitch(contractOnNetwork); 
 
     await Moralis.enableWeb3();
 
