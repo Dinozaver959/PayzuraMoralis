@@ -42,6 +42,10 @@
   }
 }
 
+.hide {
+  display: none !important;
+}
+
 .darkMode {
   .pageHeader {
     h1 {
@@ -53,4 +57,8 @@
   .noData {
     background: $DarkBlueBg;
   }
+}
+
+.MuiFormControl-root.MuiTextField-root {
+  width: 100%;
 }

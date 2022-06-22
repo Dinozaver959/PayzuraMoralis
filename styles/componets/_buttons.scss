@@ -62,6 +62,17 @@
       @include BoxShadow(2px 2px 5px rgba($SecondaryColor, 0.4));
     }
   }
+
+  &.transparent {
+    background: transparent;
+    border-color: transparent;
+    color: $FontColorDark;
+
+    &:hover {
+      color: $PrimaryColor;
+      @include BoxShadow(2px 2px 5px rgba($SecondaryColor, 0.4));
+    }
+  }
 }
 
 .darkMode {

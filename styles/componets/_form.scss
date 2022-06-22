@@ -1,0 +1,45 @@
+.formInput {
+  @include Size(100%, 42px);
+  padding: 5px 10px;
+  @include BorderRadius($FormControlRadius);
+  border: 1px solid $BorderDark;
+}
+
+.formTextarea {
+  @include Size(100%, 100px);
+  padding: 10px;
+  @include BorderRadius($FormControlRadius);
+  border: 1px solid $BorderDark;
+  resize: none;
+}
+
+.formMain {
+  .formRow {
+    padding-bottom: 15px;
+
+    .fieldError {
+      font-size: 0.8rem;
+      color: $ErrorColor;
+    }
+  }
+
+  &.formHorizontal {
+    .formRow {
+      @extend %FlexRow-StartBetween;
+
+      .formLabel {
+        width: 200px;
+        margin-right: 15px;
+        padding-top: 10px;
+      }
+
+      .formField {
+        flex: 2;
+      }
+    }
+
+    .formAction {
+        margin-left: 215px;
+    }
+  }
+}

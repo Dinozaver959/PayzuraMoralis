@@ -83,6 +83,85 @@
   }
 }
 
+.cardSidebar {
+  h2 {
+    @include Font(null, 1.5rem, $BlackColor, null, 600);
+    padding: 25px 20px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid darken($BorderDark, 5%);
+  }
+
+  ul {
+    li {
+      padding-bottom: 10px;
+
+      .button {
+        width: 100%;
+        @include Font(null, 1rem, $FontColorDark, null, 500);
+
+        > span {
+          flex: 2;
+          text-align: left;
+        }
+
+        i {
+          @include Size(18px, 18px);
+          @extend %FlexCol-CenterCenter;
+
+          svg {
+            @include Size(12px, 12px);
+
+            path {
+              fill: $FontColorDark;
+            }
+          }
+        }
+      }
+
+      &.active {
+        .button {
+          color: $PrimaryColor;
+
+          i {
+            svg {
+              path {
+                fill: $PrimaryColor;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.offerCreationFormMain {
+  width: 100%;
+  max-width: 750px;
+  padding: 20px 0;
+
+  .filedInfo {
+    @include Size(40px, 40px);
+    margin-left: 10px;
+    @extend %FlexCol-CenterCenter;
+
+    i {
+      @include Size(32px, 32px);
+      @include BorderRadius(50%);
+      border: 1px solid $BorderDark;
+      @extend %FlexCol-CenterCenter;
+
+      svg {
+        @include Size(16px, 16px);
+
+        path {
+          fill: $FontColorDark;
+        }
+      }
+    }
+  }
+}
+
 .darkMode {
   .offerTemplateMain {
     .offerCard {
