@@ -1,9 +1,12 @@
 header {
+  @include Fixed($Top: 0, $Left: 0, $Right: 0);
   @include Flexbox;
   @include FlexFlow(nowrap);
-  background: $WhiteColor;
+  background: rgba($WhiteColor, 0.7);
   height: 64px;
   border-bottom: 1px solid $BorderDark;
+  backdrop-filter: blur(20px);
+  z-index: 99;
 
   .logo {
     @include Size(200px, 100%);

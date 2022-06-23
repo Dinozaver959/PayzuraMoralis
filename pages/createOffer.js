@@ -123,10 +123,23 @@ export default function Description(props) {
     setShowForm(!showForm);
   }
 
-  const [alignment, setAlignment] = React.useState("left");
+  const [offerValidity, setOfferValidity] = React.useState("7 Days");
+  const [showDatepicker, setShowDatepicker] = React.useState(false);
 
-  const handleAlignment = (event, newAlignment) => {
-    setAlignment(newAlignment);
+  const offerValidityHandler = (event, selectedValidity) => {
+    setOfferValidity(selectedValidity);
+
+    if (selectedValidity === "Set Custom") {
+      setShowDatepicker(!showDatepicker);
+    }
+
+    if (
+      selectedValidity === "7 Days" ||
+      selectedValidity === "14 Days" ||
+      selectedValidity === "30 Days" ||
+      selectedValidity === "No Expiry"
+    )
+      setShowDatepicker(false);
   };
 
   return (
@@ -626,54 +639,59 @@ export default function Description(props) {
                       <div className="formLabel">Offer Valid Until</div>
                       <div className="formField">
                         <ToggleButtonGroup
-                          value={alignment}
+                          value={offerValidity}
                           exclusive
-                          onChange={handleAlignment}
-                          aria-label="text alignment"
+                          onChange={offerValidityHandler}
+                          aria-label="all offerValidity"
                         >
                           <ToggleButton
                             value="7 Days"
-                            aria-label="left aligned"
+                            aria-label="offerValidity"
                           >
                             7 Days
                           </ToggleButton>
-                          <ToggleButton value="14 Days" aria-label="centered">
+                          <ToggleButton
+                            value="14 Days"
+                            aria-label="offerValidity"
+                          >
                             14 Days
                           </ToggleButton>
                           <ToggleButton
                             value="30 Days"
-                            aria-label="right aligned"
+                            aria-label="offerValidity"
                           >
                             30 Days
                           </ToggleButton>
                           <ToggleButton
                             value="No Expiry"
-                            aria-label="justified"
+                            aria-label="offerValidity"
                           >
                             No Expiry
                           </ToggleButton>
                           <ToggleButton
                             value="Set Custom"
-                            aria-label="justified"
+                            aria-label="offerValidity"
                           >
                             Set Custom
                           </ToggleButton>
                         </ToggleButtonGroup>
 
-                        <div className="mt-10">
-                          <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DateTimePicker
-                              label="Offer Valid Until"
-                              renderInput={(params) => (
-                                <TextField {...params} />
-                              )}
-                              value={OfferValidUntil}
-                              onChange={(newValue) => {
-                                setOfferValidUntil(newValue);
-                              }}
-                            />
-                          </LocalizationProvider>
-                        </div>
+                        {showDatepicker && (
+                          <div className="mt-15">
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                              <DateTimePicker
+                                label="Offer Valid Until"
+                                renderInput={(params) => (
+                                  <TextField {...params} />
+                                )}
+                                value={OfferValidUntil}
+                                onChange={(newValue) => {
+                                  setOfferValidUntil(newValue);
+                                }}
+                              />
+                            </LocalizationProvider>
+                          </div>
+                        )}
                       </div>
                       <div className="filedInfo">
                         <Tooltip
@@ -681,7 +699,9 @@ export default function Description(props) {
                           placement="top"
                           arrow
                         >
-                          <span>(i)</span>
+                          <i>
+                            <InfoIc />
+                          </i>
                         </Tooltip>
                       </div>
                     </div>
@@ -700,7 +720,9 @@ export default function Description(props) {
                       </div>
                       <div className="filedInfo">
                         <Tooltip title="empty=any" placement="top" arrow>
-                          <span>(i)</span>
+                          <i>
+                            <InfoIc />
+                          </i>
                         </Tooltip>
                       </div>
                     </div>

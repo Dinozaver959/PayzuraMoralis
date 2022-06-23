@@ -1,12 +1,3 @@
-#__next {
-  @include Size(100%, 100%);
-}
-
-.containerMain {
-  width: 100%;
-  padding: 1.7rem 2%;
-}
-
 .pageHeader {
   width: 100%;
   @extend %FlexRow-CenterBetween;
@@ -23,7 +14,7 @@
 }
 
 .error {
-  color: red;
+  color: $ErrorColor;
   font-size: 10px;
   font-style: italic;
   margin: 5px;
@@ -43,7 +34,15 @@
 }
 
 .hide {
-  display: none !important;
+  display: none;
+}
+
+.MuiFormControl-root.MuiTextField-root {
+  width: 100%;
+}
+
+.css-dhopo2 {
+  min-height: 210px !important;
 }
 
 .darkMode {
@@ -57,8 +56,8 @@
   .noData {
     background: $DarkBlueBg;
   }
-}
 
-.MuiFormControl-root.MuiTextField-root {
-  width: 100%;
+  .error {
+    color: lighten($ErrorColor, 10%);
+  }
 }

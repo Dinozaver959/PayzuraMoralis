@@ -3,6 +3,7 @@
   padding: 5px 10px;
   @include BorderRadius($FormControlRadius);
   border: 1px solid $BorderDark;
+  background-color: transparent;
 }
 
 .formTextarea {
@@ -11,6 +12,7 @@
   @include BorderRadius($FormControlRadius);
   border: 1px solid $BorderDark;
   resize: none;
+  background-color: transparent;
 }
 
 .formMain {
@@ -39,7 +41,19 @@
     }
 
     .formAction {
-        margin-left: 215px;
+      margin-left: 215px;
     }
+  }
+}
+
+.darkMode {
+  .formInput {
+    border-color: $BorderLight;
+    color: $FontColorLight;
+  }
+
+  .formTextarea {
+    border-color: $BorderLight;
+    color: $FontColorLight;
   }
 }

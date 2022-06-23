@@ -10,9 +10,15 @@
     @include BorderRadius($CardRounded);
     margin: 15px;
     border: 3px solid transparent;
+    @include Transition(0.2s);
 
     &.selected {
       border-color: $PrimaryColor;
+    }
+
+    &:hover {
+      @include BoxShadow(0px 0px 10px rgba($BlackColor, 0.25));
+      @include Transition(0.2s);
     }
 
     > input[type="radio"] {
@@ -140,22 +146,57 @@
   max-width: 750px;
   padding: 20px 0;
 
-  .filedInfo {
-    @include Size(40px, 40px);
-    margin-left: 10px;
-    @extend %FlexCol-CenterCenter;
+  .formRow {
+    position: relative;
 
-    i {
-      @include Size(32px, 32px);
-      @include BorderRadius(50%);
-      border: 1px solid $BorderDark;
+    .formField {
+      .MuiToggleButtonGroup-root {
+        width: 100%;
+
+        .MuiButtonBase-root {
+          @include Font(null, 0.8rem, $FontColorDark, null, 500);
+          flex: 2;
+          white-space: nowrap;
+          padding-top: 9px;
+          padding-bottom: 9px;
+          border-color: $BorderDark;
+
+          &.Mui-selected {
+            background-color: $PrimaryColor;
+            color: $WhiteColor;
+          }
+        }
+      }
+
+      .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input {
+        height: 22px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+      
+      .css-1d3z3hw-MuiOutlinedInput-notchedOutline {
+        border-color: $BorderDark;
+        color: $FontColorDark;
+      }
+    }
+
+    .filedInfo {
+      @include Absolute($Right: -50px, $Top: 0px);
+      @include Size(40px, 40px);
       @extend %FlexCol-CenterCenter;
 
-      svg {
-        @include Size(16px, 16px);
+      i {
+        @include Size(32px, 32px);
+        @include BorderRadius(50%);
+        border: 1px solid $BorderDark;
+        @extend %FlexCol-CenterCenter;
 
-        path {
-          fill: $FontColorDark;
+        svg {
+          @include Size(16px, 16px);
+
+          path {
+            fill: $FontColorDark;
+          }
         }
       }
     }
@@ -179,6 +220,83 @@
         .offerBodyRow {
           .valueData {
             color: rgba($FontColorLight, 1);
+          }
+        }
+      }
+    }
+  }
+
+  .cardSidebar {
+    h2 {
+      color: $WhiteColor;
+      border-bottom-color: lighten($BorderLight, 8%);
+    }
+  
+    ul {
+      li {
+        .button {
+          color: $FontColorLight;
+  
+          i {
+            svg {
+              path {
+                fill: $FontColorLight;
+              }
+            }
+          }
+        }
+  
+        &.active {
+          .button {
+            color: $LightBlueColor;
+  
+            i {
+              svg {
+                path {
+                  fill: $LightBlueColor;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .offerCreationFormMain {
+    .formRow {
+      .formField {
+        .MuiToggleButtonGroup-root {
+          .MuiButtonBase-root {
+            color: $FontColorLight;
+            border-color: $BorderLight;
+  
+            &.Mui-selected {
+              background-color: $LightBlueColor;
+              color: $WhiteColor;
+            }
+          }
+        }
+      
+        .css-1d3z3hw-MuiOutlinedInput-notchedOutline {
+          border-color: $BorderLight;
+        }
+        
+        .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input,
+        .css-1sumxir-MuiFormLabel-root-MuiInputLabel-root,
+        .css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root {
+          color: $FontColorLight;
+        }
+      }
+  
+      .filedInfo {
+        i {
+          border: 1px solid $BorderLight;
+  
+          svg {
+            path {
+              fill: $FontColorLight;
+            }
           }
         }
       }
