@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { IconContext } from "react-icons";
 
 import Box from "@mui/material/Box";
@@ -25,6 +25,8 @@ import {
   ConfirmDelivery_Moralis,
 } from "../JS/local_web3_Moralis";
 import Navigation from "../components/Navigation.js";
+import Button from "../components/ui/Button";
+import PlaceholderIc from "./../components/icons/Placeholder";
 
 const StyledTableRow = styled(TableRow)({
   //'&:nth-of-type(odd)': {
@@ -97,7 +99,7 @@ export default function MyAgreements(props) {
   }, []);
 
   return (
-    <>
+    <Fragment>
       <Navigation
         darkMode={props.darkMode}
         changeDarkMode={props.changeDarkMode}
@@ -106,30 +108,43 @@ export default function MyAgreements(props) {
         OpenDropdownFn={props.OpenDropdownFn}
       />
 
-      <div className="FormContainerTable">
-        <div className="createTitle">My Agreements</div>
-        <br></br>
+      <div className="containerMain">
+        <div className="pageHeader">
+          <h1>My Agreements</h1>
+        </div>
 
-        {data && data[0] ? (
-          <>
-            <Table_normal data={data} />
-          </>
-        ) : (
-          <>
-            There are no available offers.
-            <div className="submitButtonOuter">
-              <Link href="/creteOffer" passHref>
-                <input
-                  className="submitButton"
-                  type="submit"
-                  value="Create Offer Now"
-                ></input>
-              </Link>
+        <div className="card mt-10">
+          <div className="cardHeader">
+            <div className="cardTitle">
+              <h2>List of Agreements</h2>
             </div>
-          </>
-        )}
+          </div>
+
+          <div className="cardBody">
+            {data && data[0] ? (
+              <>
+                <Table_normal data={data} />
+              </>
+            ) : (
+              <div className="noData">
+                <i>
+                  <PlaceholderIc />
+                </i>
+                <h2>There are no Agreements.</h2>
+                <div className="submitButtonOuter">
+                  <Button
+                    link="/createOffer"
+                    classes={"button primary rounded"}
+                  >
+                    <span>Create Offer Now</span>
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-    </>
+    </Fragment>
   );
 }
 
@@ -179,8 +194,7 @@ function Row_normal(props) {
             size="small"
             onClick={() => setOpen(!open)}
           >
-            <IconContext.Provider value={{ color: "white" }}>
-              {" "}
+            <IconContext.Provider value={{ color: "black" }}>
               {/*  specify the color for the arrow */}
               {open ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
             </IconContext.Provider>
@@ -195,7 +209,7 @@ function Row_normal(props) {
 
         <StyledTableCell>
           <input
-            className="interactButton"
+            className="button primary rounded"
             type="submit"
             value="Return Payment (seller)"
             onClick={() =>
@@ -255,7 +269,7 @@ function Row_normal(props) {
 
         <StyledTableCell>
           <input
-            className="interactButton"
+            className="button primary rounded"
             type="submit"
             value="Claim funds (seller)"
             onClick={() =>
@@ -315,7 +329,7 @@ function Row_normal(props) {
 
         <StyledTableCell>
           <input
-            className="interactButton"
+            className="button primary rounded"
             type="submit"
             value="Start Dispute (buyer)"
             onClick={() =>
@@ -375,7 +389,7 @@ function Row_normal(props) {
 
         <StyledTableCell>
           <input
-            className="interactButton"
+            className="button primary rounded"
             type="submit"
             value="Confirm Delivery (buyer)"
             onClick={() =>

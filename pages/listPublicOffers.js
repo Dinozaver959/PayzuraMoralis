@@ -24,6 +24,7 @@ import {
 import Navigation from "../components/Navigation.js";
 import Button from "../components/ui/Button";
 import PlusIc from "../components/icons/Plus";
+import PlaceholderIc from "./../components/icons/Placeholder";
 
 const StyledTableRow = styled(TableRow)({
   //'&:nth-of-type(odd)': {
@@ -131,9 +132,12 @@ export default function ListAvailableOffers(props) {
               </>
             ) : (
               <div className="noData">
+                <i>
+                  <PlaceholderIc />
+                </i>
                 <h2>There are no available offers.</h2>
                 <div className="submitButtonOuter">
-                  <Button link="/creteOffer" classes={"button primary rounded"}>
+                  <Button link="/createOffer" classes={"button primary rounded"}>
                     <span>Create Offer Now</span>
                   </Button>
 

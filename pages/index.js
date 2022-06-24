@@ -39,7 +39,7 @@ export default function Home(props) {
           OpenDropdownFn={props.OpenDropdownFn}
         />
 
-        <div className="container">
+        <div className="containerMain">
           <main className="main">
             MAKE SURE YOU ARE USING RINKEBY!!!!
             <br></br>

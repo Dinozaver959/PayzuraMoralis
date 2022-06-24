@@ -21,6 +21,7 @@ body {
 
 .layoutMain {
   @include Size(100%, auto);
+  min-height: 100vh;
 
   &.darkMode {
     color: $FontColorLight;

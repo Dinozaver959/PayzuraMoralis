@@ -27,6 +27,19 @@
   @include BorderRadius($CardRounded/2);
   @extend %FlexCol-CenterCenter;
 
+  > i {
+    @include Size(150px, 150px);
+    @extend %FlexCol-CenterCenter;
+
+    svg {
+      @include Size(120px, 120px);
+
+      path {
+        fill: rgba($FontColorDark, 0.5);
+      }
+    }
+  }
+
   h2 {
     @include Font(null, 1rem, $FontColorDark, null, 500);
     margin: 0;
@@ -55,6 +68,18 @@
 
   .noData {
     background: $DarkBlueBg;
+
+    > i {
+      svg {
+        path {
+          fill: rgba($FontColorLight, 0.25);
+        }
+      }
+    }
+  
+    h2 {
+      color: $FontColorLight;
+    }
   }
 
   .error {
