@@ -3,8 +3,9 @@ import {ABI} from "./ABI.js"
 
 //const ethers = Moralis.web3Library;
  
-const FactoryContractAddress = "0xCbf6B1D117962ba144163aF321e8e9E30BAc6c98"; //"0x5Fc12E3eC96dd2F008DB5f32497cbAbefB049B60";   // 0x5D023afC16961d44E5fB3F29fe17fd54cE8D3487 - checked in
+const FactoryContractAddress = "0xFDb98643407122625aE3e7Abfda792694f44718c"; //"0x5Fc12E3eC96dd2F008DB5f32497cbAbefB049B60";   // 0x5D023afC16961d44E5fB3F29fe17fd54cE8D3487 - checked in
 const contractOnNetwork = "rinkeby";
+const commission = 0.01;
 
 
 // READ Functions
@@ -249,7 +250,8 @@ export async function AcceptOffer_Moralis_indexPage() {
     const index = GetIndex();
 
     // get the mint price
-    const price = await GetPrice_Moralis(index); // will give an array with a hex value
+    var price = await GetPrice_Moralis(index); // will give an array with a hex value
+
     console.log("price: " + price);
     
     const params = {
@@ -359,7 +361,9 @@ export async function CreateEscrow_Moralis(price, timeToDeliver, hashOfDescripti
 export async function AcceptOffer_Moralis(index) {
 
     // get the mint price
-    const price = await GetPrice_Moralis(index); // will give an array with a hex value
+    var price = await GetPrice_Moralis(index); // will give an array with a hex value
+
+    price = BigInt(price) + BigInt(price * commission);
     
     console.log("price: " + price);
     console.log("index: " + index);
