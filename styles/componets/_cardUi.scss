@@ -1,0 +1,80 @@
+.card {
+  @include Size(100%, auto);
+  background: $WhiteColor;
+  border: 1px solid $WhiteColor;
+  padding: 24px;
+  @include BorderRadius($CardRounded);
+  @include BoxShadow(0px 0px $CardRounded rgba($PrimaryColor, 0.15));
+
+  .cardHeader {
+    padding-bottom: 24px;
+    @extend %FlexRow-CenterBetween;
+
+    .cardTitle {
+      flex: 2;
+
+      h2 {
+        @include Font(null, 1.4rem, $BlackColor, null, 500);
+        margin: 0;
+      }
+
+      p {
+        @include Font(null, 1rem, $FontColorDark, null, 400);
+        margin: 7px 0;
+      }
+    }
+
+    .cardAction {
+    }
+  }
+
+  .cardBody {
+    width: 100%;
+  }
+
+  &.cardInnerSplit {
+    padding: 0;
+    @include Flexbox;
+    @include FlexFlow(nowrap);
+    border-color: $LightBg;
+
+    .cardSidebar {
+      width: 300px;
+      background-color: $LightBg;
+      @include BorderRadius($CardRounded 0 0 $CardRounded);
+    }
+
+    .cardBody {
+      flex: 2;
+      padding: 24px;
+    }
+  }
+}
+
+.darkMode {
+  .card {
+    background: none;
+    border-color: $BorderLight;
+    box-shadow: none;
+
+    .cardHeader {
+      .cardTitle {
+        flex: 2;
+
+        h2 {
+          color: $WhiteColor;
+        }
+
+        p {
+          color: $FontColorLight;
+        }
+      }
+    }
+
+    &.cardInnerSplit {
+      .cardSidebar {
+        background-color: $BorderLight;
+      }
+    }
+  }
+}

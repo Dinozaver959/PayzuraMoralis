@@ -1,0 +1,153 @@
+.dropdownMenu {
+  @include Absolute($Top: 100%, $Left: 0px);
+  min-width: 210px;
+  background-color: $WhiteColor;
+  @include BorderRadius(0px 0px $CardRounded $CardRounded);
+  @include BoxShadow(1px 1px 10px rgba($PrimaryColor, 0.1));
+  border: 1px solid $LightBg;
+  z-index: 10;
+
+  &::before {
+    @include Absolute($Top: -10px, $Left: 15px);
+    @include Triangle(Top, 10px, 7px, $PrimaryColor);
+  }
+
+  &::after {
+    @include Absolute($Top: -10px, $Left: 15px);
+    @include Triangle(Top, 10px, 7px, $WhiteColor);
+  }
+
+  &.right {
+    left: auto;
+    right: 0px;
+
+    &::before {
+      left: auto;
+      right: 15px;
+    }
+
+    &::after {
+      left: auto;
+      right: 15px;
+    }
+  }
+
+  &.withIc {
+    li {
+      a {
+        @extend %FlexRow-CenterBetween;
+
+        i {
+          @include Size(18px, 18px);
+          @extend %FlexCol-CenterCenter;
+
+          svg {
+            @include Size(16px, 16px);
+
+            path {
+              fill: $PrimaryColor;
+            }
+          }
+
+          + span {
+            flex: 2;
+            padding-left: 15px;
+          }
+        }
+      }
+    }
+  }
+
+  ul {
+    padding-bottom: 10px;
+
+    li {
+      padding: 0 15px;
+
+      &:last-child {
+        a {
+          border-bottom: none;
+        }
+      }
+
+      a {
+        display: block;
+        border-bottom: 1px solid $BorderDark;
+        text-decoration: none;
+        padding: 15px 5px;
+        @include Transition(0.2s);
+
+        &:hover {
+          background-color: lighten($BorderDark, 10%);
+          color: $PrimaryColor;
+          @include Transition(0.2s);
+        }
+      }
+    }
+  }
+}
+
+.darkMode {
+  .dropdownMenu {
+    background-color: $DarkBg;
+    @include BoxShadow(1px 1px 15px rgba($BlackColor, 0.3));
+    border: 1px solid $BorderLight;
+
+    &::before {
+      @include Triangle(Top, 10px, 7px, $BorderLight);
+    }
+
+    &::after {
+      left: 16px;
+      @include Triangle(Top, 8px, 6px, $DarkBg);
+    }
+
+    &.right {
+      &::after {
+        top: -8px;
+        left: auto;
+        right: 16px;
+      }
+    }
+
+    &.withIc {
+      li {
+        a {
+          display: flex;
+          color: $FontColorLight;
+
+          i {
+            svg {
+              path {
+                fill: $FontColorLight;
+              }
+            }
+          }
+
+          &:hover {
+            i {
+              svg {
+                path {
+                  fill: $LightBlueColor;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    ul {
+      li {
+        a {
+          border-bottom-color: $BorderLight;
+
+          &:hover {
+            background-color: darken($DarkBg, 2%);
+            color: $LightBlueColor;
+          }
+        }
+      }
+    }
+  }
+}

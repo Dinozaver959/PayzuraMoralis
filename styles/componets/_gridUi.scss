@@ -1,0 +1,59 @@
+.css-11xur9t-MuiPaper-root-MuiTableContainer-root {
+  box-shadow: none !important;
+  background: none !important;
+}
+
+.css-tdd3an-MuiTableCell-root.MuiTableCell-head {
+  background-color: transparent !important;
+  color: rgba($FontColorDark, 0.75) !important;
+  font-family: $PrimaryFont !important;
+  font-weight: 500;
+  border-bottom-color: $BorderDark !important;
+}
+
+.css-1jwjsrz-MuiTableCell-root.MuiTableCell-body {
+  background-color: transparent !important;
+  color: $FontColorDark !important;
+}
+
+.css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root {
+  background: $LightBlueBg !important;
+}
+
+.css-1jwjsrz-MuiTableCell-root {
+  border-bottom: none !important;
+}
+
+.css-1uxlxz7-MuiTableCell-root {
+  border-bottom-color: darken($BorderDark, 1%) !important;
+}
+
+.css-1uxlxz7-MuiTableCell-root.MuiTableCell-body {
+  background-color: $LightBlueBg !important;
+  color: $FontColorDark !important;
+}
+
+.darkMode {
+  .css-tdd3an-MuiTableCell-root.MuiTableCell-head {
+    color: rgba($FontColorLight, 0.75) !important;
+    font-family: $PrimaryFont !important;
+    border-bottom-color: $BorderLight !important;
+  }
+
+  .css-1jwjsrz-MuiTableCell-root.MuiTableCell-body {
+    color: $FontColorLight !important;
+  }
+
+  .css-1uxlxz7-MuiTableCell-root {
+    border-bottom-color: lighten($BorderLight, 5%) !important;
+  }
+
+  .css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root {
+    background: $DarkBlueBg !important;
+  }
+
+  .css-1uxlxz7-MuiTableCell-root.MuiTableCell-body {
+    background-color: $DarkBlueBg !important;
+    color: $FontColorLight !important;
+  }
+}

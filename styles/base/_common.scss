@@ -1,0 +1,88 @@
+.pageHeader {
+  width: 100%;
+  @extend %FlexRow-CenterBetween;
+  padding-bottom: 1rem;
+
+  h1 {
+    flex: 2;
+    @include Font(null, 1.7rem, $BlackColor, null, 500);
+  }
+
+  .headerAction {
+    margin-left: 1rem;
+  }
+}
+
+.error {
+  color: $ErrorColor;
+  font-size: 10px;
+  font-style: italic;
+  margin: 5px;
+  text-align: center;
+}
+
+.noData {
+  background: $LightBlueBg;
+  padding: 2rem;
+  @include BorderRadius($CardRounded/2);
+  @extend %FlexCol-CenterCenter;
+
+  > i {
+    @include Size(150px, 150px);
+    @extend %FlexCol-CenterCenter;
+
+    svg {
+      @include Size(120px, 120px);
+
+      path {
+        fill: rgba($FontColorDark, 0.5);
+      }
+    }
+  }
+
+  h2 {
+    @include Font(null, 1rem, $FontColorDark, null, 500);
+    margin: 0;
+  }
+}
+
+.hide {
+  display: none;
+}
+
+.MuiFormControl-root.MuiTextField-root {
+  width: 100%;
+}
+
+.css-dhopo2 {
+  min-height: 210px !important;
+}
+
+.darkMode {
+  .pageHeader {
+    h1 {
+      flex: 2;
+      color: $WhiteColor;
+    }
+  }
+
+  .noData {
+    background: $DarkBlueBg;
+
+    > i {
+      svg {
+        path {
+          fill: rgba($FontColorLight, 0.25);
+        }
+      }
+    }
+  
+    h2 {
+      color: $FontColorLight;
+    }
+  }
+
+  .error {
+    color: lighten($ErrorColor, 10%);
+  }
+}

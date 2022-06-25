@@ -1,0 +1,161 @@
+header {
+  @include Fixed($Top: 0, $Left: 0, $Right: 0);
+  @include Flexbox;
+  @include FlexFlow(nowrap);
+  background: rgba($WhiteColor, 0.7);
+  height: 64px;
+  border-bottom: 1px solid $BorderDark;
+  backdrop-filter: blur(20px);
+  z-index: 99;
+
+  .logo {
+    @include Size(200px, 100%);
+    @extend %FlexCol-CenterCenter;
+    border-right: 1px solid $BorderDark;
+
+    svg {
+      @include Size(150px, 40px);
+
+      path {
+        fill: $PrimaryColor;
+      }
+    }
+  }
+
+  nav.navbarMain {
+    flex: 2;
+
+    ul {
+      @include Size(100%, 100%);
+      @extend %FlexRow-CenterStart;
+
+      li {
+        height: 100%;
+        padding: 0 7px;
+
+        a {
+          @extend %FlexCol-CenterCenter;
+          display: inline-flex;
+          height: 100%;
+          padding: 10px;
+          color: $FontColorDark;
+          text-decoration: none;
+          font-size: 0.8rem;
+          border-bottom: 2px solid transparent;
+        }
+
+        &.active {
+          a {
+            border-bottom-color: $PrimaryColor;
+            color: $PrimaryColor;
+          }
+        }
+      }
+    }
+  }
+
+  .headerActions {
+    @extend %FlexRow-CenterCenter;
+    border-left: 1px solid $BorderDark;
+    padding: 0 10px;
+
+    .modeChange {
+      > span {
+        cursor: pointer;
+      }
+    }
+
+    > div {
+      padding: 0 10px;
+      height: 100%;
+      @extend %FlexCol-CenterCenter;
+
+      &.headerNotification {
+        .notiIc {
+          position: relative;
+
+          svg {
+            @include Size(22px, 22px);
+          }
+
+          .notiIndicator {
+            @include Size(10px, 10px);
+            @include Absolute($Right: -2px, $Top: -2px);
+            @include BorderRadius(50%);
+            background: red;
+            border: 2px solid $WhiteColor;
+          }
+        }
+      }
+
+      &.headerUser {
+        position: relative;
+
+        .headerUserIc {
+          cursor: pointer;
+        }
+      }
+    }
+
+    svg {
+      @include Size(28px, 28px);
+
+      path {
+        fill: $PrimaryColor;
+      }
+    }
+  }
+}
+
+.darkMode {
+  header {
+    background: none;
+    border-bottom-color: $BorderLight;
+
+    .logo {
+      border-right-color: $BorderLight;
+
+      svg {
+        path {
+          fill: $SecondaryColor;
+        }
+      }
+    }
+
+    nav.navbarMain {
+      ul {
+        li {
+          a {
+            color: $FontColorLight;
+          }
+
+          &.active {
+            a {
+              border-bottom-color: $SecondaryColor;
+              color: $SecondaryColor;
+            }
+          }
+        }
+      }
+    }
+
+    .headerActions {
+      border-left-color: $BorderLight;
+
+      svg {
+        path {
+          fill: $FontColorLight;
+        }
+      }
+
+      .headerNotification {
+        .notiIc {
+          .notiIndicator {
+            background: red;
+            border-color: $DarkBg;
+          }
+        }
+      }
+    }
+  }
+}

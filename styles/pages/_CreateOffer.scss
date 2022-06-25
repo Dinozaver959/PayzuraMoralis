@@ -1,0 +1,305 @@
+.offerTemplateMain {
+  @include Flexbox;
+  @include FlexFlow(wrap);
+  @include JustifyContent(center);
+
+  .offerCard {
+    width: 30%;
+    max-width: 420px;
+    background: $LightBlueBg;
+    @include BorderRadius($CardRounded);
+    margin: 15px;
+    border: 3px solid transparent;
+    @include Transition(0.2s);
+
+    &.selected {
+      border-color: $PrimaryColor;
+    }
+
+    &:hover {
+      @include BoxShadow(0px 0px 10px rgba($BlackColor, 0.25));
+      @include Transition(0.2s);
+    }
+
+    > input[type="radio"] {
+      display: none;
+    }
+
+    > label {
+      display: block;
+      @include Size(100%, 100%);
+      padding: 18px;
+      cursor: pointer;
+    }
+
+    .offerCardHeader {
+      @include Font(null, 1.5rem, $FontColorDark, null, 500);
+      padding: 10px 0 20px 0;
+      text-align: center;
+    }
+
+    .offerCardBody {
+      min-height: 180px;
+
+      .blankCard {
+        @include Size(100%, auto);
+        @extend %FlexCol-CenterCenter;
+        padding: 50px 0;
+
+        i {
+          @include Size(150px, 150px);
+          @extend %FlexCol-CenterCenter;
+
+          svg {
+            @include Size(140px, 140px);
+
+            path {
+              fill: $FontColorLight;
+            }
+          }
+        }
+
+        .cardLabel {
+          @include Font(null, 1rem, $FontColorLight, null, 500);
+          margin-top: 0.5rem;
+        }
+      }
+
+      .offerBodyRow {
+        .labelData {
+          color: $LightBlueColor;
+        }
+
+        .valueData {
+          color: rgba($FontColorDark, 0.75);
+          font-size: 1rem;
+          font-weight: 400;
+        }
+      }
+    }
+
+    .offerCardFooter {
+      padding-top: 15px;
+      text-align: center;
+
+      .button {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.cardSidebar {
+  h2 {
+    @include Font(null, 1.5rem, $BlackColor, null, 600);
+    padding: 25px 20px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid darken($BorderDark, 5%);
+  }
+
+  ul {
+    li {
+      padding-bottom: 10px;
+
+      .button {
+        width: 100%;
+        @include Font(null, 1rem, $FontColorDark, null, 500);
+
+        > span {
+          flex: 2;
+          text-align: left;
+        }
+
+        i {
+          @include Size(18px, 18px);
+          @extend %FlexCol-CenterCenter;
+
+          svg {
+            @include Size(12px, 12px);
+
+            path {
+              fill: $FontColorDark;
+            }
+          }
+        }
+      }
+
+      &.active {
+        .button {
+          color: $PrimaryColor;
+
+          i {
+            svg {
+              path {
+                fill: $PrimaryColor;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.offerCreationFormMain {
+  width: 100%;
+  max-width: 750px;
+  padding: 20px 0;
+
+  .formRow {
+    position: relative;
+
+    .formField {
+      .MuiToggleButtonGroup-root {
+        width: 100%;
+
+        .MuiButtonBase-root {
+          @include Font(null, 0.8rem, $FontColorDark, null, 500);
+          flex: 2;
+          white-space: nowrap;
+          padding-top: 9px;
+          padding-bottom: 9px;
+          border-color: $BorderDark;
+
+          &.Mui-selected {
+            background-color: $PrimaryColor;
+            color: $WhiteColor;
+          }
+        }
+      }
+
+      .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input {
+        height: 22px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+      
+      .css-1d3z3hw-MuiOutlinedInput-notchedOutline {
+        border-color: $BorderDark;
+        color: $FontColorDark;
+      }
+    }
+
+    .filedInfo {
+      @include Absolute($Right: -50px, $Top: 0px);
+      @include Size(40px, 40px);
+      @extend %FlexCol-CenterCenter;
+
+      i {
+        @include Size(32px, 32px);
+        @include BorderRadius(50%);
+        border: 1px solid $BorderDark;
+        @extend %FlexCol-CenterCenter;
+
+        svg {
+          @include Size(16px, 16px);
+
+          path {
+            fill: $FontColorDark;
+          }
+        }
+      }
+    }
+  }
+}
+
+.darkMode {
+  .offerTemplateMain {
+    .offerCard {
+      background: $BorderLight;
+
+      &.selected {
+        border-color: $LightBlueColor;
+      }
+
+      .offerCardHeader {
+        color: $WhiteColor;
+      }
+
+      .offerCardBody {
+        .offerBodyRow {
+          .valueData {
+            color: rgba($FontColorLight, 1);
+          }
+        }
+      }
+    }
+  }
+
+  .cardSidebar {
+    h2 {
+      color: $WhiteColor;
+      border-bottom-color: lighten($BorderLight, 8%);
+    }
+  
+    ul {
+      li {
+        .button {
+          color: $FontColorLight;
+  
+          i {
+            svg {
+              path {
+                fill: $FontColorLight;
+              }
+            }
+          }
+        }
+  
+        &.active {
+          .button {
+            color: $LightBlueColor;
+  
+            i {
+              svg {
+                path {
+                  fill: $LightBlueColor;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .offerCreationFormMain {
+    .formRow {
+      .formField {
+        .MuiToggleButtonGroup-root {
+          .MuiButtonBase-root {
+            color: $FontColorLight;
+            border-color: $BorderLight;
+  
+            &.Mui-selected {
+              background-color: $LightBlueColor;
+              color: $WhiteColor;
+            }
+          }
+        }
+      
+        .css-1d3z3hw-MuiOutlinedInput-notchedOutline {
+          border-color: $BorderLight;
+        }
+        
+        .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input,
+        .css-1sumxir-MuiFormLabel-root-MuiInputLabel-root,
+        .css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root {
+          color: $FontColorLight;
+        }
+      }
+  
+      .filedInfo {
+        i {
+          border: 1px solid $BorderLight;
+  
+          svg {
+            path {
+              fill: $FontColorLight;
+            }
+          }
+        }
+      }
+    }
+  }
+}

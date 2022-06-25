@@ -1,27 +1,30 @@
-import Link from 'next/link';
-import React, { useState, useEffect }  from 'react';
+// import Link from "next/link";
+import React, { useState, useEffect } from "react";
 import { IconContext } from "react-icons";
 
-import Box from '@mui/material/Box';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell,  { tableCellClasses } from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import {MdKeyboardArrowUp} from "react-icons/md";
-import {MdKeyboardArrowDown} from "react-icons/md";
+import Box from "@mui/material/Box";
+import Collapse from "@mui/material/Collapse";
+import IconButton from "@mui/material/IconButton";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import { MdKeyboardArrowUp } from "react-icons/md";
+import { MdKeyboardArrowDown } from "react-icons/md";
 
-import { styled  } from '@mui/material/styles';
-import styles from "../styles/CreateContent.module.scss";
-import Moralis from 'moralis';
-import { GetWallet_NonMoralis, AcceptOffer_Moralis } from '../JS/local_web3_Moralis';
-import Navigation from "../components/Navigation.js"
-
-
+import { styled } from "@mui/material/styles";
+import Moralis from "moralis";
+import {
+  GetWallet_NonMoralis,
+  AcceptOffer_Moralis,
+} from "../JS/local_web3_Moralis";
+import Navigation from "../components/Navigation.js";
+import Button from "../components/ui/Button";
+import PlusIc from "../components/icons/Plus";
+import PlaceholderIc from "./../components/icons/Placeholder";
 
 const StyledTableRow = styled(TableRow)({
   //'&:nth-of-type(odd)': {
@@ -35,7 +38,6 @@ const StyledTableRow = styled(TableRow)({
 });
 
 const StyledTableCell = styled(TableCell)({
- 
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: "#4F575D",
     color: "white",
@@ -46,16 +48,14 @@ const StyledTableCell = styled(TableCell)({
     backgroundColor: "#343a3f",
     color: "white",
   },
-  
- /*
+
+  /*
   backgroundColor: "#343a3f",
   color: "white",
 */
-  
 });
 
 const StyledInnerTableCell = styled(TableCell)({
- 
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: "#4F575D",
     color: "white",
@@ -66,30 +66,27 @@ const StyledInnerTableCell = styled(TableCell)({
     backgroundColor: "#4F575D",
     color: "white",
   },
-  
- /*
+
+  /*
   backgroundColor: "#343a3f",
   color: "white",
 */
-  
 });
 
-
-export default function ListAvailableOffers() {
-
+export default function ListAvailableOffers(props) {
   const [data, setData] = useState([]);
 
   // load options using API call
   async function getCollectionsDetails() {
     const data = await fetch(`./api/api-getPublicOffers`)
-    .then(res => res.json())
-    .then(json => setData(json));    // uncomment this line to see the data in the console
+      .then((res) => res.json())
+      .then((json) => setData(json)); // uncomment this line to see the data in the console
 
     console.log(data);
 
     return data;
-  };
-  
+  }
+
   // Calling the function on component mount
   useEffect(() => {
     getCollectionsDetails();
@@ -97,30 +94,68 @@ export default function ListAvailableOffers() {
 
   return (
     <>
-      <Navigation/>
-      <div className={styles.FormContainer}>
-        <div className={styles.createTitle}>
-        Offers Available
-        </div><br></br>
+      <Navigation
+        darkMode={props.darkMode}
+        changeDarkMode={props.changeDarkMode}
+        dropdownOpen={props.dropdownOpen}
+        setDropdownOpen={props.setDropdownOpen}
+        OpenDropdownFn={props.OpenDropdownFn}
+      />
 
-          {(data && data[0]) ? (
-          <>
-              <Table_normal data={data} />
-          </>
-          ) : (
-          <>
-              There are no available offers. 
+      <div className="containerMain">
+        <div className="pageHeader">
+          <h1>Offers Available</h1>
+          <div className="headerAction">
+            <Button
+              link="/listPublicOffers"
+              classes={"button secondary withIcon"}
+            >
+              <i>
+                <PlusIc />
+              </i>
+              <span>Create New Offer</span>
+            </Button>
+          </div>
+        </div>
 
-              <div className={styles.submitButtonOuter}> 
-              <Link href="/creteOffer" passHref>
-                  <input className={styles.submitButton} type="submit" value="Create Offer Now" ></input>
-              </Link>
+        <div className="card mt-10">
+          <div className="cardHeader">
+            <div className="cardTitle">
+              <h2>Open Offers</h2>
+            </div>
+          </div>
+
+          <div className="cardBody">
+            {data && data[0] ? (
+              <>
+                <Table_normal data={data} />
+              </>
+            ) : (
+              <div className="noData">
+                <i>
+                  <PlaceholderIc />
+                </i>
+                <h2>There are no available offers.</h2>
+                <div className="submitButtonOuter">
+                  <Button link="/createOffer" classes={"button primary rounded"}>
+                    <span>Create Offer Now</span>
+                  </Button>
+
+                  {/* <Link href="/creteOffer">
+                    <input
+                      className="submitButton"
+                      type="submit"
+                      value="Create Offer Now"
+                    ></input>
+                  </Link> */}
+                </div>
               </div>
-          </>
-          )} 
-      </div>        
+            )}
+          </div>
+        </div>
+      </div>
     </>
-  )
+  );
 }
 
 function wrapPersonalized(wallets){
@@ -137,13 +172,13 @@ function wrapArbiters(wallets){
   }
 }
 
-function wrapEpochToDate(epoch){
+function wrapEpochToDate(epoch) {
   var d = new Date(epoch * 1000);
-  return d.toString();   // d.toDateString();
+  return d.toString(); // d.toDateString();
 }
 
 function Table_normal(props) {
-    const { data } = props;
+  const { data } = props;
 
     return (
         <> 
@@ -170,6 +205,10 @@ function Table_normal(props) {
             <p id="submitFeedback" hidden></p>
         </>
     )
+
+      <p id="submitFeedback" hidden></p>
+    </>
+  );
 }
 
 function Row_normal(props) {
@@ -178,33 +217,59 @@ function Row_normal(props) {
 
   return (
     <React.Fragment>
-        <StyledTableRow sx={{ '& > *': { borderBottom: 'unset'} }}>
+      <StyledTableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+        <StyledTableCell>
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={() => setOpen(!open)}
+          >
+            <IconContext.Provider value={{ color: "black" }}>
+              {" "}
+              {/*  specify the color for the arrow */}
+              {open ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
+            </IconContext.Provider>
+          </IconButton>
+        </StyledTableCell>
+        <StyledTableCell component="th" scope="row">
+          {item.OfferTitle}
+        </StyledTableCell>
+        <StyledTableCell>{item.Price}</StyledTableCell>
+        <StyledTableCell>{item.TimeToDeliver}</StyledTableCell>
+        <StyledTableCell>
+          {wrapEpochToDate(item.OfferValidUntil)}
+        </StyledTableCell>
 
-            <StyledTableCell>
-            <IconButton
-                aria-label="expand row"
-                size="small"
-                onClick={() => setOpen(!open)}
-            >
-                <IconContext.Provider value={{ color: "white" }} >                {/*  specify the color for the arrow */}
-                {open ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
-                </IconContext.Provider>
-            </IconButton>
-            </StyledTableCell>
-            <StyledTableCell component="th" scope="row">
-            {item.OfferTitle}
-            </StyledTableCell>
-            <StyledTableCell>{item.Price}</StyledTableCell>
-            <StyledTableCell>{item.TimeToDeliver}</StyledTableCell>
-            <StyledTableCell>{wrapEpochToDate(item.OfferValidUntil)}</StyledTableCell>
+        <StyledTableCell>
+          <input
+            className="button primary rounded"
+            type="submit"
+            value="Accept Offer (buyer)"
+            onClick={() =>
+              AcceptOffer_Moralis(item.index)
+                .then(async (transactionHash) => {
+                  // show the feedback text
+                  document.getElementById("submitFeedback").style.display =
+                    "inline";
+                  document.getElementById("submitFeedback").innerText =
+                    "Creating offer...";
 
+                  var formData = new FormData();
+                  formData.append("BuyerAccount", Moralis.User.current().id);
 
-            <StyledTableCell>
-            
+                  const connectedAddress = await GetWallet_NonMoralis();
+                  formData.append("BuyerWallet", connectedAddress);
+                  formData.append("transactionHash", transactionHash);
+                  formData.append("objectId", item.objectId);
 
-                <input className={styles.interactButton} type="submit" value="Accept Offer (buyer)" onClick={() => 
-                    AcceptOffer_Moralis(item.index)
-                    .then(async (transactionHash) => {
+                  var xhr = new XMLHttpRequest();
+                  xhr.open("POST", "/api/api-acceptedOffer", false);
+                  xhr.onload = function () {
+                    // update the feedback text
+                    document.getElementById("submitFeedback").style.display =
+                      "inline";
+                    document.getElementById("submitFeedback").innerText =
+                      "offer accepted";
 
                         // show the feedback text 
                         document.getElementById('submitFeedback').style.display = 'inline';
@@ -212,6 +277,33 @@ function Row_normal(props) {
 
                         var formData = new FormData();
                         formData.append('BuyerAccount', (Moralis.User.current()).id);
+
+
+                    // think about also removing the hover effect
+                    // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+                    console.log("offer created");
+                  };
+                  xhr.send(formData);
+                })
+                .catch((error) => {
+                  console.error(error);
+                  console.log("accept offer error code: " + error.code);
+                  console.log("accept offer error message: " + error.message);
+                  if (error.data && error.data.message) {
+                    document.getElementById("submitFeedback").innerText =
+                      error.data.message;
+                  } else {
+                    document.getElementById("submitFeedback").innerText =
+                      error.message;
+                  }
+                  document.getElementById("submitFeedback").style.visibility =
+                    "visible";
+                  process.exitCode = 1;
+                })
+            }
+          ></input>
+        </StyledTableCell>
+      </StyledTableRow>
 
                         const connectedAddress = await GetWallet_NonMoralis();
                         formData.append('BuyerWallet', connectedAddress);
@@ -225,6 +317,15 @@ function Row_normal(props) {
                             // update the feedback text 
                             document.getElementById('submitFeedback').style.display = 'inline';
                             document.getElementById('submitFeedback').innerText = 'offer accepted'
+
+
+                  <TableRow>
+                    <StyledInnerTableCell></StyledInnerTableCell>
+                    <StyledInnerTableCell>Seller Wallet</StyledInnerTableCell>
+                    <StyledInnerTableCell>
+                      {item.SellerWallet}
+                    </StyledInnerTableCell>
+                  </TableRow>
 
                             // prevent the Submit button to be clickable and functionable
                             // removeHover()
@@ -294,4 +395,3 @@ function Row_normal(props) {
     </React.Fragment>
   );
 }
-

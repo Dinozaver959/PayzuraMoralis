@@ -1,0 +1,14 @@
+.loginWrapper {
+    @include Size(100%, 95vh);
+    @extend %FlexCol-CenterCenter;
+
+    .loginIcon {
+        margin-bottom: 15px;
+    }
+
+    .card {
+        max-width: 400px;
+        @include Size(90%, 200px);
+        @extend %FlexCol-CenterCenter;
+    }
+}
