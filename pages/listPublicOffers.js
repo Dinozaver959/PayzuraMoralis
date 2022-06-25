@@ -137,7 +137,10 @@ export default function ListAvailableOffers(props) {
                 </i>
                 <h2>There are no available offers.</h2>
                 <div className="submitButtonOuter">
-                  <Button link="/createOffer" classes={"button primary rounded"}>
+                  <Button
+                    link="/createOffer"
+                    classes={"button primary rounded"}
+                  >
                     <span>Create Offer Now</span>
                   </Button>
 
@@ -158,16 +161,18 @@ export default function ListAvailableOffers(props) {
   );
 }
 
-function wrapPersonalized(wallets){
-  if(!wallets){return "Any"}
-  else {
+function wrapPersonalized(wallets) {
+  if (!wallets) {
+    return "Any";
+  } else {
     return wallets.replaceAll(",", "\n");
   }
 }
 
-function wrapArbiters(wallets){
-  if(!wallets){return "Payzura Platform"}
-  else {
+function wrapArbiters(wallets) {
+  if (!wallets) {
+    return "Payzura Platform";
+  } else {
     return wallets.replaceAll(",", "\n");
   }
 }
@@ -180,31 +185,31 @@ function wrapEpochToDate(epoch) {
 function Table_normal(props) {
   const { data } = props;
 
-    return (
-        <> 
-            <TableContainer component={Paper}>
-                <Table aria-label="collapsible table">
-                <TableHead>
-                    <StyledTableRow>
-                    <StyledTableCell />
-                    <StyledTableCell>Title</StyledTableCell>
-                    <StyledTableCell>Price (ETH)</StyledTableCell>
-                    <StyledTableCell>Time to Deliver (hours)</StyledTableCell>
-                    <StyledTableCell>Valid Until</StyledTableCell>
-                    <StyledTableCell>Accept Offer</StyledTableCell>
-                    </StyledTableRow>
-                </TableHead>
-                <TableBody>
-                    {data.map((item) => (
-                      <Row_normal key={item.id} item={item.name} />
-                    ))}
-                </TableBody>
-                </Table>
-            </TableContainer>
+  return (
+    <>
+      <TableContainer component={Paper}>
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <StyledTableRow>
+              <StyledTableCell />
+              <StyledTableCell>Title</StyledTableCell>
+              <StyledTableCell>Price (ETH)</StyledTableCell>
+              <StyledTableCell>Time to Deliver (hours)</StyledTableCell>
+              <StyledTableCell>Valid Until</StyledTableCell>
+              <StyledTableCell>Accept Offer</StyledTableCell>
+            </StyledTableRow>
+          </TableHead>
+          <TableBody>
+            {data.map((item) => (
+              <Row_normal key={item.id} item={item.name} />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
-            <p id="submitFeedback" hidden></p>
-        </>
-    )
+      <p id="submitFeedback" hidden></p>
+    </>
+  );
 }
 
 function Row_normal(props) {
@@ -267,13 +272,14 @@ function Row_normal(props) {
                     document.getElementById("submitFeedback").innerText =
                       "offer accepted";
 
-                        // show the feedback text 
-                        document.getElementById('submitFeedback').style.display = 'inline';
-                        document.getElementById('submitFeedback').innerText = 'Accepting offer...'
+                    // show the feedback text
+                    document.getElementById("submitFeedback").style.display =
+                      "inline";
+                    document.getElementById("submitFeedback").innerText =
+                      "Accepting offer...";
 
-                        var formData = new FormData();
-                        formData.append('BuyerAccount', (Moralis.User.current()).id);
-
+                    var formData = new FormData();
+                    formData.append("BuyerAccount", Moralis.User.current().id);
 
                     // think about also removing the hover effect
                     // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
@@ -300,6 +306,23 @@ function Row_normal(props) {
           ></input>
         </StyledTableCell>
       </StyledTableRow>
+      <StyledTableRow>
+        <StyledTableCell
+          style={{ paddingBottom: 0, paddingTop: 0 }}
+          colSpan={6}
+        >
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box sx={{ margin: 1 }}>
+              <Table size="small" aria-label="details">
+                <TableBody>
+                  <TableRow>
+                    <StyledInnerTableCell></StyledInnerTableCell>
+                    <StyledInnerTableCell>Description</StyledInnerTableCell>
+                    <StyledInnerTableCell>
+                      {item.OfferDescription}
+                    </StyledInnerTableCell>
+                  </TableRow>
+
                   <TableRow>
                     <StyledInnerTableCell></StyledInnerTableCell>
                     <StyledInnerTableCell>Seller Wallet</StyledInnerTableCell>
@@ -307,46 +330,30 @@ function Row_normal(props) {
                       {item.SellerWallet}
                     </StyledInnerTableCell>
                   </TableRow>
-        
-        <StyledTableRow>
-            <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-            <Collapse in={open} timeout="auto" unmountOnExit>            
-                <Box sx={{ margin: 1 }}>
-                <Table size="small" aria-label="details">
 
-                    <TableBody>
+                  <TableRow>
+                    <StyledInnerTableCell></StyledInnerTableCell>
+                    <StyledInnerTableCell>
+                      Wallets Allowed to Accept
+                    </StyledInnerTableCell>
+                    <StyledInnerTableCell>
+                      {wrapPersonalized(item.PersonalizedOffer)}
+                    </StyledInnerTableCell>
+                  </TableRow>
 
-                    <TableRow>
-                        <StyledInnerTableCell></StyledInnerTableCell>
-                        <StyledInnerTableCell>Description</StyledInnerTableCell>
-                        <StyledInnerTableCell>{item.OfferDescription}</StyledInnerTableCell>
-                    </TableRow>
-
-                    <TableRow>
-                        <StyledInnerTableCell></StyledInnerTableCell>
-                        <StyledInnerTableCell>Seller Wallet</StyledInnerTableCell>
-                        <StyledInnerTableCell>{item.SellerWallet}</StyledInnerTableCell>
-                    </TableRow>
-
-                    <TableRow>
-                        <StyledInnerTableCell></StyledInnerTableCell>
-                        <StyledInnerTableCell>Wallets Allowed to Accept</StyledInnerTableCell>
-                        <StyledInnerTableCell>{wrapPersonalized(item.PersonalizedOffer)}</StyledInnerTableCell>
-                    </TableRow>
-
-                    <TableRow>
-                        <StyledInnerTableCell></StyledInnerTableCell>
-                        <StyledInnerTableCell>Arbiters</StyledInnerTableCell>
-                        <StyledInnerTableCell>{wrapArbiters(item.Arbiters)}</StyledInnerTableCell>
-                    </TableRow>
-
-                    </TableBody>
-
-                </Table>
-                </Box>
-            </Collapse>
-            </StyledTableCell>
-        </StyledTableRow>
+                  <TableRow>
+                    <StyledInnerTableCell></StyledInnerTableCell>
+                    <StyledInnerTableCell>Arbiters</StyledInnerTableCell>
+                    <StyledInnerTableCell>
+                      {wrapArbiters(item.Arbiters)}
+                    </StyledInnerTableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </StyledTableCell>
+      </StyledTableRow>
     </React.Fragment>
   );
 }

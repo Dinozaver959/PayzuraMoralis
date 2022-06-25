@@ -43,68 +43,74 @@ export default function Description(props) {
 
   async function SubmitForm() {
     // call Smart Contract function
-    CreateEscrow_Moralis( (10**18) * document.getElementById('Price').value, 
-                                document.getElementById('TimeToDeliver').value, 
-                                sha256(document.getElementById('OfferDescription').value),
-                                OfferValidUntil.getTime() / 1000,
-                                document.getElementById('PersonalizedOffer').value,
-                                document.getElementById('Arbiters').value) 
-    .then(async (transactionHash) => {
+    CreateEscrow_Moralis(
+      10 ** 18 * document.getElementById("Price").value,
+      document.getElementById("TimeToDeliver").value,
+      sha256(document.getElementById("OfferDescription").value),
+      OfferValidUntil.getTime() / 1000,
+      document.getElementById("PersonalizedOffer").value,
+      document.getElementById("Arbiters").value
+    )
+      .then(async (transactionHash) => {
+        // show the feedback text
+        document.getElementById("submitFeedback").style.display = "inline";
+        document.getElementById("submitFeedback").innerText =
+          "Creating offer...";
 
-      // show the feedback text 
-      document.getElementById('submitFeedback').style.display = 'inline';
-      document.getElementById('submitFeedback').innerText = 'Creating offer...'
+        var form = document.querySelector("form");
+        var formData = new FormData(form);
+        formData.append("SellerAccount", Moralis.User.current().id);
 
-      var form = document.querySelector('form');
-      var formData = new FormData(form);
-      formData.append('SellerAccount', (Moralis.User.current()).id);
+        // read the current number of agreements to figure out what is the agreement index for this case
+        const index = (await clonedContractsIndex_Moralis()) - 1;
+        console.log("new index: " + index);
+        formData.append("index", index);
 
-      // read the current number of agreements to figure out what is the agreement index for this case
-      const index = (await clonedContractsIndex_Moralis()) - 1;
-      console.log("new index: " + index);
-      formData.append('index', index);
+        const connectedAddress = await GetWallet_NonMoralis();
+        formData.append("SellerWallet", connectedAddress);
 
-      const connectedAddress = await GetWallet_NonMoralis();
-      formData.append('SellerWallet', connectedAddress);
+        formData.append(
+          "hashDescription",
+          sha256(document.getElementById("OfferDescription").value)
+        );
+        formData.append("transactionHash", transactionHash);
 
-      formData.append('hashDescription', sha256(document.getElementById('OfferDescription').value));
-      formData.append('transactionHash', transactionHash);
+        formData.append("OfferValidUntil", OfferValidUntil.getTime() / 1000);
 
-      formData.append('OfferValidUntil', OfferValidUntil.getTime() / 1000);
-      
-      
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', '/api/api-createOffer', false);
-      xhr.onload = function () {
-        // do something to response
-        // console.log(this.responseText);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/api/api-createOffer", false);
+        xhr.onload = function () {
+          // do something to response
+          // console.log(this.responseText);
 
-        // update the feedback text 
-        document.getElementById('submitFeedback').style.display = 'inline';
-        document.getElementById('submitFeedback').innerText = 'offer created'
+          // update the feedback text
+          document.getElementById("submitFeedback").style.display = "inline";
+          document.getElementById("submitFeedback").innerText = "offer created";
 
-        // prevent the Submit button to be clickable and functionable
-        removeHover()
-        document.getElementById('SubmitButton').disabled = true
+          // prevent the Submit button to be clickable and functionable
+          removeHover();
+          document.getElementById("SubmitButton").disabled = true;
 
-        // think about also removing the hover effect
-        // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-        console.log("offer created")
-      };
-      xhr.send(formData);
-    }).
-    catch((error) => {
-      console.error(error);
-      console.log("create offer error code: " + error.code);
-      console.log("create offer error message: " + error.message);
-      if(error.data && error.data.message){document.getElementById('submitFeedback').innerText = error.data.message;}
-      else {document.getElementById('submitFeedback').innerText = error.message;}    
-      document.getElementById('submitFeedback').style.visibility = "visible";
-      process.exitCode = 1;
-    })
-
-  
-}
+          // think about also removing the hover effect
+          // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+          console.log("offer created");
+        };
+        xhr.send(formData);
+      })
+      .catch((error) => {
+        console.error(error);
+        console.log("create offer error code: " + error.code);
+        console.log("create offer error message: " + error.message);
+        if (error.data && error.data.message) {
+          document.getElementById("submitFeedback").innerText =
+            error.data.message;
+        } else {
+          document.getElementById("submitFeedback").innerText = error.message;
+        }
+        document.getElementById("submitFeedback").style.visibility = "visible";
+        process.exitCode = 1;
+      });
+  }
   // update Submit button
   const refButton = useRef(null);
   function removeHover() {
@@ -628,17 +634,6 @@ export default function Description(props) {
               {errors.OfferValidUntil && errors.OfferValidUntil.type === "min" && <span>Min time for a valid offer is 0</span>}
             </div>
             */}
-
-                          <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DateTimePicker
-                label="Offer Valid Until"
-                renderInput={(params) => <TextField {...params} />}
-                value={OfferValidUntil}
-                onChange={(newValue) => {
-                  setOfferValidUntil(newValue);
-                }}
-              />
-            </LocalizationProvider>
                     <div className="formRow">
                       <div className="formLabel">Offer Valid Until</div>
                       <div className="formField">
@@ -731,12 +726,30 @@ export default function Description(props) {
                       </div>
                     </div>
 
+                    <div className="formRow">
+                      <div className="formLabel">Arbiters</div>
+                      <div className="formField">
+                        <input
+                          className="formInput"
+                          id="Arbiters"
+                          type="text"
+                          name="Arbiters"
+                        ></input>
+                      </div>
+                      <div className="filedInfo">
+                        <Tooltip
+                          title="empty=Payzura Platform"
+                          placement="top"
+                          arrow
+                        >
+                          <i>
+                            <InfoIc />
+                          </i>
+                        </Tooltip>
+                      </div>
+                    </div>
 
-            <div className="gridItem"> Arbiters (empty=Payzura Platform):  </div>
-            <input className="gridItem" id="Arbiters" type="text" name="Arbiters" ></input>
-
-
-            {/*
+                    {/*
               <div className={styles.gridItem}> Offer valid for these wallets (empty=any):  </div>
               <input className={styles.gridItem} id="PersonalizedOffer" type="text" {...register('PersonalizedOffer', { pattern: /^[a-z0-9,] /i })} ></input>
               <div className={styles.gridItem}> 
