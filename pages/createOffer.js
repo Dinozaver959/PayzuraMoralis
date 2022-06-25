@@ -732,8 +732,8 @@ export default function Description(props) {
                     </div>
 
 
-            <div className={styles.gridItem}> Arbiters (empty=Payzura Platform):  </div>
-            <input className={styles.gridItem} id="Arbiters" type="text" name="Arbiters" ></input>
+            <div className="gridItem"> Arbiters (empty=Payzura Platform):  </div>
+            <input className="gridItem" id="Arbiters" type="text" name="Arbiters" ></input>
 
 
             {/*

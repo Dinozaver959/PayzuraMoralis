@@ -90,7 +90,7 @@ function wrapDelegates(wallets){
 }
 
 
-export default function MyAgreements() {
+export default function MyAgreements(props) {
 
   const [data, setData] = useState([]);
 

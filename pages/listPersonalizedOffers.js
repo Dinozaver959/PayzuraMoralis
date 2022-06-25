@@ -280,20 +280,6 @@ function Row_normal(props) {
         </StyledTableCell>
       </StyledTableRow>
 
-                        const connectedAddress = await GetWallet_NonMoralis();
-                        formData.append('BuyerWallet', connectedAddress);
-                        formData.append('SellerWallet', item.SellerWallet);
-                        formData.append('transactionHash', transactionHash);
-                        formData.append('objectId', item.objectId);
-
-                        var xhr = new XMLHttpRequest();
-                        xhr.open('POST', '/api/api-acceptedOffer', false);
-                        xhr.onload = function () {
-                            // update the feedback text 
-                            document.getElementById('submitFeedback').style.display = 'inline';
-                            document.getElementById('submitFeedback').innerText = 'offer accepted'
-
-
                   <TableRow>
                     <StyledInnerTableCell></StyledInnerTableCell>
                     <StyledInnerTableCell>Seller Wallet</StyledInnerTableCell>
@@ -301,31 +287,6 @@ function Row_normal(props) {
                       {item.SellerWallet}
                     </StyledInnerTableCell>
                   </TableRow>
-
-                            // prevent the Submit button to be clickable and functionable
-                            // removeHover()
-                            // document.getElementById('SubmitButton').disabled = true
-
-                            // think about also removing the hover effect
-                            // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-                            console.log("offer created")
-                        };
-                        xhr.send(formData);
-                    }).
-                    catch((error) => {
-                        console.error(error);
-                        console.log("accept offer error code: " + error.code);
-                        console.log("accept offer error message: " + error.message);
-                        if(error.data && error.data.message){document.getElementById('submitFeedback').innerText = error.data.message;}
-                        else {document.getElementById('submitFeedback').innerText = error.message;}    
-                        document.getElementById('submitFeedback').style.visibility = "visible";
-                        process.exitCode = 1;
-                    })
-                }></input>
-
-            </StyledTableCell>
-
-        </StyledTableRow>
 
         
         <StyledTableRow>

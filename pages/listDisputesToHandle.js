@@ -16,7 +16,6 @@ import {MdKeyboardArrowUp} from "react-icons/md";
 import {MdKeyboardArrowDown} from "react-icons/md";
 
 import { styled  } from '@mui/material/styles';
-import styles from "../styles/CreateContent.module.scss";
 import Moralis from 'moralis';
 import { GetWallet_NonMoralis, HandleDispute_Moralis } from '../JS/local_web3_Moralis';
 import Navigation from "../components/Navigation.js"
@@ -99,8 +98,8 @@ export default function ListAvailableOffers() {
   return (
     <>
       <Navigation/>
-      <div className={styles.FormContainer}>
-        <div className={styles.createTitle}>
+      <div className="FormContainer">
+        <div className="createTitle">
         Vote on Disputes
         </div><br></br>
 
@@ -112,9 +111,9 @@ export default function ListAvailableOffers() {
           <>
               There are no available offers. 
 
-              <div className={styles.submitButtonOuter}> 
+              <div className="submitButtonOuter"> 
               <Link href="/creteOffer" passHref>
-                  <input className={styles.submitButton} type="submit" value="Create Offer Now" ></input>
+                  <input className="submitButton" type="submit" value="Create Offer Now" ></input>
               </Link>
               </div>
           </>
@@ -202,7 +201,7 @@ function Row_normal(props) {
 
 
             <StyledTableCell>
-              <input className={styles.interactButton} type="submit" value="Vote for buyer" onClick={() => 
+              <input className="interactButton" type="submit" value="Vote for buyer" onClick={() => 
                 HandleDispute_Moralis(item.index, true)
                 .then(async (ArbitersVoteConcluded) => {   // {transactionHash, ArbitersVoteConcluded}      /// NOT FORWARDING THE value correctly, no idea why
 
@@ -251,7 +250,7 @@ function Row_normal(props) {
 
 
             <StyledTableCell>
-              <input className={styles.interactButton} type="submit" value="Vote for seller" onClick={() => 
+              <input className="interactButton" type="submit" value="Vote for seller" onClick={() => 
                 HandleDispute_Moralis(item.index, false)
                 .then(async (ArbitersVoteConcluded) => {    // {transactionHash, ArbitersVoteConcluded}
 
