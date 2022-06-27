@@ -3,6 +3,8 @@ import Head from "next/head";
 import { MoralisProvider } from "react-moralis";
 import { useState } from "react";
 
+import NextNProgress from "./../components/ui/NextNProgress";
+
 function MyApp({ Component, pageProps }) {
   const [darkMode, setDarkMode] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -47,6 +49,8 @@ function MyApp({ Component, pageProps }) {
           <meta name="msapplication-TileColor" content="#da532c" />
           <meta name="theme-color" content="#ffffff"></meta>
         </Head>
+
+        <NextNProgress />
         <Component
           {...pageProps}
           darkMode={darkMode}
