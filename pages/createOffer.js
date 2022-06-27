@@ -425,7 +425,7 @@ export default function Description(props) {
               <h2>Templates</h2>
               <ul>
                 <li>
-                  <Button classes="button withIcon transparent" onClick={""}>
+                  <Button classes="button withIcon transparent">
                     <span>Template A</span>
                     <i>
                       <LinkArrowIc />
@@ -433,7 +433,7 @@ export default function Description(props) {
                   </Button>
                 </li>
                 <li className="active">
-                  <Button classes="button withIcon transparent" onClick={""}>
+                  <Button classes="button withIcon transparent">
                     <span>Template B</span>
                     <i>
                       <LinkArrowIc />
@@ -441,7 +441,7 @@ export default function Description(props) {
                   </Button>
                 </li>
                 <li>
-                  <Button classes="button withIcon transparent" onClick={""}>
+                  <Button classes="button withIcon transparent">
                     <span>Template C</span>
                     <i>
                       <LinkArrowIc />
@@ -449,7 +449,7 @@ export default function Description(props) {
                   </Button>
                 </li>
                 <li>
-                  <Button classes="button withIcon transparent" onClick={""}>
+                  <Button classes="button withIcon transparent">
                     <span>Template D</span>
                     <i>
                       <LinkArrowIc />
@@ -457,7 +457,7 @@ export default function Description(props) {
                   </Button>
                 </li>
                 <li>
-                  <Button classes="button withIcon transparent" onClick={""}>
+                  <Button classes="button withIcon transparent">
                     <span>Template E</span>
                     <i>
                       <LinkArrowIc />
@@ -758,9 +758,9 @@ export default function Description(props) {
              */}
 
                     <div className="formAction">
-                      <Button
+                      <button
                         id="SubmitButton"
-                        classes="button withIcon secondary"
+                        className="button withIcon secondary"
                         type="submit"
                         // value="Submit"
                         ref={refButton}
@@ -769,7 +769,7 @@ export default function Description(props) {
                           <CheckIc />
                         </i>
                         <span>Submit</span>
-                      </Button>
+                      </button>
                     </div>
                   </div>
                 </form>
