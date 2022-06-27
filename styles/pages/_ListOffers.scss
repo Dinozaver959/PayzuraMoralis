@@ -1,178 +1,66 @@
-.FormContainerTable {
-  width: 1400px;
-  margin: auto;
-  margin-top: 100px;
-}
+.listData {
+  @include Flexbox;
+  @include FlexFlow(wrap);
+  background: lighten($PrimaryColor, 55%);
+  border: 1px solid $BorderDark;
+  @include BorderRadius($CardRounded);
+  padding: 7px 15px;
+  position: relative;
 
-.submitButtonOuter {
-  margin-top: 15px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.submitButton {
-  font-size: 14px;
-  /*background-color: rgb(32, 34, 37);
-    color: rgb(138, 147, 155);*/
-  border-radius: 40px;
-  padding: 2px 10px;
-  margin: 0 auto;
-  max-width: 180px;
-  width: 100px;
-
-  border-width: 1px;
-  border-color: black;
-}
-
-.submitButton_noHover {
-  font-size: 14px;
-  /*background-color: rgb(32, 34, 37);
-    color: rgb(138, 147, 155);*/
-  border-radius: 40px;
-  padding: 2px 10px;
-  margin: 0 auto;
-  max-width: 180px;
-  width: 100px;
-  opacity: 0.3;
-
-  border-width: 1px;
-  border-color: black;
-}
-
-.interactButton {
-  font-size: 14px;
-  /*background-color: rgb(32, 34, 37);
-    color: rgb(138, 147, 155);*/
-  border-radius: 40px;
-  padding: 5px 10px;
-  margin: 2px 5px;
-  max-width: 180px;
-  width: 180px;
-  max-height: 35px;
-
-  border-width: 1px;
-  border-color: black;
-}
-
-.submitButton:hover,
-.interactButton:hover {
-  /*color: rgb(230, 232, 235);*/
-  cursor: pointer;
-}
-
-/* for 3 columns */
-@media only screen and (max-width: 720px) {
-  .gridContainer {
-    display: grid;
-    /*grid-template-columns: 1fr 2fr 1fr; */
-    grid-template-columns: 240px;
-    padding: 10px;
+  &::before {
+    @include Absolute($Top: -10px, $Left: 20px);
+    @include Triangle(Top, 10px, 7px, $PrimaryColor);
   }
-}
-@media only screen and (min-width: 720px) {
-  .gridContainer {
-    display: grid;
-    /*grid-template-columns: 1fr 2fr 1fr; */
-    grid-template-columns: 180px 240px 180px; /* 180px 2fr 160px; */
-    padding: 10px;
+
+  &::after {
+    @include Absolute($Top: -10px, $Left: 20px);
+    @include Triangle(Top, 10px, 7px, lighten($PrimaryColor, 55%));
+  }
+
+  .listDataItem {
+    width: 100%;
+    padding: 12px;
+    border-bottom: 1px solid $BorderDark;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .listItemLabel {
+      width: 100%;
+      @include Font(null, 0.75rem, $PrimaryColor, null, 600);
+    }
+
+    .listItemValue {
+      width: 100%;
+      @include Font(null, 1rem, $FontColorDark, null, 400);
+    }
   }
 }
 
-/* for 2 columns */
-@media only screen and (max-width: 480px) {
-  .gridContainer_2 {
-    display: grid;
-    grid-template-columns: 240px;
-    padding: 5px;
+.darkMode {
+  .listData {
+    background: lighten($DarkBg, 5%);
+    border-color: $BorderLight;
+
+    &::before {
+      @include Triangle(Top, 10px, 7px, $PrimaryColor);
+    }
+
+    &::after {
+      @include Triangle(Top, 10px, 7px, lighten($DarkBg, 5%));
+    }
+
+    .listDataItem {
+      border-bottom-color: $BorderLight;
+
+      .listItemLabel {
+        color: $LightBlueColor;
+      }
+
+      .listItemValue {
+        color: $FontColorLight;
+      }
+    }
   }
-}
-@media only screen and (min-width: 480px) {
-  .gridContainer_2 {
-    display: grid;
-    grid-template-columns: 200px 200px; /* 180px 2fr */
-    padding: 5px;
-  }
-}
-
-.gridContainer_1 {
-  display: grid;
-  /*grid-template-columns: 1fr 2fr 1fr; */
-  grid-template-columns: 360px;
-  padding: 10px;
-}
-
-.gridItem,
-.gridItemMint,
-.inlineField,
-.inlineFieldShort {
-  font-size: 14px;
-  margin: 3px;
-  border-radius: 5px; /* will affect only the relevant elements, like the input text */
-
-  /* not sure why we have this
-    padding-left: 5px;*/
-}
-
-.gridItem[type="text"],
-.gridItem[type="number"],
-.gridItemMint[type="text"],
-.gridItemMint[type="number"],
-.inlineField[type="text"],
-.inlineField[type="number"],
-.inlineFieldShort[type="text"],
-.inlineFieldShort[type="number"] {
-  padding: 0px 4px;
-
-  border-width: 1px;
-  border-color: black;
-}
-
-.gridProcent {
-  font-size: 14px;
-  margin: 3px;
-  border-radius: 5px;
-  max-width: 20px;
-  float: right;
-
-  //padding: 0px 4px;
-  color: #f3fbfe;
-  //background-color: #343a3f;
-}
-
-.gridItemMint {
-  max-width: 50px;
-  height: 28px;
-}
-
-.inlineField {
-  //max-width: 100px;   // need to see how it looks at the end with all different fields
-  max-width: 65px;
-  float: right;
-}
-
-.inlineFieldShort {
-  max-width: 45px;
-  float: right;
-}
-
-.createTitle {
-  /*color: white;*/
-  font-size: 18px;
-}
-
-// for error messages
-.gridItem > span,
-.gridItem > span > p {
-  color: red;
-}
-
-.display {
-  padding: 5px;
-  margin: 2px 5px;
-  height: 21px;
-}
-
-.verticalSpacer {
-  height: 10px;
 }

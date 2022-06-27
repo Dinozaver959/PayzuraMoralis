@@ -58,6 +58,11 @@
   min-height: 210px !important;
 }
 
+.submitButtonOuter {
+  @extend %FlexCol-CenterCenter;
+  margin-top: 20px;
+}
+
 .darkMode {
   .pageHeader {
     h1 {

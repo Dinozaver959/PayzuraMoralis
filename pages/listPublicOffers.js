@@ -226,7 +226,6 @@ function Row_normal(props) {
             onClick={() => setOpen(!open)}
           >
             <IconContext.Provider value={{ color: "black" }}>
-              {" "}
               {/*  specify the color for the arrow */}
               {open ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
             </IconContext.Provider>
@@ -313,43 +312,24 @@ function Row_normal(props) {
         >
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <Table size="small" aria-label="details">
-                <TableBody>
-                  <TableRow>
-                    <StyledInnerTableCell></StyledInnerTableCell>
-                    <StyledInnerTableCell>Description</StyledInnerTableCell>
-                    <StyledInnerTableCell>
-                      {item.OfferDescription}
-                    </StyledInnerTableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <StyledInnerTableCell></StyledInnerTableCell>
-                    <StyledInnerTableCell>Seller Wallet</StyledInnerTableCell>
-                    <StyledInnerTableCell>
-                      {item.SellerWallet}
-                    </StyledInnerTableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <StyledInnerTableCell></StyledInnerTableCell>
-                    <StyledInnerTableCell>
-                      Wallets Allowed to Accept
-                    </StyledInnerTableCell>
-                    <StyledInnerTableCell>
-                      {wrapPersonalized(item.PersonalizedOffer)}
-                    </StyledInnerTableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <StyledInnerTableCell></StyledInnerTableCell>
-                    <StyledInnerTableCell>Arbiters</StyledInnerTableCell>
-                    <StyledInnerTableCell>
-                      {wrapArbiters(item.Arbiters)}
-                    </StyledInnerTableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
+              <div className="listData">
+                <div className="listDataItem">
+                  <div className="listItemLabel">Wallets Allowed to Accept</div>
+                  <div className="listItemValue">{wrapPersonalized(item.PersonalizedOffer)}</div>
+                </div>
+                <div className="listDataItem">
+                  <div className="listItemLabel">Seller Wallet</div>
+                  <div className="listItemValue">{item.SellerWallet}</div>
+                </div>
+                <div className="listDataItem">
+                  <div className="listItemLabel">Arbiters</div>
+                  <div className="listItemValue">{wrapArbiters(item.Arbiters)}</div>
+                </div>
+                <div className="listDataItem">
+                  <div className="listItemLabel">Description</div>
+                  <div className="listItemValue">{item.OfferDescription}</div>
+                </div>
+              </div>
             </Box>
           </Collapse>
         </StyledTableCell>

@@ -129,7 +129,10 @@ export default function ListAvailableOffers(props) {
                 </i>
                 <h2>There are no offers for you.</h2>
                 <div className="submitButtonOuter">
-                  <Button link="/createOffer" classes={"button primary rounded"}>
+                  <Button
+                    link="/createOffer"
+                    classes={"button primary rounded"}
+                  >
                     <span>Create Offer Now</span>
                   </Button>
                 </div>
@@ -142,16 +145,18 @@ export default function ListAvailableOffers(props) {
   );
 }
 
-function wrapPersonalized(wallets){
-  if(!wallets){return "Any"}
-  else {
+function wrapPersonalized(wallets) {
+  if (!wallets) {
+    return "Any";
+  } else {
     return wallets.replaceAll(",", "\n");
   }
 }
 
-function wrapArbiters(wallets){
-  if(!wallets){return "Payzura Platform"}
-  else {
+function wrapArbiters(wallets) {
+  if (!wallets) {
+    return "Payzura Platform";
+  } else {
     return wallets.replaceAll(",", "\n");
   }
 }
@@ -280,54 +285,45 @@ function Row_normal(props) {
         </StyledTableCell>
       </StyledTableRow>
 
-                  <TableRow>
-                    <StyledInnerTableCell></StyledInnerTableCell>
-                    <StyledInnerTableCell>Seller Wallet</StyledInnerTableCell>
-                    <StyledInnerTableCell>
-                      {item.SellerWallet}
-                    </StyledInnerTableCell>
-                  </TableRow>
+      <TableRow>
+        <StyledInnerTableCell></StyledInnerTableCell>
+        <StyledInnerTableCell>Seller Wallet</StyledInnerTableCell>
+        <StyledInnerTableCell>{item.SellerWallet}</StyledInnerTableCell>
+      </TableRow>
 
-        
-        <StyledTableRow>
-            <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-            <Collapse in={open} timeout="auto" unmountOnExit>            
-                <Box sx={{ margin: 1 }}>
-                <Table size="small" aria-label="details">
-
-                    <TableBody>
-
-                    <TableRow>
-                        <StyledInnerTableCell></StyledInnerTableCell>
-                        <StyledInnerTableCell>Description</StyledInnerTableCell>
-                        <StyledInnerTableCell>{item.OfferDescription}</StyledInnerTableCell>
-                    </TableRow>
-
-                    <TableRow>
-                        <StyledInnerTableCell></StyledInnerTableCell>
-                        <StyledInnerTableCell>Seller Wallet</StyledInnerTableCell>
-                        <StyledInnerTableCell>{item.SellerWallet}</StyledInnerTableCell>
-                    </TableRow>
-
-                    <TableRow>
-                        <StyledInnerTableCell></StyledInnerTableCell>
-                        <StyledInnerTableCell>Wallets Allowed to Accept</StyledInnerTableCell>
-                        <StyledInnerTableCell>{wrapPersonalized(item.PersonalizedOffer)}</StyledInnerTableCell>
-                    </TableRow>
-
-                    <TableRow>
-                        <StyledInnerTableCell></StyledInnerTableCell>
-                        <StyledInnerTableCell>Arbiters</StyledInnerTableCell>
-                        <StyledInnerTableCell>{wrapArbiters(item.Arbiters)}</StyledInnerTableCell>
-                    </TableRow>
-
-                    </TableBody>
-
-                </Table>
-                </Box>
-            </Collapse>
-            </StyledTableCell>
-        </StyledTableRow>
+      <StyledTableRow>
+        <StyledTableCell
+          style={{ paddingBottom: 0, paddingTop: 0 }}
+          colSpan={6}
+        >
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box sx={{ margin: 1 }}>
+              <div className="listData">
+                <div className="listDataItem">
+                  <div className="listItemLabel">Seller Wallet</div>
+                  <div className="listItemValue">{item.SellerWallet}</div>
+                </div>
+                <div className="listDataItem">
+                  <div className="listItemLabel">Wallets Allowed to Accept</div>
+                  <div className="listItemValue">
+                    {wrapPersonalized(item.PersonalizedOffer)}
+                  </div>
+                </div>
+                <div className="listDataItem">
+                  <div className="listItemLabel">Arbiters</div>
+                  <div className="listItemValue">
+                    {wrapArbiters(item.Arbiters)}
+                  </div>
+                </div>
+                <div className="listDataItem">
+                  <div className="listItemLabel">Description</div>
+                  <div className="listItemValue">{item.OfferDescription}</div>
+                </div>
+              </div>
+            </Box>
+          </Collapse>
+        </StyledTableCell>
+      </StyledTableRow>
     </React.Fragment>
   );
 }

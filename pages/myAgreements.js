@@ -210,7 +210,7 @@ function Row_normal(props) {
             size="small"
             onClick={() => setOpen(!open)}
           >
-            <IconContext.Provider value={{ color: "white" }}>
+            <IconContext.Provider value={{ color: "black" }}>
               {" "}
               {/*  specify the color for the arrow */}
               {open ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
@@ -284,7 +284,7 @@ function Row_normal(props) {
         </StyledTableCell>
         <StyledTableCell>
           <input
-            className={styles.interactButton}
+            className="button rounded primary"
             type="submit"
             value="Claim funds (seller)"
             onClick={() =>
@@ -343,7 +343,7 @@ function Row_normal(props) {
         </StyledTableCell>
         <StyledTableCell>
           <input
-            className={styles.interactButton}
+            className="rounded button primary"
             type="submit"
             value="Start Dispute (buyer)"
             onClick={() =>
@@ -403,7 +403,7 @@ function Row_normal(props) {
         </StyledTableCell>
         <StyledTableCell>
           <input
-            className={styles.interactButton}
+            className="button rounded primary"
             type="submit"
             value="Confirm Delivery (buyer)"
             onClick={() =>
@@ -469,231 +469,198 @@ function Row_normal(props) {
         >
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <Table size="small" aria-label="details">
-                <TableBody>
-                  <TableRow>
-                    <StyledInnerTableCell></StyledInnerTableCell>
-                    <StyledInnerTableCell>Description</StyledInnerTableCell>
-                    <StyledInnerTableCell>
-                      {item.OfferDescription}
-                    </StyledInnerTableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <StyledInnerTableCell></StyledInnerTableCell>
-                    <StyledInnerTableCell>Seller Wallet</StyledInnerTableCell>
-                    <StyledInnerTableCell>
-                      {item.SellerWallet}
-                    </StyledInnerTableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <StyledInnerTableCell></StyledInnerTableCell>
-                    <StyledInnerTableCell>Buyer Wallet</StyledInnerTableCell>
-                    <StyledInnerTableCell>
-                      {item.BuyerWallet}
-                    </StyledInnerTableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <StyledInnerTableCell></StyledInnerTableCell>
-                    <StyledInnerTableCell>Arbiters</StyledInnerTableCell>
-                    <StyledInnerTableCell>
-                      {wrapArbiters(item.Arbiters)}
-                    </StyledInnerTableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <StyledInnerTableCell></StyledInnerTableCell>
-                    <StyledInnerTableCell>BuyerDelegates</StyledInnerTableCell>
-                    <StyledInnerTableCell>
-                      {wrapDelegates(item.BuyerDelegates)}
-                    </StyledInnerTableCell>
-                    <StyledInnerTableCell>
-                      {/*
+              <div className="listData">
+                <div className="listDataItem">
+                  <div className="listItemLabel">Seller Wallet</div>
+                  <div className="listItemValue">{item.SellerWallet}</div>
+                </div>
+                <div className="listDataItem">
+                  <div className="listItemLabel">Buyer Wallet</div>
+                  <div className="listItemValue">{item.BuyerWallet}</div>
+                </div>
+                <div className="listDataItem">
+                  <div className="listItemLabel">Arbiters</div>
+                  <div className="listItemValue">
+                    {wrapArbiters(item.Arbiters)}
+                  </div>
+                </div>
+                <div className="listDataItem">
+                  <div className="listItemLabel">BuyerDelegates</div>
+                  <div className="listItemValue">
+                    {wrapDelegates(item.BuyerDelegates)}
+                    {/*
                     Needs to be adjusted:  
                       1. Display addresses 1 per row - have the ability to click X to delete an array and add a new address with a plus
                       2. Create 2 arrays, 1 with addresses that were removed and 1 with addresses that were added
                       3. feed these 2 arrays for the function and for the push /api call
                   */}
-                      <input
-                        className={styles.interactButton}
-                        type="submit"
-                        value="Update Buyer Delegates"
-                        onClick={() =>
-                          UpdateDelegates_Moralis(
-                            item.index,
-                            true,
-                            "__array_DelegatesToAdd__",
-                            "__array_DelegatesToRemove__"
-                          ) // UPDATE with real values                                                          // supply the arrays somehow
-                            .then(async (transactionHash) => {
-                              // show the feedback text
+                    <input
+                      className="rounded button primary"
+                      type="submit"
+                      value="Update Buyer Delegates"
+                      onClick={() =>
+                        UpdateDelegates_Moralis(
+                          item.index,
+                          true,
+                          "__array_DelegatesToAdd__",
+                          "__array_DelegatesToRemove__"
+                        ) // UPDATE with real values                                                          // supply the arrays somehow
+                          .then(async (transactionHash) => {
+                            // show the feedback text
+                            document.getElementById(
+                              "submitFeedback"
+                            ).style.display = "inline";
+                            document.getElementById(
+                              "submitFeedback"
+                            ).innerText = "Updating Delegates...";
+
+                            var formData = new FormData();
+
+                            const connectedAddress =
+                              await GetWallet_NonMoralis();
+                            formData.append("BuyerWallet", connectedAddress);
+                            formData.append("objectId", item.objectId);
+                            formData.append("areForBuyer", "true");
+                            formData.append(
+                              "DelegatesToAdd",
+                              "______________________"
+                            ); // array                                // UPDATE with real values
+                            formData.append(
+                              "DelegatesToRemove",
+                              "______________________"
+                            ); // array                                // UPDATE with real values
+
+                            var xhr = new XMLHttpRequest();
+                            xhr.open("POST", "/api/api-updateDelegates", false);
+                            xhr.onload = function () {
+                              // update the feedback text
                               document.getElementById(
                                 "submitFeedback"
                               ).style.display = "inline";
                               document.getElementById(
                                 "submitFeedback"
-                              ).innerText = "Updating Delegates...";
-
-                              var formData = new FormData();
-
-                              const connectedAddress =
-                                await GetWallet_NonMoralis();
-                              formData.append("BuyerWallet", connectedAddress);
-                              formData.append("objectId", item.objectId);
-                              formData.append("areForBuyer", "true");
-                              formData.append(
-                                "DelegatesToAdd",
-                                "______________________"
-                              ); // array                                // UPDATE with real values
-                              formData.append(
-                                "DelegatesToRemove",
-                                "______________________"
-                              ); // array                                // UPDATE with real values
-
-                              var xhr = new XMLHttpRequest();
-                              xhr.open(
-                                "POST",
-                                "/api/api-updateDelegates",
-                                false
-                              );
-                              xhr.onload = function () {
-                                // update the feedback text
-                                document.getElementById(
-                                  "submitFeedback"
-                                ).style.display = "inline";
-                                document.getElementById(
-                                  "submitFeedback"
-                                ).innerText = "Delegates updated";
-                                console.log("Delegates updated");
-                              };
-                              xhr.send(formData);
-                            })
-                            .catch((error) => {
-                              console.error(error);
-                              console.log(
-                                "update Delegates error code: " + error.code
-                              );
-                              console.log(
-                                "update Delegates error message: " +
-                                  error.message
-                              );
-                              if (error.data && error.data.message) {
-                                document.getElementById(
-                                  "submitFeedback"
-                                ).innerText = error.data.message;
-                              } else {
-                                document.getElementById(
-                                  "submitFeedback"
-                                ).innerText = error.message;
-                              }
+                              ).innerText = "Delegates updated";
+                              console.log("Delegates updated");
+                            };
+                            xhr.send(formData);
+                          })
+                          .catch((error) => {
+                            console.error(error);
+                            console.log(
+                              "update Delegates error code: " + error.code
+                            );
+                            console.log(
+                              "update Delegates error message: " + error.message
+                            );
+                            if (error.data && error.data.message) {
                               document.getElementById(
                                 "submitFeedback"
-                              ).style.visibility = "visible";
-                              process.exitCode = 1;
-                            })
-                        }
-                      ></input>
-                    </StyledInnerTableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <StyledInnerTableCell></StyledInnerTableCell>
-                    <StyledInnerTableCell>SellerDelegates</StyledInnerTableCell>
-                    <StyledInnerTableCell>
-                      {wrapDelegates(item.SellerDelegates)}
-                    </StyledInnerTableCell>
-                    <StyledInnerTableCell>
-                      {/*
+                              ).innerText = error.data.message;
+                            } else {
+                              document.getElementById(
+                                "submitFeedback"
+                              ).innerText = error.message;
+                            }
+                            document.getElementById(
+                              "submitFeedback"
+                            ).style.visibility = "visible";
+                            process.exitCode = 1;
+                          })
+                      }
+                    ></input>
+                  </div>
+                </div>
+                <div className="listDataItem">
+                  <div className="listItemLabel">SellerDelegates</div>
+                  <div className="listItemValue">
+                    {wrapDelegates(item.SellerDelegates)}
+                    {/*
                   Needs to be adjusted:  
                     1. Display addresses 1 per row - have the ability to click X to delete an array and add a new address with a plus
                     2. Create 2 arrays, 1 with addresses that were removed and 1 with addresses that were added
                     3. feed these 2 arrays for the function and for the push /api call
                 */}
-                      <input
-                        className={styles.interactButton}
-                        type="submit"
-                        value="Update Seller Delegates"
-                        onClick={() =>
-                          UpdateDelegates_Moralis(
-                            item.index,
-                            false,
-                            "__array_DelegatesToAdd__",
-                            "__array_DelegatesToRemove__"
-                          ) // UPDATE with real values                                                     // supply the arrays somehow
-                            .then(async (transactionHash) => {
-                              // show the feedback text
+                    <input
+                      className="rounded button primary"
+                      type="submit"
+                      value="Update Seller Delegates"
+                      onClick={() =>
+                        UpdateDelegates_Moralis(
+                          item.index,
+                          false,
+                          "__array_DelegatesToAdd__",
+                          "__array_DelegatesToRemove__"
+                        ) // UPDATE with real values                                                     // supply the arrays somehow
+                          .then(async (transactionHash) => {
+                            // show the feedback text
+                            document.getElementById(
+                              "submitFeedback"
+                            ).style.display = "inline";
+                            document.getElementById(
+                              "submitFeedback"
+                            ).innerText = "Updating Delegates...";
+
+                            var formData = new FormData();
+
+                            const connectedAddress =
+                              await GetWallet_NonMoralis();
+                            formData.append("BuyerWallet", connectedAddress);
+                            formData.append("objectId", item.objectId);
+                            formData.append("areForBuyer", "false");
+                            formData.append(
+                              "DelegatesToAdd",
+                              "______________________"
+                            ); // array                                      // UPDATE with real values
+                            formData.append(
+                              "DelegatesToRemove",
+                              "______________________"
+                            ); // array                                      // UPDATE with real values
+
+                            var xhr = new XMLHttpRequest();
+                            xhr.open("POST", "/api/api-updateDelegates", false);
+                            xhr.onload = function () {
+                              // update the feedback text
                               document.getElementById(
                                 "submitFeedback"
                               ).style.display = "inline";
                               document.getElementById(
                                 "submitFeedback"
-                              ).innerText = "Updating Delegates...";
-
-                              var formData = new FormData();
-
-                              const connectedAddress =
-                                await GetWallet_NonMoralis();
-                              formData.append("BuyerWallet", connectedAddress);
-                              formData.append("objectId", item.objectId);
-                              formData.append("areForBuyer", "false");
-                              formData.append(
-                                "DelegatesToAdd",
-                                "______________________"
-                              ); // array                                      // UPDATE with real values
-                              formData.append(
-                                "DelegatesToRemove",
-                                "______________________"
-                              ); // array                                      // UPDATE with real values
-
-                              var xhr = new XMLHttpRequest();
-                              xhr.open(
-                                "POST",
-                                "/api/api-updateDelegates",
-                                false
-                              );
-                              xhr.onload = function () {
-                                // update the feedback text
-                                document.getElementById(
-                                  "submitFeedback"
-                                ).style.display = "inline";
-                                document.getElementById(
-                                  "submitFeedback"
-                                ).innerText = "Delegates updated";
-                                console.log("Delegates updated");
-                              };
-                              xhr.send(formData);
-                            })
-                            .catch((error) => {
-                              console.error(error);
-                              console.log(
-                                "update Delegates error code: " + error.code
-                              );
-                              console.log(
-                                "update Delegates error message: " +
-                                  error.message
-                              );
-                              if (error.data && error.data.message) {
-                                document.getElementById(
-                                  "submitFeedback"
-                                ).innerText = error.data.message;
-                              } else {
-                                document.getElementById(
-                                  "submitFeedback"
-                                ).innerText = error.message;
-                              }
+                              ).innerText = "Delegates updated";
+                              console.log("Delegates updated");
+                            };
+                            xhr.send(formData);
+                          })
+                          .catch((error) => {
+                            console.error(error);
+                            console.log(
+                              "update Delegates error code: " + error.code
+                            );
+                            console.log(
+                              "update Delegates error message: " + error.message
+                            );
+                            if (error.data && error.data.message) {
                               document.getElementById(
                                 "submitFeedback"
-                              ).style.visibility = "visible";
-                              process.exitCode = 1;
-                            })
-                        }
-                      ></input>
-                    </StyledInnerTableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
+                              ).innerText = error.data.message;
+                            } else {
+                              document.getElementById(
+                                "submitFeedback"
+                              ).innerText = error.message;
+                            }
+                            document.getElementById(
+                              "submitFeedback"
+                            ).style.visibility = "visible";
+                            process.exitCode = 1;
+                          })
+                      }
+                    ></input>
+                  </div>
+                </div>
+                <div className="listDataItem">
+                  <div className="listItemLabel">Description</div>
+                  <div className="listItemValue">{item.OfferDescription}</div>
+                </div>
+              </div>
             </Box>
           </Collapse>
         </StyledTableCell>

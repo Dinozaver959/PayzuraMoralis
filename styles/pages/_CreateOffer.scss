@@ -104,6 +104,13 @@
       .button {
         width: 100%;
         @include Font(null, 1rem, $FontColorDark, null, 500);
+        @include Transition(0.2s);
+
+        &:hover {
+          box-shadow: none;
+          background: rgba($BlackColor, 0.05);
+          @include Transition(0.2s);
+        }
 
         > span {
           flex: 2;
@@ -173,7 +180,7 @@
         padding-top: 10px;
         padding-bottom: 10px;
       }
-      
+
       .css-1d3z3hw-MuiOutlinedInput-notchedOutline {
         border-color: $BorderDark;
         color: $FontColorDark;
@@ -231,12 +238,16 @@
       color: $WhiteColor;
       border-bottom-color: lighten($BorderLight, 8%);
     }
-  
+
     ul {
       li {
         .button {
           color: $FontColorLight;
-  
+
+          &:hover {
+            background: rgba($BlackColor, 0.1);
+          }
+
           i {
             svg {
               path {
@@ -245,11 +256,11 @@
             }
           }
         }
-  
+
         &.active {
           .button {
             color: $LightBlueColor;
-  
+
             i {
               svg {
                 path {
@@ -270,29 +281,29 @@
           .MuiButtonBase-root {
             color: $FontColorLight;
             border-color: $BorderLight;
-  
+
             &.Mui-selected {
               background-color: $LightBlueColor;
               color: $WhiteColor;
             }
           }
         }
-      
+
         .css-1d3z3hw-MuiOutlinedInput-notchedOutline {
           border-color: $BorderLight;
         }
-        
+
         .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input,
         .css-1sumxir-MuiFormLabel-root-MuiInputLabel-root,
         .css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root {
           color: $FontColorLight;
         }
       }
-  
+
       .filedInfo {
         i {
           border: 1px solid $BorderLight;
-  
+
           svg {
             path {
               fill: $FontColorLight;
