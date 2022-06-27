@@ -17,7 +17,7 @@
     }
 
     &:hover {
-      @include BoxShadow(0px 0px 10px rgba($BlackColor, 0.25));
+      @include BoxShadow(0px 0px 15px rgba($BlackColor, 0.2));
       @include Transition(0.2s);
     }
 

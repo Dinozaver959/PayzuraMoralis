@@ -91,7 +91,7 @@ async function UpdateDelegatesMoralisDB(objectId, areForBuyer, DelegatesToAdd, D
             }
 
             const uniqueBuyerDelegates = newBuyerDelegates.filter(unique);
-            agreement.sey("BuyerDelegates") == uniqueBuyerDelegates.join();
+            agreement.set("BuyerDelegates") = uniqueBuyerDelegates.join();
 
         } else {
 
@@ -117,7 +117,7 @@ async function UpdateDelegatesMoralisDB(objectId, areForBuyer, DelegatesToAdd, D
             }
 
             const uniqueSellerDelegates = newSellerDelegates.filter(unique);
-            agreement.sey("SellerDelegates") == uniqueSellerDelegates.join();
+            agreement.set("SellerDelegates") = uniqueSellerDelegates.join();
         }
     
         await agreement.save()
