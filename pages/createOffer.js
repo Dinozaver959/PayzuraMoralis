@@ -19,10 +19,10 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
 import Button from "../components/ui/Button";
 import RightArrowIc from "../components/icons/RightArrow";
-import PlusIc from "./../components/icons/Plus";
 import LinkArrowIc from "./../components/icons/LinkArrow";
 import CheckIc from "./../components/icons/Check";
 import InfoIc from "./../components/icons/Info";
+import OfferTemplates from "../components/offer-creation/templates";
 
 export default function Description(props) {
   // SUBMIT - validation
@@ -34,12 +34,6 @@ export default function Description(props) {
   } = useForm();
   const onSubmit = (data) => SubmitForm(); // console.log(data);
   const [OfferValidUntil, setOfferValidUntil] = React.useState(new Date());
-
-  const [currentRadioValue, setCurrentValue] = React.useState("on");
-  const handleRadioChange = (value) => {
-    setCurrentValue(value);
-    console.log(setCurrentValue);
-  };
 
   async function SubmitForm() {
     // call Smart Contract function
@@ -118,13 +112,76 @@ export default function Description(props) {
     b1.className = styles.submitButton_noHover; // overwrite the style with no hover
   }
 
-  const [showForm, setShowForm] = React.useState("false");
+  /* Changed by FrontEnd Developer */
+  const TemplatesData = [
+    {
+      id: 1,
+      templateCode: "TempA",
+      templateName: "Template A",
+      templateDescription: "Some text for template A",
+    },
+    {
+      id: 2,
+      templateCode: "TempB",
+      templateName: "Template B",
+      templateDescription: "Some text for template B",
+    },
+    {
+      id: 3,
+      templateCode: "TempC",
+      templateName: "Template C",
+      templateDescription: "Some text for template C",
+    },
+    {
+      id: 4,
+      templateCode: "TempD",
+      templateName: "Template D",
+      templateDescription: "Some text for template D",
+    },
+    {
+      id: 5,
+      templateCode: "TempE",
+      templateName: "Template E",
+      templateDescription: "Some text for template E",
+    },
+  ];
+  const [selectedTemplate, setSelectedTemplate] = React.useState("blank");
+  const [showForm, setShowForm] = React.useState(false);
+  const [tempDesc, setTempDesc] = React.useState();
+  const [offerValidity, setOfferValidity] = React.useState("7 Days");
+  const [showDatepicker, setShowDatepicker] = React.useState(false);
+
+  // const templateDesc = TemplatesData.map((item) => item.templateDescription);
+
+  const handleRadioChange = (e) => {
+    const { id, value } = e.target;
+
+    const selctDesc = [];
+    if (value === "blank") {
+      selctDesc = [
+        {
+          id: 99,
+          templateCode: "TempBlank",
+          templateName: "Blank Description",
+          templateDescription: "",
+        },
+      ];
+    } else {
+      selctDesc = TemplatesData.filter(
+        (curElem) => curElem.templateCode === value
+      );
+    }
+    const selDecprop = selctDesc[0].templateDescription;
+    setSelectedTemplate(value);
+
+    setTempDesc(selDecprop);
+
+    // console.log(selDecprop);
+  };
+
   function formShowHandler() {
     setShowForm(!showForm);
   }
-
-  const [offerValidity, setOfferValidity] = React.useState("7 Days");
-  const [showDatepicker, setShowDatepicker] = React.useState(false);
 
   const offerValidityHandler = (event, selectedValidity) => {
     setOfferValidity(selectedValidity);
@@ -157,7 +214,7 @@ export default function Description(props) {
           <h1>Offers Creation</h1>
         </div>
 
-        {showForm && (
+        {!showForm && (
           <div className="card mt-10">
             <div className="cardHeader">
               <div className="cardTitle">
@@ -183,247 +240,33 @@ export default function Description(props) {
 
             <div className="cardBody">
               <div className="offerTemplateMain">
-                <div
-                  className={
-                    currentRadioValue === "blank"
-                      ? "offerCard selected"
-                      : "offerCard"
-                  }
-                >
-                  <input
-                    name="offerCardTemplates"
-                    value="blank"
-                    type="radio"
-                    onChange={(e) => setCurrentValue(e.target.value)}
-                    defaultChecked={currentRadioValue === "blank"}
-                    id="blankTemplate"
-                  />
-                  <label htmlFor="blankTemplate">
-                    <div className="offerCardBody">
-                      <div className="blankCard">
-                        <i>
-                          <PlusIc />
-                        </i>
-                        <div className="cardLabel">Use Blank Description</div>
-                      </div>
-                    </div>
-                  </label>
-                </div>
-
-                <div
-                  className={
-                    currentRadioValue === "tempA"
-                      ? "offerCard selected"
-                      : "offerCard"
-                  }
-                >
-                  <input
-                    name="offerCardTemplates"
-                    value="tempA"
-                    type="radio"
-                    onChange={(e) => setCurrentValue(e.target.value)}
-                    defaultChecked={currentRadioValue === "tempA"}
-                    id="templateA"
-                  />
-                  <label htmlFor="templateA">
-                    <div className="offerCardHeader">Template A</div>
-                    <div className="offerCardBody">
-                      <div className="offerBodyRow">
-                        <div className="labelData">Description</div>
-                        <div className="valueData">
-                          Some text for template A
-                        </div>
-                      </div>
-                    </div>
-                    <div className="offerCardFooter">
-                      <div
-                        className={
-                          currentRadioValue === "tempA"
-                            ? "button rounded primary"
-                            : "button rounded secondary"
-                        }
-                      >
-                        {currentRadioValue === "tempA"
-                          ? "Selected"
-                          : "Select Template"}
-                      </div>
-                    </div>
-                  </label>
-                </div>
-
-                <div
-                  className={
-                    currentRadioValue === "tempB"
-                      ? "offerCard selected"
-                      : "offerCard"
-                  }
-                >
-                  <input
-                    name="offerCardTemplates"
-                    value="tempB"
-                    type="radio"
-                    onChange={(e) => setCurrentValue(e.target.value)}
-                    defaultChecked={currentRadioValue === "tempB"}
-                    id="templateB"
-                  />
-                  <label htmlFor="templateB">
-                    <div className="offerCardHeader">Template B</div>
-                    <div className="offerCardBody">
-                      <div className="offerBodyRow">
-                        <div className="labelData">Description</div>
-                        <div className="valueData">
-                          Some text for template B
-                        </div>
-                      </div>
-                    </div>
-                    <div className="offerCardFooter">
-                      <div
-                        className={
-                          currentRadioValue === "tempB"
-                            ? "button rounded primary"
-                            : "button rounded secondary"
-                        }
-                      >
-                        {currentRadioValue === "tempB"
-                          ? "Selected"
-                          : "Select Template"}
-                      </div>
-                    </div>
-                  </label>
-                </div>
-
-                <div
-                  className={
-                    currentRadioValue === "tempC"
-                      ? "offerCard selected"
-                      : "offerCard"
-                  }
-                >
-                  <input
-                    name="offerCardTemplates"
-                    value="tempC"
-                    type="radio"
-                    onChange={(e) => setCurrentValue(e.target.value)}
-                    defaultChecked={currentRadioValue === "tempC"}
-                    id="templateC"
-                  />
-                  <label htmlFor="templateC">
-                    <div className="offerCardHeader">Template C</div>
-                    <div className="offerCardBody">
-                      <div className="offerBodyRow">
-                        <div className="labelData">Description</div>
-                        <div className="valueData">
-                          Some text for template C
-                        </div>
-                      </div>
-                    </div>
-                    <div className="offerCardFooter">
-                      <div
-                        className={
-                          currentRadioValue === "tempC"
-                            ? "button rounded primary"
-                            : "button rounded secondary"
-                        }
-                      >
-                        {currentRadioValue === "tempC"
-                          ? "Selected"
-                          : "Select Template"}
-                      </div>
-                    </div>
-                  </label>
-                </div>
-
-                <div
-                  className={
-                    currentRadioValue === "tempD"
-                      ? "offerCard selected"
-                      : "offerCard"
-                  }
-                >
-                  <input
-                    name="offerCardTemplates"
-                    value="tempD"
-                    type="radio"
-                    onChange={(e) => setCurrentValue(e.target.value)}
-                    defaultChecked={currentRadioValue === "tempD"}
-                    id="templateD"
-                  />
-                  <label htmlFor="templateD">
-                    <div className="offerCardHeader">Template D</div>
-                    <div className="offerCardBody">
-                      <div className="offerBodyRow">
-                        <div className="labelData">Description</div>
-                        <div className="valueData">
-                          Some text for template D
-                        </div>
-                      </div>
-                    </div>
-                    <div className="offerCardFooter">
-                      <div
-                        className={
-                          currentRadioValue === "tempD"
-                            ? "button rounded primary"
-                            : "button rounded secondary"
-                        }
-                      >
-                        {currentRadioValue === "tempD"
-                          ? "Selected"
-                          : "Select Template"}
-                      </div>
-                    </div>
-                  </label>
-                </div>
-
-                <div
-                  className={
-                    currentRadioValue === "tempE"
-                      ? "offerCard selected"
-                      : "offerCard"
-                  }
-                >
-                  <input
-                    name="offerCardTemplates"
-                    value="tempE"
-                    type="radio"
-                    onChange={(e) => setCurrentValue(e.target.value)}
-                    defaultChecked={currentRadioValue === "tempE"}
-                    id="templateE"
-                  />
-                  <label htmlFor="templateE">
-                    <div className="offerCardHeader">Template E</div>
-                    <div className="offerCardBody">
-                      <div className="offerBodyRow">
-                        <div className="labelData">Description</div>
-                        <div className="valueData">
-                          Some text for template E
-                        </div>
-                      </div>
-                    </div>
-                    <div className="offerCardFooter">
-                      <div
-                        className={
-                          currentRadioValue === "tempE"
-                            ? "button rounded primary"
-                            : "button rounded secondary"
-                        }
-                      >
-                        {currentRadioValue === "tempE"
-                          ? "Selected"
-                          : "Select Template"}
-                      </div>
-                    </div>
-                  </label>
-                </div>
+                <OfferTemplates
+                  selectedTemplate={selectedTemplate}
+                  setSelectedTemplate={setSelectedTemplate}
+                  TemplatesData={TemplatesData}
+                  radioChangeFn={handleRadioChange}
+                />
               </div>
             </div>
           </div>
         )}
 
-        {!showForm && (
+        {showForm && (
           <div className="card mt-10 cardInnerSplit">
             <div className="cardSidebar">
               <h2>Templates</h2>
               <ul>
+                {TemplatesData.map((item) => (
+                  <li key={item.id}>
+                    <Button classes="button withIcon transparent">
+                      <span>{item.templateName}</span>
+                      <i>
+                        <LinkArrowIc />
+                      </i>
+                    </Button>
+                  </li>
+                ))}
+
                 <li>
                   <Button classes="button withIcon transparent">
                     <span>Template A</span>
@@ -539,6 +382,7 @@ export default function Description(props) {
                             minLength: 4,
                             maxLength: 440,
                           })}
+                          value={tempDesc}
                         ></textarea>
 
                         <div className="fieldError">
