@@ -284,7 +284,7 @@ function Row_normal(props) {
         </StyledTableCell>
         <StyledTableCell>
           <input
-            className="button rounded primary"
+            className="button rounded orange"
             type="submit"
             value="Claim funds (seller)"
             onClick={() =>
@@ -343,7 +343,7 @@ function Row_normal(props) {
         </StyledTableCell>
         <StyledTableCell>
           <input
-            className="rounded button primary"
+            className="rounded button green"
             type="submit"
             value="Start Dispute (buyer)"
             onClick={() =>
@@ -403,7 +403,7 @@ function Row_normal(props) {
         </StyledTableCell>
         <StyledTableCell>
           <input
-            className="button rounded primary"
+            className="button rounded secondary"
             type="submit"
             value="Confirm Delivery (buyer)"
             onClick={() =>

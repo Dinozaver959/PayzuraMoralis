@@ -107,7 +107,7 @@ export default function ListAvailableOffers(props) {
           <h1>Offers Available</h1>
           <div className="headerAction">
             <Button
-              link="/listPublicOffers"
+              link="/createOffer"
               classes={"button secondary withIcon"}
             >
               <i>
@@ -143,14 +143,6 @@ export default function ListAvailableOffers(props) {
                   >
                     <span>Create Offer Now</span>
                   </Button>
-
-                  {/* <Link href="/creteOffer">
-                    <input
-                      className="submitButton"
-                      type="submit"
-                      value="Create Offer Now"
-                    ></input>
-                  </Link> */}
                 </div>
               </div>
             )}

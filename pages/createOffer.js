@@ -151,10 +151,8 @@ export default function Description(props) {
   const [offerValidity, setOfferValidity] = React.useState("7 Days");
   const [showDatepicker, setShowDatepicker] = React.useState(false);
 
-  // const templateDesc = TemplatesData.map((item) => item.templateDescription);
-
   const handleRadioChange = (e) => {
-    const { id, value } = e.target;
+    const { value } = e.target;
 
     const selctDesc = [];
     if (value === "blank") {
@@ -172,11 +170,9 @@ export default function Description(props) {
       );
     }
     const selDecprop = selctDesc[0].templateDescription;
+
     setSelectedTemplate(value);
-
     setTempDesc(selDecprop);
-
-    // console.log(selDecprop);
   };
 
   function formShowHandler() {
@@ -257,56 +253,36 @@ export default function Description(props) {
               <h2>Templates</h2>
               <ul>
                 {TemplatesData.map((item) => (
-                  <li key={item.id}>
-                    <Button classes="button withIcon transparent">
+                  <li
+                    key={item.id}
+                    className={
+                      selectedTemplate === item.templateCode
+                        ? "offerCard selected"
+                        : "offerCard"
+                    }
+                  >
+                    <input
+                      name="offerCardTemplates"
+                      value={item.templateCode}
+                      type="radio"
+                      onChange={handleRadioChange}
+                      defaultChecked={selectedTemplate === item.templateCode}
+                      id={item.id}
+                    />
+                    <label htmlFor={item.id} className="linkBlock">
                       <span>{item.templateName}</span>
                       <i>
                         <LinkArrowIc />
                       </i>
-                    </Button>
+                    </label>
+                    {/* <Button classes="button withIcon transparent" onClick={handleRadioChange}>
+                      <span>{item.templateName}</span>
+                      <i>
+                        <LinkArrowIc />
+                      </i>
+                    </Button> */}
                   </li>
                 ))}
-
-                <li>
-                  <Button classes="button withIcon transparent">
-                    <span>Template A</span>
-                    <i>
-                      <LinkArrowIc />
-                    </i>
-                  </Button>
-                </li>
-                <li className="active">
-                  <Button classes="button withIcon transparent">
-                    <span>Template B</span>
-                    <i>
-                      <LinkArrowIc />
-                    </i>
-                  </Button>
-                </li>
-                <li>
-                  <Button classes="button withIcon transparent">
-                    <span>Template C</span>
-                    <i>
-                      <LinkArrowIc />
-                    </i>
-                  </Button>
-                </li>
-                <li>
-                  <Button classes="button withIcon transparent">
-                    <span>Template D</span>
-                    <i>
-                      <LinkArrowIc />
-                    </i>
-                  </Button>
-                </li>
-                <li>
-                  <Button classes="button withIcon transparent">
-                    <span>Template E</span>
-                    <i>
-                      <LinkArrowIc />
-                    </i>
-                  </Button>
-                </li>
               </ul>
             </div>
 

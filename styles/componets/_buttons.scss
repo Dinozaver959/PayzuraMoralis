@@ -63,6 +63,30 @@
     }
   }
 
+  &.orange {
+    background: $OrangeColor;
+    border-color: $OrangeColor;
+    color: $WhiteColor;
+
+    &:hover {
+      background: darken($OrangeColor, 7%);
+      border-color: darken($OrangeColor, 7%);
+      @include BoxShadow(2px 2px 5px rgba($OrangeColor, 0.4));
+    }
+  }
+
+  &.green {
+    background: $GreenColor;
+    border-color: $GreenColor;
+    color: $WhiteColor;
+
+    &:hover {
+      background: darken($GreenColor, 7%);
+      border-color: darken($GreenColor, 7%);
+      @include BoxShadow(2px 2px 5px rgba($GreenColor, 0.4));
+    }
+  }
+
   &.transparent {
     background: transparent;
     border-color: transparent;
