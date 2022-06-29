@@ -10,139 +10,11 @@ const commission = 0.01;
 
 // READ Functions
 
-export async function clonedContractsIndex_Moralis_indexPage() {
-
-    const numberOfAgreements = await MoralisRead("clonedContractsIndex");
- 
-    console.log("numberOfAgreements: " + numberOfAgreements);
-    document.getElementById('clonedContractsIndex_Display').innerText = numberOfAgreements;
-    document.getElementById('clonedContractsIndex_Display').style.visibility = "visible";
-}
-
 export async function clonedContractsIndex_Moralis() {
 
     const numberOfAgreements = await MoralisRead("clonedContractsIndex");
     console.log("numberOfAgreements: " + numberOfAgreements);
     return numberOfAgreements;
-}
-
-export async function GetAddress_Moralis() {
-
-    const index = GetIndex();
-
-    const params = {
-        index: index,
-    }
-
-    const address = await MoralisRead("GetAddress", params); // will give an array with a hex value
- 
-    console.log("address: " + address);
-    document.getElementById('GetAddress_Display').innerText = address;
-    document.getElementById('GetAddress_Display').style.visibility = "visible";
-}
-
-export async function GetBalance_Moralis() {
-
-    const index = GetIndex();
-
-    const params = {
-        index: index,
-    }
-
-    const balance_hex = await MoralisRead("GetBalance", params); // will give an array with a hex value
-    const balance = parseInt(balance_hex['_hex'], 16);
-
-    console.log("balance: " + balance);
-    document.getElementById('GetBalance_Display').innerText = balance;
-    document.getElementById('GetBalance_Display').style.visibility = "visible";
-}
-
-export async function GetTimeLeftToDeadline_Moralis() {
-
-    const index = GetIndex();
-
-    const params = {
-        index: index,
-    }
-
-    const timeLeftToDeadline = await MoralisRead("GetTimeLeftToDeadline", params); // will give an array with a hex value
-    console.log("timeLeftToDeadline: " + timeLeftToDeadline);
-    document.getElementById('GetTimeLeftToDeadline_Display').innerText = timeLeftToDeadline;
-    document.getElementById('GetTimeLeftToDeadline_Display').style.visibility = "visible";
-}
-
-export async function GetArbiter_Moralis() {
-
-    const index = GetIndex();
-
-    const params = {
-        index: index,
-    }
-
-    const arbiter = await MoralisRead("GetArbiter", params); // will give an array with a hex value
-    console.log("arbiter: " + arbiter);
-    document.getElementById('GetArbiter_Display').innerText = arbiter;
-    document.getElementById('GetArbiter_Display').style.visibility = "visible";
-}
-
-export async function GetBuyer_Moralis() {
-
-    const index = GetIndex();
-
-    const params = {
-        index: index,
-    }
-
-    const buyer = await MoralisRead("GetBuyer", params); // will give an array with a hex value
-    console.log("buyer: " + buyer);
-    document.getElementById('GetBuyer_Display').innerText = buyer;
-    document.getElementById('GetBuyer_Display').style.visibility = "visible";
-}
-
-export async function GetSeller_Moralis() {
-
-    const index = GetIndex();
-
-    const params = {
-        index: index,
-    }
-
-    const seller = await MoralisRead("GetSeller", params); // will give an array with a hex value
-    console.log("seller: " + seller);
-    document.getElementById('GetSeller_Display').innerText = seller;
-    document.getElementById('GetSeller_Display').style.visibility = "visible";
-}
-
-export async function GetState_Moralis() {
-    // add a check for correct network
-
-    const index = GetIndex();
-
-    const params = {
-        index: index,
-    }
-
-    const state = await MoralisRead("GetState", params); // will give an array with a hex value
-    console.log("state: " + state);
-    document.getElementById('GetState_Display').innerText = state;
-    document.getElementById('GetState_Display').style.visibility = "visible";
-}
-
-export async function GetPrice_Moralis_indexPage() {
-    // add a check for correct network
-
-    const index = GetIndex();
-
-    const params = {
-        index: index,
-    }
-
-    const price = await MoralisRead("GetPrice", params); // will give an array with a hex value
-    console.log("price: " + price);
-    document.getElementById('GetPrice_Display').innerText = price;
-    document.getElementById('GetPrice_Display').style.visibility = "visible";
-
-    return price;
 }
 
 export async function GetPrice_Moralis(index) {
@@ -157,50 +29,158 @@ export async function GetPrice_Moralis(index) {
     return price;
 }
 
-export async function GetDeadline_Moralis() {
-    // add a check for correct network
+// --------------------------------------------------------------------------------------------------------------------------------
+// were only used for the initial index page (commenting out for now), as some might be used later
+// --------------------------------------------------------------------------------------------------------------------------------
+/*
+    export async function GetAddress_Moralis() {
 
-    const index = GetIndex();
+        const index = GetIndex();
 
-    const params = {
-        index: index,
+        const params = {
+            index: index,
+        }
+
+        const address = await MoralisRead("GetAddress", params); // will give an array with a hex value
+    
+        console.log("address: " + address);
+        document.getElementById('GetAddress_Display').innerText = address;
+        document.getElementById('GetAddress_Display').style.visibility = "visible";
     }
 
-    const deadline = await MoralisRead("GetDeadline", params); // will give an array with a hex value
-    console.log("deadline: " + deadline);
-    document.getElementById('GetDeadline_Display').innerText = deadline;
-    document.getElementById('GetDeadline_Display').style.visibility = "visible";
-}
+    export async function GetBalance_Moralis() {
 
-export async function GetHashOfDescription_Moralis() {
-    // add a check for correct network
+        const index = GetIndex();
 
-    const index = GetIndex();
+        const params = {
+            index: index,
+        }
 
-    const params = {
-        index: index,
+        const balance_hex = await MoralisRead("GetBalance", params); // will give an array with a hex value
+        const balance = parseInt(balance_hex['_hex'], 16);
+
+        console.log("balance: " + balance);
+        document.getElementById('GetBalance_Display').innerText = balance;
+        document.getElementById('GetBalance_Display').style.visibility = "visible";
     }
 
-    const hashOfDescription = await MoralisRead("GetHashOfDescription", params); // will give an array with a hex value
-    console.log("hashOfDescription: " + hashOfDescription);
-    document.getElementById('GetHashOfDescription_Display').innerText = hashOfDescription;
-    document.getElementById('GetHashOfDescription_Display').style.visibility = "visible";
-}
+    export async function GetTimeLeftToDeadline_Moralis() {
 
-export async function GetGracePeriod_Moralis() {
-    // add a check for correct network
+        const index = GetIndex();
 
-    const index = GetIndex();
+        const params = {
+            index: index,
+        }
 
-    const params = {
-        index: index,
+        const timeLeftToDeadline = await MoralisRead("GetTimeLeftToDeadline", params); // will give an array with a hex value
+        console.log("timeLeftToDeadline: " + timeLeftToDeadline);
+        document.getElementById('GetTimeLeftToDeadline_Display').innerText = timeLeftToDeadline;
+        document.getElementById('GetTimeLeftToDeadline_Display').style.visibility = "visible";
     }
 
-    const gracePeriod = await MoralisRead("GetGracePeriod", params); // will give an array with a hex value
-    console.log("gracePeriod: " + gracePeriod);
-    document.getElementById('GetGracePeriod_Display').innerText = gracePeriod;
-    document.getElementById('GetGracePeriod_Display').style.visibility = "visible";
-}
+    export async function GetArbiter_Moralis() {
+
+        const index = GetIndex();
+
+        const params = {
+            index: index,
+        }
+
+        const arbiter = await MoralisRead("GetArbiter", params); // will give an array with a hex value
+        console.log("arbiter: " + arbiter);
+        document.getElementById('GetArbiter_Display').innerText = arbiter;
+        document.getElementById('GetArbiter_Display').style.visibility = "visible";
+    }
+
+    export async function GetBuyer_Moralis() {
+
+        const index = GetIndex();
+
+        const params = {
+            index: index,
+        }
+
+        const buyer = await MoralisRead("GetBuyer", params); // will give an array with a hex value
+        console.log("buyer: " + buyer);
+        document.getElementById('GetBuyer_Display').innerText = buyer;
+        document.getElementById('GetBuyer_Display').style.visibility = "visible";
+    }
+
+    export async function GetSeller_Moralis() {
+
+        const index = GetIndex();
+
+        const params = {
+            index: index,
+        }
+
+        const seller = await MoralisRead("GetSeller", params); // will give an array with a hex value
+        console.log("seller: " + seller);
+        document.getElementById('GetSeller_Display').innerText = seller;
+        document.getElementById('GetSeller_Display').style.visibility = "visible";
+    }
+
+    export async function GetState_Moralis() {
+        // add a check for correct network
+
+        const index = GetIndex();
+
+        const params = {
+            index: index,
+        }
+
+        const state = await MoralisRead("GetState", params); // will give an array with a hex value
+        console.log("state: " + state);
+        document.getElementById('GetState_Display').innerText = state;
+        document.getElementById('GetState_Display').style.visibility = "visible";
+    }
+
+    export async function GetDeadline_Moralis() {
+        // add a check for correct network
+
+        const index = GetIndex();
+
+        const params = {
+            index: index,
+        }
+
+        const deadline = await MoralisRead("GetDeadline", params); // will give an array with a hex value
+        console.log("deadline: " + deadline);
+        document.getElementById('GetDeadline_Display').innerText = deadline;
+        document.getElementById('GetDeadline_Display').style.visibility = "visible";
+    }
+
+    export async function GetHashOfDescription_Moralis() {
+        // add a check for correct network
+
+        const index = GetIndex();
+
+        const params = {
+            index: index,
+        }
+
+        const hashOfDescription = await MoralisRead("GetHashOfDescription", params); // will give an array with a hex value
+        console.log("hashOfDescription: " + hashOfDescription);
+        document.getElementById('GetHashOfDescription_Display').innerText = hashOfDescription;
+        document.getElementById('GetHashOfDescription_Display').style.visibility = "visible";
+    }
+
+    export async function GetGracePeriod_Moralis() {
+        // add a check for correct network
+
+        const index = GetIndex();
+
+        const params = {
+            index: index,
+        }
+
+        const gracePeriod = await MoralisRead("GetGracePeriod", params); // will give an array with a hex value
+        console.log("gracePeriod: " + gracePeriod);
+        document.getElementById('GetGracePeriod_Display').innerText = gracePeriod;
+        document.getElementById('GetGracePeriod_Display').style.visibility = "visible";
+    }
+*/
+//--------------------------------------------------------------------------------------------------------------------------------
  
 async function MoralisRead(method, params) {
   
@@ -227,98 +207,6 @@ async function MoralisRead(method, params) {
 
 
 // WRITE Functions
-
-export async function CreateEscrow_Moralis_indexPage() {
-
-    // 10000000000,1,a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6
-    const input = document.getElementById('CreateEscrow_Input').value.split(",");
-    const price = input[0];
-    const timeToDeliver = input[1]; 
-    const hashOfDescription = input[2];
-
-    const params = {
-        price: price,
-        timeToDeliver: timeToDeliver,
-        hashOfDescription: hashOfDescription,
-    }
-  
-    return await MoralisWrite_("CreateEscrow", params);
-}
-
-export async function AcceptOffer_Moralis_indexPage() {
-
-    const index = GetIndex();
-
-    // get the mint price
-    var price = await GetPrice_Moralis(index); // will give an array with a hex value
-
-    console.log("price: " + price);
-    
-    const params = {
-        index: index,
-    }
-
-    return await MoralisWrite__("AcceptOffer", params, price); // price * 
-}
-
-export async function ReturnPayment_Moralis_indexPage() {
-
-    const index = GetIndex();
-
-    const params = {
-        index: index,
-    }
-
-    await MoralisWrite__("ReturnPayment", params);
-}
-
-export async function ClaimFunds_Moralis_indexPage() {
-
-    const index = GetIndex();
-
-    const params = {
-        index: index,
-    }
-
-    await MoralisWrite__("ClaimFunds", params);
-}
-
-export async function StartDispute_Moralis_indexPage() {
-
-    const index = GetIndex();
-
-    const params = {
-        index: index,
-    }
-
-    await MoralisWrite__("StartDispute", params);
-}
-
-export async function ConfirmDelivery_Moralis_indexPage() {
-
-    const index = GetIndex();
-
-    const params = {
-        index: index,
-    }
-
-    await MoralisWrite__("ConfirmDelivery", params);
-}
-
-export async function HandleDispute_Moralis_indexPage(returnFundsToBuyer) {
-
-    const index = GetIndex();
-
-    const params = {
-        index: index,
-        returnFundsToBuyer: returnFundsToBuyer,
-    }
-
-    await MoralisWrite__("HandleDispute", params);
-}
-
-
-
 
 export async function CreateEscrow_Moralis(price, timeToDeliver, hashOfDescription, offerValidUntil, personalizedOffer, arbiters) {
 

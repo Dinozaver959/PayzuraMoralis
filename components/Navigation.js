@@ -37,7 +37,7 @@ export default function Navigation(props) {
       <nav className="navbarMain">
         <ul>
           <li className={router.pathname == "/" ? "active" : ""}>
-            <Link href="/">index-test</Link>
+            <Link href="/">Dashboard</Link>
           </li>
           <li className={router.pathname == "/createOffer" ? "active" : ""}>
             <Link href="/createOffer">createOffer</Link>
