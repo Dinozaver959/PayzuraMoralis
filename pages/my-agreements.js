@@ -26,7 +26,7 @@ import {
 } from "../JS/local_web3_Moralis";
 import Navigation from "../components/Navigation.js";
 import Button from "../components/ui/Button";
-import PlaceholderIc from "./../components/icons/Placeholder";
+import PlaceholderIc from "../components/icons/Placeholder";
 
 const StyledTableRow = styled(TableRow)({
   //'&:nth-of-type(odd)': {
@@ -149,7 +149,7 @@ export default function MyAgreements(props) {
                 <h2>There are no Agreements.</h2>
                 <div className="submitButtonOuter">
                   <Button
-                    link="/createOffer"
+                    link="/create-offer"
                     classes={"button primary rounded"}
                   >
                     <span>Create Offer Now</span>

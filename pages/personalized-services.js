@@ -22,7 +22,8 @@ import {
 } from "../JS/local_web3_Moralis";
 import Navigation from "../components/Navigation.js";
 import Button from "../components/ui/Button";
-import PlaceholderIc from "./../components/icons/Placeholder";
+import PlaceholderIc from "../components/icons/Placeholder";
+import PlusIc from "../components/icons/Plus";
 
 const StyledTableRow = styled(TableRow)({
   //'&:nth-of-type(odd)': {
@@ -71,7 +72,7 @@ const StyledInnerTableCell = styled(TableCell)({
 */
 });
 
-export default function ListAvailableOffers(props) {
+export default function PersonalizedServices(props) {
   const [data, setData] = useState([]);
 
   // load options using API call
@@ -105,7 +106,18 @@ export default function ListAvailableOffers(props) {
 
       <div className="containerMain">
         <div className="pageHeader">
-          <h1>Personalized Offers</h1>
+          <h1>Personalized Services Listed</h1>
+          <div className="headerAction">
+            <Button
+              link="/create-offer"
+              classes={"button secondary withIcon"}
+            >
+              <i>
+                <PlusIc />
+              </i>
+              <span>Create New Offer</span>
+            </Button>
+          </div>
         </div>
 
         <div className="card mt-10">
@@ -130,7 +142,7 @@ export default function ListAvailableOffers(props) {
                 <h2>There are no offers for you.</h2>
                 <div className="submitButtonOuter">
                   <Button
-                    link="/createOffer"
+                    link="/create-offer"
                     classes={"button primary rounded"}
                   >
                     <span>Create Offer Now</span>

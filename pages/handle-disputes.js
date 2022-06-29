@@ -1,4 +1,4 @@
-// import Link from "next/link";
+import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { IconContext } from "react-icons";
 
@@ -19,12 +19,11 @@ import { styled } from "@mui/material/styles";
 import Moralis from "moralis";
 import {
   GetWallet_NonMoralis,
-  AcceptOffer_Moralis,
+  HandleDispute_Moralis,
 } from "../JS/local_web3_Moralis";
 import Navigation from "../components/Navigation.js";
+import PlaceholderIc from "../components/icons/Placeholder";
 import Button from "../components/ui/Button";
-import PlusIc from "../components/icons/Plus";
-import PlaceholderIc from "./../components/icons/Placeholder";
 
 const StyledTableRow = styled(TableRow)({
   //'&:nth-of-type(odd)': {
@@ -78,7 +77,10 @@ export default function ListAvailableOffers(props) {
 
   // load options using API call
   async function getCollectionsDetails() {
-    const data = await fetch(`./api/api-getPublicOffers`)
+    const connectedAddress = await GetWallet_NonMoralis();
+    const data = await fetch(
+      `./api/api-getDisputesToManage` + "?UserWallet=" + connectedAddress
+    )
       .then((res) => res.json())
       .then((json) => setData(json)); // uncomment this line to see the data in the console
 
@@ -104,24 +106,13 @@ export default function ListAvailableOffers(props) {
 
       <div className="containerMain">
         <div className="pageHeader">
-          <h1>Offers Available</h1>
-          <div className="headerAction">
-            <Button
-              link="/createOffer"
-              classes={"button secondary withIcon"}
-            >
-              <i>
-                <PlusIc />
-              </i>
-              <span>Create New Offer</span>
-            </Button>
-          </div>
+          <h1>Handle Disputes</h1>
         </div>
 
         <div className="card mt-10">
           <div className="cardHeader">
             <div className="cardTitle">
-              <h2>Open Offers</h2>
+              <h2>Vote on Disputes</h2>
             </div>
           </div>
 
@@ -135,10 +126,10 @@ export default function ListAvailableOffers(props) {
                 <i>
                   <PlaceholderIc />
                 </i>
-                <h2>There are no available offers.</h2>
+                <h2>There are no Vote on Disputes.</h2>
                 <div className="submitButtonOuter">
                   <Button
-                    link="/createOffer"
+                    link="/create-offer"
                     classes={"button primary rounded"}
                   >
                     <span>Create Offer Now</span>
@@ -188,7 +179,8 @@ function Table_normal(props) {
               <StyledTableCell>Price (ETH)</StyledTableCell>
               <StyledTableCell>Time to Deliver (hours)</StyledTableCell>
               <StyledTableCell>Valid Until</StyledTableCell>
-              <StyledTableCell>Accept Offer</StyledTableCell>
+              <StyledTableCell>Vote for Buyer</StyledTableCell>
+              <StyledTableCell>Vote for Seller</StyledTableCell>
             </StyledTableRow>
           </TableHead>
           <TableBody>
@@ -236,45 +228,114 @@ function Row_normal(props) {
           <input
             className="button primary rounded"
             type="submit"
-            value="Accept Offer (buyer)"
+            value="Vote for buyer"
             onClick={() =>
-              AcceptOffer_Moralis(item.index)
-                .then(async (transactionHash) => {
+              HandleDispute_Moralis(item.index, true)
+                .then(async (ArbitersVoteConcluded) => {
+                  // {transactionHash, ArbitersVoteConcluded}      /// NOT FORWARDING THE value correctly, no idea why
+
                   // show the feedback text
                   document.getElementById("submitFeedback").style.display =
                     "inline";
                   document.getElementById("submitFeedback").innerText =
-                    "Creating offer...";
+                    "sending vote...";
 
                   var formData = new FormData();
-                  formData.append("BuyerAccount", Moralis.User.current().id);
+                  formData.append("ArbiterAccount", Moralis.User.current().id);
 
                   const connectedAddress = await GetWallet_NonMoralis();
-                  formData.append("BuyerWallet", connectedAddress);
-                  formData.append("transactionHash", transactionHash);
+                  formData.append("ArbiterWallet", connectedAddress);
+                  formData.append("votedForBuyer", "true");
+                  formData.append(
+                    "ArbitersVoteConcluded",
+                    ArbitersVoteConcluded
+                  ); /// maybe turn it into a string
+                  //formData.append('transactionHash', transactionHash);
                   formData.append("objectId", item.objectId);
 
                   var xhr = new XMLHttpRequest();
-                  xhr.open("POST", "/api/api-acceptedOffer", false);
+                  xhr.open("POST", "/api/api-votedOnDispute", false);
                   xhr.onload = function () {
                     // update the feedback text
                     document.getElementById("submitFeedback").style.display =
                       "inline";
                     document.getElementById("submitFeedback").innerText =
-                      "offer accepted";
+                      "vote registered";
 
-                    // show the feedback text
-                    document.getElementById("submitFeedback").style.display =
-                      "inline";
-                    document.getElementById("submitFeedback").innerText =
-                      "Accepting offer...";
-
-                    var formData = new FormData();
-                    formData.append("BuyerAccount", Moralis.User.current().id);
+                    // prevent the Submit button to be clickable and functionable
+                    // removeHover()
+                    // document.getElementById('SubmitButton').disabled = true
 
                     // think about also removing the hover effect
                     // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-                    console.log("offer created");
+                    console.log("vote registered");
+                  };
+                  xhr.send(formData);
+                })
+                .catch((error) => {
+                  console.error(error);
+                  console.log("accept offer error code: " + error.code);
+                  console.log("accept offer error message: " + error.message);
+                  if (error.data && error.data.message) {
+                    document.getElementById("submitFeedback").innerText =
+                      error.data.message;
+                  } else {
+                    document.getElementById("submitFeedback").innerText =
+                      error.message;
+                  }
+                  document.getElementById("submitFeedback").style.visibility =
+                    "visible";
+                  process.exitCode = 1;
+                })
+            }
+          ></input>
+        </StyledTableCell>
+
+        <StyledTableCell>
+          <input
+            className="button secondary rounded"
+            type="submit"
+            value="Vote for seller"
+            onClick={() =>
+              HandleDispute_Moralis(item.index, false)
+                .then(async (ArbitersVoteConcluded) => {
+                  // {transactionHash, ArbitersVoteConcluded}
+
+                  // show the feedback text
+                  document.getElementById("submitFeedback").style.display =
+                    "inline";
+                  document.getElementById("submitFeedback").innerText =
+                    "sending vote...";
+
+                  var formData = new FormData();
+                  formData.append("ArbiterAccount", Moralis.User.current().id);
+
+                  const connectedAddress = await GetWallet_NonMoralis();
+                  formData.append("ArbiterWallet", connectedAddress);
+                  formData.append("votedForBuyer", "false");
+                  formData.append(
+                    "ArbitersVoteConcluded",
+                    ArbitersVoteConcluded
+                  ); /// maybe turn it into a string
+                  //formData.append('transactionHash', transactionHash);
+                  formData.append("objectId", item.objectId);
+
+                  var xhr = new XMLHttpRequest();
+                  xhr.open("POST", "/api/api-votedOnDispute", false);
+                  xhr.onload = function () {
+                    // update the feedback text
+                    document.getElementById("submitFeedback").style.display =
+                      "inline";
+                    document.getElementById("submitFeedback").innerText =
+                      "vote registered";
+
+                    // prevent the Submit button to be clickable and functionable
+                    // removeHover()
+                    // document.getElementById('SubmitButton').disabled = true
+
+                    // think about also removing the hover effect
+                    // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+                    console.log("vote registered");
                   };
                   xhr.send(formData);
                 })
@@ -297,25 +358,34 @@ function Row_normal(props) {
           ></input>
         </StyledTableCell>
       </StyledTableRow>
+
       <StyledTableRow>
         <StyledTableCell
           style={{ paddingBottom: 0, paddingTop: 0 }}
-          colSpan={6}
+          colSpan={7}
         >
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <div className="listData">
                 <div className="listDataItem">
-                  <div className="listItemLabel">Wallets Allowed to Accept</div>
-                  <div className="listItemValue">{wrapPersonalized(item.PersonalizedOffer)}</div>
+                  <div className="listItemLabel">Buyer Wallet</div>
+                  <div className="listItemValue">{item.BuyerWallet}</div>
                 </div>
                 <div className="listDataItem">
                   <div className="listItemLabel">Seller Wallet</div>
                   <div className="listItemValue">{item.SellerWallet}</div>
                 </div>
                 <div className="listDataItem">
+                  <div className="listItemLabel">Wallets Allowed to Accept</div>
+                  <div className="listItemValue">
+                    {wrapPersonalized(item.PersonalizedOffer)}
+                  </div>
+                </div>
+                <div className="listDataItem">
                   <div className="listItemLabel">Arbiters</div>
-                  <div className="listItemValue">{wrapArbiters(item.Arbiters)}</div>
+                  <div className="listItemValue">
+                    {wrapArbiters(item.Arbiters)}
+                  </div>
                 </div>
                 <div className="listDataItem">
                   <div className="listItemLabel">Description</div>
