@@ -2508,7 +2508,7 @@ minimist@^1.2.0, minimist@^1.2.6:
 
 moralis@^1.8.0:
   version "1.8.0"
-  resolved "https://registry.npmjs.org/moralis/-/moralis-1.8.0.tgz"
+  resolved "https://registry.yarnpkg.com/moralis/-/moralis-1.8.0.tgz#fc0aee2fdccde195e04e9395fa78bac97c1b133f"
   integrity sha512-p8V5Ur4oLymweySUh+TBuYmQVDeqnNO3+Lk+VfPorGJsmbcer6xVy6MHHNinl1zhhWiCJNpc+XWot5wAcMb4QA==
   dependencies:
     "@babel/runtime" "7.16.7"
