@@ -70,6 +70,12 @@
   margin-top: 20px;
 }
 
+.blockLoading {
+  @include Size(100%, 100px);
+  position: relative;
+  margin-top: 10px;
+}
+
 .darkMode {
   .pageHeader {
     h1 {

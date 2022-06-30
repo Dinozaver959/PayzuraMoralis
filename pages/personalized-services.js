@@ -24,6 +24,7 @@ import Navigation from "../components/Navigation.js";
 import Button from "../components/ui/Button";
 import PlaceholderIc from "../components/icons/Placeholder";
 import PlusIc from "../components/icons/Plus";
+import LoadingPlaceholder from "../components/ui/LoadingPlaceholder";
 
 const StyledTableRow = styled(TableRow)({
   //'&:nth-of-type(odd)': {
@@ -74,6 +75,7 @@ const StyledInnerTableCell = styled(TableCell)({
 
 export default function PersonalizedServices(props) {
   const [data, setData] = useState([]);
+  const [placeholder, setPlaceholder] = useState(true);
 
   // load options using API call
   async function getCollectionsDetails() {
@@ -92,6 +94,10 @@ export default function PersonalizedServices(props) {
   // Calling the function on component mount
   useEffect(() => {
     getCollectionsDetails();
+
+    setTimeout(() => {
+      setPlaceholder(false);
+    }, 1200);
   }, []);
 
   return (
@@ -130,9 +136,16 @@ export default function PersonalizedServices(props) {
             </div>
           </div>
           <div className="cardBody">
-            {data && data[0] ? (
+            {data[0] && data ? (
               <>
                 <Table_normal data={data} />
+                {placeholder && (
+                  <div className="blockLoading">
+                    <LoadingPlaceholder
+                      extraStyles={{ height: "100%", position: "absolute" }}
+                    />
+                  </div>
+                )}
               </>
             ) : (
               <div className="noData">
