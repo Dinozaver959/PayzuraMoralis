@@ -33,7 +33,8 @@ export default function Description(props) {
     control,
   } = useForm();
   const onSubmit = (data) => SubmitForm(); // console.log(data);
-  const [OfferValidUntil, setOfferValidUntil] = React.useState(new Date());
+  const now = new Date();
+  const [OfferValidUntil, setOfferValidUntil] = React.useState(now.setDate(now.getDate + 7));
 
   async function SubmitForm() {
     // call Smart Contract function
