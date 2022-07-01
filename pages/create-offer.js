@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { Fragment, useRef } from "react";
 import { useForm } from "react-hook-form";
 import Moralis from "moralis";
 import { sha256 } from "js-sha256";
@@ -19,9 +19,9 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
 import Button from "../components/ui/Button";
 import RightArrowIc from "../components/icons/RightArrow";
-import LinkArrowIc from "./../components/icons/LinkArrow";
-import CheckIc from "./../components/icons/Check";
-import InfoIc from "./../components/icons/Info";
+import LinkArrowIc from "../components/icons/LinkArrow";
+import CheckIc from "../components/icons/Check";
+import InfoIc from "../components/icons/Info";
 import OfferTemplates from "../components/offer-creation/templates";
 
 export default function Description(props) {
@@ -191,20 +191,38 @@ export default function Description(props) {
     setShowForm(!showForm);
   }
 
+  function setCurrentDatePlusXdays(days) {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    return date;
+  }
+
+  console.log(OfferValidUntil);
+
   const offerValidityHandler = (event, selectedValidity) => {
     setOfferValidity(selectedValidity);
 
     if (selectedValidity === "Set Custom") {
       setShowDatepicker(!showDatepicker);
-    }
-
-    if (
-      selectedValidity === "7 Days" ||
-      selectedValidity === "14 Days" ||
-      selectedValidity === "30 Days" ||
-      selectedValidity === "90 days"
-    )
+    } else {
       setShowDatepicker(false);
+
+      let days = 365;
+      if (selectedValidity === "7 Days") {
+        days = 7;
+      }
+      if (selectedValidity === "14 Days") {
+        days = 14;
+      }
+      if (selectedValidity === "30 Days") {
+        days = 30;
+      }
+      if (selectedValidity === "90 days") {
+        days = 90;
+      }
+
+      setOfferValidUntil(setCurrentDatePlusXdays(days));
+    }
   };
 
   function updateOfferValidVariable(days) {
@@ -216,7 +234,7 @@ export default function Description(props) {
   }
 
   return (
-    <>
+    <Fragment>
       <Navigation
         darkMode={props.darkMode}
         changeDarkMode={props.changeDarkMode}
@@ -295,12 +313,6 @@ export default function Description(props) {
                         <LinkArrowIc />
                       </i>
                     </label>
-                    {/* <Button classes="button withIcon transparent" onClick={handleRadioChange}>
-                      <span>{item.templateName}</span>
-                      <i>
-                        <LinkArrowIc />
-                      </i>
-                    </Button> */}
                   </li>
                 ))}
               </ul>
@@ -481,6 +493,9 @@ export default function Description(props) {
                           value={offerValidity}
                           exclusive
                           onChange={offerValidityHandler}
+                          // onChange={(newValue) => {
+                          //   setOfferValidUntil(setCurrentDatePlusXdays(14));
+                          // }}
                           aria-label="all offerValidity"
                         >
                           <ToggleButton
@@ -624,6 +639,6 @@ export default function Description(props) {
           </div>
         )}
       </div>
-    </>
+    </Fragment>
   );
 }

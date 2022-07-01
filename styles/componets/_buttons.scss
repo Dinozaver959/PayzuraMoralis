@@ -1,4 +1,5 @@
 .button {
+  height: 42px;
   padding: 0.7rem 1.3rem;
   @include BorderRadius(3px);
   border: 1px solid transparent;
@@ -78,7 +79,7 @@
   &.green {
     background: $GreenColor;
     border-color: $GreenColor;
-    color: $WhiteColor;
+    color: $BlackColor;
 
     &:hover {
       background: darken($GreenColor, 7%);
