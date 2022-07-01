@@ -1,14 +1,10 @@
 import { Fragment } from "react";
-import Authenticate from "../components/Authenticate";
-import LoginButton from "../components/LoginButton";
 import Navigation from "../components/Navigation.js";
 
 export default function Home(props) {
   return (
     <Fragment>
-      <LoginButton />
 
-      <Authenticate>
         <Navigation
           darkMode={props.darkMode}
           changeDarkMode={props.changeDarkMode}
@@ -24,9 +20,7 @@ export default function Home(props) {
             Dashboard from Dune Analytics...
           </main>
 
-
         </div>
-      </Authenticate>
     </Fragment>
   );
 }

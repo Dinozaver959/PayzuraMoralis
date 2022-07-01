@@ -190,10 +190,16 @@ export default function Description(props) {
       selectedValidity === "7 Days" ||
       selectedValidity === "14 Days" ||
       selectedValidity === "30 Days" ||
-      selectedValidity === "No Expiry"
+      selectedValidity === "90 days"
     )
       setShowDatepicker(false);
   };
+
+  function updateOfferValidVariable(days) {
+    var date = new Date();
+    date.setDate(date.getDate() + days)
+    setOfferValidUntil(date);
+  }
 
   return (
     <>
@@ -464,28 +470,32 @@ export default function Description(props) {
                           aria-label="all offerValidity"
                         >
                           <ToggleButton
+                            onClick={() => updateOfferValidVariable(7)}
                             value="7 Days"
                             aria-label="offerValidity"
                           >
                             7 Days
                           </ToggleButton>
                           <ToggleButton
+                            onClick={() => updateOfferValidVariable(14)}
                             value="14 Days"
                             aria-label="offerValidity"
                           >
                             14 Days
                           </ToggleButton>
                           <ToggleButton
+                            onClick={() => updateOfferValidVariable(30)}
                             value="30 Days"
                             aria-label="offerValidity"
                           >
                             30 Days
                           </ToggleButton>
                           <ToggleButton
-                            value="No Expiry"
+                            onClick={() => updateOfferValidVariable(90)}
+                            value="90 days"
                             aria-label="offerValidity"
                           >
-                            No Expiry
+                            90 days
                           </ToggleButton>
                           <ToggleButton
                             value="Set Custom"
