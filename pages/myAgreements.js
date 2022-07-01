@@ -26,8 +26,7 @@ import {
 } from "../JS/local_web3_Moralis";
 import Navigation from "../components/Navigation.js";
 import Button from "../components/ui/Button";
-import PlaceholderIc from "../components/icons/Placeholder";
-import LoadingPlaceholder from "./../components/ui/LoadingPlaceholder";
+import PlaceholderIc from "./../components/icons/Placeholder";
 
 const StyledTableRow = styled(TableRow)({
   //'&:nth-of-type(odd)': {
@@ -94,7 +93,6 @@ function wrapDelegates(wallets) {
 
 export default function MyAgreements(props) {
   const [data, setData] = useState([]);
-  const [placeholder, setPlaceholder] = useState(true);
 
   // load options using API call
   async function getCollectionsDetails() {
@@ -114,10 +112,6 @@ export default function MyAgreements(props) {
   // Calling the function on component mount
   useEffect(() => {
     getCollectionsDetails();
-
-    setTimeout(() => {
-      setPlaceholder(false);
-    }, 1200);
   }, []);
 
   return (
@@ -143,26 +137,19 @@ export default function MyAgreements(props) {
           </div>
 
           <div className="cardBody">
-            {data[0] && data ? (
+            {data && data[0] ? (
               <>
                 <Table_normal data={data} />
-                {placeholder && (
-                  <div className="blockLoading">
-                    <LoadingPlaceholder
-                      extraStyles={{ height: "100%", position: "absolute" }}
-                    />
-                  </div>
-                )}
               </>
             ) : (
               <div className="noData">
                 <i>
                   <PlaceholderIc />
                 </i>
-                <h2>There are no available offers.</h2>
+                <h2>There are no Agreements.</h2>
                 <div className="submitButtonOuter">
                   <Button
-                    link="/create-offer"
+                    link="/createOffer"
                     classes={"button primary rounded"}
                   >
                     <span>Create Offer Now</span>

@@ -23,10 +23,8 @@ import {
 } from "../JS/local_web3_Moralis";
 import Navigation from "../components/Navigation.js";
 import Button from "../components/ui/Button";
-import LoadingPlaceholder from "./../components/ui/LoadingPlaceholder";
-
 import PlusIc from "../components/icons/Plus";
-import PlaceholderIc from "../components/icons/Placeholder";
+import PlaceholderIc from "./../components/icons/Placeholder";
 
 const StyledTableRow = styled(TableRow)({
   //'&:nth-of-type(odd)': {
@@ -75,9 +73,8 @@ const StyledInnerTableCell = styled(TableCell)({
 */
 });
 
-export default function ServicesListed(props) {
+export default function ListAvailableOffers(props) {
   const [data, setData] = useState([]);
-  const [placeholder, setPlaceholder] = useState(true);
 
   // load options using API call
   async function getCollectionsDetails() {
@@ -93,10 +90,6 @@ export default function ServicesListed(props) {
   // Calling the function on component mount
   useEffect(() => {
     getCollectionsDetails();
-
-    setTimeout(() => {
-      setPlaceholder(false);
-    }, 1200);
   }, []);
 
   return (
@@ -111,12 +104,12 @@ export default function ServicesListed(props) {
 
       <div className="containerMain">
         <div className="pageHeader">
-          <h1>Services Listed</h1>
+          <h1>Offers Available</h1>
           <div className="headerAction">
-            <Button link="/personalized-services" classes={"button green"}>
-              <span>Personalized Services</span>
-            </Button>
-            <Button link="/create-offer" classes={"button secondary withIcon"}>
+            <Button
+              link="/createOffer"
+              classes={"button secondary withIcon"}
+            >
               <i>
                 <PlusIc />
               </i>
@@ -133,16 +126,9 @@ export default function ServicesListed(props) {
           </div>
 
           <div className="cardBody">
-            {data[0] && data ? (
+            {data && data[0] ? (
               <>
                 <Table_normal data={data} />
-                {placeholder && (
-                  <div className="blockLoading">
-                    <LoadingPlaceholder
-                      extraStyles={{ height: "100%", position: "absolute" }}
-                    />
-                  </div>
-                )}
               </>
             ) : (
               <div className="noData">
@@ -152,7 +138,7 @@ export default function ServicesListed(props) {
                 <h2>There are no available offers.</h2>
                 <div className="submitButtonOuter">
                   <Button
-                    link="/create-offer"
+                    link="/createOffer"
                     classes={"button primary rounded"}
                   >
                     <span>Create Offer Now</span>
@@ -321,9 +307,7 @@ function Row_normal(props) {
               <div className="listData">
                 <div className="listDataItem">
                   <div className="listItemLabel">Wallets Allowed to Accept</div>
-                  <div className="listItemValue">
-                    {wrapPersonalized(item.PersonalizedOffer)}
-                  </div>
+                  <div className="listItemValue">{wrapPersonalized(item.PersonalizedOffer)}</div>
                 </div>
                 <div className="listDataItem">
                   <div className="listItemLabel">Seller Wallet</div>
@@ -331,9 +315,7 @@ function Row_normal(props) {
                 </div>
                 <div className="listDataItem">
                   <div className="listItemLabel">Arbiters</div>
-                  <div className="listItemValue">
-                    {wrapArbiters(item.Arbiters)}
-                  </div>
+                  <div className="listItemValue">{wrapArbiters(item.Arbiters)}</div>
                 </div>
                 <div className="listDataItem">
                   <div className="listItemLabel">Description</div>

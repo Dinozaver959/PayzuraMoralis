@@ -11,8 +11,6 @@ import UserIc from "./icons/User";
 import AgreementIc from "./icons/Agreement";
 import SettingsIc from "./icons/Settings";
 import LogoutIc from "./icons/Logout";
-import DisputeIc from "./icons/Dispute";
-import PersonlaizedServicesIc from "./icons/PersonlaizedServices";
 
 import useOutsideClick from "./../components/useOutsideClick";
 
@@ -41,18 +39,29 @@ export default function Navigation(props) {
           <li className={router.pathname == "/" ? "active" : ""}>
             <Link href="/">Dashboard</Link>
           </li>
-          <li
-            className={router.pathname == "/services-listed" ? "active" : ""}
-          >
-            <Link href="/services-listed">Services Listed</Link>
+          <li className={router.pathname == "/createOffer" ? "active" : ""}>
+            <Link href="/createOffer">createOffer</Link>
           </li>
           <li
-            className={router.pathname == "/services-seeked" ? "active" : ""}
+            className={router.pathname == "/listPublicOffers" ? "active" : ""}
           >
-            <Link href="/services-seeked">Services Seeked</Link>
+            <Link href="/listPublicOffers">listPublicOffers</Link>
           </li>
-          <li className={router.pathname == "/my-agreements" ? "active" : ""}>
-            <Link href="/my-agreements">My Agreements</Link>
+          
+          <li
+          	className={router.pathname == "/listDisputesToHandle" ? "active" : ""}
+          >
+            <Link href="/listDisputesToHandle">handleDisputes</Link> 
+          </li>
+          <li
+            className={
+              router.pathname == "/listPersonalizedOffers" ? "active" : ""
+            }
+          >
+            <Link href="/listPersonalizedOffers">listPersonalizedOffers</Link>
+          </li>
+          <li className={router.pathname == "/myAgreements" ? "active" : ""}>
+            <Link href="/myAgreements">myAgreements</Link>
           </li>
         </ul>
       </nav>
@@ -100,23 +109,7 @@ export default function Navigation(props) {
                   </Button>
                 </li>
                 <li>
-                  <Button link="/handle-disputes">
-                    <i>
-                      <DisputeIc />
-                    </i>
-                    <span>Handle Disputes</span>
-                  </Button>
-                </li>
-                <li>
-                  <Button link="/personalized-services">
-                    <i>
-                      <PersonlaizedServicesIc />
-                    </i>
-                    <span>Personalized Services</span>
-                  </Button>
-                </li>
-                <li>
-                  <Button link="/my-agreements">
+                  <Button link="/">
                     <i>
                       <AgreementIc />
                     </i>

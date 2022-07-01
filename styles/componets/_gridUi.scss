@@ -8,14 +8,12 @@
     font-family: $PrimaryFont !important;
     font-weight: 500;
     border-bottom-color: darken($BorderDark, 1%) !important;
-    white-space: nowrap;
   }
 
   .MuiTableCell-root.MuiTableCell-body {
     background-color: transparent !important;
     color: $FontColorDark !important;
     border-bottom: none !important;
-    white-space: nowrap;
 
     .MuiButtonBase-root.MuiIconButton-root {
       background: $LightBlueBg !important;
