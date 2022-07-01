@@ -33,11 +33,22 @@ export default function Description(props) {
     control,
   } = useForm();
   const onSubmit = (data) => SubmitForm(); // console.log(data);
-  const now = new Date();
-  const [OfferValidUntil, setOfferValidUntil] = React.useState(now.setDate(now.getDate + 7));
+  
+  const [OfferValidUntil, setOfferValidUntil] = React.useState(
+    () => {
+      var date = new Date();
+      date.setMilliseconds(0);
+      date.setDate(date.getDate() + 7); // 7 days is default value
+
+      console.log("date:");
+      console.log(date);
+
+      return date;
+    }
+  );
 
   async function SubmitForm() {
-    // call Smart Contract function
+
     CreateEscrow_Moralis(
       10 ** 18 * document.getElementById("Price").value,
       document.getElementById("TimeToDeliver").value,
@@ -198,7 +209,9 @@ export default function Description(props) {
 
   function updateOfferValidVariable(days) {
     var date = new Date();
-    date.setDate(date.getDate() + days)
+    date.setMilliseconds(0);
+    date.setDate(date.getDate() + days);
+
     setOfferValidUntil(date);
   }
 
