@@ -25,6 +25,10 @@ header {
   nav.navbarMain {
     flex: 2;
 
+    @include RespondTo(IpadDevices) {
+      display: none;
+    }
+
     ul {
       @include Size(100%, 100%);
       @extend %FlexRow-CenterStart;
@@ -103,6 +107,20 @@ header {
       path {
         fill: $PrimaryColor;
       }
+    }
+  }
+
+  .mobileNavTrigger {
+    padding: 0 15px;
+    @extend %FlexCol-CenterCenter;
+    display: none;
+
+    @include RespondTo(IpadDevices) {
+      display: flex;
+    }
+
+    svg {
+      @include Size(24px, 24px);
     }
   }
 }

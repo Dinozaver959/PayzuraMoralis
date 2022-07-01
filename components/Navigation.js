@@ -36,19 +36,21 @@ export default function Navigation(props) {
         </svg>
       </div>
 
+      <div className="mobileNavTrigger">
+        <svg viewBox="0 0 47 29">
+          <path d="M20.000,29.000 L20.000,26.000 L47.000,26.000 L47.000,29.000 L20.000,29.000 ZM10.000,13.000 L47.000,13.000 L47.000,16.000 L10.000,16.000 L10.000,13.000 ZM0.000,0.000 L47.000,0.000 L47.000,3.000 L0.000,3.000 L0.000,0.000 Z" />
+        </svg>
+      </div>
+
       <nav className="navbarMain">
         <ul>
           <li className={router.pathname == "/" ? "active" : ""}>
             <Link href="/">Dashboard</Link>
           </li>
-          <li
-            className={router.pathname == "/services-listed" ? "active" : ""}
-          >
+          <li className={router.pathname == "/services-listed" ? "active" : ""}>
             <Link href="/services-listed">Services Listed</Link>
           </li>
-          <li
-            className={router.pathname == "/services-seeked" ? "active" : ""}
-          >
+          <li className={router.pathname == "/services-seeked" ? "active" : ""}>
             <Link href="/services-seeked">Services Seeked</Link>
           </li>
           <li className={router.pathname == "/my-agreements" ? "active" : ""}>

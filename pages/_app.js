@@ -17,6 +17,12 @@ function MyApp({ Component, pageProps }) {
     setDropdownOpen(!dropdownOpen);
   }
 
+  // Responsive mobile menu drawer
+  const [hasMenuDrawer, setMenuDrawer] = useState(false);
+  function toggleMobileDrawerHandler() {
+    setMenuDrawer(!hasMenuDrawer);
+  }
+
   return (
     <div className={darkMode ? "layoutMain darkMode" : "layoutMain"}>
       <MoralisProvider
@@ -58,6 +64,7 @@ function MyApp({ Component, pageProps }) {
           dropdownOpen={dropdownOpen}
           setDropdownOpen={setDropdownOpen}
           OpenDropdownFn={OpenDropdownHalndler}
+          toggleNavTrigger={toggleMobileDrawerHandler}
         />
       </MoralisProvider>
     </div>
