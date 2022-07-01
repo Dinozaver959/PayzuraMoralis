@@ -15,6 +15,7 @@ import DisputeIc from "./icons/Dispute";
 import PersonlaizedServicesIc from "./icons/PersonlaizedServices";
 
 import useOutsideClick from "./../components/useOutsideClick";
+import CloseIc from "./icons/Close";
 
 export default function Navigation(props) {
   const darkMode = props.darkMode;
@@ -43,6 +44,9 @@ export default function Navigation(props) {
       </div>
 
       <nav className="navbarMain">
+        <div className="navbarClose">
+          <CloseIc />
+        </div>
         <ul>
           <li className={router.pathname == "/" ? "active" : ""}>
             <Link href="/">Dashboard</Link>

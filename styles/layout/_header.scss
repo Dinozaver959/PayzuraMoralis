@@ -26,12 +26,22 @@ header {
     flex: 2;
 
     @include RespondTo(IpadDevices) {
-      display: none;
+      @include Size(300px, 100vh);
+      @include Fixed($Top: 0, $Right: 0);
+      background: rgba($BlackColor, 0.95);
+      backdrop-filter: blur(20px);
+      z-index: 99;
     }
 
     ul {
       @include Size(100%, 100%);
       @extend %FlexRow-CenterStart;
+
+      @include RespondTo(IpadDevices) {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
 
       li {
         height: 100%;
