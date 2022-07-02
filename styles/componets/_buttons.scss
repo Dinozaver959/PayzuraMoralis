@@ -8,6 +8,10 @@
   text-decoration: none;
   cursor: pointer;
 
+  @include RespondTo(MobileDevices) {
+    text-align: center;
+  }
+
   &.withIcon {
     @extend %FlexRow-CenterStart;
     display: inline-flex;

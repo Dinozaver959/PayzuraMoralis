@@ -26,11 +26,25 @@ header {
     flex: 2;
 
     @include RespondTo(IpadDevices) {
-      @include Size(300px, 100vh);
-      @include Fixed($Top: 0, $Right: 0);
+      @include Size(320px, 100vh);
+      @include Fixed($Top: 0, $Right: -320px);
       background: rgba($BlackColor, 0.95);
       backdrop-filter: blur(20px);
       z-index: 99;
+      @include Transition(0.1s);
+    }
+
+    .navbarClose {
+      display: none;
+      @include Absolute($Right: 20px, $Top: 20px);
+
+      svg {
+        @include Size(42px, 42px);
+
+        path {
+          fill: $FontColorLight;
+        }
+      }
     }
 
     ul {
@@ -47,6 +61,11 @@ header {
         height: 100%;
         padding: 0 7px;
 
+        @include RespondTo(IpadDevices) {
+          height: auto;
+          margin-bottom: 20px;
+        }
+
         a {
           @extend %FlexCol-CenterCenter;
           display: inline-flex;
@@ -56,12 +75,22 @@ header {
           text-decoration: none;
           font-size: 0.8rem;
           border-bottom: 2px solid transparent;
+
+          @include RespondTo(IpadDevices) {
+            font-size: 1.2rem;
+            color: $FontColorLight;
+          }
         }
 
         &.active {
           a {
             border-bottom-color: $PrimaryColor;
             color: $PrimaryColor;
+
+            @include RespondTo(IpadDevices) {
+              border-bottom-color: $LightBlueColor;
+              color: $LightBlueColor;
+            }
           }
         }
       }
@@ -129,8 +158,19 @@ header {
       display: flex;
     }
 
+    &.show {
+      + nav.navbarMain {
+        right: 0px;
+        @include Transition(0.1s);
+      }
+    }
+
     svg {
       @include Size(24px, 24px);
+
+      path {
+        fill: $PrimaryColor;
+      }
     }
   }
 }
@@ -182,6 +222,14 @@ header {
             background: red;
             border-color: $DarkBg;
           }
+        }
+      }
+    }
+
+    .mobileNavTrigger {
+      svg {
+        path {
+          fill: $FontColorLight;
         }
       }
     }

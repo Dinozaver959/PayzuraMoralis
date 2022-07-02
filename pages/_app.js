@@ -8,17 +8,19 @@ import NextNProgress from "./../components/ui/NextNProgress";
 function MyApp({ Component, pageProps }) {
   const [darkMode, setDarkMode] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [hasMenuDrawer, setMenuDrawer] = useState(false);
 
+  // Light and Dark Mode function
   function changeDarkModeHalndler() {
     setDarkMode(!darkMode);
   }
 
+  // Header drop-down function
   function OpenDropdownHalndler() {
     setDropdownOpen(!dropdownOpen);
   }
 
-  // Responsive mobile menu drawer
-  const [hasMenuDrawer, setMenuDrawer] = useState(false);
+  // Responsive mobile menu drawer function
   function toggleMobileDrawerHandler() {
     setMenuDrawer(!hasMenuDrawer);
   }
@@ -61,10 +63,14 @@ function MyApp({ Component, pageProps }) {
           {...pageProps}
           darkMode={darkMode}
           changeDarkMode={changeDarkModeHalndler}
+
           dropdownOpen={dropdownOpen}
           setDropdownOpen={setDropdownOpen}
           OpenDropdownFn={OpenDropdownHalndler}
-          toggleNavTrigger={toggleMobileDrawerHandler}
+
+          hasMenuDrawer={hasMenuDrawer}
+          setMenuDrawer={setMenuDrawer}
+          mobileDrawerFn={toggleMobileDrawerHandler}
         />
       </MoralisProvider>
     </div>

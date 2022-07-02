@@ -3,6 +3,11 @@
   @extend %FlexRow-CenterBetween;
   padding-bottom: 1rem;
 
+  @include RespondTo(IpadDevices) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   h1 {
     flex: 2;
     @include Font(null, 1.7rem, $BlackColor, 44px, 500);
@@ -12,9 +17,28 @@
     margin-left: 1rem;
     @extend %FlexRow-CenterCenter;
 
+    @include RespondTo(IpadDevices) {
+      margin-left: 0;
+      margin-top: 0.7rem;
+    }
+
+    @include RespondTo(MobileDevices) {
+      flex-direction: column;
+      width: 100%;
+    }
+
     .button {
+      @include RespondTo(MobileDevices) {
+        width: 100%;
+      }
+
       + .button {
         margin-left: 10px;
+
+        @include RespondTo(MobileDevices) {
+          margin-left: 0;
+          margin-top: 10px;
+        }
       }
     }
   }
