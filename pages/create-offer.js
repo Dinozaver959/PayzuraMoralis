@@ -191,13 +191,13 @@ export default function Description(props) {
     setShowForm(!showForm);
   }
 
-  function setCurrentDatePlusXdays(days) {
-    const date = new Date();
+  function updateOfferValidVariable(days) {
+    var date = new Date();
+    date.setMilliseconds(0);
     date.setDate(date.getDate() + days);
-    return date;
-  }
 
-  console.log(OfferValidUntil);
+    setOfferValidUntil(date);
+  }
 
   const offerValidityHandler = (event, selectedValidity) => {
     setOfferValidity(selectedValidity);
@@ -221,17 +221,9 @@ export default function Description(props) {
         days = 90;
       }
 
-      setOfferValidUntil(setCurrentDatePlusXdays(days));
+      updateOfferValidVariable(days);
     }
   };
-
-  function updateOfferValidVariable(days) {
-    var date = new Date();
-    date.setMilliseconds(0);
-    date.setDate(date.getDate() + days);
-
-    setOfferValidUntil(date);
-  }
 
   return (
     <Fragment>
@@ -493,34 +485,27 @@ export default function Description(props) {
                           value={offerValidity}
                           exclusive
                           onChange={offerValidityHandler}
-                          // onChange={(newValue) => {
-                          //   setOfferValidUntil(setCurrentDatePlusXdays(14));
-                          // }}
                           aria-label="all offerValidity"
                         >
                           <ToggleButton
-                            onClick={() => updateOfferValidVariable(7)}
                             value="7 Days"
                             aria-label="offerValidity"
                           >
                             7 Days
                           </ToggleButton>
                           <ToggleButton
-                            onClick={() => updateOfferValidVariable(14)}
                             value="14 Days"
                             aria-label="offerValidity"
                           >
                             14 Days
                           </ToggleButton>
                           <ToggleButton
-                            onClick={() => updateOfferValidVariable(30)}
                             value="30 Days"
                             aria-label="offerValidity"
                           >
                             30 Days
                           </ToggleButton>
                           <ToggleButton
-                            onClick={() => updateOfferValidVariable(90)}
                             value="90 days"
                             aria-label="offerValidity"
                           >
