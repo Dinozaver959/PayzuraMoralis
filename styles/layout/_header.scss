@@ -13,8 +13,16 @@ header {
     @extend %FlexCol-CenterCenter;
     border-right: 1px solid $BorderDark;
 
+    @include RespondTo(MobileDevices) {
+      width: 150px;
+    }
+
     svg {
       @include Size(150px, 40px);
+
+      @include RespondTo(MobileDevices) {
+        @include Size(120px, 22px);
+      }
 
       path {
         fill: $PrimaryColor;
@@ -26,8 +34,9 @@ header {
     flex: 2;
 
     @include RespondTo(IpadDevices) {
-      @include Size(320px, 100vh);
-      @include Fixed($Top: 0, $Right: -320px);
+      @include Size(600px, 100vh);
+      max-width: 90%;
+      @include Fixed($Top: 0, $Right: -600px);
       background: rgba($BlackColor, 0.95);
       backdrop-filter: blur(20px);
       z-index: 99;
@@ -37,6 +46,11 @@ header {
     .navbarClose {
       display: none;
       @include Absolute($Right: 20px, $Top: 20px);
+
+      > button {
+        border: none;
+        background: transparent;
+      }
 
       svg {
         @include Size(42px, 42px);
@@ -80,6 +94,12 @@ header {
             font-size: 1.2rem;
             color: $FontColorLight;
           }
+
+          @include RespondTo(SmallDesktop) {
+            padding-left: 0;
+            padding-right: 0;
+            font-size: 0.7rem;
+          }
         }
 
         &.active {
@@ -119,6 +139,10 @@ header {
 
           svg {
             @include Size(22px, 22px);
+
+            @include RespondTo(MobileDevices) {
+              @include Size(20px, 20px);
+            }
           }
 
           .notiIndicator {
@@ -143,6 +167,10 @@ header {
     svg {
       @include Size(28px, 28px);
 
+      @include RespondTo(MobileDevices) {
+        @include Size(22px, 22px);
+      }
+
       path {
         fill: $PrimaryColor;
       }
@@ -156,6 +184,13 @@ header {
 
     @include RespondTo(IpadDevices) {
       display: flex;
+      flex: 2;
+      @include AlignItems(flex-end);
+    }
+
+    > button {
+      border: none;
+      background: transparent;
     }
 
     &.show {

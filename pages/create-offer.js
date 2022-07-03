@@ -221,6 +221,10 @@ export default function Description(props) {
         dropdownOpen={props.dropdownOpen}
         setDropdownOpen={props.setDropdownOpen}
         OpenDropdownFn={props.OpenDropdownFn}
+
+        hasMenuDrawer={props.hasMenuDrawer}
+        setMenuDrawer={props.setMenuDrawer}
+        mobileDrawerFn={props.mobileDrawerFn}
       />
 
       <div className="containerMain">

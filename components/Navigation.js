@@ -50,10 +50,9 @@ export default function Navigation(props) {
       </div>
 
       <div
-        onClick={props.mobileDrawerFn}
         className={hasMenuDrawer ? "mobileNavTrigger show" : "mobileNavTrigger"}
       >
-        <MobileMenuIc />
+        <MobileMenuIc onClick={props.mobileDrawerFn} />
       </div>
 
       <nav className="navbarMain" ref={drawerRef}>
@@ -62,9 +61,8 @@ export default function Navigation(props) {
           style={{
             display: hasMenuDrawer ? "block" : "none",
           }}
-          onClick={props.mobileDrawerFn}
         >
-          <CloseIc />
+          <CloseIc onClick={props.mobileDrawerFn} />
         </div>
         <ul>
           <li className={router.pathname == "/" ? "active" : ""}>
