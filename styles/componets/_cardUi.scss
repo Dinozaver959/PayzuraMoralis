@@ -6,25 +6,29 @@
   @include BorderRadius($CardRounded);
   @include BoxShadow(0px 0px $CardRounded rgba($PrimaryColor, 0.15));
 
+  @include RespondTo(MobileDevices) {
+    padding: 20px;
+    border-radius: 14px;
+  }
+
   .cardHeader {
-    padding-bottom: 24px;
+    padding-bottom: 18px;
     @extend %FlexRow-CenterBetween;
+
+    @include RespondTo(MobileDevices) {
+      padding-bottom: 18px;
+    }
 
     .cardTitle {
       flex: 2;
 
       h2 {
-        @include Font(null, 1.4rem, $BlackColor, null, 500);
         margin: 0;
       }
 
       p {
-        @include Font(null, 1rem, $FontColorDark, null, 400);
         margin: 7px 0;
       }
-    }
-
-    .cardAction {
     }
   }
 
@@ -47,6 +51,10 @@
     .cardBody {
       flex: 2;
       padding: 24px;
+
+      @include RespondTo(MobileDevices) {
+        padding: 18px;
+      }
     }
   }
 }
@@ -60,14 +68,6 @@
     .cardHeader {
       .cardTitle {
         flex: 2;
-
-        h2 {
-          color: $WhiteColor;
-        }
-
-        p {
-          color: $FontColorLight;
-        }
       }
     }
 

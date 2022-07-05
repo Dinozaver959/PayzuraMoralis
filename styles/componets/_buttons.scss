@@ -3,13 +3,13 @@
   padding: 0.7rem 1.3rem;
   @include BorderRadius(3px);
   border: 1px solid transparent;
-  @include Font(null, 0.8rem, null, null, 500);
-  letter-spacing: 0.5px;
   text-decoration: none;
   cursor: pointer;
 
   @include RespondTo(MobileDevices) {
     text-align: center;
+    height: 36px;
+    padding: 0.5rem 1.1rem;
   }
 
   &.withIcon {
@@ -47,7 +47,6 @@
   &.primary {
     background: $PrimaryColor;
     border-color: $PrimaryColor;
-    color: $WhiteColor;
 
     &:hover {
       background: darken($PrimaryColor, 7%);
@@ -59,7 +58,6 @@
   &.secondary {
     background: $SecondaryColor;
     border-color: $SecondaryColor;
-    color: $BlackColor;
 
     &:hover {
       background: darken($SecondaryColor, 7%);
@@ -71,7 +69,6 @@
   &.orange {
     background: $OrangeColor;
     border-color: $OrangeColor;
-    color: $WhiteColor;
 
     &:hover {
       background: darken($OrangeColor, 7%);
@@ -83,7 +80,6 @@
   &.green {
     background: $GreenColor;
     border-color: $GreenColor;
-    color: $BlackColor;
 
     &:hover {
       background: darken($GreenColor, 7%);
@@ -95,10 +91,8 @@
   &.transparent {
     background: transparent;
     border-color: transparent;
-    color: $FontColorDark;
 
     &:hover {
-      color: $PrimaryColor;
       @include BoxShadow(2px 2px 5px rgba($SecondaryColor, 0.4));
     }
   }

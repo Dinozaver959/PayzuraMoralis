@@ -4,16 +4,12 @@
 
   .MuiTableCell-root.MuiTableCell-head {
     background-color: transparent !important;
-    color: rgba($FontColorDark, 0.75) !important;
-    font-family: $PrimaryFont !important;
-    font-weight: 500;
     border-bottom-color: darken($BorderDark, 1%) !important;
     white-space: nowrap;
   }
 
   .MuiTableCell-root.MuiTableCell-body {
     background-color: transparent !important;
-    color: $FontColorDark !important;
     border-bottom: none !important;
     white-space: nowrap;
 
@@ -32,13 +28,10 @@
 .darkMode {
   .MuiPaper-root.MuiTableContainer-root {
     .MuiTableCell-root.MuiTableCell-head {
-      color: rgba($FontColorLight, 0.75) !important;
       border-bottom-color: $BorderLight !important;
     }
 
     .MuiTableCell-root.MuiTableCell-body {
-      color: $FontColorLight !important;
-
       .MuiButtonBase-root.MuiIconButton-root {
         background: $DarkBlueBg !important;
 

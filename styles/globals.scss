@@ -1,4 +1,3 @@
-
 /*-----------------------------------------------------------------
 [Legal Notice]
 
@@ -8,39 +7,34 @@ http://www.payzura.com
 -------------------------------------------------------------------*/
 
 /* Helpers */
-@import 'helpers/_mixins';
-@import 'helpers/_variables';
-@import 'helpers/_flex';
-
-/* Vendors */
-// @import 'vendors/bootstrap';
-// @import 'vendors/swiper-bundle';
-// @import 'vendors/uikit.scss';
+@import "helpers/_mixins";
+@import "helpers/_variables";
+@import "helpers/_flex";
 
 /* Bases */
-@import 'base/reset';
-@import 'base/spacing';
-@import 'base/common';
-@import 'base/fonts';
-@import 'base/base';
-@import 'base/svg-background';
+@import "base/reset";
+@import "base/spacing";
+@import "base/common";
+@import "base/fonts";
+@import "base/base";
+@import "base/svg-background";
 
 /* Componets */
-@import 'componets/typography';
-@import 'componets/buttons';
-@import 'componets/form';
-@import 'componets/RadioCheckbox';
-@import 'componets/keyframes';
-@import 'componets/dropDown';
-@import 'componets/cardUi';
-@import 'componets/gridUi';
-@import 'componets/tooltip';
+@import "componets/buttons";
+@import "componets/form";
+@import "componets/RadioCheckbox";
+@import "componets/keyframes";
+@import "componets/dropDown";
+@import "componets/cardUi";
+@import "componets/gridUi";
+@import "componets/tooltip";
+@import "componets/typography";
 
 /* Layout */
-@import 'layout/header';
+@import "layout/header";
 
 /* Pages */
-@import 'pages/Index';
-@import 'pages/Login';
-@import 'pages/ListOffers';
-@import 'pages/CreateOffer';
+@import "pages/Index";
+@import "pages/Login";
+@import "pages/ListOffers";
+@import "pages/CreateOffer";

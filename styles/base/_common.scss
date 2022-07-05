@@ -6,11 +6,11 @@
   @include RespondTo(IpadDevices) {
     flex-direction: column;
     align-items: flex-start;
+    padding-bottom: 0.8rem;
   }
 
   h1 {
     flex: 2;
-    @include Font(null, 1.7rem, $BlackColor, 44px, 500);
   }
 
   .headerAction {
@@ -25,6 +25,7 @@
     @include RespondTo(MobileDevices) {
       flex-direction: column;
       width: 100%;
+      font-size: 0.8rem;
     }
 
     .button {
@@ -45,9 +46,6 @@
 }
 
 .error {
-  color: $ErrorColor;
-  font-size: 10px;
-  font-style: italic;
   margin: 5px;
   text-align: center;
 }
@@ -72,7 +70,6 @@
   }
 
   h2 {
-    @include Font(null, 1rem, $FontColorDark, null, 500);
     margin: 0;
   }
 }
@@ -104,7 +101,6 @@
   .pageHeader {
     h1 {
       flex: 2;
-      color: $WhiteColor;
     }
   }
 
@@ -118,13 +114,5 @@
         }
       }
     }
-
-    h2 {
-      color: $FontColorLight;
-    }
-  }
-
-  .error {
-    color: lighten($ErrorColor, 10%);
   }
 }

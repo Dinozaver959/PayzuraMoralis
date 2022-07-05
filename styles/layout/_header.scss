@@ -21,7 +21,7 @@ header {
       @include Size(150px, 40px);
 
       @include RespondTo(MobileDevices) {
-        @include Size(120px, 22px);
+        @include Size(120px, 24px);
       }
 
       path {
@@ -85,31 +85,21 @@ header {
           display: inline-flex;
           height: 100%;
           padding: 10px;
-          color: $FontColorDark;
           text-decoration: none;
-          font-size: 0.8rem;
           border-bottom: 2px solid transparent;
-
-          @include RespondTo(IpadDevices) {
-            font-size: 1.2rem;
-            color: $FontColorLight;
-          }
 
           @include RespondTo(SmallDesktop) {
             padding-left: 0;
             padding-right: 0;
-            font-size: 0.7rem;
           }
         }
 
         &.active {
           a {
             border-bottom-color: $PrimaryColor;
-            color: $PrimaryColor;
 
             @include RespondTo(IpadDevices) {
               border-bottom-color: $LightBlueColor;
-              color: $LightBlueColor;
             }
           }
         }
@@ -228,14 +218,9 @@ header {
     nav.navbarMain {
       ul {
         li {
-          a {
-            color: $FontColorLight;
-          }
-
           &.active {
             a {
               border-bottom-color: $SecondaryColor;
-              color: $SecondaryColor;
             }
           }
         }

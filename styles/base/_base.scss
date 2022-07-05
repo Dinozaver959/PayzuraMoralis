@@ -24,7 +24,6 @@ body {
   min-height: 100vh;
 
   &.darkMode {
-    color: $FontColorLight;
     background: $DarkBg;
   }
 }
@@ -37,4 +36,11 @@ body {
   width: 100%;
   padding: 1.7rem 2%;
   padding-top: 90px;
+
+  @include RespondTo(MobileDevices) {
+    padding-bottom: 1.5rem;
+    padding-left: 4%;
+    padding-right: 4%;
+    padding-bottom: 75px;
+  }
 }

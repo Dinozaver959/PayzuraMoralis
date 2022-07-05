@@ -1,51 +1,33 @@
 html,
 body {
-    @include Size(100%, 100%);
-    font-family: $PrimaryFont;
+  @include Size(100%, 100%);
 }
 
 body {
-    margin: 0px;
-    padding: 0px;
-    min-height: 100%;
-    @include Font(null, $FontMedium, $FontColorDark, normal, 500);
-    overflow-x: hidden;
-    letter-spacing: 0.5px;
+  margin: 0px;
+  padding: 0px;
+  min-height: 100%;
+  overflow-x: hidden;
 }
 
 * {
-    list-style: none;
-    margin: 0px;
-    padding: 0px;
-    box-sizing: border-box;
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
 }
 
 img {
-    max-width: 100%;
-    border: none;
+  max-width: 100%;
+  border: none;
 }
 
 *:hover,
 *:focus,
 *:active {
-    outline: none;
-}
-
-a {
-    color: $PrimaryColor;
-
-    &:hover {
-        color: $PrimaryColor;
-    }
+  outline: none;
 }
 
 ul {
-    margin: 0;
-}
-
-input,
-select,
-textarea,
-button {
-    font-family: $PrimaryFont;
+  margin: 0;
 }

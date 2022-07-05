@@ -12,6 +12,14 @@
     border: 3px solid transparent;
     @include Transition(0.2s);
 
+    @include RespondTo(IpadDevices) {
+      width: calc(50% - 36px);
+    }
+
+    @include RespondTo(MobileDevices) {
+      width: 100%;
+    }
+
     &.selected {
       border-color: $PrimaryColor;
     }
@@ -254,7 +262,7 @@
             + label.linkBlock {
               background: rgba($LightBlueColor, 0.05);
               color: $LightBlueColor;
-  
+
               > span {
                 + i {
                   svg {
@@ -267,14 +275,14 @@
             }
           }
         }
-  
+
         .linkBlock {
           color: $FontColorLight;
-  
+
           &:hover {
             background: rgba($LightBlueColor, 0.1);
           }
-  
+
           > span {
             + i {
               svg {
