@@ -33,10 +33,22 @@ export default function Description(props) {
     control,
   } = useForm();
   const onSubmit = (data) => SubmitForm(); // console.log(data);
-  const [OfferValidUntil, setOfferValidUntil] = React.useState(new Date());
+  
+  const [OfferValidUntil, setOfferValidUntil] = React.useState(
+    () => {
+      var date = new Date();
+      date.setMilliseconds(0);
+      date.setDate(date.getDate() + 7); // 7 days is default value
+
+      console.log("date:");
+      console.log(date);
+
+      return date;
+    }
+  );
 
   async function SubmitForm() {
-    // call Smart Contract function
+
     CreateEscrow_Moralis(
       10 ** 18 * document.getElementById("Price").value,
       document.getElementById("TimeToDeliver").value,
@@ -179,13 +191,13 @@ export default function Description(props) {
     setShowForm(!showForm);
   }
 
-  function setCurrentDatePlusXdays(days) {
-    const date = new Date();
+  function updateOfferValidVariable(days) {
+    var date = new Date();
+    date.setMilliseconds(0);
     date.setDate(date.getDate() + days);
-    return date;
-  }
 
-  console.log(OfferValidUntil);
+    setOfferValidUntil(date);
+  }
 
   const offerValidityHandler = (event, selectedValidity) => {
     setOfferValidity(selectedValidity);
@@ -205,11 +217,11 @@ export default function Description(props) {
       if (selectedValidity === "30 Days") {
         days = 30;
       }
-      if (selectedValidity === "No Expiry") {
-        days = 365;
+      if (selectedValidity === "90 days") {
+        days = 90;
       }
 
-      setOfferValidUntil(setCurrentDatePlusXdays(days));
+      updateOfferValidVariable(days);
     }
   };
 
@@ -477,9 +489,6 @@ export default function Description(props) {
                           value={offerValidity}
                           exclusive
                           onChange={offerValidityHandler}
-                          // onChange={(newValue) => {
-                          //   setOfferValidUntil(setCurrentDatePlusXdays(14));
-                          // }}
                           aria-label="all offerValidity"
                         >
                           <ToggleButton
@@ -501,10 +510,10 @@ export default function Description(props) {
                             30 Days
                           </ToggleButton>
                           <ToggleButton
-                            value="No Expiry"
+                            value="90 days"
                             aria-label="offerValidity"
                           >
-                            No Expiry
+                            90 days
                           </ToggleButton>
                           <ToggleButton
                             value="Set Custom"
