@@ -56,25 +56,32 @@ export default function Navigation(props) {
       </div>
 
       <nav className="navbarMain" ref={drawerRef}>
-        <div
-          className="navbarClose"
-          style={{
-            display: hasMenuDrawer ? "block" : "none",
-          }}
-        >
+        <div className={hasMenuDrawer ? "navbarClose show" : "navbarClose"}>
           <CloseIc onClick={props.mobileDrawerFn} />
         </div>
         <ul>
-          <li className={router.pathname == "/" ? "active" : ""}>
+          <li
+            className={router.pathname == "/" ? "active" : ""}
+            onClick={props.mobileDrawerFn}
+          >
             <Link href="/">Dashboard</Link>
           </li>
-          <li className={router.pathname == "/services-listed" ? "active" : ""}>
+          <li
+            className={router.pathname == "/services-listed" ? "active" : ""}
+            onClick={props.mobileDrawerFn}
+          >
             <Link href="/services-listed">Services Listed</Link>
           </li>
-          <li className={router.pathname == "/services-seeked" ? "active" : ""}>
+          <li
+            className={router.pathname == "/services-seeked" ? "active" : ""}
+            onClick={props.mobileDrawerFn}
+          >
             <Link href="/services-seeked">Services Seeked</Link>
           </li>
-          <li className={router.pathname == "/my-agreements" ? "active" : ""}>
+          <li
+            className={router.pathname == "/my-agreements" ? "active" : ""}
+            onClick={props.mobileDrawerFn}
+          >
             <Link href="/my-agreements">My Agreements</Link>
           </li>
         </ul>
@@ -114,7 +121,7 @@ export default function Navigation(props) {
           {dropdownOpen && (
             <div className="dropdownMenu right withIc">
               <ul>
-                <li>
+                <li onClick={() => setDropdownOpen(false)}>
                   <Button link="/">
                     <i>
                       <UserIc />
@@ -122,7 +129,7 @@ export default function Navigation(props) {
                     <span>My Profile</span>
                   </Button>
                 </li>
-                <li>
+                <li onClick={() => setDropdownOpen(false)}>
                   <Button link="/handle-disputes">
                     <i>
                       <DisputeIc />
@@ -130,7 +137,7 @@ export default function Navigation(props) {
                     <span>Handle Disputes</span>
                   </Button>
                 </li>
-                <li>
+                <li onClick={() => setDropdownOpen(false)}>
                   <Button link="/personalized-services">
                     <i>
                       <PersonlaizedServicesIc />
@@ -138,7 +145,7 @@ export default function Navigation(props) {
                     <span>Personalized Services</span>
                   </Button>
                 </li>
-                <li>
+                <li onClick={() => setDropdownOpen(false)}>
                   <Button link="/my-agreements">
                     <i>
                       <AgreementIc />
@@ -146,7 +153,7 @@ export default function Navigation(props) {
                     <span>My Agreements</span>
                   </Button>
                 </li>
-                <li>
+                <li onClick={() => setDropdownOpen(false)}>
                   <Button link="/">
                     <i>
                       <SettingsIc />
@@ -154,7 +161,7 @@ export default function Navigation(props) {
                     <span>Settings</span>
                   </Button>
                 </li>
-                <li>
+                <li onClick={() => setDropdownOpen(false)}>
                   <Button link="/">
                     <i>
                       <LogoutIc />

@@ -128,7 +128,6 @@ export default function MyAgreements(props) {
         dropdownOpen={props.dropdownOpen}
         setDropdownOpen={props.setDropdownOpen}
         OpenDropdownFn={props.OpenDropdownFn}
-
         hasMenuDrawer={props.hasMenuDrawer}
         setMenuDrawer={props.setMenuDrawer}
         mobileDrawerFn={props.mobileDrawerFn}
@@ -221,25 +220,33 @@ function Row_normal(props) {
   return (
     <React.Fragment>
       <StyledTableRow sx={{ "& > *": { borderBottom: "unset" } }}>
-        <StyledTableCell>
+        <StyledTableCell className="gridMoreArrow">
           <IconButton
             aria-label="expand row"
             size="small"
             onClick={() => setOpen(!open)}
           >
             <IconContext.Provider value={{ color: "black" }}>
-              {" "}
-              {/*  specify the color for the arrow */}
               {open ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
             </IconContext.Provider>
           </IconButton>
         </StyledTableCell>
         <StyledTableCell component="th" scope="row">
+          <label className="mobileLabel">Title</label>
           {item.OfferTitle}
         </StyledTableCell>
-        <StyledTableCell>{item.State}</StyledTableCell>
-        <StyledTableCell>{item.Price}</StyledTableCell>
-        <StyledTableCell>{item.TimeToDeliver}</StyledTableCell>
+        <StyledTableCell>
+          <label className="mobileLabel">State</label>
+          {item.State}
+        </StyledTableCell>
+        <StyledTableCell>
+          <label className="mobileLabel">Price (ETH)</label>
+          {item.Price}
+        </StyledTableCell>
+        <StyledTableCell>
+          <label className="mobileLabel">Time to Deliver (hours)</label>
+          {item.TimeToDeliver}
+        </StyledTableCell>
         <StyledTableCell>
           <input
             className="button primary rounded"

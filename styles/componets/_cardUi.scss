@@ -17,6 +17,7 @@
 
     @include RespondTo(MobileDevices) {
       padding-bottom: 18px;
+      @include FlexDirection(column);
     }
 
     .cardTitle {
@@ -28,6 +29,19 @@
 
       p {
         margin: 7px 0;
+      }
+    }
+
+    .cardAction {
+      @include RespondTo(MobileDevices) {
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      .button {
+        @include RespondTo(MobileDevices) {
+          width: 100%;
+        }
       }
     }
   }
@@ -42,10 +56,19 @@
     @include FlexFlow(nowrap);
     border-color: $LightBg;
 
+    @include RespondTo(MobileDevices) {
+      @include FlexFlow(wrap);
+    }
+
     .cardSidebar {
       width: 300px;
       background-color: $LightBg;
       @include BorderRadius($CardRounded 0 0 $CardRounded);
+
+      @include RespondTo(MobileDevices) {
+        width: 100%;
+        border-radius: 14px 14px 0 0;
+      }
     }
 
     .cardBody {
@@ -53,7 +76,9 @@
       padding: 24px;
 
       @include RespondTo(MobileDevices) {
+        flex: unset;
         padding: 18px;
+        width: 100%;
       }
     }
   }

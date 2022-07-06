@@ -166,7 +166,16 @@ button {
     color: $FontColorDark !important;
 
     @include RespondTo(MobileDevices) {
-      font-size: 0.8rem;
+      font-size: 0.9rem;
+      white-space: normal;
+    }
+
+    .mobileLabel {
+      @include RespondTo(MobileDevices) {
+        font-size: 0.7rem;
+        color: $PrimaryColor;
+        font-weight: 600;
+      }
     }
   }
 }
@@ -284,6 +293,12 @@ header {
 
     .MuiTableCell-root.MuiTableCell-body {
       color: $FontColorLight !important;
+
+      .mobileLabel {
+        @include RespondTo(MobileDevices) {
+          color: $LightBlueColor;
+        }
+      }
     }
   }
 

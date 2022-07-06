@@ -17,6 +17,10 @@
     display: inline-flex;
     padding-left: 0.6rem;
 
+    @include RespondTo(MobileDevices) {
+      @include JustifyContent(center);
+    }
+
     i {
       width: 24px;
       @extend %FlexCol-CenterCenter;

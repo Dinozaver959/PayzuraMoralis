@@ -7,6 +7,10 @@
   padding: 7px 15px;
   position: relative;
 
+  @include RespondTo(MobileDevices) {
+    padding: 8px;
+  }
+
   &::before {
     @include Absolute($Top: -10px, $Left: 20px);
     @include Triangle(Top, 10px, 7px, $PrimaryColor);
@@ -29,11 +33,20 @@
     .listItemLabel {
       width: 100%;
       @include Font(null, 0.75rem, $PrimaryColor, null, 600);
+
+      @include RespondTo(MobileDevices) {
+        font-size: 0.7rem;
+      }
     }
 
     .listItemValue {
       width: 100%;
       @include Font(null, 1rem, $FontColorDark, null, 400);
+
+      @include RespondTo(MobileDevices) {
+        font-size: 0.9rem;
+        word-break: break-all;
+      }
     }
   }
 }

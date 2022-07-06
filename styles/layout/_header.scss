@@ -47,6 +47,14 @@ header {
       display: none;
       @include Absolute($Right: 20px, $Top: 20px);
 
+      @include RespondTo(IpadDevices) {
+        display: block;
+      }
+
+      // &.show {
+      //   display: b;
+      // }
+
       > button {
         border: none;
         background: transparent;

@@ -2,10 +2,76 @@
   box-shadow: none !important;
   background: none !important;
 
+  table.MuiTable-root {
+    @include RespondTo(MobileDevices) {
+      display: block;
+    }
+
+    thead,
+    tbody,
+    tr,
+    th,
+    td {
+      @include RespondTo(MobileDevices) {
+        display: block;
+      }
+    }
+
+    tbody.MuiTableBody-root {
+      tr.MuiTableRow-root {
+        td.MuiTableCell-root {
+          &:last-child {
+            @include RespondTo(MobileDevices) {
+              padding-bottom: 10px;
+            }
+          }
+        }
+
+        &:nth-child(2n) {
+          td.MuiTableCell-root {
+            &:last-child {
+              @include RespondTo(MobileDevices) {
+                border-bottom: 1px solid $BorderDark !important;
+              }
+            }
+          }
+        }
+      }
+
+      tr.MuiTableRow-root {
+        @include RespondTo(MobileDevices) {
+          position: relative;
+          padding-bottom: 34px;
+        }
+
+        &:nth-child(2n) {
+          padding-bottom: 10px;
+        }
+
+        td.gridMoreArrow {
+          @include RespondTo(MobileDevices) {
+            @include Absolute($Left: 0px, $Right: 0px, $Bottom: 2px);
+          }
+        }
+      }
+    }
+
+    .MuiCollapse-wrapperInner {
+      .MuiBox-root {
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+  }
+
   .MuiTableCell-root.MuiTableCell-head {
     background-color: transparent !important;
     border-bottom-color: darken($BorderDark, 1%) !important;
     white-space: nowrap;
+
+    @include RespondTo(MobileDevices) {
+      display: none;
+    }
   }
 
   .MuiTableCell-root.MuiTableCell-body {
@@ -13,8 +79,14 @@
     border-bottom: none !important;
     white-space: nowrap;
 
+    @include RespondTo(MobileDevices) {
+      padding: 5px 0;
+    }
+
     .MuiButtonBase-root.MuiIconButton-root {
       background: $LightBlueBg !important;
+      width: 100%;
+      border-radius: 4px;
 
       svg {
         path:last-child {
@@ -22,11 +94,49 @@
         }
       }
     }
+
+    .mobileLabel {
+      display: none;
+
+      @include RespondTo(MobileDevices) {
+        display: block;
+      }
+    }
+
+    .button.rounded {
+      @include RespondTo(MobileDevices) {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.mobileLabel {
+  display: none;
+
+  @include RespondTo(MobileDevices) {
+    display: block;
   }
 }
 
 .darkMode {
   .MuiPaper-root.MuiTableContainer-root {
+    table.MuiTable-root {
+      tbody.MuiTableBody-root {
+        tr.MuiTableRow-root {
+          &:nth-child(2n) {
+            td.MuiTableCell-root {
+              &:last-child {
+                @include RespondTo(MobileDevices) {
+                  border-bottom-color: $BorderLight !important;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
     .MuiTableCell-root.MuiTableCell-head {
       border-bottom-color: $BorderLight !important;
     }
