@@ -3,8 +3,8 @@ import {ABI} from "./ABI.js"
 
 //const ethers = Moralis.web3Library;
  
-const FactoryContractAddress = "0xFDb98643407122625aE3e7Abfda792694f44718c"; //"0x5Fc12E3eC96dd2F008DB5f32497cbAbefB049B60";   // 0x5D023afC16961d44E5fB3F29fe17fd54cE8D3487 - checked in
-const contractOnNetwork = "rinkeby";
+const FactoryContractAddress = "0xa091384a307c7225bD5670E43E9F5925831A5204"; //"0x5Fc12E3eC96dd2F008DB5f32497cbAbefB049B60";   // 0x5D023afC16961d44E5fB3F29fe17fd54cE8D3487 - checked in
+const contractOnNetwork = "polygon";
 const commission = 0.01;
 
 
@@ -210,10 +210,6 @@ async function MoralisRead(method, params) {
 
 export async function CreateEscrow_Moralis(price, timeToDeliver, hashOfDescription, offerValidUntil, personalizedOffer, arbiters) {
 
-    console.log("offerValidUntil:");
-    console.log(offerValidUntil);
-
-
     var personalizedOffer_parts = personalizedOffer.split(",");
 
     if(!personalizedOffer){
@@ -226,7 +222,6 @@ export async function CreateEscrow_Moralis(price, timeToDeliver, hashOfDescripti
         arbiters_parts = ["0x80038953cE1CdFCe7561Abb73216dE83F8baAEf0"];  // Payzura Team/Platform address
     }
 
-
     for (let i = 0; i < personalizedOffer_parts.length; i++){
         console.log("personalizedOffer_parts[i]: " + personalizedOffer_parts[i])
     }
@@ -234,15 +229,13 @@ export async function CreateEscrow_Moralis(price, timeToDeliver, hashOfDescripti
         console.log("arbiters_parts[i]: " + arbiters_parts[i])
     }
 
-
     const params = {
-        
-        price: price,
+        arbiters: arbiters_parts,
+        price: price.toString(),
         timeToDeliver: timeToDeliver,
         hashOfDescription: hashOfDescription,
         offerValidUntil: offerValidUntil, 
         personalizedOffer: personalizedOffer_parts,
-        arbiters: arbiters_parts
     }
   
     return await MoralisWrite_("CreateEscrow", params);
@@ -332,11 +325,13 @@ export async function HandleDispute_Moralis(index, returnFundsToBuyer) {
 
     const params = {
         index: index,
-        returnFundsToBuyer: true,
+        returnFundsToBuyer: returnFundsToBuyer,
     }
 
+    console.log(params);
+
     //const web3 = await Moralis.enableWeb3();
-    await MoralisWrite__("HandleDispute", params);
+    return await MoralisWrite__("HandleDispute", params);                                                          // possible add 'return'  
 }
 
 
@@ -382,16 +377,16 @@ async function MoralisWrite__(method, params, value) {
     const tx = await transaction.wait();
     console.log("transaction is confirmed");
 
-    console.log("tx: " + JSON.stringify(tx));
+    // console.log("tx: " + JSON.stringify(tx));
 
 
 
     if(method == "HandleDispute"){
 
         console.log("tx.events: " + JSON.stringify(tx.events));
-        console.log("tx.events[0].event: " + JSON.stringify(tx.events[0].event)); // if = ArbitersVoteConcluded
+        console.log("tx.events[3].event: " + JSON.stringify(tx.events[3].event)); // if = ArbitersVoteConcluded
 
-        if(tx.events[0].event && tx.events[0].event == "ArbitersVoteConcluded")
+        if(tx.events[3].event && tx.events[3].event == "DisputeClosed")  // "ArbitersVoteConcluded"
         {
             console.log("ArbitersVoteConcluded = true");
             //return {"transactionHash" : transaction.hash, "ArbitersVoteConcluded" : "true"};

@@ -39,7 +39,7 @@ apiRoute.post(async (req, res) => {
 
     // change state the 'complete'
     if(ArbitersVoteConcluded == "true"){
-        AddAgreementToCollectionMoralisDB(objectId);       
+        UpdateAgrerementToComplete(objectId);       
     }
 
     res.status(201).end("Offer created");
@@ -97,7 +97,7 @@ async function UpdateDisputeMeter_DisputeManaged(wallet, votedForBuyer){
 }
 
 
-async function AddAgreementToCollectionMoralisDB(objectId){  
+async function UpdateAgrerementToComplete(objectId){  
 
     console.log("objectId: " + objectId)
 

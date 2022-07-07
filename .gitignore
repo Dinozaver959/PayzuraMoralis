@@ -5,9 +5,6 @@
 /.pnp
 .pnp.js
 
-# solidity files
-/solidity
-
 # cloud functions for Moralis
 .cloudFunctions.js
 

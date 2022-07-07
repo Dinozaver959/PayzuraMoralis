@@ -15,9 +15,10 @@ apiRoute.get(async (req, res) => {
 
     const offers = await GetUsersAgreements(UserWallet.toLowerCase());
     var packagedOffers = [];  
+    
     for(let i = 0; i < offers.length; i++){
         packagedOffers.push({id: i+1, name : offers[i]})
-        console.log("offers[i]: " + offers[i]);
+        //console.log("offers[i]: " + offers[i]);
     }
 
     res.end(JSON.stringify(packagedOffers, null, 3));

@@ -32,7 +32,7 @@ export default function Description(props) {
     formState: { errors },
     control,
   } = useForm();
-  const onSubmit = (data) => SubmitForm(); // console.log(data);
+  const onSubmit = (data) => SubmitForm();
   
   const [OfferValidUntil, setOfferValidUntil] = React.useState(
     () => {
@@ -40,8 +40,8 @@ export default function Description(props) {
       date.setMilliseconds(0);
       date.setDate(date.getDate() + 7); // 7 days is default value
 
-      console.log("date:");
-      console.log(date);
+      //console.log("date:");
+      //console.log(date);
 
       return date;
     }
@@ -50,7 +50,7 @@ export default function Description(props) {
   async function SubmitForm() {
 
     CreateEscrow_Moralis(
-      10 ** 18 * document.getElementById("Price").value,
+      BigInt(10 ** 14) * BigInt(((10 ** 4)) * document.getElementById("Price").value),    // together in both it has to be 14 + 4 = 18 (ETH to WEI conversion)
       document.getElementById("TimeToDeliver").value,
       sha256(document.getElementById("OfferDescription").value),
       OfferValidUntil.getTime() / 1000,

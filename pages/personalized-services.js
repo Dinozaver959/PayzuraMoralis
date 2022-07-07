@@ -265,6 +265,7 @@ function Row_normal(props) {
 
                   var formData = new FormData();
                   formData.append("BuyerAccount", Moralis.User.current().id);
+                  formData.append("SellerWallet", item.SellerWallet);   
 
                   const connectedAddress = await GetWallet_NonMoralis();
                   formData.append("BuyerWallet", connectedAddress);
