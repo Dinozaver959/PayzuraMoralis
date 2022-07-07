@@ -94,6 +94,8 @@ function wrapDelegates(wallets) {
 
 export default function MyAgreements(props) {
   const [data, setData] = useState([]);
+  const [dataOnlyBuyer, setDataOnlyBuyer] = useState([]);
+  const [dataOnlySeller, setDataOnlySeller] = useState([]);
   const [placeholder, setPlaceholder] = useState(true);
 
   // load options using API call
@@ -103,10 +105,29 @@ export default function MyAgreements(props) {
     const data = await fetch(
       `./api/api-getUserAgreements` + "?UserWallet=" + connectedAddress
     )
-      .then((res) => res.json())
-      .then((json) => setData(json));
+    .then((res) => res.json())
+    .then((json) => setData(json));
 
+
+    const dataOnlyBuyer = await fetch(
+      `./api/api-getUserAgreementsOnlyBuyer` + "?UserWallet=" + connectedAddress
+    )
+    .then((res) => res.json())
+    .then((json) => setDataOnlyBuyer(json)); 
+
+    const dataOnlySeller = await fetch(
+      `./api/api-getUserAgreementsOnlySeller` + "?UserWallet=" + connectedAddress
+    )
+    .then((res) => res.json())
+    .then((json) => setDataOnlySeller(json));
+
+
+    console.log("data:");
     console.log(data);
+    console.log("dataOnlyBuyer:");
+    console.log(dataOnlyBuyer);
+    console.log("dataOnlySeller:");
+    console.log(dataOnlySeller);
 
     return data;
   }
@@ -141,14 +162,14 @@ export default function MyAgreements(props) {
         <div className="card mt-10">
           <div className="cardHeader">
             <div className="cardTitle">
-              <h2>List of Agreements</h2>
+              <h2>My Agreements as Buyer</h2>
             </div>
           </div>
 
           <div className="cardBody">
-            {data[0] && data ? (
+            {dataOnlyBuyer[0] && dataOnlyBuyer ? (
               <>
-                <Table_normal data={data} />
+                <Table_normal data={dataOnlyBuyer} isBuyer={true} />
                 {placeholder && (
                   <div className="blockLoading">
                     <LoadingPlaceholder
@@ -175,13 +196,55 @@ export default function MyAgreements(props) {
             )}
           </div>
         </div>
+
+
+
+        <div className="card mt-10">
+          <div className="cardHeader">
+            <div className="cardTitle">
+              <h2>My Agreements as Seller</h2>
+            </div>
+          </div>
+
+          <div className="cardBody">
+            {dataOnlySeller[0] && dataOnlySeller ? (
+              <>
+                <Table_normal data={dataOnlySeller} isBuyer={false} />
+                {placeholder && (
+                  <div className="blockLoading">
+                    <LoadingPlaceholder
+                      extraStyles={{ height: "100%", position: "absolute" }}
+                    />
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="noData">
+                <i>
+                  <PlaceholderIc />
+                </i>
+                <h2>There are no available offers.</h2>
+                <div className="submitButtonOuter">
+                  <Button
+                    link="/create-offer"
+                    classes={"button primary rounded"}
+                  >
+                    <span>Create Offer Now</span>
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+         </div>
+
+
       </div>
     </Fragment>
   );
 }
 
 function Table_normal(props) {
-  const { data } = props;
+  const { data, isBuyer } = props;
 
   return (
     <>
@@ -194,15 +257,24 @@ function Table_normal(props) {
               <StyledTableCell>State</StyledTableCell>
               <StyledTableCell>Price (ETH)</StyledTableCell>
               <StyledTableCell>Time to Deliver (hours)</StyledTableCell>
-              <StyledTableCell>Return Payment</StyledTableCell>
-              <StyledTableCell>Claim Funds</StyledTableCell>
-              <StyledTableCell>Start Dispute</StyledTableCell>
-              <StyledTableCell>Confirm Delivery</StyledTableCell>
+
+              {isBuyer ? (
+                <>
+                  <StyledTableCell>Start Dispute</StyledTableCell>
+                  <StyledTableCell>Confirm Delivery</StyledTableCell>              
+                </>
+              ) : (
+                <>
+                  <StyledTableCell>Return Payment</StyledTableCell>
+                  <StyledTableCell>Claim Funds</StyledTableCell>   
+                </>
+              )}
+
             </StyledTableRow>
           </TableHead>
           <TableBody>
             {data.map((item) => (
-              <Row_normal key={item.id} item={item.name} />
+              <Row_normal key={item.id} item={item.name} isBuyer={isBuyer}/>
             ))}
           </TableBody>
         </Table>
@@ -214,7 +286,7 @@ function Table_normal(props) {
 }
 
 function Row_normal(props) {
-  const { item } = props;
+  const { item, isBuyer} = props;
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -235,255 +307,257 @@ function Row_normal(props) {
           <label className="mobileLabel">Title</label>
           {item.OfferTitle}
         </StyledTableCell>
-        <StyledTableCell>
-          <label className="mobileLabel">State</label>
-          {item.State}
-        </StyledTableCell>
-        <StyledTableCell>
-          <label className="mobileLabel">Price (ETH)</label>
-          {item.Price}
-        </StyledTableCell>
-        <StyledTableCell>
-          <label className="mobileLabel">Time to Deliver (hours)</label>
-          {item.TimeToDeliver}
-        </StyledTableCell>
-        <StyledTableCell>
-          <input
-            className="button primary rounded"
-            type="submit"
-            value="Return Payment (seller)"
-            onClick={() =>
-              ReturnPayment_Moralis(item.index)
-                .then(async (transactionHash) => {
-                  // show the feedback text
-                  document.getElementById("submitFeedback").style.display =
-                    "inline";
-                  document.getElementById("submitFeedback").innerText =
-                    "Returning payment...";
+        <StyledTableCell>{item.State}</StyledTableCell>
+        <StyledTableCell>{item.Price}</StyledTableCell>
+        <StyledTableCell>{item.TimeToDeliver}</StyledTableCell>
 
-                  var formData = new FormData();
-                  formData.append("BuyerAccount", Moralis.User.current().id);
+        {isBuyer ? (
+          <>
+            <StyledTableCell>
+              <input
+                className="rounded button green"
+                type="submit"
+                value="Start Dispute"
+                onClick={() =>
+                  StartDispute_Moralis(item.index)
+                    .then(async (transactionHash) => {
+                      // show the feedback text
+                      document.getElementById("submitFeedback").style.display =
+                        "inline";
+                      document.getElementById("submitFeedback").innerText =
+                        "Starting Dispute...";
 
-                  const connectedAddress = await GetWallet_NonMoralis();
-                  formData.append("BuyerWallet", connectedAddress);
-                  formData.append("transactionHash", transactionHash);
-                  formData.append("objectId", item.objectId);
+                      var formData = new FormData();
+                      formData.append("BuyerAccount", Moralis.User.current().id);
 
-                  var xhr = new XMLHttpRequest();
-                  xhr.open("POST", "/api/api-returnPayment", false); // new API required
-                  xhr.onload = function () {
-                    // update the feedback text
-                    document.getElementById("submitFeedback").style.display =
-                      "inline";
-                    document.getElementById("submitFeedback").innerText =
-                      "Payment returned";
+                      const connectedAddress = await GetWallet_NonMoralis();
+                      formData.append("BuyerWallet", connectedAddress);
+                      formData.append("SellerWallet", item.SellerWallet);
+                      formData.append("transactionHash", transactionHash);
+                      formData.append("objectId", item.objectId);
 
-                    // prevent the Submit button to be clickable and functionable
-                    // removeHover()
-                    // document.getElementById('SubmitButton').disabled = true
+                      var xhr = new XMLHttpRequest();
+                      xhr.open("POST", "/api/api-startDispute", false); // new API required
+                      xhr.onload = function () {
+                        // update the feedback text
+                        document.getElementById("submitFeedback").style.display =
+                          "inline";
+                        document.getElementById("submitFeedback").innerText =
+                          "Dispute started";
 
-                    // think about also removing the hover effect
-                    // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-                    console.log("Payment returned");
-                  };
-                  xhr.send(formData);
-                })
-                .catch((error) => {
-                  console.error(error);
-                  console.log("accept Offer error code: " + error.code);
-                  console.log("accept Offer error message: " + error.message);
-                  if (error.data && error.data.message) {
-                    document.getElementById("submitFeedback").innerText =
-                      error.data.message;
-                  } else {
-                    document.getElementById("submitFeedback").innerText =
-                      error.message;
+                        // prevent the Submit button to be clickable and functionable
+                        // removeHover()
+                        // document.getElementById('SubmitButton').disabled = true
+
+                        // think about also removing the hover effect
+                        // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+                        console.log("Dispute started");
+                      };
+                      xhr.send(formData);
+                    })
+                    .catch((error) => {
+                      console.error(error);
+                      console.log("accept Offer error code: " + error.code);
+                      console.log("accept Offer error message: " + error.message);
+                      if (error.data && error.data.message) {
+                        document.getElementById("submitFeedback").innerText =
+                          error.data.message;
+                      } else {
+                        document.getElementById("submitFeedback").innerText =
+                          error.message;
+                      }
+                      document.getElementById("submitFeedback").style.visibility =
+                        "visible";
+                      process.exitCode = 1;
+                    })
+                }
+              ></input>
+            </StyledTableCell>
+
+            <StyledTableCell>
+              <input
+                className="button rounded secondary"
+                type="submit"
+                value="Confirm Delivery"
+                onClick={() =>
+                  ConfirmDelivery_Moralis(item.index)
+                    .then(async (transactionHash) => {
+                      // show the feedback text
+                      document.getElementById("submitFeedback").style.display =
+                        "inline";
+                      document.getElementById("submitFeedback").innerText =
+                        "Confirming Delivery...";
+
+                      var formData = new FormData();
+                      formData.append("BuyerAccount", Moralis.User.current().id);
+
+                      const connectedAddress = await GetWallet_NonMoralis();
+                      formData.append("BuyerWallet", connectedAddress);
+                      formData.append("transactionHash", transactionHash);
+                      formData.append("objectId", item.objectId);
+
+                      var xhr = new XMLHttpRequest();
+                      xhr.open("POST", "/api/api-confirmDelivery", false); // new API required
+                      xhr.onload = function () {
+                        // update the feedback text
+                        document.getElementById("submitFeedback").style.display =
+                          "inline";
+                        document.getElementById("submitFeedback").innerText =
+                          "Delivery confirmed";
+
+                        // prevent the Submit button to be clickable and functionable
+                        // removeHover()
+                        // document.getElementById('SubmitButton').disabled = true
+
+                        // think about also removing the hover effect
+                        // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+                        console.log("Delivery confirmed");
+                      };
+                      xhr.send(formData);
+                    })
+                    .catch((error) => {
+                      console.error(error);
+                      console.log("accept Offer error code: " + error.code);
+                      console.log("accept Offer error message: " + error.message);
+                      if (error.data && error.data.message) {
+                        document.getElementById("submitFeedback").innerText =
+                          error.data.message;
+                      } else {
+                        document.getElementById("submitFeedback").innerText =
+                          error.message;
+                      }
+                      document.getElementById("submitFeedback").style.visibility =
+                        "visible";
+                      process.exitCode = 1;
+                    })
+                }
+              ></input>
+            </StyledTableCell>
+          </>
+          ) : (
+            <>
+              <StyledTableCell>
+                <input
+                  className="button primary rounded"
+                  type="submit"
+                  value="Return Payment"
+                  onClick={() =>
+                    ReturnPayment_Moralis(item.index)
+                      .then(async (transactionHash) => {
+                        // show the feedback text
+                        document.getElementById("submitFeedback").style.display =
+                          "inline";
+                        document.getElementById("submitFeedback").innerText =
+                          "Returning payment...";
+
+                        var formData = new FormData();
+                        formData.append("BuyerAccount", Moralis.User.current().id);
+
+                        const connectedAddress = await GetWallet_NonMoralis();
+                        formData.append("BuyerWallet", connectedAddress);
+                        formData.append("transactionHash", transactionHash);
+                        formData.append("objectId", item.objectId);
+
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("POST", "/api/api-returnPayment", false); // new API required
+                        xhr.onload = function () {
+                          // update the feedback text
+                          document.getElementById("submitFeedback").style.display =
+                            "inline";
+                          document.getElementById("submitFeedback").innerText =
+                            "Payment returned";
+
+                          // prevent the Submit button to be clickable and functionable
+                          // removeHover()
+                          // document.getElementById('SubmitButton').disabled = true
+
+                          // think about also removing the hover effect
+                          // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+                          console.log("Payment returned");
+                        };
+                        xhr.send(formData);
+                      })
+                      .catch((error) => {
+                        console.error(error);
+                        console.log("accept Offer error code: " + error.code);
+                        console.log("accept Offer error message: " + error.message);
+                        if (error.data && error.data.message) {
+                          document.getElementById("submitFeedback").innerText =
+                            error.data.message;
+                        } else {
+                          document.getElementById("submitFeedback").innerText =
+                            error.message;
+                        }
+                        document.getElementById("submitFeedback").style.visibility =
+                          "visible";
+                        process.exitCode = 1;
+                      })
                   }
-                  document.getElementById("submitFeedback").style.visibility =
-                    "visible";
-                  process.exitCode = 1;
-                })
-            }
-          ></input>
-        </StyledTableCell>
-        <StyledTableCell>
-          <input
-            className="button rounded orange"
-            type="submit"
-            value="Claim funds (seller)"
-            onClick={() =>
-              ClaimFunds_Moralis(item.index)
-                .then(async (transactionHash) => {
-                  // show the feedback text
-                  document.getElementById("submitFeedback").style.display =
-                    "inline";
-                  document.getElementById("submitFeedback").innerText =
-                    "Claiming Funds...";
+                ></input>
+              </StyledTableCell>
 
-                  var formData = new FormData();
-                  formData.append("BuyerAccount", Moralis.User.current().id);
+              <StyledTableCell>
+                <input
+                  className="button rounded orange"
+                  type="submit"
+                  value="Claim funds"
+                  onClick={() =>
+                    ClaimFunds_Moralis(item.index)
+                      .then(async (transactionHash) => {
+                        // show the feedback text
+                        document.getElementById("submitFeedback").style.display =
+                          "inline";
+                        document.getElementById("submitFeedback").innerText =
+                          "Claiming Funds...";
 
-                  const connectedAddress = await GetWallet_NonMoralis();
-                  formData.append("BuyerWallet", connectedAddress);
-                  formData.append("transactionHash", transactionHash);
-                  formData.append("objectId", item.objectId);
+                        var formData = new FormData();
+                        formData.append("BuyerAccount", Moralis.User.current().id);
 
-                  var xhr = new XMLHttpRequest();
-                  xhr.open("POST", "/api/api-claimFunds", false); // new API required
-                  xhr.onload = function () {
-                    // update the feedback text
-                    document.getElementById("submitFeedback").style.display =
-                      "inline";
-                    document.getElementById("submitFeedback").innerText =
-                      "Funds claimed";
+                        const connectedAddress = await GetWallet_NonMoralis();
+                        formData.append("BuyerWallet", connectedAddress);
+                        formData.append("transactionHash", transactionHash);
+                        formData.append("objectId", item.objectId);
 
-                    // prevent the Submit button to be clickable and functionable
-                    // removeHover()
-                    // document.getElementById('SubmitButton').disabled = true
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("POST", "/api/api-claimFunds", false); // new API required
+                        xhr.onload = function () {
+                          // update the feedback text
+                          document.getElementById("submitFeedback").style.display =
+                            "inline";
+                          document.getElementById("submitFeedback").innerText =
+                            "Funds claimed";
 
-                    // think about also removing the hover effect
-                    // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-                    console.log("Funds claimed");
-                  };
-                  xhr.send(formData);
-                })
-                .catch((error) => {
-                  console.error(error);
-                  console.log("accept Offer error code: " + error.code);
-                  console.log("accept Offer error message: " + error.message);
-                  if (error.data && error.data.message) {
-                    document.getElementById("submitFeedback").innerText =
-                      error.data.message;
-                  } else {
-                    document.getElementById("submitFeedback").innerText =
-                      error.message;
+                          // prevent the Submit button to be clickable and functionable
+                          // removeHover()
+                          // document.getElementById('SubmitButton').disabled = true
+
+                          // think about also removing the hover effect
+                          // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+                          console.log("Funds claimed");
+                        };
+                        xhr.send(formData);
+                      })
+                      .catch((error) => {
+                        console.error(error);
+                        console.log("accept Offer error code: " + error.code);
+                        console.log("accept Offer error message: " + error.message);
+                        if (error.data && error.data.message) {
+                          document.getElementById("submitFeedback").innerText =
+                            error.data.message;
+                        } else {
+                          document.getElementById("submitFeedback").innerText =
+                            error.message;
+                        }
+                        document.getElementById("submitFeedback").style.visibility =
+                          "visible";
+                        process.exitCode = 1;
+                      })
                   }
-                  document.getElementById("submitFeedback").style.visibility =
-                    "visible";
-                  process.exitCode = 1;
-                })
-            }
-          ></input>
-        </StyledTableCell>
-        <StyledTableCell>
-          <input
-            className="rounded button green"
-            type="submit"
-            value="Start Dispute (buyer)"
-            onClick={() =>
-              StartDispute_Moralis(item.index)
-                .then(async (transactionHash) => {
-                  // show the feedback text
-                  document.getElementById("submitFeedback").style.display =
-                    "inline";
-                  document.getElementById("submitFeedback").innerText =
-                    "Starting Dispute...";
+                ></input>
+              </StyledTableCell>             
+            </>
+          )}
 
-                  var formData = new FormData();
-                  formData.append("BuyerAccount", Moralis.User.current().id);
-
-                  const connectedAddress = await GetWallet_NonMoralis();
-                  formData.append("BuyerWallet", connectedAddress);
-                  formData.append("SellerWallet", item.SellerWallet);
-                  formData.append("transactionHash", transactionHash);
-                  formData.append("objectId", item.objectId);
-
-                  var xhr = new XMLHttpRequest();
-                  xhr.open("POST", "/api/api-startDispute", false); // new API required
-                  xhr.onload = function () {
-                    // update the feedback text
-                    document.getElementById("submitFeedback").style.display =
-                      "inline";
-                    document.getElementById("submitFeedback").innerText =
-                      "Dispute started";
-
-                    // prevent the Submit button to be clickable and functionable
-                    // removeHover()
-                    // document.getElementById('SubmitButton').disabled = true
-
-                    // think about also removing the hover effect
-                    // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-                    console.log("Dispute started");
-                  };
-                  xhr.send(formData);
-                })
-                .catch((error) => {
-                  console.error(error);
-                  console.log("accept Offer error code: " + error.code);
-                  console.log("accept Offer error message: " + error.message);
-                  if (error.data && error.data.message) {
-                    document.getElementById("submitFeedback").innerText =
-                      error.data.message;
-                  } else {
-                    document.getElementById("submitFeedback").innerText =
-                      error.message;
-                  }
-                  document.getElementById("submitFeedback").style.visibility =
-                    "visible";
-                  process.exitCode = 1;
-                })
-            }
-          ></input>
-        </StyledTableCell>
-        <StyledTableCell>
-          <input
-            className="button rounded secondary"
-            type="submit"
-            value="Confirm Delivery (buyer)"
-            onClick={() =>
-              ConfirmDelivery_Moralis(item.index)
-                .then(async (transactionHash) => {
-                  // show the feedback text
-                  document.getElementById("submitFeedback").style.display =
-                    "inline";
-                  document.getElementById("submitFeedback").innerText =
-                    "Confirming Delivery...";
-
-                  var formData = new FormData();
-                  formData.append("BuyerAccount", Moralis.User.current().id);
-
-                  const connectedAddress = await GetWallet_NonMoralis();
-                  formData.append("BuyerWallet", connectedAddress);
-                  formData.append("transactionHash", transactionHash);
-                  formData.append("objectId", item.objectId);
-
-                  var xhr = new XMLHttpRequest();
-                  xhr.open("POST", "/api/api-confirmDelivery", false); // new API required
-                  xhr.onload = function () {
-                    // update the feedback text
-                    document.getElementById("submitFeedback").style.display =
-                      "inline";
-                    document.getElementById("submitFeedback").innerText =
-                      "Delivery confirmed";
-
-                    // prevent the Submit button to be clickable and functionable
-                    // removeHover()
-                    // document.getElementById('SubmitButton').disabled = true
-
-                    // think about also removing the hover effect
-                    // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-                    console.log("Delivery confirmed");
-                  };
-                  xhr.send(formData);
-                })
-                .catch((error) => {
-                  console.error(error);
-                  console.log("accept Offer error code: " + error.code);
-                  console.log("accept Offer error message: " + error.message);
-                  if (error.data && error.data.message) {
-                    document.getElementById("submitFeedback").innerText =
-                      error.data.message;
-                  } else {
-                    document.getElementById("submitFeedback").innerText =
-                      error.message;
-                  }
-                  document.getElementById("submitFeedback").style.visibility =
-                    "visible";
-                  process.exitCode = 1;
-                })
-            }
-          ></input>
-        </StyledTableCell>
       </StyledTableRow>
 
       <StyledTableRow>

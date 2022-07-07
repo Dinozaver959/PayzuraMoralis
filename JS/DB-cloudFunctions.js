@@ -25,5 +25,15 @@ export async function GetUsersAgreements(UserWallet){
     return Moralis.Cloud.run("GetUsersAgreements", params);
 }
 
+export async function GetUsersAgreementsOnlyBuyer(UserWallet){
+    const params =  { UserWallet : UserWallet };
+    return Moralis.Cloud.run("GetUsersAgreementsOnlyBuyer", params);
+}
+
+export async function GetUsersAgreementsOnlySeller(UserWallet){
+    const params =  { UserWallet : UserWallet };
+    return Moralis.Cloud.run("GetUsersAgreementsOnlySeller", params);
+}
+
 
 
