@@ -78,4 +78,19 @@ Moralis.Cloud.define("GetUsersAgreements", async (request) => {
 });
 
 
+Moralis.Cloud.define("GetUsersAgreementsOnlyBuyer", async (request) => {
 
+  const queryBuyer = new Moralis.Query("Agreements");
+  queryBuyer.equalTo("BuyerWallet", request.params.UserWallet);
+
+  return await queryBuyer.find();
+});
+
+
+Moralis.Cloud.define("GetUsersAgreementsOnlySeller", async (request) => {
+
+  const querySeller = new Moralis.Query("Agreements");
+  querySeller.equalTo("SellerWallet", request.params.UserWallet);
+
+  return await querySeller.find();
+});
