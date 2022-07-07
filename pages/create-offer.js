@@ -119,7 +119,7 @@ export default function Description(props) {
   const refButton = useRef(null);
   function removeHover() {
     const b1 = refButton.current; // corresponding DOM node
-    b1.className = styles.submitButton_noHover; // overwrite the style with no hover
+    // b1.className = styles.submitButton_noHover; // overwrite the style with no hover
   }
 
   /* Changed by FrontEnd Developer */
