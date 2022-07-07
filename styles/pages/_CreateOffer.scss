@@ -176,6 +176,10 @@
       .MuiToggleButtonGroup-root {
         width: 100%;
 
+        @include RespondTo(MobileDevices) {
+          flex-direction: column;
+        }
+
         .MuiButtonBase-root {
           @include Font(null, 0.8rem, $FontColorDark, null, 500);
           flex: 2;
@@ -208,11 +212,20 @@
       @include Size(40px, 40px);
       @extend %FlexCol-CenterCenter;
 
+      @include RespondTo(MobileDevices) {
+        right: 0px;
+        top: 30px;
+      }
+
       i {
         @include Size(32px, 32px);
         @include BorderRadius(50%);
         border: 1px solid $BorderDark;
         @extend %FlexCol-CenterCenter;
+
+        @include RespondTo(MobileDevices) {
+          border: none;
+        }
 
         svg {
           @include Size(16px, 16px);
@@ -220,6 +233,14 @@
           path {
             fill: $FontColorDark;
           }
+        }
+      }
+    }
+
+    &.offerValidity {
+      .filedInfo {
+        @include RespondTo(MobileDevices) {
+          top: 0px;
         }
       }
     }
@@ -325,7 +346,7 @@
 
       .filedInfo {
         i {
-          border: 1px solid $BorderLight;
+          border-color: $BorderLight;
 
           svg {
             path {

@@ -33,24 +33,22 @@ export default function Description(props) {
     control,
   } = useForm();
   const onSubmit = (data) => SubmitForm();
-  
-  const [OfferValidUntil, setOfferValidUntil] = React.useState(
-    () => {
-      var date = new Date();
-      date.setMilliseconds(0);
-      date.setDate(date.getDate() + 7); // 7 days is default value
 
-      //console.log("date:");
-      //console.log(date);
+  const [OfferValidUntil, setOfferValidUntil] = React.useState(() => {
+    var date = new Date();
+    date.setMilliseconds(0);
+    date.setDate(date.getDate() + 7); // 7 days is default value
 
-      return date;
-    }
-  );
+    //console.log("date:");
+    //console.log(date);
+
+    return date;
+  });
 
   async function SubmitForm() {
-
     CreateEscrow_Moralis(
-      BigInt(10 ** 14) * BigInt(((10 ** 4)) * document.getElementById("Price").value),    // together in both it has to be 14 + 4 = 18 (ETH to WEI conversion)
+      BigInt(10 ** 14) *
+        BigInt(10 ** 4 * document.getElementById("Price").value), // together in both it has to be 14 + 4 = 18 (ETH to WEI conversion)
       document.getElementById("TimeToDeliver").value,
       sha256(document.getElementById("OfferDescription").value),
       OfferValidUntil.getTime() / 1000,
@@ -128,36 +126,42 @@ export default function Description(props) {
   const TemplatesData = [
     {
       id: 1,
+      templateCode: "Empty",
+      templateName: "Blank Template",
+      templateDescription: "",
+    },
+    {
+      id: 2,
       templateCode: "TempA",
       templateName: "Template A",
       templateDescription: "Some text for template A",
     },
     {
-      id: 2,
+      id: 3,
       templateCode: "TempB",
       templateName: "Template B",
       templateDescription: "Some text for template B",
     },
     {
-      id: 3,
+      id: 4,
       templateCode: "TempC",
       templateName: "Template C",
       templateDescription: "Some text for template C",
     },
     {
-      id: 4,
+      id: 5,
       templateCode: "TempD",
       templateName: "Template D",
       templateDescription: "Some text for template D",
     },
     {
-      id: 5,
+      id: 6,
       templateCode: "TempE",
       templateName: "Template E",
       templateDescription: "Some text for template E",
     },
   ];
-  const [selectedTemplate, setSelectedTemplate] = React.useState("blank");
+  const [selectedTemplate, setSelectedTemplate] = React.useState("Empty");
   const [showForm, setShowForm] = React.useState(false);
   const [tempDesc, setTempDesc] = React.useState();
   const [offerValidity, setOfferValidity] = React.useState("7 Days");
@@ -167,20 +171,20 @@ export default function Description(props) {
     const { value } = e.target;
 
     const selctDesc = [];
-    if (value === "blank") {
-      selctDesc = [
-        {
-          id: 99,
-          templateCode: "TempBlank",
-          templateName: "Blank Description",
-          templateDescription: "",
-        },
-      ];
-    } else {
-      selctDesc = TemplatesData.filter(
-        (curElem) => curElem.templateCode === value
-      );
-    }
+    // if (value === "blank") {
+    //   selctDesc = [
+    //     {
+    //       id: 99,
+    //       templateCode: "Empty",
+    //       templateName: "Blank Description",
+    //       templateDescription: "",
+    //     },
+    //   ];
+    // } else {
+    selctDesc = TemplatesData.filter(
+      (curElem) => curElem.templateCode === value
+    );
+    // }
     const selDecprop = selctDesc[0].templateDescription;
 
     setSelectedTemplate(value);
@@ -233,7 +237,6 @@ export default function Description(props) {
         dropdownOpen={props.dropdownOpen}
         setDropdownOpen={props.setDropdownOpen}
         OpenDropdownFn={props.OpenDropdownFn}
-
         hasMenuDrawer={props.hasMenuDrawer}
         setMenuDrawer={props.setMenuDrawer}
         mobileDrawerFn={props.mobileDrawerFn}
@@ -386,7 +389,8 @@ export default function Description(props) {
                             minLength: 4,
                             maxLength: 440,
                           })}
-                          value={tempDesc}
+                          defaultValue={tempDesc}
+                          // value={tempDesc}
                         ></textarea>
 
                         <div className="fieldError">
@@ -463,6 +467,7 @@ export default function Description(props) {
                         <Tooltip
                           title="In Hours, following acceptance of the offer"
                           placement="top"
+                          enterTouchDelay={0}
                           arrow
                         >
                           <i>
@@ -482,7 +487,7 @@ export default function Description(props) {
               {errors.OfferValidUntil && errors.OfferValidUntil.type === "min" && <span>Min time for a valid offer is 0</span>}
             </div>
             */}
-                    <div className="formRow">
+                    <div className="formRow offerValidity">
                       <div className="formLabel">Offer Valid Until</div>
                       <div className="formField">
                         <ToggleButtonGroup
@@ -544,6 +549,7 @@ export default function Description(props) {
                         <Tooltip
                           title="Loreim ipsum dummy"
                           placement="top"
+                          enterTouchDelay={0}
                           arrow
                         >
                           <i>
@@ -566,7 +572,12 @@ export default function Description(props) {
                         ></input>
                       </div>
                       <div className="filedInfo">
-                        <Tooltip title="empty=any" placement="top" arrow>
+                        <Tooltip
+                          title="empty=any"
+                          placement="top"
+                          enterTouchDelay={0}
+                          arrow
+                        >
                           <i>
                             <InfoIc />
                           </i>
@@ -588,6 +599,7 @@ export default function Description(props) {
                         <Tooltip
                           title="empty=Payzura Platform"
                           placement="top"
+                          enterTouchDelay={0}
                           arrow
                         >
                           <i>

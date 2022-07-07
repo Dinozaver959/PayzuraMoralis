@@ -66,7 +66,15 @@
       margin-left: 215px;
 
       @include RespondTo(MobileDevices) {
-        margin-left: 160px;
+        margin-left: 0px;
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      .button {
+        @include RespondTo(MobileDevices) {
+          width: 100%;
+        }
       }
     }
   }

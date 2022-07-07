@@ -8,6 +8,7 @@ body {
   padding: 0px;
   min-height: 100%;
   overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 * {
@@ -30,4 +31,14 @@ img {
 
 ul {
   margin: 0;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $PrimaryColor;
+  border-right: 1px white solid;
+  background-clip: padding-box;
 }

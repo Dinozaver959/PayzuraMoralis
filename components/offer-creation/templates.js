@@ -5,8 +5,7 @@ import PlusIc from "./../icons/Plus";
 function OfferTemplates(props) {
   return (
     <div className="offerTemplateMain">
-      {/* <input type="text" /> */}
-      <div
+      {/* <div
         className={
           props.selectedTemplate === "blank"
             ? "offerCard selected"
@@ -31,7 +30,7 @@ function OfferTemplates(props) {
             </div>
           </div>
         </label>
-      </div>
+      </div> */}
 
       {props.TemplatesData.map((item) => (
         <TemplateItem

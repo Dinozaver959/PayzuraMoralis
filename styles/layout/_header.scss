@@ -88,6 +88,11 @@ header {
           margin-bottom: 20px;
         }
 
+        @include RespondTo(MobileDevices) {
+          width: 100%;
+          padding: 0 20px;
+        }
+
         a {
           @extend %FlexCol-CenterCenter;
           display: inline-flex;
@@ -99,6 +104,14 @@ header {
           @include RespondTo(SmallDesktop) {
             padding-left: 0;
             padding-right: 0;
+          }
+
+          @include RespondTo(MobileDevices) {
+            font-size: 1.4rem;
+            font-weight: 400;
+            display: block;
+            text-align: center;
+            border: none;
           }
         }
 
