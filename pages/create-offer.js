@@ -389,8 +389,10 @@ export default function Description(props) {
                             minLength: 4,
                             maxLength: 440,
                           })}
-                          defaultValue={tempDesc}
-                          // value={tempDesc}
+                          value={tempDesc}
+                          onChange={(e) =>
+                            tempDesc + setTempDesc(e.currentTarget.value)
+                          }
                         ></textarea>
 
                         <div className="fieldError">
