@@ -56,7 +56,7 @@
     @include FlexFlow(nowrap);
     border-color: $LightBg;
 
-    @include RespondTo(MobileDevices) {
+    @include RespondTo(IpadDevices) {
       @include FlexFlow(wrap);
     }
 
@@ -65,7 +65,7 @@
       background-color: $LightBg;
       @include BorderRadius($CardRounded 0 0 $CardRounded);
 
-      @include RespondTo(MobileDevices) {
+      @include RespondTo(IpadDevices) {
         width: 100%;
         border-radius: 14px 14px 0 0;
       }

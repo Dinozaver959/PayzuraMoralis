@@ -36,7 +36,7 @@
     .formRow {
       @extend %FlexRow-StartBetween;
 
-      @include RespondTo(MobileDevices) {
+      @include RespondTo(SmallDesktop) {
         @include FlexDirection(column);
       }
 
@@ -45,7 +45,7 @@
         margin-right: 15px;
         padding-top: 10px;
 
-        @include RespondTo(MobileDevices) {
+        @include RespondTo(SmallDesktop) {
           width: 100%;
           margin-right: 0px;
           margin-bottom: 5px;
@@ -55,7 +55,7 @@
       .formField {
         flex: 2;
 
-        @include RespondTo(MobileDevices) {
+        @include RespondTo(SmallDesktop) {
           flex: unset;
           width: 100%;
         }
@@ -65,8 +65,12 @@
     .formAction {
       margin-left: 215px;
 
-      @include RespondTo(MobileDevices) {
+      @include RespondTo(SmallDesktop) {
         margin-left: 0px;
+        text-align: center;
+      }
+
+      @include RespondTo(MobileDevices) {
         width: 100%;
         margin-top: 10px;
       }

@@ -1,18 +1,29 @@
+import RightArrowIc from "../icons/RightArrow";
+import Button from "../ui/Button";
+
 function TemplateItem(props) {
-  const { title, description, id, value } = props;
+  const {
+    title,
+    description,
+    id,
+    value,
+    radioChangeFn,
+    selectedTemplate,
+    formShowFn,
+  } = props;
 
   return (
     <div
       className={
-        props.selectedTemplate === value ? "offerCard selected" : "offerCard"
+        selectedTemplate === value ? "offerCard selected" : "offerCard"
       }
     >
       <input
         name="offerCardTemplates"
         value={value}
         type="radio"
-        onChange={props.radioChangeFn}
-        defaultChecked={props.selectedTemplate === value}
+        onChange={radioChangeFn}
+        defaultChecked={selectedTemplate === value}
         id={id}
       />
       <label htmlFor={id}>
@@ -24,15 +35,21 @@ function TemplateItem(props) {
           </div>
         </div>
         <div className="offerCardFooter">
-          <div
-            className={
-              props.selectedTemplate === value
-                ? "button rounded primary"
-                : "button rounded secondary"
-            }
-          >
-            {props.selectedTemplate === value ? "Selected" : "Select Template"}
-          </div>
+          {selectedTemplate === value ? (
+            <Button
+              classes="button secondary rounded withIcon"
+              onClick={formShowFn}
+            >
+              <span>Continue</span>
+              <i>
+                <RightArrowIc />
+              </i>
+            </Button>
+          ) : (
+            <div className="button rounded primary">
+              <span>Select Template</span>
+            </div>
+          )}
         </div>
       </label>
     </div>

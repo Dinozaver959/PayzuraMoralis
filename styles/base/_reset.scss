@@ -8,7 +8,7 @@ body {
   padding: 0px;
   min-height: 100%;
   overflow-x: hidden;
-  overflow-y: scroll;
+  // overflow-y: scroll;
 }
 
 * {
@@ -34,11 +34,21 @@ ul {
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
+  @include Size(7px, 7px);
 }
 
 ::-webkit-scrollbar-thumb {
   background: $PrimaryColor;
-  border-right: 1px white solid;
+  border-right: 1px $WhiteColor solid;
+  border-bottom: 1px $WhiteColor solid;
   background-clip: padding-box;
+  @include BorderRadius(10px);
+}
+
+.darkMode {
+  ::-webkit-scrollbar-thumb {
+    background: $LightBlueColor;
+    border-right-color: $BlackColor;
+    border-bottom-color: $BlackColor;
+  }
 }

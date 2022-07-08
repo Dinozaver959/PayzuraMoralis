@@ -12,7 +12,7 @@
     border: 3px solid transparent;
     @include Transition(0.2s);
 
-    @include RespondTo(IpadDevices) {
+    @media only screen and (max-width: 1000px) {
       width: calc(50% - 36px);
     }
 
@@ -172,6 +172,10 @@
   .formRow {
     position: relative;
 
+    @media only screen and (max-width: 1190px) {
+      max-width: calc(100% - 40px);
+    }
+
     .formField {
       .MuiToggleButtonGroup-root {
         width: 100%;
@@ -212,9 +216,13 @@
       @include Size(40px, 40px);
       @extend %FlexCol-CenterCenter;
 
-      @include RespondTo(MobileDevices) {
-        right: 0px;
+      @include RespondTo(SmallDesktop) {
         top: 30px;
+      }
+
+      @include RespondTo(MobileDevices) {
+        @include Size(35px, 35px);
+        right: -40px;
       }
 
       i {
@@ -222,10 +230,6 @@
         @include BorderRadius(50%);
         border: 1px solid $BorderDark;
         @extend %FlexCol-CenterCenter;
-
-        @include RespondTo(MobileDevices) {
-          border: none;
-        }
 
         svg {
           @include Size(16px, 16px);
@@ -238,9 +242,12 @@
     }
 
     &.offerValidity {
-      .filedInfo {
-        @include RespondTo(MobileDevices) {
-          top: 0px;
+      .formField {
+        .MuiToggleButtonGroup-root {
+          @media only screen and (max-width: 860px) {
+            flex-flow: wrap;
+            flex-direction: unset;
+          }
         }
       }
     }

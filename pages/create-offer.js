@@ -257,18 +257,6 @@ export default function Description(props) {
                   creating offer.
                 </p>
               </div>
-
-              <div className="cardAction">
-                <Button
-                  classes="button secondary rounded withIcon"
-                  onClick={formShowHandler}
-                >
-                  <span>Continue</span>
-                  <i>
-                    <RightArrowIc />
-                  </i>
-                </Button>
-              </div>
             </div>
 
             <div className="cardBody">
@@ -278,6 +266,7 @@ export default function Description(props) {
                   setSelectedTemplate={setSelectedTemplate}
                   TemplatesData={TemplatesData}
                   radioChangeFn={handleRadioChange}
+                  formShowFn={formShowHandler}
                 />
               </div>
             </div>
