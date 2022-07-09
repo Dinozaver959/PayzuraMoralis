@@ -1,7 +1,7 @@
 function LinkArrowIc(props) {
   if (props.onClick) {
     return (
-      <button onClick={props.onClick}>
+      <button onClick={props.onClick} className="linkButton">
         <svg viewBox="0 0 9 13">
           <path
             fill={props.color}

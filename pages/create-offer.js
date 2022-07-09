@@ -23,6 +23,7 @@ import LinkArrowIc from "../components/icons/LinkArrow";
 import CheckIc from "../components/icons/Check";
 import InfoIc from "../components/icons/Info";
 import OfferTemplates from "../components/offer-creation/templates";
+import DownloadIc from "../components/icons/Download";
 
 export default function Description(props) {
   // SUBMIT - validation
@@ -229,6 +230,28 @@ export default function Description(props) {
     }
   };
 
+  const downloadDescriptionValue = () => {
+    const element = document.createElement("a");
+    const descriptionFile = new Blob(
+      [
+        "Description hash: " +
+          sha256("Some text for template A testing abc") +
+          "\r\n" +
+          "\r\n" +
+          "Description:" +
+          "\r\n" +
+          document.getElementById("OfferDescription").value,
+      ],
+      {
+        type: "text/plain",
+      }
+    );
+    element.href = URL.createObjectURL(descriptionFile);
+    element.download = "description.txt";
+    document.body.appendChild(element);
+    element.click();
+  };
+
   return (
     <Fragment>
       <Navigation
@@ -404,6 +427,18 @@ export default function Description(props) {
                               </span>
                             )}
                         </div>
+                      </div>
+                      <div className="filedInfo">
+                        <Tooltip
+                          title="Download Description"
+                          placement="top"
+                          enterTouchDelay={0}
+                          arrow
+                        >
+                          <i>
+                            <DownloadIc onClick={downloadDescriptionValue} />
+                          </i>
+                        </Tooltip>
                       </div>
                     </div>
 

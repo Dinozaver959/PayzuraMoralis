@@ -1,4 +1,3 @@
-import Link from "next/link";
 import React, { useState, useEffect, Fragment } from "react";
 import { IconContext } from "react-icons";
 

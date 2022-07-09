@@ -1,7 +1,7 @@
 function UserIc(props) {
   if (props.onClick) {
     return (
-      <button onClick={props.onClick}>
+      <button onClick={props.onClick} className="linkButton">
         <svg viewBox="0 0 16 17">
           <path
             fill={props.color}
