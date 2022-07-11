@@ -53,7 +53,7 @@
 .noData {
   background: $LightBlueBg;
   padding: 2rem;
-  @include BorderRadius($CardRounded/2);
+  @include BorderRadius(1rem);
   @extend %FlexCol-CenterCenter;
 
   > i {
@@ -92,7 +92,7 @@
 }
 
 .blockLoading {
-  @include Size(100%, 100px);
+  @include Size(100%, 295px);
   position: relative;
   margin-top: 10px;
 }

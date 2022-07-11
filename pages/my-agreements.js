@@ -99,6 +99,7 @@ export default function MyAgreements(props) {
 
   // load options using API call
   async function getCollectionsDetails() {
+    // setPlaceholder(true);
     const connectedAddress = await GetWallet_NonMoralis();
     // const data = await fetch(`./api/api-getUserAgreements`)   /// append user wallet
     const data = await fetch(
@@ -120,6 +121,7 @@ export default function MyAgreements(props) {
     )
       .then((res) => res.json())
       .then((json) => setDataOnlySeller(json));
+    setPlaceholder(false);
 
     console.log("data:");
     console.log(data);
@@ -127,17 +129,12 @@ export default function MyAgreements(props) {
     console.log(dataOnlyBuyer);
     console.log("dataOnlySeller:");
     console.log(dataOnlySeller);
-
     return data;
   }
 
   // Calling the function on component mount
   useEffect(() => {
     getCollectionsDetails();
-
-    setTimeout(() => {
-      setPlaceholder(false);
-    }, 1200);
   }, []);
 
   return (
@@ -166,17 +163,14 @@ export default function MyAgreements(props) {
           </div>
 
           <div className="cardBody">
-            {dataOnlyBuyer[0] && dataOnlyBuyer ? (
-              <>
-                <Table_normal data={dataOnlyBuyer} isBuyer={true} />
-                {placeholder && (
-                  <div className="blockLoading">
-                    <LoadingPlaceholder
-                      extraStyles={{ height: "100%", position: "absolute" }}
-                    />
-                  </div>
-                )}
-              </>
+            {placeholder ? (
+              <div className="blockLoading">
+                <LoadingPlaceholder
+                  extraStyles={{ position: "absolute" }}
+                />
+              </div>
+            ) : dataOnlyBuyer[0] && dataOnlyBuyer ? (
+              <Table_normal data={dataOnlyBuyer} isBuyer={true} />
             ) : (
               <div className="noData">
                 <i>
@@ -204,17 +198,14 @@ export default function MyAgreements(props) {
           </div>
 
           <div className="cardBody">
-            {dataOnlySeller[0] && dataOnlySeller ? (
-              <>
-                <Table_normal data={dataOnlySeller} isBuyer={false} />
-                {placeholder && (
-                  <div className="blockLoading">
-                    <LoadingPlaceholder
-                      extraStyles={{ height: "100%", position: "absolute" }}
-                    />
-                  </div>
-                )}
-              </>
+            {placeholder ? (
+              <div className="blockLoading">
+                <LoadingPlaceholder
+                  extraStyles={{ position: "absolute" }}
+                />
+              </div>
+            ) : dataOnlySeller[0] && dataOnlySeller ? (
+              <Table_normal data={dataOnlySeller} isBuyer={false} />
             ) : (
               <div className="noData">
                 <i>

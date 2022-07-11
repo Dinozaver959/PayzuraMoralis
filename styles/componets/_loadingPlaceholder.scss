@@ -1,0 +1,46 @@
+@keyframes loaderSwipeAnim {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.placeholderLoading {
+  @include Relative;
+  @include Size(100%, 100%);
+  background-color: $LightBg;
+  overflow: hidden;
+  @include BorderRadius(1rem);
+}
+
+.loadingSwiper {
+  @include Size(100%, 100%);
+  @include Absolute($Top: 0, $Left: 0);
+  animation: loaderSwipeAnim 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  background: linear-gradient(
+    to right,
+    $LightBg 10%,
+    darken($LightBg, 8%) 50%,
+    $LightBg 90%
+  );
+}
+
+.darkMode {
+  .placeholderLoading {
+    background-color: $BorderLight;
+  }
+
+  .loadingSwiper {
+    @include Size(100%, 100%);
+    @include Absolute($Top: 0, $Left: 0);
+    animation: loaderSwipeAnim 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    background: linear-gradient(
+      to right,
+      $BorderLight 10%,
+      darken($BorderLight, 7%) 50%,
+      $BorderLight 90%
+    );
+  }
+}

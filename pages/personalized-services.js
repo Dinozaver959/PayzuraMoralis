@@ -88,6 +88,8 @@ export default function PersonalizedServices(props) {
 
     console.log(data);
 
+    setPlaceholder(false);
+
     return data;
   }
 
@@ -136,17 +138,14 @@ export default function PersonalizedServices(props) {
             </div>
           </div>
           <div className="cardBody">
-            {data[0] && data ? (
-              <>
-                <Table_normal data={data} />
-                {placeholder && (
-                  <div className="blockLoading">
-                    <LoadingPlaceholder
-                      extraStyles={{ height: "100%", position: "absolute" }}
-                    />
-                  </div>
-                )}
-              </>
+            {placeholder ? (
+              <div className="blockLoading">
+                <LoadingPlaceholder
+                  extraStyles={{ position: "absolute" }}
+                />
+              </div>
+            ) : data[0] && data ? (
+              <Table_normal data={data} />
             ) : (
               <div className="noData">
                 <i>
@@ -273,7 +272,7 @@ function Row_normal(props) {
 
                   var formData = new FormData();
                   formData.append("BuyerAccount", Moralis.User.current().id);
-                  formData.append("SellerWallet", item.SellerWallet);   
+                  formData.append("SellerWallet", item.SellerWallet);
 
                   const connectedAddress = await GetWallet_NonMoralis();
                   formData.append("BuyerWallet", connectedAddress);

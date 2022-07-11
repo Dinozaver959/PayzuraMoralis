@@ -27,6 +27,7 @@ import LoadingPlaceholder from "./../components/ui/LoadingPlaceholder";
 
 import PlusIc from "../components/icons/Plus";
 import PlaceholderIc from "../components/icons/Placeholder";
+import ModalUi from "../components/ui/ModalUi";
 
 const StyledTableRow = styled(TableRow)({
   //'&:nth-of-type(odd)': {
@@ -87,16 +88,13 @@ export default function ServicesListed(props) {
 
     console.log(data);
 
+    setPlaceholder(false);
     return data;
   }
 
   // Calling the function on component mount
   useEffect(() => {
     getCollectionsDetails();
-
-    setTimeout(() => {
-      setPlaceholder(false);
-    }, 1200);
   }, []);
 
   return (
@@ -136,17 +134,12 @@ export default function ServicesListed(props) {
           </div>
 
           <div className="cardBody">
-            {data[0] && data ? (
-              <>
-                <Table_normal data={data} />
-                {placeholder && (
-                  <div className="blockLoading">
-                    <LoadingPlaceholder
-                      extraStyles={{ height: "100%", position: "absolute" }}
-                    />
-                  </div>
-                )}
-              </>
+            {placeholder ? (
+              <div className="blockLoading">
+                <LoadingPlaceholder extraStyles={{ position: "absolute" }} />
+              </div>
+            ) : data[0] && data ? (
+              <Table_normal data={data} />
             ) : (
               <div className="noData">
                 <i>
@@ -216,7 +209,9 @@ function Table_normal(props) {
         </Table>
       </TableContainer>
 
-      <p id="submitFeedback" hidden></p>
+      <p id="submitFeedback" className="alertMessage">
+        {/* <ModalUi /> */}
+      </p>
     </>
   );
 }
@@ -273,7 +268,7 @@ function Row_normal(props) {
 
                   var formData = new FormData();
                   formData.append("BuyerAccount", Moralis.User.current().id);
-                  formData.append("SellerWallet", item.SellerWallet);                 
+                  formData.append("SellerWallet", item.SellerWallet);
 
                   const connectedAddress = await GetWallet_NonMoralis();
                   formData.append("BuyerWallet", connectedAddress);

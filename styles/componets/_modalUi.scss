@@ -1,0 +1,20 @@
+.modalMain {
+  @include Size(100%, 100vh);
+  @include Fixed($Left: 0, $Top: 0);
+  background: rgba($BlackColor, 0.85);
+  z-index: 99;
+  display: none;
+
+  .modalContainer {
+    .modalBox {
+      .modalHeader {
+      }
+
+      .modalBody {
+      }
+
+      .modalFooter {
+      }
+    }
+  }
+}

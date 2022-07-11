@@ -88,16 +88,14 @@ export default function ListAvailableOffers(props) {
 
     console.log(data);
 
+    setPlaceholder(false);
+
     return data;
   }
 
   // Calling the function on component mount
   useEffect(() => {
     getCollectionsDetails();
-
-    setTimeout(() => {
-      setPlaceholder(false);
-    }, 1200);
   }, []);
 
   return (
@@ -126,17 +124,14 @@ export default function ListAvailableOffers(props) {
           </div>
 
           <div className="cardBody">
-            {data[0] && data ? (
-              <>
-                <Table_normal data={data} />
-                {placeholder && (
-                  <div className="blockLoading">
-                    <LoadingPlaceholder
-                      extraStyles={{ height: "100%", position: "absolute" }}
-                    />
-                  </div>
-                )}
-              </>
+            {placeholder ? (
+              <div className="blockLoading">
+                <LoadingPlaceholder
+                  extraStyles={{ position: "absolute" }}
+                />
+              </div>
+            ) : data[0] && data ? (
+              <Table_normal data={data} />
             ) : (
               <div className="noData">
                 <i>

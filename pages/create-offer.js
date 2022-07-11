@@ -443,6 +443,19 @@ export default function Description(props) {
                     </div>
 
                     <div className="formRow">
+                      <div className="formLabel">Select Currency:</div>
+                      <div className="formField">
+                        <select className="formSelect">
+                          <option selected value="">Please Select</option>
+                          <option value="ETH">Ethereum (ETH)</option>
+                          <option value="USDC">USD Coin (USDC)</option>
+                          <option value="APE">APEcoin (APE)</option>
+                          <option value="WBTC">Wrapped Bitcoin (WBTC)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="formRow">
                       <div className="formLabel">Price (in ETH):</div>
                       <div className="formField">
                         <input
