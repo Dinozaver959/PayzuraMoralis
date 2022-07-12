@@ -3,17 +3,53 @@
   @include Fixed($Left: 0, $Top: 0);
   background: rgba($BlackColor, 0.85);
   z-index: 99;
-  display: none;
+  // display: none;
 
   .modalContainer {
+    width: auto;
+    @include Relative;
+    @include Flexbox;
+    @include AlignItems(center);
+    max-width: 500px;
+    margin: 1.75rem auto;
+    transform: translate(0, 0);
+    transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
+    min-height: calc(100% - (1.75rem * 2));
+
     .modalBox {
+      @include Relative;
+      @include Flexbox;
+      @include FlexDirection(column);
+      width: 100%;
+      pointer-events: auto;
+      background-color: #fff;
+      background-clip: padding-box;
+      border: 1px solid rgba($BlackColor, 0.2);
+      border-radius: 1rem;
+      outline: 0;
+
       .modalHeader {
+        @include Flexbox;
+        @include AlignItems(flex-start);
+        @include JustifyContent(space-between);
+        padding: 1rem;
+        border-bottom: 1px solid #e9ecef;
+        border-top-left-radius: 0.3rem;
+        border-top-right-radius: 0.3rem;
       }
 
       .modalBody {
+        @include Relative;
+        flex: 1 1 auto;
+        padding: 1rem;
       }
 
       .modalFooter {
+        @include Flexbox;
+        @include AlignItems(center);
+        @include JustifyContent(flex-end);
+        padding: 1rem;
+        border-top: 1px solid #e9ecef;
       }
     }
   }

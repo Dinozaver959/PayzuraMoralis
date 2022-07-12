@@ -186,6 +186,12 @@ function wrapEpochToDate(epoch) {
 
 function Table_normal(props) {
   const { data } = props;
+  const [modelData, setModelData] = useState({
+    show: false,
+    type: "success",
+    title: "title1",
+    message: "message1",
+  });
 
   return (
     <>
@@ -203,21 +209,20 @@ function Table_normal(props) {
           </TableHead>
           <TableBody>
             {data.map((item) => (
-              <Row_normal key={item.id} item={item.name} />
+              <Row_normal key={item.id} item={item.name} setModelData={setModelData} />
             ))}
           </TableBody>
         </Table>
       </TableContainer>
 
-      <p id="submitFeedback" className="alertMessage">
-        {/* <ModalUi /> */}
-      </p>
+      <p id="submitFeedback" className="alertMessage"></p>
+      <ModalUi content={modelData} />
     </>
   );
 }
 
 function Row_normal(props) {
-  const { item } = props;
+  const { item, setModelData } = props;
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -263,8 +268,7 @@ function Row_normal(props) {
                   // show the feedback text
                   document.getElementById("submitFeedback").style.display =
                     "inline";
-                  document.getElementById("submitFeedback").innerText =
-                    "Creating offer...";
+                  document.getElementById("submitFeedback").setModelData({show: true,type: "success",title: "title1",message: "Creating offer..."});
 
                   var formData = new FormData();
                   formData.append("BuyerAccount", Moralis.User.current().id);
