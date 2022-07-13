@@ -5,6 +5,7 @@
   border: 1px solid transparent;
   text-decoration: none;
   cursor: pointer;
+  min-width: 90px;
 
   @include RespondTo(MobileDevices) {
     text-align: center;
@@ -90,6 +91,29 @@
       background: darken($GreenColor, 7%);
       border-color: darken($GreenColor, 7%);
       @include BoxShadow(2px 2px 5px rgba($GreenColor, 0.4));
+    }
+  }
+
+  &.light {
+    background: $LightBg;
+    border-color: $LightBg;
+
+    &:hover {
+      background: darken($LightBg, 7%);
+      border-color: darken($LightBg, 7%);
+      @include BoxShadow(2px 2px 5px rgba($LightBg, 0.4));
+    }
+  }
+
+  &.dark {
+    background: $DarkBg;
+    border-color: $DarkBg;
+    color: $WhiteColor;
+
+    &:hover {
+      background: darken($DarkBg, 7%);
+      border-color: darken($DarkBg, 7%);
+      @include BoxShadow(2px 2px 5px rgba($DarkBg, 0.4));
     }
   }
 
