@@ -314,8 +314,6 @@ export async function PayERC20__transfer__direct_USDC() {
     console.log("result: ", result);
 }
 
-
-
 export async function PayERC20__transfer__Moralis() {
     
     const params = {
@@ -323,10 +321,7 @@ export async function PayERC20__transfer__Moralis() {
         amount: 1000000,
     }
 
-    // org - works fine with ethereum
     return await MoralisWrite__("transfer", params, 0);
-
-    //return await MoralisWrite_("AcceptOffer", params);
 }
 
 export async function PayERC20__TEST__Moralis() {
@@ -336,20 +331,14 @@ export async function PayERC20__TEST__Moralis() {
         amount: 1,
     }
 
-    // org - works fine with ethereum
     return await MoralisWrite__("PayERC20_transfer", params, 0);
-
-    //return await MoralisWrite_("AcceptOffer", params);
 }
 
 export async function PayERC20__TEST__WO_Moralis() {
     
-    console.log("stop 1");
     await UpdateConnectedAddrress();
-    console.log("stop 2");
 
     const smartContract = await InitializeSmartContract();
-    console.log("stop 3");
 
     const userWallet = await GetWallet_NonMoralis();
     console.log("userWallet: ", userWallet[0]);
@@ -500,7 +489,6 @@ async function MoralisWrite__(method, params, value) {
 
     await Moralis.enableWeb3();
 
-
     console.log("value/price: " + value)
   
     // <-- this is needed if there was no authentication - good for read only
@@ -519,16 +507,11 @@ async function MoralisWrite__(method, params, value) {
   
     const transaction = await Moralis.executeFunction(writeOptions);
 
-
     // need to check if Tx was rejected or if something else went wrong (on success we can return the Tx hash -> which we could store in DB)
     console.log("transaction hash: " + transaction.hash);
   
     const tx = await transaction.wait();
     console.log("transaction is confirmed");
-
-    // console.log("tx: " + JSON.stringify(tx));
-
-
 
     if(method == "HandleDispute"){
 
@@ -545,8 +528,6 @@ async function MoralisWrite__(method, params, value) {
         //return {"transactionHash" : transaction.hash, "ArbitersVoteConcluded" : "false"};
         return "false";
     }
-
-
 
     return transaction.hash;
 }
