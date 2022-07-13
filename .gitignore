@@ -8,6 +8,12 @@
 # cloud functions for Moralis
 .cloudFunctions.js
 
+# solidity auxiliary ABI outputs
+/solidity/output/_CloneFactory_sol_Clones.abi
+/solidity/output/Escrow_sol_Escrow.abi
+/solidity/output/IERC20_sol_IERC20.abi
+/solidity/output/ReentrancyGuard_sol_ReentrancyGuard.abi
+
 # testing
 /coverage
 

@@ -5,6 +5,9 @@ import "./_CloneFactory.sol";
 import "./Escrow.sol";
 import "./ReentrancyGuard.sol";
 
+// test
+import "./IERC20.sol";
+
 
 contract EscrowFactory is ReentrancyGuard {
 
@@ -14,7 +17,7 @@ contract EscrowFactory is ReentrancyGuard {
     uint256 public clonedContractsIndex = 0;
 
     //Declaring Events
-    event OfferCreated(uint256 indexed clonedContractsIndex, address indexed _seller, uint256 indexed _price, uint256 _timeToDeliver, uint _offerValidUntil, address[] _personalizedOffer, address[] _arbiters);
+    event OfferCreated(uint256 indexed clonedContractsIndex, address indexed _seller, uint256 indexed _price, address[] _personalizedOffer, address[] _arbiters);
     // buyer
     event OfferAccepted(uint256 indexed clonedContractsIndex, address indexed _buyer);
     event DisputeStarted(uint256 indexed clonedContractsIndex, address indexed _buyer);
@@ -46,17 +49,24 @@ contract EscrowFactory is ReentrancyGuard {
     function CreateEscrow (
         
         address[] calldata arbiters,
-
         uint256 price,
+        address tokenContractAddress,
         uint256 timeToDeliver,
         string memory hashOfDescription,
-
-        // ADDED
         uint256 offerValidUntil,
         address[] calldata personalizedOffer
         
         // 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2, 
-        // 100000000000000000, 1, a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6, 1657634353, ["0x5B38Da6a701c568545dCfcB03FcB875f56beddC4", "0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2"], ["0xdD870fA1b7C4700F2BD7f44238821C26f7392148", "0x583031D1113aD414F02576BD6afaBfb302140225", "0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB"]
+        // ["0xdD870fA1b7C4700F2BD7f44238821C26f7392148", "0x583031D1113aD414F02576BD6afaBfb302140225", "0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB"], 100000000000000000, "0x0000000000000000000000000000000000000000", 1, a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6, 1657634353, ["0x5B38Da6a701c568545dCfcB03FcB875f56beddC4", "0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2"]
+        // ["0xdD870fA1b7C4700F2BD7f44238821C26f7392148", "0x583031D1113aD414F02576BD6afaBfb302140225", "0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB"], 100000000000000000, "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", 1, a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6, 1657634353, ["0x5B38Da6a701c568545dCfcB03FcB875f56beddC4", "0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2"]
+        // 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 - USDC
+        // 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174 - USDC on Polygon
+        // 0x0000000000000000000000000000000000000000 - ETH
+
+
+        // ["0xdD870fA1b7C4700F2BD7f44238821C26f7392148", "0x583031D1113aD414F02576BD6afaBfb302140225", "0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB"], 100000000000000000, "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", 1, a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6, 1657634353, []
+
+
 
     ) external {
         address clone = Clones.clone(implementation);
@@ -64,23 +74,19 @@ contract EscrowFactory is ReentrancyGuard {
         Escrow(clone).Initialize(
             payable(address(this)),         // the Factory contract
             payable(msg.sender),            // seller,
-            
             arbiters,
-
             price,
+            tokenContractAddress,
             timeToDeliver,
             hashOfDescription,
-            
-            // ADDED
             offerValidUntil,
             personalizedOffer
-
         );
 
         clonedContracts[clonedContractsIndex] = clone;
         clonedContractsIndex++;
 
-        //emit OfferCreated(clonedContractsIndex, msg.sender, price, timeToDeliver, offerValidUntil, personalizedOffer, arbiters);
+        emit OfferCreated(clonedContractsIndex, msg.sender, price, personalizedOffer, arbiters);
     }
 
 
@@ -130,6 +136,10 @@ contract EscrowFactory is ReentrancyGuard {
         return Escrow(clonedContracts[index]).price();
     }
 
+    function GetTokenContractAddress(uint256 index) view external returns(address) {
+        return Escrow(clonedContracts[index]).tokenContractAddress();
+    }
+
     function GetDeadline(uint256 index) view public returns(uint256) {
         return Escrow(clonedContracts[index]).deadline();
     }
@@ -142,9 +152,6 @@ contract EscrowFactory is ReentrancyGuard {
         return Escrow(clonedContracts[index]).gracePeriod();
     }
 
-
-
-    // IMPLEMENT
     function GetIsOfferStillValid(uint256 index) view public returns(bool){
         return Escrow(clonedContracts[index]).isOfferValid();
     }
@@ -172,11 +179,54 @@ contract EscrowFactory is ReentrancyGuard {
 
 
 
+    // WRITE FUNCTIONS
+
     // new buyer accepts the agreement
     function AcceptOffer(uint256 index) external payable {
         Escrow(clonedContracts[index]).acceptOffer{value: msg.value}(payable(msg.sender));        // forward the buyers address
         emit OfferAccepted(clonedContractsIndex, msg.sender);
     } 
+
+    function AcceptOffer_ERC20(uint256 index) external {
+        Escrow(clonedContracts[index]).acceptOffer_ERC20(payable(msg.sender));        // forward the buyers address
+        emit OfferAccepted(clonedContractsIndex, msg.sender);
+    } 
+
+
+    // test
+    function PayERC20_transferFrom(address erc20TokenAddress, uint256 amount) external {
+        IERC20 tokenContract = IERC20(erc20TokenAddress);
+        bool transferred = tokenContract.transferFrom(msg.sender, address(this), amount);
+        require(transferred, "ERC20 tokens failed to transfer to contract wallet");
+    }
+
+    function PayERC20_transfer(address erc20TokenAddress, uint256 amount) external {
+        IERC20 tokenContract = IERC20(erc20TokenAddress);
+        bool transferred = tokenContract.transfer(address(this), amount);
+        require(transferred, "ERC20 tokens failed to transfer to contract wallet");
+    }
+
+
+    // NOTE:
+    // test if we can use `erc20TokenAddress` as the actual argument for `recipient`, so that we can transfer any token
+    // best if we can rename the argument, if not -> we will just use supply the ERC20TokenAddress for the recipient argument (it will look weird, but it should do the job)
+
+    // 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174
+    function transfer(address recipient, uint256 amount) public returns (bool) {
+
+        IERC20 tokenContract = IERC20(0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174);          // USDC on polygon
+        bool transferred = tokenContract.transferFrom(msg.sender, address(this), amount);
+        // bool transferred = tokenContract.transfer(address(this), amount);                // same behaviour as 'transferFrom'
+        require(transferred, "ERC20 tokens failed to transfer to contract wallet");
+
+        return transferred;
+    }
+
+    function decimals() public view virtual returns (uint8) {
+        return 6;
+    }
+
+    //-------------------------------------------------------------------------------------------------------------------------------------
 
 
     // ONLY SELLER
@@ -190,7 +240,7 @@ contract EscrowFactory is ReentrancyGuard {
         emit FundsClaimed(clonedContractsIndex, msg.sender);
     } 
 
-    // ADDED
+    // ONLY SELLER - DELEGATES
     function AddSellerDelegates(uint256 index, address[] calldata delegates) external {
         Escrow(clonedContracts[index]).addSellerDelegates(msg.sender, delegates);
     }
@@ -216,7 +266,7 @@ contract EscrowFactory is ReentrancyGuard {
         emit DeliveryConfirmed(clonedContractsIndex, msg.sender);
     } 
 
-    // ADDED
+    // ONLY BUYER - DELEGATES
     function AddBuyerDelegates(uint256 index, address[] calldata delegates) external {
         Escrow(clonedContracts[index]).addBuyerDelegates(msg.sender, delegates);
     }
