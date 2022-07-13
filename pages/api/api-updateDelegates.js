@@ -90,7 +90,7 @@ async function UpdateDelegatesMoralisDB(objectId, areForBuyer, DelegatesToAdd, D
                 return self.indexOf(value) === index
             }
 
-            const uniqueBuyerDelegates = newBuyerDelegates.filter(unique);
+            const uniqueBuyerDelegates = newBuyerDelegates.filter(unique);                          // appears faulty, filtering on a string? cmon...
             agreement.set("BuyerDelegates", uniqueBuyerDelegates.join());
 
         } else {
