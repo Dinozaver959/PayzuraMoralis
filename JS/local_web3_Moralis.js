@@ -1,11 +1,19 @@
 import Moralis from "moralis"
-import {ABI} from "./ABI.js"
+import {ABI, ABI_ERC20} from "./ABI.js"
 
 //const ethers = Moralis.web3Library;
  
-const FactoryContractAddress = "0xa091384a307c7225bD5670E43E9F5925831A5204"; //"0x5Fc12E3eC96dd2F008DB5f32497cbAbefB049B60";   // 0x5D023afC16961d44E5fB3F29fe17fd54cE8D3487 - checked in
-const contractOnNetwork = "polygon";
+const FactoryContractAddress = "0x84ACa57094C881eea170ECEba1fc9911868A7b23"; // "0xC580C23A982C11A3812920C51EDd104B2BB89B15"; // "0x6526447628924eea4F0578e812826f327F8d489B"; //"0x5Fc12E3eC96dd2F008DB5f32497cbAbefB049B60";   // 0x5D023afC16961d44E5fB3F29fe17fd54cE8D3487 - checked in
+export const contractOnNetwork = "polygon";
 const commission = 0.01;
+const PayzuraDafaultArbiter = "0x80038953cE1CdFCe7561Abb73216dE83F8baAEf0"; // Payzura Team/Platform address
+
+
+// for a test
+const Web3 = require('web3');
+
+
+
 
 
 // READ Functions
@@ -29,25 +37,22 @@ export async function GetPrice_Moralis(index) {
     return price;
 }
 
+export async function GetAddress_Moralis(index) {
+
+    const params = {
+        index: index,
+    }
+
+    const address = await MoralisRead("GetAddress", params);
+    console.log("address: " + address);
+
+    return address;
+}
+
 // --------------------------------------------------------------------------------------------------------------------------------
 // were only used for the initial index page (commenting out for now), as some might be used later
 // --------------------------------------------------------------------------------------------------------------------------------
 /*
-    export async function GetAddress_Moralis() {
-
-        const index = GetIndex();
-
-        const params = {
-            index: index,
-        }
-
-        const address = await MoralisRead("GetAddress", params); // will give an array with a hex value
-    
-        console.log("address: " + address);
-        document.getElementById('GetAddress_Display').innerText = address;
-        document.getElementById('GetAddress_Display').style.visibility = "visible";
-    }
-
     export async function GetBalance_Moralis() {
 
         const index = GetIndex();
@@ -208,7 +213,7 @@ async function MoralisRead(method, params) {
 
 // WRITE Functions
 
-export async function CreateEscrow_Moralis(price, timeToDeliver, hashOfDescription, offerValidUntil, personalizedOffer, arbiters) {
+export async function CreateEscrow_Moralis(price, currencyTicker, timeToDeliver, hashOfDescription, offerValidUntil, personalizedOffer, arbiters) {
 
     var personalizedOffer_parts = personalizedOffer.split(",");
 
@@ -219,7 +224,7 @@ export async function CreateEscrow_Moralis(price, timeToDeliver, hashOfDescripti
     var arbiters_parts = arbiters.split(",");
 
     if(!arbiters){
-        arbiters_parts = ["0x80038953cE1CdFCe7561Abb73216dE83F8baAEf0"];  // Payzura Team/Platform address
+        arbiters_parts = [PayzuraDafaultArbiter];
     }
 
     for (let i = 0; i < personalizedOffer_parts.length; i++){
@@ -229,9 +234,27 @@ export async function CreateEscrow_Moralis(price, timeToDeliver, hashOfDescripti
         console.log("arbiters_parts[i]: " + arbiters_parts[i])
     }
 
+    // for ETH
+    // const price_ = BigInt(10 ** 14) * BigInt((10 ** 4) * price);
+    // for USDC
+    // const price_ = BigInt((10 ** 6) * price);
+
+    var price_;
+    const numberOfDecimals = CurrencyTickerToDecimals(currencyTicker);
+
+    // this approach is needed because we can only fit an integer
+    if(numberOfDecimals <= 14){ 
+        price_ = BigInt((10 ** numberOfDecimals) * price);
+    } else {
+        price_ = BigInt(10 ** 14) * BigInt((10 ** (numberOfDecimals - 14)) * price);
+    }
+
+    const tokenContractAddress = CurrencyTickerToAddress(currencyTicker, ConvertNetworkNameToChainID(contractOnNetwork)); // note for now we are forcing the use of polygon
+
     const params = {
         arbiters: arbiters_parts,
-        price: price.toString(),
+        price: price_.toString(),
+        tokenContractAddress: tokenContractAddress,
         timeToDeliver: timeToDeliver,
         hashOfDescription: hashOfDescription,
         offerValidUntil: offerValidUntil, 
@@ -243,20 +266,146 @@ export async function CreateEscrow_Moralis(price, timeToDeliver, hashOfDescripti
 
 export async function AcceptOffer_Moralis(index) {
 
+    // figure out which currency is needed (ETH or some ERC20)
+    // figure out how to pay in ERC20 tokens from JS
+
+
     // get the mint price
     var price = await GetPrice_Moralis(index); // will give an array with a hex value
-
     price = BigInt(price) + BigInt(price * commission);
     
-    console.log("price: " + price);
+    console.log("price: " + price);                                                                             
     console.log("index: " + index);
     
-    const params = {
+    const params = {                                                                                                        // do we not need the price????
         index: index,
     }
 
-    return await MoralisWrite__("AcceptOffer", params, price); //    2000000000000000
+    // org - works fine with ethereum
+    return await MoralisWrite__("AcceptOffer", params, 0); //    2000000000000000
+
+    //return await MoralisWrite_("AcceptOffer", params);
 }
+
+
+export async function PayERC20__transfer__direct_USDC() {
+    
+    await HandleNetworkSwitch(contractOnNetwork); 
+    //await HandleNetworkSwitch("homestead");
+    await Moralis.enableWeb3();
+
+    const options = {
+        type: "erc20",
+        amount: Moralis.Units.Token("0.5", "6"),
+
+        // direct USDC transfer from USDC contract                              // rezulted in showing 0.5 USDC  (wrong icon though)
+        //receiver: "0x84ACa57094C881eea170ECEba1fc9911868A7b23",               // payzura contract
+        //contractAddress: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",        // USDC on Polygon
+
+        // calling Payzura's contract to transfer from there                     // rezulted in showing 0 undefined
+        contractAddress: "0x84ACa57094C881eea170ECEba1fc9911868A7b23",         // payzura contract
+        receiver: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",                // USDC on Polygon
+
+        // direct USDC transfer from USDC contract on ETH                        // showed 0.5 USDC with correct icon
+        //contractAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",           // USDC on ETH
+        //receiver: "0x80038953cE1CdFCe7561Abb73216dE83F8baAEf0",                  // my other wallet
+    };
+    let result = await Moralis.transfer(options);
+    console.log("result: ", result);
+}
+
+
+
+export async function PayERC20__transfer__Moralis() {
+    
+    const params = {
+        recipient: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+        amount: 1000000,
+    }
+
+    // org - works fine with ethereum
+    return await MoralisWrite__("transfer", params, 0);
+
+    //return await MoralisWrite_("AcceptOffer", params);
+}
+
+export async function PayERC20__TEST__Moralis() {
+    
+    const params = {
+        erc20TokenAddress: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+        amount: 1,
+    }
+
+    // org - works fine with ethereum
+    return await MoralisWrite__("PayERC20_transfer", params, 0);
+
+    //return await MoralisWrite_("AcceptOffer", params);
+}
+
+export async function PayERC20__TEST__WO_Moralis() {
+    
+    console.log("stop 1");
+    await UpdateConnectedAddrress();
+    console.log("stop 2");
+
+    const smartContract = await InitializeSmartContract();
+    console.log("stop 3");
+
+    const userWallet = await GetWallet_NonMoralis();
+    console.log("userWallet: ", userWallet[0]);
+
+    let parameters = {
+        from: userWallet[0],
+        //value: res * numTokens       // value: web3.utils.toWei(0.1, 'ether'),     // needs to be specified -> we can send a read Tx to the blockchain
+    }
+
+    const erc20TokenAddress= "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
+    const amount= 1;
+
+    if(smartContract){
+        smartContract.methods.PayERC20_transfer(erc20TokenAddress, amount)
+        .send(parameters, function (err, res) {
+          if (err) {
+            console.log("An error occured", err)
+            return
+          }
+          console.log("Tx successful. Tx hash: ", res)
+        })
+        .on('receipt', function (receipt) {
+          console.log("Transacation has been included on the blockchain");
+        })
+        .on('error', function (error, receipt) {
+          console.log("error: " + error);
+        });
+    }
+}
+
+async function InitializeSmartContract() {
+    // web3 lib instance
+    const web3 = new Web3(window.ethereum);
+    return (new web3.eth.Contract(ABI, FactoryContractAddress));
+}
+
+async function UpdateConnectedAddrress() {
+    if (window.ethereum) {
+      try {
+        connectedAddress = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        console.log('action performed by account: ' + connectedAddress);
+  
+      } catch (error) {
+        if (error.code === 4001) {
+          // User rejected request
+          console.log('user denied request');
+        }
+        console.log('error: ' + error);
+      }
+    }
+}
+
+
+
+
+
 
 export async function ReturnPayment_Moralis(index) {
 
@@ -403,6 +552,47 @@ async function MoralisWrite__(method, params, value) {
 }
 
 
+export async function ApproveERC20_Moralis(index){
+
+    const ERC20_contractAddress = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
+
+
+    await HandleNetworkSwitch(contractOnNetwork); 
+    await Moralis.enableWeb3();
+
+    console.log("index: " + index);
+    const address = await GetAddress_Moralis(index);
+    console.log("address: " + address);
+
+    var price = await GetPrice_Moralis(index); // will give an array with a hex value
+    price = BigInt(price) + BigInt(price * commission);
+    console.log("price: " + price);
+
+    const params = {
+        // _spender: address, // contract address of this instance              // ORG: for the instance of escrow contract
+        _spender: FactoryContractAddress,
+        _value: price,
+    }
+
+    const writeOptions = {
+        contractAddress: ERC20_contractAddress,
+        functionName: "approve",
+        abi: ABI_ERC20,
+        params: params,
+        msgValue: 0
+    };
+
+    const transaction = await Moralis.executeFunction(writeOptions);
+
+    console.log("transaction hash: " + transaction.hash);
+  
+    const tx = await transaction.wait();
+    console.log("transaction is confirmed");
+
+    return transaction.hash;
+}
+
+
 
 // AUX Functions
 
@@ -423,6 +613,76 @@ export async function GetWallet_NonMoralis(){
         }
         console.log('error: ' + error);
       }
+    }
+}
+
+
+/* */
+export function GetChainID_NonMoralis(){
+    if (window.ethereum) {
+      try {
+        console.log("window.ethereum.networkVersion: " + window.ethereum.networkVersion)
+        return window.ethereum.networkVersion
+      } catch (error) {
+        if (error.code === 4001) {
+          console.log('something went wrong');
+        }
+        console.log('error: ' + error);
+      }
+    }
+}
+
+
+export function CurrencyTickerToDecimals(currencyTicker){
+
+    // test only
+    console.log("test:")
+    console.log("chain id: " + GetChainID_NonMoralis());
+
+
+    switch(currencyTicker){
+    
+        case "USDC":
+            return 6;
+
+        case "ETH":
+        default:
+            return 18;
+    }
+}
+
+
+// should be recoded in the future in better way
+export function CurrencyTickerToAddress(currencyTicker, chainId){
+
+    switch(chainId){
+
+        // mainnet
+        case 1: 
+
+            switch(currencyTicker){
+
+                case "USDC":
+                    return "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+
+                case "ETH":
+                default:
+                    return "0x0000000000000000000000000000000000000000"; 
+            }
+
+        // polygon
+        default:
+        case 137:
+            
+            switch(currencyTicker){
+
+                case "USDC":
+                    return "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
+
+                case "ETH":
+                default:
+                    return "0x0000000000000000000000000000000000000000"; 
+            }
     }
 }
 
@@ -458,7 +718,7 @@ async function HandleNetworkSwitch(networkName) {
     }
 }
   
-function ConvertNetworkNameToChainID(networkName){
+export function ConvertNetworkNameToChainID(networkName){
   
     switch (networkName) {
         case "homestead":

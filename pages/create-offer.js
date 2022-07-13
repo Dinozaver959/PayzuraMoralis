@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import Moralis from "moralis";
 import { sha256 } from "js-sha256";
 import {
+  contractOnNetwork,
+  ConvertNetworkNameToChainID,
   GetWallet_NonMoralis,
   clonedContractsIndex_Moralis,
   CreateEscrow_Moralis,
@@ -47,74 +49,72 @@ export default function Description(props) {
 
   async function SubmitForm() {
     CreateEscrow_Moralis(
-      BigInt(10 ** 14) *
-        BigInt(10 ** 4 * document.getElementById("Price").value), // together in both it has to be 14 + 4 = 18 (ETH to WEI conversion)
+      document.getElementById("Price").value,
+      document.getElementById("CurrencyTicker").value,    // expected values: `ETH`, `USDC`
       document.getElementById("TimeToDeliver").value,
       sha256(document.getElementById("OfferDescription").value),
       OfferValidUntil.getTime() / 1000,
       document.getElementById("PersonalizedOffer").value,
       document.getElementById("Arbiters").value
     )
-      .then(async (transactionHash) => {
-        // show the feedback text
+    .then(async (transactionHash) => {
+      // show the feedback text
+      document.getElementById("submitFeedback").style.display = "inline";
+      document.getElementById("submitFeedback").innerText = "Creating offer...";
+
+      var form = document.querySelector("form");
+      var formData = new FormData(form);
+      formData.append("SellerAccount", Moralis.User.current().id);
+
+      // read the current number of agreements to figure out what is the agreement index for this case
+      const index = (await clonedContractsIndex_Moralis()) - 1;
+      console.log("new index: " + index);
+      formData.append("index", index);
+
+      const connectedAddress = await GetWallet_NonMoralis();
+      formData.append("SellerWallet", connectedAddress);
+      formData.append("hashDescription", sha256(document.getElementById("OfferDescription").value));
+      formData.append("transactionHash", transactionHash);
+      formData.append("OfferValidUntil", OfferValidUntil.getTime() / 1000);
+
+      formData.append("CurrencyTicker", CurrencyTicker);
+      formData.append("ChainID", ConvertNetworkNameToChainID(contractOnNetwork));
+
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "/api/api-createOffer", false);
+      xhr.onload = function () {
+        // do something to response
+        // console.log(this.responseText);
+
+        // update the feedback text
         document.getElementById("submitFeedback").style.display = "inline";
+        document.getElementById("submitFeedback").innerText = "offer created";
+
+        // prevent the Submit button to be clickable and functionable
+        removeHover();
+        document.getElementById("SubmitButton").disabled = true;
+
+        // think about also removing the hover effect
+        // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+        console.log("offer created");
+      };
+      xhr.send(formData);
+    })
+    .catch((error) => {
+      console.error(error);
+      console.log("create offer error code: " + error.code);
+      console.log("create offer error message: " + error.message);
+      if (error.data && error.data.message) {
         document.getElementById("submitFeedback").innerText =
-          "Creating offer...";
-
-        var form = document.querySelector("form");
-        var formData = new FormData(form);
-        formData.append("SellerAccount", Moralis.User.current().id);
-
-        // read the current number of agreements to figure out what is the agreement index for this case
-        const index = (await clonedContractsIndex_Moralis()) - 1;
-        console.log("new index: " + index);
-        formData.append("index", index);
-
-        const connectedAddress = await GetWallet_NonMoralis();
-        formData.append("SellerWallet", connectedAddress);
-
-        formData.append(
-          "hashDescription",
-          sha256(document.getElementById("OfferDescription").value)
-        );
-        formData.append("transactionHash", transactionHash);
-
-        formData.append("OfferValidUntil", OfferValidUntil.getTime() / 1000);
-
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/api/api-createOffer", false);
-        xhr.onload = function () {
-          // do something to response
-          // console.log(this.responseText);
-
-          // update the feedback text
-          document.getElementById("submitFeedback").style.display = "inline";
-          document.getElementById("submitFeedback").innerText = "offer created";
-
-          // prevent the Submit button to be clickable and functionable
-          removeHover();
-          document.getElementById("SubmitButton").disabled = true;
-
-          // think about also removing the hover effect
-          // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-          console.log("offer created");
-        };
-        xhr.send(formData);
-      })
-      .catch((error) => {
-        console.error(error);
-        console.log("create offer error code: " + error.code);
-        console.log("create offer error message: " + error.message);
-        if (error.data && error.data.message) {
-          document.getElementById("submitFeedback").innerText =
-            error.data.message;
-        } else {
-          document.getElementById("submitFeedback").innerText = error.message;
-        }
-        document.getElementById("submitFeedback").style.visibility = "visible";
-        process.exitCode = 1;
-      });
+          error.data.message;
+      } else {
+        document.getElementById("submitFeedback").innerText = error.message;
+      }
+      document.getElementById("submitFeedback").style.visibility = "visible";
+      process.exitCode = 1;
+    });
   }
+
   // update Submit button
   const refButton = useRef(null);
   function removeHover() {
@@ -406,6 +406,27 @@ export default function Description(props) {
                         </div>
                       </div>
                     </div>
+
+
+                    <div className="formRow">
+                      <div className="formLabel">Currency (change to dropdown):</div>
+                      <div className="formField">
+                        <input
+                          className="formInput"
+                          id="CurrencyTicker"
+                          type="text"
+                          {...register("CurrencyTicker", {
+                            required: true,
+                            /*
+                            minLength: 42,
+                            maxLength: 42,
+                            pattern: /^0x[a-fA-F0-9] * /i,
+                            */
+                          })}
+                        ></input>
+                      </div>
+                    </div>
+
 
                     <div className="formRow">
                       <div className="formLabel">Price (in ETH):</div>

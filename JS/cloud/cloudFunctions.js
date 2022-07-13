@@ -94,3 +94,18 @@ Moralis.Cloud.define("GetUsersAgreementsOnlySeller", async (request) => {
 
   return await querySeller.find();
 });
+
+
+Moralis.Cloud.define("GetUsersDetails", async (request) => {
+
+  const querySeller = new Moralis.Query("DisputeMeter");
+  querySeller.equalTo("userAddress", request.params.UserWallet);
+
+  return await querySeller.find();
+});
+
+
+
+
+// to update the file run 
+// moralis-admin-cli watch-cloud-folder --moralisApiKey DmJlMFi7bq6YsSn --moralisApiSecret 0e5r309G7jnsBsZ --moralisCloudfolder D:\Test\Payzura\payzura\JS\cloud
