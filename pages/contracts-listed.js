@@ -33,6 +33,10 @@ import LoadingPlaceholder from "../components/ui/LoadingPlaceholder";
 import PlusIc from "../components/icons/Plus";
 import PlaceholderIc from "../components/icons/Placeholder";
 
+import Image from "next/image"
+import ETHIcon from "../components/images/ETH.webp";
+import USDCIcon from "../components/images/USDC.webp";
+
 const StyledTableRow = styled(TableRow)({
   //'&:nth-of-type(odd)': {
   //  backgroundColor: "#343a3f",
@@ -196,6 +200,14 @@ function wrapEpochToDate(epoch) {
   return d.toString(); // d.toDateString();
 }
 
+function tickerToIcon(ticker){
+  if(ticker == "USDC"){
+    return USDCIcon;
+  } else if(ticker == "ETH"){
+    return ETHIcon;
+  }  
+}
+
 async function hasTheConnectedWalletAlreadyApprovedERC20(listApprovedBy){
   const connectedAddress = await GetWallet_NonMoralis();
   if(!connectedAddress){return false;}
@@ -287,7 +299,8 @@ function Row_normal(props) {
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Currency</label>
-          {item.CurrencyTicker}
+          <Image src={tickerToIcon(item.CurrencyTicker)} width={20} height={20} alt={item.CurrencyTicker} />
+           {item.CurrencyTicker}
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Price</label>
