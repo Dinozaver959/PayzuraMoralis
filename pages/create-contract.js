@@ -51,69 +51,76 @@ export default function Description(props) {
   async function SubmitForm() {
     CreateEscrow_Moralis(
       document.getElementById("Price").value,
-      document.getElementById("CurrencyTicker").value,    // expected values: `ETH`, `USDC`
+      document.getElementById("CurrencyTicker").value, // expected values: `ETH`, `USDC`
       document.getElementById("TimeToDeliver").value,
       sha256(document.getElementById("OfferDescription").value),
       OfferValidUntil.getTime() / 1000,
       document.getElementById("PersonalizedOffer").value,
       document.getElementById("Arbiters").value
     )
-    .then(async (transactionHash) => {
-      // show the feedback text
-      document.getElementById("submitFeedback").style.display = "inline";
-      document.getElementById("submitFeedback").innerText = "Creating offer...";
-
-      var form = document.querySelector("form");
-      var formData = new FormData(form);
-      formData.append("SellerAccount", Moralis.User.current().id);
-
-      // read the current number of agreements to figure out what is the agreement index for this case
-      const index = (await clonedContractsIndex_Moralis()) - 1;
-      console.log("new index: " + index);
-      formData.append("index", index);
-
-      const connectedAddress = await GetWallet_NonMoralis();
-      formData.append("SellerWallet", connectedAddress);
-      formData.append("hashDescription", sha256(document.getElementById("OfferDescription").value));
-      formData.append("transactionHash", transactionHash);
-      formData.append("OfferValidUntil", OfferValidUntil.getTime() / 1000);
-
-      formData.append("CurrencyTicker", CurrencyTicker);
-      formData.append("ChainID", ConvertNetworkNameToChainID(contractOnNetwork));
-
-      var xhr = new XMLHttpRequest();
-      xhr.open("POST", "/api/api-createOffer", false);
-      xhr.onload = function () {
-        // do something to response
-        // console.log(this.responseText);
-
-        // update the feedback text
+      .then(async (transactionHash) => {
+        // show the feedback text
         document.getElementById("submitFeedback").style.display = "inline";
-        document.getElementById("submitFeedback").innerText = "offer created";
-
-        // prevent the Submit button to be clickable and functionable
-        removeHover();
-        document.getElementById("SubmitButton").disabled = true;
-
-        // think about also removing the hover effect
-        // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-        console.log("offer created");
-      };
-      xhr.send(formData);
-    })
-    .catch((error) => {
-      console.error(error);
-      console.log("create offer error code: " + error.code);
-      console.log("create offer error message: " + error.message);
-      if (error.data && error.data.message) {
         document.getElementById("submitFeedback").innerText =
-          error.data.message;
-      } else {
-        document.getElementById("submitFeedback").innerText = error.message;
-      }
-      document.getElementById("submitFeedback").style.visibility = "visible";
-      process.exitCode = 1;
-    });
+          "Creating offer...";
+
+        var form = document.querySelector("form");
+        var formData = new FormData(form);
+        formData.append("SellerAccount", Moralis.User.current().id);
+
+        // read the current number of agreements to figure out what is the agreement index for this case
+        const index = (await clonedContractsIndex_Moralis()) - 1;
+        console.log("new index: " + index);
+        formData.append("index", index);
+
+        const connectedAddress = await GetWallet_NonMoralis();
+        formData.append("SellerWallet", connectedAddress);
+        formData.append(
+          "hashDescription",
+          sha256(document.getElementById("OfferDescription").value)
+        );
+        formData.append("transactionHash", transactionHash);
+        formData.append("OfferValidUntil", OfferValidUntil.getTime() / 1000);
+
+        formData.append("CurrencyTicker", CurrencyTicker);
+        formData.append(
+          "ChainID",
+          ConvertNetworkNameToChainID(contractOnNetwork)
+        );
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/api/api-createOffer", false);
+        xhr.onload = function () {
+          // do something to response
+          // console.log(this.responseText);
+
+          // update the feedback text
+          document.getElementById("submitFeedback").style.display = "inline";
+          document.getElementById("submitFeedback").innerText = "offer created";
+
+          // prevent the Submit button to be clickable and functionable
+          removeHover();
+          document.getElementById("SubmitButton").disabled = true;
+
+          // think about also removing the hover effect
+          // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+          console.log("offer created");
+        };
+        xhr.send(formData);
+      })
+      .catch((error) => {
+        console.error(error);
+        console.log("create offer error code: " + error.code);
+        console.log("create offer error message: " + error.message);
+        if (error.data && error.data.message) {
+          document.getElementById("submitFeedback").innerText =
+            error.data.message;
+        } else {
+          document.getElementById("submitFeedback").innerText = error.message;
+        }
+        document.getElementById("submitFeedback").style.visibility = "visible";
+        process.exitCode = 1;
+      });
   }
 
   // update Submit button
@@ -356,37 +363,31 @@ export default function Description(props) {
                         <div className="fieldError">
                           {errors.ContractTitle &&
                             errors.ContractTitle.type === "required" && (
-                              <span>
-                                <p>required</p>
-                              </span>
+                              <p>required</p>
                             )}
                           {errors.ContractTitle &&
                             errors.ContractTitle.type === "maxLength" && (
-                              <span>
-                                <p>Max length is 24 chars</p>
-                              </span>
+                              <p>Max length is 24 chars</p>
                             )}
                           {errors.ContractTitle &&
                             errors.ContractTitle.type === "minLength" && (
-                              <span>
-                                <p>Min length is 4 chars</p>
-                              </span>
+                              <p>Min length is 4 chars</p>
                             )}
                           {errors.ContractTitle &&
                             errors.ContractTitle.type === "pattern" && (
-                              <span>
-                                <p>
-                                  Start with an alphabet character. No spaces or
-                                  special characters
-                                </p>
-                              </span>
+                              <p>
+                                Start with an alphabet character. No spaces or
+                                special characters
+                              </p>
                             )}
                         </div>
                       </div>
                     </div>
 
                     <div className="formRow">
-                      <div className="formLabel">Contract&apos;s Description:</div>
+                      <div className="formLabel">
+                        Contract&apos;s Description:
+                      </div>
                       <div className="formField">
                         <textarea
                           cols="40"
@@ -410,21 +411,15 @@ export default function Description(props) {
                         <div className="fieldError">
                           {errors.OfferDescription &&
                             errors.OfferDescription.type === "required" && (
-                              <span>
-                                <p>required</p>
-                              </span>
+                              <p>required</p>
                             )}
                           {errors.OfferDescription &&
                             errors.OfferDescription.type === "maxLength" && (
-                              <span>
-                                <p>Max length is 440 chars</p>
-                              </span>
+                              <p>Max length is 440 chars</p>
                             )}
                           {errors.OfferDescription &&
                             errors.OfferDescription.type === "minLength" && (
-                              <span>
-                                <p>Min length is 4 chars</p>
-                              </span>
+                              <p>Min length is 4 chars</p>
                             )}
                         </div>
                       </div>
@@ -445,36 +440,30 @@ export default function Description(props) {
                     <div className="formRow">
                       <div className="formLabel">Select Currency:</div>
                       <div className="formField">
-                        <select className="formSelect">
-                          <option selected value="">Please Select</option>
+                        <select
+                          className="formSelect"
+                          id="CurrencyTicker"
+                          {...register("CurrencyTicker", {
+                            required: true,
+                          })}
+                        >
+                          <option selected value="">
+                            Please Select
+                          </option>
                           <option value="ETH">Ethereum (ETH)</option>
                           <option value="USDC">USD Coin (USDC)</option>
                           <option value="APE">APEcoin (APE)</option>
                           <option value="WBTC">Wrapped Bitcoin (WBTC)</option>
                         </select>
+
+                        <div className="fieldError">
+                          {errors.CurrencyTicker &&
+                            errors.CurrencyTicker.type === "required" && (
+                              <p>required</p>
+                            )}
+                        </div>
                       </div>
                     </div>
-
-
-                    <div className="formRow">
-                      <div className="formLabel">Currency (change to dropdown):</div>
-                      <div className="formField">
-                        <input
-                          className="formInput"
-                          id="CurrencyTicker"
-                          type="text"
-                          {...register("CurrencyTicker", {
-                            required: true,
-                            /*
-                            minLength: 42,
-                            maxLength: 42,
-                            pattern: /^0x[a-fA-F0-9] * /i,
-                            */
-                          })}
-                        ></input>
-                      </div>
-                    </div>
-
 
                     <div className="formRow">
                       <div className="formLabel">Price (in ETH):</div>
@@ -489,10 +478,10 @@ export default function Description(props) {
                         ></input>
                         <div className="fieldError">
                           {errors.Price && errors.Price.type === "required" && (
-                            <span>required</span>
+                            <p>required</p>
                           )}
                           {errors.Price && errors.Price.type === "min" && (
-                            <span>Min price is 0</span>
+                            <p>Min price is 0</p>
                           )}
                         </div>
                       </div>
@@ -515,11 +504,11 @@ export default function Description(props) {
                         <div className="fieldError">
                           {errors.TimeToDeliver &&
                             errors.TimeToDeliver.type === "required" && (
-                              <span>required</span>
+                              <p>required</p>
                             )}
                           {errors.TimeToDeliver &&
                             errors.TimeToDeliver.type === "min" && (
-                              <span>Min time to deliver is 0</span>
+                              <p>Min time to deliver is 0</p>
                             )}
                         </div>
                       </div>
@@ -621,7 +610,7 @@ export default function Description(props) {
 
                     <div className="formRow">
                       <div className="formLabel">
-                      Contract valid for these wallets:
+                        Contract valid for these wallets:
                       </div>
                       <div className="formField">
                         <input
