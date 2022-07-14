@@ -28,7 +28,7 @@ import {
 } from "../JS/local_web3_Moralis";
 import Navigation from "../components/Navigation.js";
 import Button from "../components/ui/Button";
-import LoadingPlaceholder from "./../components/ui/LoadingPlaceholder";
+import LoadingPlaceholder from "../components/ui/LoadingPlaceholder";
 
 import PlusIc from "../components/icons/Plus";
 import PlaceholderIc from "../components/icons/Placeholder";
@@ -81,7 +81,7 @@ const StyledInnerTableCell = styled(TableCell)({
 */
 });
 
-export default function ServicesListed(props) {
+export default function ContractsListed(props) {
   const [data, setData] = useState([]);
   const [placeholder, setPlaceholder] = useState(true);
 
@@ -117,16 +117,16 @@ export default function ServicesListed(props) {
 
       <div className="containerMain">
         <div className="pageHeader">
-          <h1>Services Listed</h1>
+          <h1>Contracts Listed</h1>
           <div className="headerAction">
-            <Button link="/personalized-services" classes={"button green"}>
-              <span>Personalized Services</span>
+            <Button link="/personalized-contracts" classes={"button green"}>
+              <span>Personalized Contracts</span>
             </Button>
-            <Button link="/create-offer" classes={"button secondary withIcon"}>
+            <Button link="/create-contract" classes={"button secondary withIcon"}>
               <i>
                 <PlusIc />
               </i>
-              <span>Create New Offer</span>
+              <span>Create New Contract</span>
             </Button>
           </div>
         </div>
@@ -134,7 +134,7 @@ export default function ServicesListed(props) {
         <div className="card mt-10">
           <div className="cardHeader">
             <div className="cardTitle">
-              <h2>Open Offers</h2>
+              <h2></h2>
             </div>
           </div>
 
@@ -150,13 +150,13 @@ export default function ServicesListed(props) {
                 <i>
                   <PlaceholderIc />
                 </i>
-                <h2>There are no available offers.</h2>
+                <h2>There are no available contracts.</h2>
                 <div className="submitButtonOuter">
                   <Button
-                    link="/create-offer"
+                    link="/create-contract"
                     classes={"button primary rounded"}
                   >
-                    <span>Create Offer Now</span>
+                    <span>Create Contract Now</span>
                   </Button>
                 </div>
               </div>
@@ -293,7 +293,7 @@ function Row_normal(props) {
         </StyledTableCell>
         <StyledTableCell component="th" scope="row">
           <label className="mobileLabel">Title</label>
-          {item.OfferTitle}
+          {item.ContractTitle}
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Currency</label>

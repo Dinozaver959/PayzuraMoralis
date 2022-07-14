@@ -73,7 +73,7 @@ const StyledInnerTableCell = styled(TableCell)({
 */
 });
 
-export default function PersonalizedServices(props) {
+export default function PersonalizedContracts(props) {
   const [data, setData] = useState([]);
   const [placeholder, setPlaceholder] = useState(true);
 
@@ -117,13 +117,13 @@ export default function PersonalizedServices(props) {
 
       <div className="containerMain">
         <div className="pageHeader">
-          <h1>Personalized Services Listed</h1>
+          <h1>Personalized Contracts Listed</h1>
           <div className="headerAction">
-            <Button link="/create-offer" classes={"button secondary withIcon"}>
+            <Button link="/create-contract" classes={"button secondary withIcon"}>
               <i>
                 <PlusIc />
               </i>
-              <span>Create New Offer</span>
+              <span>Create New Contract</span>
             </Button>
           </div>
         </div>
@@ -151,13 +151,13 @@ export default function PersonalizedServices(props) {
                 <i>
                   <PlaceholderIc />
                 </i>
-                <h2>There are no offers for you.</h2>
+                <h2>There are no contracts for you.</h2>
                 <div className="submitButtonOuter">
                   <Button
-                    link="/create-offer"
+                    link="/create-contract"
                     classes={"button primary rounded"}
                   >
-                    <span>Create Offer Now</span>
+                    <span>Create Contract Now</span>
                   </Button>
                 </div>
               </div>
@@ -241,7 +241,7 @@ function Row_normal(props) {
         </StyledTableCell>
         <StyledTableCell component="th" scope="row">
           <label className="mobileLabel">Title</label>
-          {item.OfferTitle}
+          {item.ContractTitle}
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Price (ETH)</label>

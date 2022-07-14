@@ -7,7 +7,7 @@ Moralis.Cloud.define("GetPublicOffers", async (request) => {
     { match: { PersonalizedOffer: "" } },
     { project: { 
       objectId : 1,
-      OfferTitle : 1,
+      ContractTitle : 1,
       OfferDescription: 1,
       hashDescription: 1,
       Price: 1,

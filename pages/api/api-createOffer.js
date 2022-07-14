@@ -21,7 +21,7 @@ apiRoute.post(async (req, res) => {
 
     const SellerAccount = DOMPurify.sanitize(req.body.SellerAccount[0].toString());
     const SellerWallet = DOMPurify.sanitize(req.body.SellerWallet[0].toString());
-    const OfferTitle = DOMPurify.sanitize(req.body.OfferTitle[0].toString());
+    const ContractTitle = DOMPurify.sanitize(req.body.ContractTitle[0].toString());
     const OfferDescription = DOMPurify.sanitize(req.body.OfferDescription[0].toString());
     const hashDescription = DOMPurify.sanitize(req.body.hashDescription[0].toString());
     const Price = DOMPurify.sanitize(req.body.Price[0].toString());
@@ -36,7 +36,7 @@ apiRoute.post(async (req, res) => {
 
     console.log("SellerAccount: " + SellerAccount);
     console.log("SellerWallet: " + SellerWallet);
-    console.log("OfferTitle: " + OfferTitle);
+    console.log("ContractTitle: " + ContractTitle);
     console.log("OfferDescription: " + OfferDescription);
     console.log("hashDescription: " + hashDescription);
     console.log("Price: " + Price);
@@ -50,7 +50,7 @@ apiRoute.post(async (req, res) => {
     console.log("Arbiters: " + Arbiters);
 
 
-    await AddAgreementToCollectionMoralisDB(SellerAccount, SellerWallet, OfferTitle, OfferDescription, hashDescription, Price, CurrencyTicker, ChainID, TimeToDeliver, transactionHash, index, OfferValidUntil, PersonalizedOffer, Arbiters)
+    await AddAgreementToCollectionMoralisDB(SellerAccount, SellerWallet, ContractTitle, OfferDescription, hashDescription, Price, CurrencyTicker, ChainID, TimeToDeliver, transactionHash, index, OfferValidUntil, PersonalizedOffer, Arbiters)
 
     res.status(201).end("Offer created");
 })
@@ -65,13 +65,13 @@ export default apiRoute
 
 
 
-async function AddAgreementToCollectionMoralisDB(SellerAccount, SellerWallet, OfferTitle, OfferDescription, hashDescription, Price, CurrencyTicker, ChainID, TimeToDeliver, transactionHash, index, OfferValidUntil, PersonalizedOffer, Arbiters) {
+async function AddAgreementToCollectionMoralisDB(SellerAccount, SellerWallet, ContractTitle, OfferDescription, hashDescription, Price, CurrencyTicker, ChainID, TimeToDeliver, transactionHash, index, OfferValidUntil, PersonalizedOffer, Arbiters) {
 
   const Agreements = Moralis.Object.extend("Agreements");
   const agreement = new Agreements();
   agreement.set("SellerAccount", SellerAccount);
   agreement.set("SellerWallet", SellerWallet.toLowerCase());
-  agreement.set("OfferTitle", OfferTitle);
+  agreement.set("ContractTitle", ContractTitle);
   agreement.set("OfferDescription", OfferDescription);
   agreement.set("hashDescription", hashDescription);
   agreement.set("Price", Price);

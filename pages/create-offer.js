@@ -339,13 +339,13 @@ export default function Description(props) {
                 >
                   <div className="formMain formHorizontal">
                     <div className="formRow">
-                      <div className="formLabel"> Offer&apos;s Title: </div>
+                      <div className="formLabel"> Contract&apos;s Title: </div>
                       <div className="formField">
                         <input
                           className="formInput"
-                          id="OfferTitle"
+                          id="ContractTitle"
                           type="text"
-                          {...register("OfferTitle", {
+                          {...register("ContractTitle", {
                             required: true,
                             minLength: 4,
                             maxLength: 24,
@@ -354,26 +354,26 @@ export default function Description(props) {
                         ></input>
 
                         <div className="fieldError">
-                          {errors.OfferTitle &&
-                            errors.OfferTitle.type === "required" && (
+                          {errors.ContractTitle &&
+                            errors.ContractTitle.type === "required" && (
                               <span>
                                 <p>required</p>
                               </span>
                             )}
-                          {errors.OfferTitle &&
-                            errors.OfferTitle.type === "maxLength" && (
+                          {errors.ContractTitle &&
+                            errors.ContractTitle.type === "maxLength" && (
                               <span>
                                 <p>Max length is 24 chars</p>
                               </span>
                             )}
-                          {errors.OfferTitle &&
-                            errors.OfferTitle.type === "minLength" && (
+                          {errors.ContractTitle &&
+                            errors.ContractTitle.type === "minLength" && (
                               <span>
                                 <p>Min length is 4 chars</p>
                               </span>
                             )}
-                          {errors.OfferTitle &&
-                            errors.OfferTitle.type === "pattern" && (
+                          {errors.ContractTitle &&
+                            errors.ContractTitle.type === "pattern" && (
                               <span>
                                 <p>
                                   Start with an alphabet character. No spaces or
@@ -386,7 +386,7 @@ export default function Description(props) {
                     </div>
 
                     <div className="formRow">
-                      <div className="formLabel">Offer&apos;s Description:</div>
+                      <div className="formLabel">Contract&apos;s Description:</div>
                       <div className="formField">
                         <textarea
                           cols="40"
@@ -539,7 +539,7 @@ export default function Description(props) {
 
                     {/* 
             <div className={styles.gridItem}> 
-              Offer Valid for (in Hours, after publishing the offer, 0=infinity): 
+              Contract Valid for (in Hours, after publishing the offer, 0=infinity): 
               <input className={styles.inlineField} id="OfferValidUntil" type="number" {...register('OfferValidUntil', { required: true, min : 0})} min="0" step="1" ></input> 
             </div>
             <div className={styles.gridItem}> 
@@ -548,7 +548,7 @@ export default function Description(props) {
             </div>
             */}
                     <div className="formRow offerValidity">
-                      <div className="formLabel">Offer Valid Until</div>
+                      <div className="formLabel">Contract Expires in</div>
                       <div className="formField">
                         <ToggleButtonGroup
                           value={offerValidity}
@@ -621,7 +621,7 @@ export default function Description(props) {
 
                     <div className="formRow">
                       <div className="formLabel">
-                        Offer valid for these wallets:
+                      Contract valid for these wallets:
                       </div>
                       <div className="formField">
                         <input
