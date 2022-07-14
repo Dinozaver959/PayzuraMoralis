@@ -17,6 +17,7 @@ import PersonlaizedContractsIc from "./icons/PersonlaizedContracts";
 import useOutsideClick from "./../components/useOutsideClick";
 import CloseIc from "./icons/Close";
 import MobileMenuIc from "./icons/MobileMenu";
+import PlusIc from "./icons/Plus";
 
 export default function Navigation(props) {
   const {
@@ -40,9 +41,7 @@ export default function Navigation(props) {
   });
 
   return (
-    <header className={
-      hasMenuDrawer ? "drawerOpen" : ""
-    }>
+    <header className={hasMenuDrawer ? "drawerOpen" : ""}>
       <div className="logo">
         <Link href="/">
           <svg viewBox="0 0 163 38">
@@ -79,6 +78,18 @@ export default function Navigation(props) {
             onClick={props.mobileDrawerFn}
           >
             <Link href="/my-contracts">My Contracts</Link>
+          </li>
+          <li className="headerButton" onClick={props.mobileDrawerFn}>
+            <span></span>
+            <Button
+              link="/create-contract"
+              classes={"button secondary withIcon"}
+            >
+              <i>
+                <PlusIc />
+              </i>
+              <span>Create New Contract</span>
+            </Button>
           </li>
         </ul>
       </nav>

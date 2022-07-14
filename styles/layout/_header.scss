@@ -123,6 +123,33 @@ header {
             }
           }
         }
+
+        &.headerButton {
+          @extend %FlexRow-CenterCenter;
+          flex: 2;
+          padding-right: 10px;
+
+          @include RespondTo(IpadDevices) {
+            display: block;
+            flex: unset;
+            padding-right: 0;
+            text-align: center;
+          }
+
+          > span {
+            flex: 2;
+            display: inline-block;
+          }
+
+          .button {
+            height: auto;
+            padding-right: 10px;
+
+            @include RespondTo(IpadDevices) {
+              font-size: 1rem;
+            }
+          }
+        }
       }
     }
   }
@@ -246,6 +273,12 @@ header {
           &.active {
             a {
               border-bottom-color: $SecondaryColor;
+            }
+          }
+
+          &.headerButton {
+            .button.secondary {
+              color: $BlackColor;
             }
           }
         }

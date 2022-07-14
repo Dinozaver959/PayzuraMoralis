@@ -24,16 +24,17 @@ import {
   PayERC20__TEST__Moralis,
   PayERC20__TEST__WO_Moralis,
   PayERC20__transfer__Moralis,
-  PayERC20__transfer__direct_USDC
+  PayERC20__transfer__direct_USDC,
 } from "../JS/local_web3_Moralis";
 import Navigation from "../components/Navigation.js";
 import Button from "../components/ui/Button";
-import LoadingPlaceholder from "../components/ui/LoadingPlaceholder";
+import LoadingPlaceholder from "./../components/ui/LoadingPlaceholder";
 
 import PlusIc from "../components/icons/Plus";
 import PlaceholderIc from "../components/icons/Placeholder";
+import ModalUi from "../components/ui/ModalUi";
 
-import Image from "next/image"
+import Image from "next/image";
 import ETHIcon from "../components/images/ETH.webp";
 import USDCIcon from "../components/images/USDC.webp";
 
@@ -96,16 +97,13 @@ export default function ContractsListed(props) {
 
     console.log(data);
 
+    setPlaceholder(false);
     return data;
   }
 
   // Calling the function on component mount
   useEffect(() => {
     getCollectionsDetails();
-
-    setTimeout(() => {
-      setPlaceholder(false);
-    }, 1200);
   }, []);
 
   return (
@@ -128,34 +126,23 @@ export default function ContractsListed(props) {
             <Button link="/personalized-contracts" classes={"button green"}>
               <span>Personalized Contracts</span>
             </Button>
-            <Button link="/create-contract" classes={"button secondary withIcon"}>
-              <i>
-                <PlusIc />
-              </i>
-              <span>Create New Contract</span>
-            </Button>
           </div>
         </div>
 
         <div className="card mt-10">
           <div className="cardHeader">
             <div className="cardTitle">
-              <h2></h2>
+              <h2>Open Contracts</h2>
             </div>
           </div>
 
           <div className="cardBody">
-            {data[0] && data ? (
-              <>
-                <Table_normal data={data} />
-                {placeholder && (
-                  <div className="blockLoading">
-                    <LoadingPlaceholder
-                      extraStyles={{ height: "100%", position: "absolute" }}
-                    />
-                  </div>
-                )}
-              </>
+            {placeholder ? (
+              <div className="blockLoading">
+                <LoadingPlaceholder extraStyles={{ position: "absolute" }} />
+              </div>
+            ) : data[0] && data ? (
+              <Table_normal data={data} />
             ) : (
               <div className="noData">
                 <i>
@@ -200,22 +187,36 @@ function wrapEpochToDate(epoch) {
   return d.toString(); // d.toDateString();
 }
 
-function tickerToIcon(ticker){
-  if(ticker == "USDC"){
+function tickerToIcon(ticker) {
+  if (ticker == "USDC") {
     return USDCIcon;
-  } else if(ticker == "ETH"){
+  } else if (ticker == "ETH") {
     return ETHIcon;
-  }  
+  }
 }
 
-async function hasTheConnectedWalletAlreadyApprovedERC20(listApprovedBy){
+async function hasTheConnectedWalletAlreadyApprovedERC20(listApprovedBy) {
   const connectedAddress = await GetWallet_NonMoralis();
-  if(!connectedAddress){return false;}
+  if (!connectedAddress) {
+    return false;
+  }
   return listApprovedBy.includes(connectedAddress);
 }
 
 function Table_normal(props) {
   const { data } = props;
+  const [modelData, setModelData] = useState({
+    show: false,
+    type: "alert",
+    status: "Error",
+    message: "",
+  });
+
+  function closeModelDataHandler() {
+    setModelData({
+      show: false,
+    });
+  }
 
   return (
     <>
@@ -227,40 +228,44 @@ function Table_normal(props) {
               <StyledTableCell>Title</StyledTableCell>
               <StyledTableCell>Currency</StyledTableCell>
               <StyledTableCell>Price</StyledTableCell>
-              <StyledTableCell>Time to Deliver (hours)</StyledTableCell>
+              <StyledTableCell>Time to Deliver</StyledTableCell>
               <StyledTableCell>Valid Until</StyledTableCell>
-              <StyledTableCell>Accept Offer</StyledTableCell>
+              <StyledTableCell colSpan={2}>Accept Offer</StyledTableCell>
             </StyledTableRow>
           </TableHead>
           <TableBody>
             {data.map((item) => (
-              <Row_normal key={item.id} item={item.name} />
+              <Row_normal
+                key={item.id}
+                item={item.name}
+                setModelData={setModelData}
+              />
             ))}
           </TableBody>
         </Table>
       </TableContainer>
 
-      <p id="submitFeedback" hidden></p>
+      <ModalUi content={modelData} closeModelFn={closeModelDataHandler} />
     </>
   );
 }
 
 function Row_normal(props) {
-  const { item } = props;
+  const { item, setModelData } = props;
   const [open, setOpen] = React.useState(false);
-  const [approvedERC20, setApprovedERC20] = useState(false);          // need to force update on   A) wallet change   
+  const [approvedERC20, setApprovedERC20] = useState(false); // need to force update on   A) wallet change
 
   useEffect(() => {
-
     const fetchData = async () => {
-      const approved = await hasTheConnectedWalletAlreadyApprovedERC20(item.ApprovedBy);
+      const approved = await hasTheConnectedWalletAlreadyApprovedERC20(
+        item.ApprovedBy
+      );
       setApprovedERC20(approved);
-    }
-    
-    fetchData()
-    // make sure to catch any rerro
-    .catch(console.error);;
+    };
 
+    fetchData()
+      // make sure to catch any rerro
+      .catch(console.error);
 
     // doesn't work - just leaving it here for reference
     // basically idea is, when user changes wallet/account -> update the button visibility based on new user
@@ -276,8 +281,7 @@ function Row_normal(props) {
       })
     */
   }, []);
- 
-  
+
   return (
     <React.Fragment>
       <StyledTableRow sx={{ "& > *": { borderBottom: "unset" } }}>
@@ -299,109 +303,124 @@ function Row_normal(props) {
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Currency</label>
-          <Image src={tickerToIcon(item.CurrencyTicker)} width={20} height={20} alt={item.CurrencyTicker} />
-           {item.CurrencyTicker}
+          <div className="flex-center">
+            <i className="currencyIc">
+              <Image
+                src={tickerToIcon(item.CurrencyTicker)}
+                width={28}
+                height={28}
+                alt={item.CurrencyTicker}
+              />
+            </i>
+            {item.CurrencyTicker}
+          </div>
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Price</label>
           {item.Price}
         </StyledTableCell>
         <StyledTableCell>
-          <label className="mobileLabel">Time to Deliver (hours)</label>
-          {item.TimeToDeliver}
+          <label className="mobileLabel">Time to Deliver</label>
+          {item.TimeToDeliver} H
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Valid Until</label>
           {wrapEpochToDate(item.OfferValidUntil)}
         </StyledTableCell>
 
-
-          {/* only show Approve button if the currency is not ETH */}
-          {/* 
+        {/* only show Approve button if the currency is not ETH */}
+        {/* 
             later it will be more advanced: check if user has already approved the currency or not:
             if not:  show only the approve button, on successful approval:  change the button to the aceept offer button
             if yes: directly show only the accept offer button
           */}
-          {/*
+        {/*
             // || approvedERC20) ? 
             // ) ? 
             // ||  new Promise((resolve, reject) => { hasTheConnectedWalletAlreadyApprovedERC20(item.ApprovedBy)})   ) ?         
             // ||  await hasTheConnectedWalletAlreadyApprovedERC20(item.ApprovedBy)  ) ?   
           */}
-         { (item.CurrencyTicker == "ETH" || approvedERC20)? 
-          (
-            <>
-              <StyledTableCell></StyledTableCell>
-              {/* don't show approval button */}
-            </>
-          ) : (
-            <>
-              <StyledTableCell>
-                <input
-                  className="button primary rounded"
-                  type="submit"
-                  /* value="Approve USDC" */
-                  value={"Approve " + item.CurrencyTicker}
-                  onClick={() =>
-                    { 
-                      ApproveERC20_Moralis(item.index)
-                      .then(async (transactionHash) => {
-                        console.log("approval for ERC20 successfully completed");
-                        console.log("transactionHash: ", transactionHash);
+        {item.CurrencyTicker == "ETH" || approvedERC20 ? (
+          <>
+            <StyledTableCell></StyledTableCell>
+            {/* don't show approval button */}
+          </>
+        ) : (
+          <>
+            <StyledTableCell>
+              <input
+                className="button green rounded"
+                type="submit"
+                /* value="Approve USDC" */
+                value={"Approve " + item.CurrencyTicker}
+                onClick={() => {
+                  ApproveERC20_Moralis(item.index)
+                    .then(async (transactionHash) => {
+                      console.log("approval for ERC20 successfully completed");
+                      console.log("transactionHash: ", transactionHash);
 
-                        // hide approve button
-                        setApprovedERC20(true);
+                      // hide approve button
+                      setApprovedERC20(true);
+
+                      var formData = new FormData();
+                      formData.append(
+                        "BuyerAccount",
+                        Moralis.User.current().id
+                      );
+
+                      const connectedAddress = await GetWallet_NonMoralis();
+                      formData.append("BuyerWallet", connectedAddress);
+                      formData.append("transactionHash", transactionHash);
+                      formData.append("objectId", item.objectId);
+
+                      var xhr = new XMLHttpRequest();
+                      xhr.open("POST", "/api/api-approvedERC20", false);
+                      xhr.onload = function () {
+                        setModelData({
+                          show: true,
+                          type: "alert",
+                          status: "Pending",
+                          message: "granting approval...",
+                        });
 
                         var formData = new FormData();
-                        formData.append("BuyerAccount", Moralis.User.current().id);
-  
-                        const connectedAddress = await GetWallet_NonMoralis();
-                        formData.append("BuyerWallet", connectedAddress);
-                        formData.append("transactionHash", transactionHash);
-                        formData.append("objectId", item.objectId);
+                        formData.append(
+                          "BuyerAccount",
+                          Moralis.User.current().id
+                        );
 
-                        var xhr = new XMLHttpRequest();
-                        xhr.open("POST", "/api/api-approvedERC20", false);
-                        xhr.onload = function () {
-                          // update the feedback text
-                          document.getElementById("submitFeedback").style.display = "inline";
-                          document.getElementById("submitFeedback").innerText = "granting approval...";
-
-                          var formData = new FormData();
-                          formData.append("BuyerAccount", Moralis.User.current().id);
-
-                          // think about also removing the hover effect
-                          // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-                          console.log("approval granted");
-                        };
-                        xhr.send(formData);
-
-
-
-                      })
-                      .catch((error) => {
-                        console.error(error);
-                        console.log("approval error code: " + error.code);
-                        console.log("approval error message: " + error.message);
-                        if (error.data && error.data.message) {
-                          document.getElementById("submitFeedback").innerText =
-                            error.data.message;
-                        } else {
-                          document.getElementById("submitFeedback").innerText =
-                            error.message;
-                        }
-                        document.getElementById("submitFeedback").style.visibility =
-                          "visible";
-                        process.exitCode = 1;
-                      }) 
-                    }
-                  }
-                ></input>
-              </StyledTableCell>
-            </>
-          )
-        }
-
+                        // think about also removing the hover effect
+                        // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+                        console.log("approval granted");
+                      };
+                      xhr.send(formData);
+                    })
+                    .catch((error) => {
+                      console.error(error);
+                      console.log("approval error code: " + error.code);
+                      console.log("approval error message: " + error.message);
+                      if (error.data && error.data.message) {
+                        setModelData({
+                          show: true,
+                          type: "alert",
+                          status: "Error",
+                          message: error.data.message,
+                        });
+                      } else {
+                        setModelData({
+                          show: true,
+                          type: "alert",
+                          status: "Error",
+                          message: error.message,
+                        });
+                      }
+                      process.exitCode = 1;
+                    });
+                }}
+              ></input>
+            </StyledTableCell>
+          </>
+        )}
 
         <StyledTableCell>
           <input
@@ -409,17 +428,18 @@ function Row_normal(props) {
             type="submit"
             value="Accept Offer"
             onClick={() =>
-              PayERC20__transfer__Moralis()     // AcceptOffer_Moralis(item.index)
+              PayERC20__transfer__Moralis() // AcceptOffer_Moralis(item.index)
                 .then(async (transactionHash) => {
-                  // show the feedback text
-                  document.getElementById("submitFeedback").style.display =
-                    "inline";
-                  document.getElementById("submitFeedback").innerText =
-                    "Creating offer...";
+                  setModelData({
+                    show: true,
+                    type: "alert",
+                    status: "Pending",
+                    message: "Creating offer...",
+                  });
 
                   var formData = new FormData();
                   formData.append("BuyerAccount", Moralis.User.current().id);
-                  formData.append("SellerWallet", item.SellerWallet);                 
+                  formData.append("SellerWallet", item.SellerWallet);
 
                   const connectedAddress = await GetWallet_NonMoralis();
                   formData.append("BuyerWallet", connectedAddress);
@@ -429,17 +449,19 @@ function Row_normal(props) {
                   var xhr = new XMLHttpRequest();
                   xhr.open("POST", "/api/api-acceptedOffer", false);
                   xhr.onload = function () {
-                    // update the feedback text
-                    document.getElementById("submitFeedback").style.display =
-                      "inline";
-                    document.getElementById("submitFeedback").innerText =
-                      "offer accepted";
+                    // setModelData({
+                    //   show: true,
+                    //   type: "alert",
+                    //   status: "Success",
+                    //   message: "offer accepted",
+                    // });
 
-                    // show the feedback text
-                    document.getElementById("submitFeedback").style.display =
-                      "inline";
-                    document.getElementById("submitFeedback").innerText =
-                      "Accepting offer...";
+                    setModelData({
+                      show: true,
+                      type: "alert",
+                      status: "Pending",
+                      message: "Accepting offer...",
+                    });
 
                     var formData = new FormData();
                     formData.append("BuyerAccount", Moralis.User.current().id);
@@ -455,27 +477,31 @@ function Row_normal(props) {
                   console.log("accept offer error code: " + error.code);
                   console.log("accept offer error message: " + error.message);
                   if (error.data && error.data.message) {
-                    document.getElementById("submitFeedback").innerText =
-                      error.data.message;
+                    setModelData({
+                      show: true,
+                      type: "alert",
+                      status: "Error",
+                      message: error.data.message,
+                    });
                   } else {
-                    document.getElementById("submitFeedback").innerText =
-                      error.message;
+                    setModelData({
+                      show: true,
+                      type: "alert",
+                      status: "Error",
+                      message: error.message,
+                    });
                   }
-                  document.getElementById("submitFeedback").style.visibility =
-                    "visible";
                   process.exitCode = 1;
                 })
             }
           ></input>
         </StyledTableCell>
-
-
-
       </StyledTableRow>
+
       <StyledTableRow>
         <StyledTableCell
           style={{ paddingBottom: 0, paddingTop: 0 }}
-          colSpan={6}
+          colSpan={8}
         >
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>

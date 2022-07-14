@@ -97,6 +97,10 @@
   margin-top: 10px;
 }
 
+.flex-center {
+  @extend %FlexRow-CenterCenter;
+}
+
 .darkMode {
   .pageHeader {
     h1 {

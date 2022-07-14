@@ -438,7 +438,7 @@ export default function Description(props) {
                     </div>
 
                     <div className="formRow">
-                      <div className="formLabel">Select Currency:</div>
+                      <div className="formLabel">Currency:</div>
                       <div className="formField">
                         <select
                           className="formSelect"
@@ -452,8 +452,8 @@ export default function Description(props) {
                           </option>
                           <option value="ETH">Ethereum (ETH)</option>
                           <option value="USDC">USD Coin (USDC)</option>
-                          <option value="APE">APEcoin (APE)</option>
-                          <option value="WBTC">Wrapped Bitcoin (WBTC)</option>
+                          {/* <option value="APE">APEcoin (APE)</option>
+                          <option value="WBTC">Wrapped Bitcoin (WBTC)</option> */}
                         </select>
 
                         <div className="fieldError">
