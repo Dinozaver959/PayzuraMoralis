@@ -145,10 +145,10 @@ export default function ListAvailableOffers(props) {
                 <h2>There are no Vote on Disputes.</h2>
                 <div className="submitButtonOuter">
                   <Button
-                    link="/create-offer"
+                    link="/create-contract"
                     classes={"button primary rounded"}
                   >
-                    <span>Create Offer Now</span>
+                    <span>Create Contract Now</span>
                   </Button>
                 </div>
               </div>
@@ -232,7 +232,7 @@ function Row_normal(props) {
         </StyledTableCell>
         <StyledTableCell component="th" scope="row">
           <label className="mobileLabel">Title</label>
-          {item.OfferTitle}
+          {item.ContractTitle}
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Price (ETH)</label>

@@ -1,4 +1,4 @@
-function PersonlaizedServicesIc(props) {
+function PersonlaizedContractsIc(props) {
   if (props.onClick) {
     return (
       <button onClick={props.onClick}>
@@ -21,4 +21,4 @@ function PersonlaizedServicesIc(props) {
   );
 }
 
-export default PersonlaizedServicesIc;
+export default PersonlaizedContractsIc;

@@ -12,7 +12,7 @@ import AgreementIc from "./icons/Agreement";
 import SettingsIc from "./icons/Settings";
 import LogoutIc from "./icons/Logout";
 import DisputeIc from "./icons/Dispute";
-import PersonlaizedServicesIc from "./icons/PersonlaizedServices";
+import PersonlaizedContractsIc from "./icons/PersonlaizedContracts";
 
 import useOutsideClick from "./../components/useOutsideClick";
 import CloseIc from "./icons/Close";
@@ -63,22 +63,22 @@ export default function Navigation(props) {
             <Link href="/">Dashboard</Link>
           </li>
           <li
-            className={router.pathname == "/services-listed" ? "active" : ""}
+            className={router.pathname == "/contracts-listed" ? "active" : ""}
             onClick={props.mobileDrawerFn}
           >
-            <Link href="/services-listed">Services Listed</Link>
+            <Link href="/contracts-listed">Contracts Listed</Link>
           </li>
           <li
-            className={router.pathname == "/services-seeked" ? "active" : ""}
+            className={router.pathname == "/contracts-seeked" ? "active" : ""}
             onClick={props.mobileDrawerFn}
           >
-            <Link href="/services-seeked">Services Seeked</Link>
+            <Link href="/contracts-seeked">Contracts Seeked</Link>
           </li>
           <li
-            className={router.pathname == "/my-agreements" ? "active" : ""}
+            className={router.pathname == "/my-contracts" ? "active" : ""}
             onClick={props.mobileDrawerFn}
           >
-            <Link href="/my-agreements">My Agreements</Link>
+            <Link href="/my-contracts">My Contracts</Link>
           </li>
         </ul>
       </nav>
@@ -134,19 +134,19 @@ export default function Navigation(props) {
                   </Button>
                 </li>
                 <li onClick={() => setDropdownOpen(false)}>
-                  <Button link="/personalized-services">
+                  <Button link="/personalized-contracts">
                     <i>
-                      <PersonlaizedServicesIc />
+                      <PersonlaizedContractsIc />
                     </i>
-                    <span>Personalized Services</span>
+                    <span>Personalized Contracts</span>
                   </Button>
                 </li>
                 <li onClick={() => setDropdownOpen(false)}>
-                  <Button link="/my-agreements">
+                  <Button link="/my-contracts">
                     <i>
                       <AgreementIc />
                     </i>
-                    <span>My Agreements</span>
+                    <span>My Contracts</span>
                   </Button>
                 </li>
                 <li onClick={() => setDropdownOpen(false)}>

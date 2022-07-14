@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import Navigation from "../components/Navigation";
 
-function ServicesSeeked(props) {
+function ContractsSeeked(props) {
   return (
     <Fragment>
       <Navigation
@@ -25,4 +25,4 @@ function ServicesSeeked(props) {
   );
 }
 
-export default ServicesSeeked;
+export default ContractsSeeked;
