@@ -226,6 +226,7 @@ function Table_normal(props) {
             <StyledTableRow>
               <StyledTableCell />
               <StyledTableCell>Title</StyledTableCell>
+              <StyledTableCell>Currency</StyledTableCell>
               <StyledTableCell>Price</StyledTableCell>
               <StyledTableCell>Time to Deliver</StyledTableCell>
               <StyledTableCell>Valid Until</StyledTableCell>
@@ -317,8 +318,6 @@ function Row_normal(props) {
         <StyledTableCell>
           <label className="mobileLabel">Price</label>
           {item.Price}
-          <Image src={tickerToIcon(item.CurrencyTicker)} width={20} height={20} alt={item.CurrencyTicker} />
-          {item.CurrencyTicker}        
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Time to Deliver</label>
