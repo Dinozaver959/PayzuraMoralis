@@ -346,7 +346,7 @@ export default function Description(props) {
                 >
                   <div className="formMain formHorizontal">
                     <div className="formRow">
-                      <div className="formLabel"> Contract&apos;s Title: </div>
+                      <div className="formLabel"> Contract Title</div>
                       <div className="formField">
                         <input
                           className="formInput"
@@ -385,9 +385,7 @@ export default function Description(props) {
                     </div>
 
                     <div className="formRow">
-                      <div className="formLabel">
-                        Contract&apos;s Description:
-                      </div>
+                      <div className="formLabel">Contract Description</div>
                       <div className="formField">
                         <textarea
                           cols="40"
@@ -465,8 +463,29 @@ export default function Description(props) {
                       </div>
                     </div>
 
+
                     <div className="formRow">
-                      <div className="formLabel">Price (in ETH):</div>
+                      <div className="formLabel">Currency (change to dropdown)</div>
+                      <div className="formField">
+                        <input
+                          className="formInput"
+                          id="CurrencyTicker"
+                          type="text"
+                          {...register("CurrencyTicker", {
+                            required: true,
+                            /*
+                            minLength: 42,
+                            maxLength: 42,
+                            pattern: /^0x[a-fA-F0-9] * /i,
+                            */
+                          })}
+                        ></input>
+                      </div>
+                    </div>
+
+
+                    <div className="formRow">
+                      <div className="formLabel">Price</div>
                       <div className="formField">
                         <input
                           className="formInput"
@@ -488,7 +507,7 @@ export default function Description(props) {
                     </div>
 
                     <div className="formRow">
-                      <div className="formLabel">Time to Deliver:</div>
+                      <div className="formLabel">Contract Duration</div>
                       <div className="formField">
                         <input
                           className="formInput"
@@ -508,13 +527,13 @@ export default function Description(props) {
                             )}
                           {errors.TimeToDeliver &&
                             errors.TimeToDeliver.type === "min" && (
-                              <p>Min time to deliver is 0</p>
+                              <span>Min contract duration time is 0</span>
                             )}
                         </div>
                       </div>
                       <div className="filedInfo">
                         <Tooltip
-                          title="In Hours, following acceptance of the offer"
+                          title="Following acceptance of the offer, how long does the service provider have to fulfill the agreement"
                           placement="top"
                           enterTouchDelay={0}
                           arrow
@@ -537,7 +556,7 @@ export default function Description(props) {
             </div>
             */}
                     <div className="formRow offerValidity">
-                      <div className="formLabel">Contract Expires in</div>
+                      <div className="formLabel">Can Accept Until</div>
                       <div className="formField">
                         <ToggleButtonGroup
                           value={offerValidity}
@@ -596,7 +615,7 @@ export default function Description(props) {
                       </div>
                       <div className="filedInfo">
                         <Tooltip
-                          title="Loreim ipsum dummy"
+                          title="How long will the agreement remain available to potential buyers"
                           placement="top"
                           enterTouchDelay={0}
                           arrow
@@ -610,7 +629,7 @@ export default function Description(props) {
 
                     <div className="formRow">
                       <div className="formLabel">
-                        Contract valid for these wallets:
+                      Contract Valid for these Wallets
                       </div>
                       <div className="formField">
                         <input
@@ -622,7 +641,7 @@ export default function Description(props) {
                       </div>
                       <div className="filedInfo">
                         <Tooltip
-                          title="empty=any"
+                          title="Wallets that will be able to see this contract and potentially accept it. Empty = Any wallet"
                           placement="top"
                           enterTouchDelay={0}
                           arrow
@@ -646,7 +665,7 @@ export default function Description(props) {
                       </div>
                       <div className="filedInfo">
                         <Tooltip
-                          title="empty=Payzura Platform"
+                          title="State wallets that wil act as arbiters in case of a dispute. Empty = Payzura Platform"
                           placement="top"
                           enterTouchDelay={0}
                           arrow

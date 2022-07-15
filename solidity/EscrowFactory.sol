@@ -61,10 +61,14 @@ contract EscrowFactory is ReentrancyGuard {
         // ["0xdD870fA1b7C4700F2BD7f44238821C26f7392148", "0x583031D1113aD414F02576BD6afaBfb302140225", "0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB"], 100000000000000000, "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", 1, a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6, 1657634353, ["0x5B38Da6a701c568545dCfcB03FcB875f56beddC4", "0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2"]
         // 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 - USDC
         // 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174 - USDC on Polygon
+        // 0x07865c6E87B9F70255377e024ace6630C1Eaa37F - USDC on Goerli
         // 0x0000000000000000000000000000000000000000 - ETH
 
 
         // ["0xdD870fA1b7C4700F2BD7f44238821C26f7392148", "0x583031D1113aD414F02576BD6afaBfb302140225", "0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB"], 100000000000000000, "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", 1, a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6, 1657634353, []
+
+        // Goerli
+        // ["0xdD870fA1b7C4700F2BD7f44238821C26f7392148"], 100000000000000000, "0x07865c6E87B9F70255377e024ace6630C1Eaa37F", 1, a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6, 1667634353, []
 
 
 
@@ -214,7 +218,7 @@ contract EscrowFactory is ReentrancyGuard {
     // 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174
     function transfer(address recipient, uint256 amount) public returns (bool) {
 
-        IERC20 tokenContract = IERC20(0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174);          // USDC on polygon
+        IERC20 tokenContract = IERC20(recipient);          // USDC on polygon
         bool transferred = tokenContract.transferFrom(msg.sender, address(this), amount);
         // bool transferred = tokenContract.transfer(address(this), amount);                // same behaviour as 'transferFrom'
         require(transferred, "ERC20 tokens failed to transfer to contract wallet");
