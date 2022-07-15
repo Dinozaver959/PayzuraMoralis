@@ -18,6 +18,8 @@ import useOutsideClick from "./../components/useOutsideClick";
 import CloseIc from "./icons/Close";
 import MobileMenuIc from "./icons/MobileMenu";
 
+import ConnectWallet from "./../components/ConnectWallet";
+
 export default function Navigation(props) {
   const {
     darkMode,
@@ -80,6 +82,11 @@ export default function Navigation(props) {
           >
             <Link href="/my-contracts">My Contracts</Link>
           </li>
+
+          <li>
+            <ConnectWallet/>
+          </li>
+
         </ul>
       </nav>
 
