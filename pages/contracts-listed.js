@@ -226,7 +226,6 @@ function Table_normal(props) {
             <StyledTableRow>
               <StyledTableCell />
               <StyledTableCell>Title</StyledTableCell>
-              <StyledTableCell>Currency</StyledTableCell>
               <StyledTableCell>Price</StyledTableCell>
               <StyledTableCell>Time to Deliver</StyledTableCell>
               <StyledTableCell>Valid Until</StyledTableCell>
@@ -301,7 +300,7 @@ function Row_normal(props) {
           <label className="mobileLabel">Title</label>
           {item.ContractTitle}
         </StyledTableCell>
-        <StyledTableCell>
+        {/* <StyledTableCell>
           <label className="mobileLabel">Currency</label>
           <div className="flex-center">
             <i className="currencyIc">
@@ -314,10 +313,21 @@ function Row_normal(props) {
             </i>
             {item.CurrencyTicker}
           </div>
-        </StyledTableCell>
+        </StyledTableCell> */}
         <StyledTableCell>
           <label className="mobileLabel">Price</label>
-          {item.Price}
+          <div className="flex-center">
+            {item.Price}
+            <i className="currencyIc ml-10 mr-5">
+              <Image
+                src={tickerToIcon(item.CurrencyTicker)}
+                width={22}
+                height={22}
+                alt={item.CurrencyTicker}
+              />
+            </i>
+            {item.CurrencyTicker}
+          </div>
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Time to Deliver</label>
@@ -428,7 +438,7 @@ function Row_normal(props) {
             type="submit"
             value="Accept Offer"
             onClick={() =>
-              AcceptOffer_Moralis(item.index, item.CurrencyTicker)    // PayERC20__transfer__Moralis()
+              AcceptOffer_Moralis(item.index, item.CurrencyTicker) // PayERC20__transfer__Moralis()
                 .then(async (transactionHash) => {
                   setModelData({
                     show: true,

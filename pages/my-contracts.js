@@ -95,12 +95,12 @@ function wrapDelegates(wallets) {
   }
 }
 
-function tickerToIcon(ticker){
-  if(ticker == "USDC"){
+function tickerToIcon(ticker) {
+  if (ticker == "USDC") {
     return USDCIcon;
-  } else if(ticker == "ETH"){
+  } else if (ticker == "ETH") {
     return ETHIcon;
-  }  
+  }
 }
 
 export default function MyAgreements(props) {
@@ -177,9 +177,7 @@ export default function MyAgreements(props) {
           <div className="cardBody">
             {placeholder ? (
               <div className="blockLoading">
-                <LoadingPlaceholder
-                  extraStyles={{ position: "absolute" }}
-                />
+                <LoadingPlaceholder extraStyles={{ position: "absolute" }} />
               </div>
             ) : dataOnlyBuyer[0] && dataOnlyBuyer ? (
               <Table_normal data={dataOnlyBuyer} isBuyer={true} />
@@ -212,9 +210,7 @@ export default function MyAgreements(props) {
           <div className="cardBody">
             {placeholder ? (
               <div className="blockLoading">
-                <LoadingPlaceholder
-                  extraStyles={{ position: "absolute" }}
-                />
+                <LoadingPlaceholder extraStyles={{ position: "absolute" }} />
               </div>
             ) : dataOnlySeller[0] && dataOnlySeller ? (
               <Table_normal data={dataOnlySeller} isBuyer={false} />
@@ -310,9 +306,18 @@ function Row_normal(props) {
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Price</label>
-          {item.Price}
-          <Image src={tickerToIcon(item.CurrencyTicker)} width={20} height={20} alt={item.CurrencyTicker} />
-          {item.CurrencyTicker}
+          <div className="flex-center">
+            {item.Price}
+            <i className="currencyIc ml-10 mr-5">
+              <Image
+                src={tickerToIcon(item.CurrencyTicker)}
+                width={22}
+                height={22}
+                alt={item.CurrencyTicker}
+              />
+            </i>
+            {item.CurrencyTicker}
+          </div>
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Time to Deliver (hours)</label>

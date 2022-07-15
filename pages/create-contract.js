@@ -19,8 +19,6 @@ import Tooltip from "@mui/material/Tooltip";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
-import Button from "../components/ui/Button";
-import RightArrowIc from "../components/icons/RightArrow";
 import LinkArrowIc from "../components/icons/LinkArrow";
 import CheckIc from "../components/icons/Check";
 import InfoIc from "../components/icons/Info";
@@ -518,6 +516,43 @@ export default function Description(props) {
                     <div className="formRow">
                       <div className="formLabel">Contract Duration</div>
                       <div className="formField">
+                      <ToggleButtonGroup
+                          value={contractDuration}
+                          exclusive
+                          onChange={contractDurationHandler}
+                          aria-label="all contractDuration"
+                        >
+                          <ToggleButton
+                            value="1"
+                            aria-label="contractDuration"
+                          >
+                            1 Hour
+                          </ToggleButton>
+                          <ToggleButton
+                            value="3"
+                            aria-label="contractDuration"
+                          >
+                            3 Hours
+                          </ToggleButton>
+                          <ToggleButton
+                            value="7"
+                            aria-label="contractDuration"
+                          >
+                            7 Hours
+                          </ToggleButton>
+                          <ToggleButton
+                            value="14"
+                            aria-label="contractDuration"
+                          >
+                            14 Hours
+                          </ToggleButton>
+                          <ToggleButton
+                            value="Set Custom"
+                            aria-label="contractDuration"
+                          >
+                            Set Custom
+                          </ToggleButton>
+                        </ToggleButtonGroup>
                         <input
                           className="formInput"
                           id="TimeToDeliver"
