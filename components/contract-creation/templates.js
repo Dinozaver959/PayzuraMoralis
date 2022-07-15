@@ -1,9 +1,9 @@
 import React from "react";
 import TemplateItem from "./template-item";
 
-function OfferTemplates(props) {
+function ContractTemplates(props) {
   return (
-    <div className="offerTemplateMain">
+    <div className="contractTemplateMain">
       {props.TemplatesData.map((item) => (
         <TemplateItem
           key={item.id}
@@ -21,4 +21,4 @@ function OfferTemplates(props) {
   );
 }
 
-export default OfferTemplates;
+export default ContractTemplates;

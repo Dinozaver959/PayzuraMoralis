@@ -1,9 +1,9 @@
-.offerTemplateMain {
+.contractTemplateMain {
   @include Flexbox;
   @include FlexFlow(wrap);
   @include JustifyContent(center);
 
-  .offerCard {
+  .contractCard {
     width: 30%;
     max-width: 420px;
     background: $LightBlueBg;
@@ -40,13 +40,13 @@
       cursor: pointer;
     }
 
-    .offerCardHeader {
+    .contractCardHeader {
       @include Font(null, 1.5rem, $FontColorDark, null, 500);
       padding: 10px 0 20px 0;
       text-align: center;
     }
 
-    .offerCardBody {
+    .contractCardBody {
       min-height: 180px;
 
       .blankCard {
@@ -73,7 +73,7 @@
         }
       }
 
-      .offerBodyRow {
+      .contractBodyRow {
         .labelData {
           color: $LightBlueColor;
         }
@@ -86,7 +86,7 @@
       }
     }
 
-    .offerCardFooter {
+    .contractCardFooter {
       padding-top: 15px;
       text-align: center;
 
@@ -164,7 +164,7 @@
   }
 }
 
-.offerCreationFormMain {
+.contractCreationFormMain {
   width: 100%;
   max-width: 750px;
   padding: 20px 0;
@@ -241,7 +241,7 @@
       }
     }
 
-    &.offerValidity {
+    &.contractValidity {
       .formField {
         .MuiToggleButtonGroup-root {
           @media only screen and (max-width: 860px) {
@@ -255,20 +255,20 @@
 }
 
 .darkMode {
-  .offerTemplateMain {
-    .offerCard {
+  .contractTemplateMain {
+    .contractCard {
       background: $BorderLight;
 
       &.selected {
         border-color: $LightBlueColor;
       }
 
-      .offerCardHeader {
+      .contractCardHeader {
         color: $WhiteColor;
       }
 
-      .offerCardBody {
-        .offerBodyRow {
+      .contractCardBody {
+        .contractBodyRow {
           .valueData {
             color: rgba($FontColorLight, 1);
           }
@@ -325,7 +325,7 @@
     }
   }
 
-  .offerCreationFormMain {
+  .contractCreationFormMain {
     .formRow {
       .formField {
         .MuiToggleButtonGroup-root {

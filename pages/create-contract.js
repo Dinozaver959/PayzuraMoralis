@@ -24,7 +24,7 @@ import RightArrowIc from "../components/icons/RightArrow";
 import LinkArrowIc from "../components/icons/LinkArrow";
 import CheckIc from "../components/icons/Check";
 import InfoIc from "../components/icons/Info";
-import OfferTemplates from "../components/offer-creation/templates";
+import ContractTemplates from "../components/contract-creation/templates";
 import DownloadIc from "../components/icons/Download";
 
 export default function Description(props) {
@@ -172,8 +172,12 @@ export default function Description(props) {
   const [selectedTemplate, setSelectedTemplate] = React.useState("Empty");
   const [showForm, setShowForm] = React.useState(false);
   const [tempDesc, setTempDesc] = React.useState();
-  const [offerValidity, setOfferValidity] = React.useState("7 Days");
+
+  const [contractValidity, setContractValidity] = React.useState("7 Days");
   const [showDatepicker, setShowDatepicker] = React.useState(false);
+
+  const [contractDuration, setContractDuration] = React.useState("1");
+  const [showCustomDuration, setShowCustomDuration] = React.useState(false);
 
   const handleRadioChange = (e) => {
     const { value } = e.target;
@@ -211,8 +215,8 @@ export default function Description(props) {
     setOfferValidUntil(date);
   }
 
-  const offerValidityHandler = (event, selectedValidity) => {
-    setOfferValidity(selectedValidity);
+  const contractValidityHandler = (event, selectedValidity) => {
+    setContractValidity(selectedValidity);
 
     if (selectedValidity === "Set Custom") {
       setShowDatepicker(!showDatepicker);
@@ -230,6 +234,32 @@ export default function Description(props) {
         days = 30;
       }
       if (selectedValidity === "90 days") {
+        days = 90;
+      }
+
+      updateOfferValidVariable(days);
+    }
+  };
+
+  const contractDurationHandler = (event, selectedDuration) => {
+    setContractValidity(selectedDuration);
+
+    if (selectedDuration === "Set Custom") {
+      setShowCustomDuration(!showCustomDuration);
+    } else {
+      setShowCustomDuration(false);
+
+      let days = 365;
+      if (selectedDuration === "1 Hour") {
+        days = 7;
+      }
+      if (selectedDuration === "14 Days") {
+        days = 14;
+      }
+      if (selectedDuration === "30 Days") {
+        days = 30;
+      }
+      if (selectedDuration === "90 days") {
         days = 90;
       }
 
@@ -290,8 +320,8 @@ export default function Description(props) {
             </div>
 
             <div className="cardBody">
-              <div className="offerTemplateMain">
-                <OfferTemplates
+              <div className="contractTemplateMain">
+                <ContractTemplates
                   selectedTemplate={selectedTemplate}
                   setSelectedTemplate={setSelectedTemplate}
                   TemplatesData={TemplatesData}
@@ -313,12 +343,12 @@ export default function Description(props) {
                     key={item.id}
                     className={
                       selectedTemplate === item.templateCode
-                        ? "offerCard selected"
-                        : "offerCard"
+                        ? "contractCard selected"
+                        : "contractCard"
                     }
                   >
                     <input
-                      name="offerCardTemplates"
+                      name="contractCardTemplates"
                       value={item.templateCode}
                       type="radio"
                       onChange={handleRadioChange}
@@ -337,7 +367,7 @@ export default function Description(props) {
             </div>
 
             <div className="cardBody">
-              <div className="offerCreationFormMain">
+              <div className="contractCreationFormMain">
                 <form
                   id="formToSubmit"
                   method="post"
@@ -346,7 +376,7 @@ export default function Description(props) {
                 >
                   <div className="formMain formHorizontal">
                     <div className="formRow">
-                      <div className="formLabel"> Contract&apos;s Title: </div>
+                      <div className="formLabel">Contract Title</div>
                       <div className="formField">
                         <input
                           className="formInput"
@@ -386,7 +416,7 @@ export default function Description(props) {
 
                     <div className="formRow">
                       <div className="formLabel">
-                        Contract&apos;s Description:
+                        Contract Description
                       </div>
                       <div className="formField">
                         <textarea
@@ -438,7 +468,7 @@ export default function Description(props) {
                     </div>
 
                     <div className="formRow">
-                      <div className="formLabel">Currency:</div>
+                      <div className="formLabel">Currency</div>
                       <div className="formField">
                         <select
                           className="formSelect"
@@ -466,7 +496,7 @@ export default function Description(props) {
                     </div>
 
                     <div className="formRow">
-                      <div className="formLabel">Price (in ETH):</div>
+                      <div className="formLabel">Price</div>
                       <div className="formField">
                         <input
                           className="formInput"
@@ -488,7 +518,7 @@ export default function Description(props) {
                     </div>
 
                     <div className="formRow">
-                      <div className="formLabel">Time to Deliver:</div>
+                      <div className="formLabel">Contract Duration</div>
                       <div className="formField">
                         <input
                           className="formInput"
@@ -508,13 +538,13 @@ export default function Description(props) {
                             )}
                           {errors.TimeToDeliver &&
                             errors.TimeToDeliver.type === "min" && (
-                              <p>Min time to deliver is 0</p>
+                              <p>Min contract duration time is 0</p>
                             )}
                         </div>
                       </div>
                       <div className="filedInfo">
                         <Tooltip
-                          title="In Hours, following acceptance of the offer"
+                          title="Following acceptance of the contract, how long does the service provider have to fulfill the agreement"
                           placement="top"
                           enterTouchDelay={0}
                           arrow
@@ -536,42 +566,42 @@ export default function Description(props) {
               {errors.OfferValidUntil && errors.OfferValidUntil.type === "min" && <span>Min time for a valid offer is 0</span>}
             </div>
             */}
-                    <div className="formRow offerValidity">
-                      <div className="formLabel">Contract Expires in</div>
+                    <div className="formRow contractValidity">
+                      <div className="formLabel">Can Accept Until</div>
                       <div className="formField">
                         <ToggleButtonGroup
-                          value={offerValidity}
+                          value={contractValidity}
                           exclusive
-                          onChange={offerValidityHandler}
-                          aria-label="all offerValidity"
+                          onChange={contractValidityHandler}
+                          aria-label="all contractValidity"
                         >
                           <ToggleButton
                             value="7 Days"
-                            aria-label="offerValidity"
+                            aria-label="contractValidity"
                           >
                             7 Days
                           </ToggleButton>
                           <ToggleButton
                             value="14 Days"
-                            aria-label="offerValidity"
+                            aria-label="contractValidity"
                           >
                             14 Days
                           </ToggleButton>
                           <ToggleButton
                             value="30 Days"
-                            aria-label="offerValidity"
+                            aria-label="contractValidity"
                           >
                             30 Days
                           </ToggleButton>
                           <ToggleButton
                             value="90 days"
-                            aria-label="offerValidity"
+                            aria-label="contractValidity"
                           >
                             90 days
                           </ToggleButton>
                           <ToggleButton
                             value="Set Custom"
-                            aria-label="offerValidity"
+                            aria-label="contractValidity"
                           >
                             Set Custom
                           </ToggleButton>
@@ -581,7 +611,7 @@ export default function Description(props) {
                           <div className="mt-15">
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                               <DateTimePicker
-                                label="Offer Valid Until"
+                                label="Contract Valid Until"
                                 renderInput={(params) => (
                                   <TextField {...params} />
                                 )}
@@ -596,7 +626,7 @@ export default function Description(props) {
                       </div>
                       <div className="filedInfo">
                         <Tooltip
-                          title="Loreim ipsum dummy"
+                          title="How long will the agreement remain available to potential buyers"
                           placement="top"
                           enterTouchDelay={0}
                           arrow
@@ -610,7 +640,7 @@ export default function Description(props) {
 
                     <div className="formRow">
                       <div className="formLabel">
-                        Contract valid for these wallets:
+                        Contract valid for these wallets
                       </div>
                       <div className="formField">
                         <input
@@ -622,7 +652,7 @@ export default function Description(props) {
                       </div>
                       <div className="filedInfo">
                         <Tooltip
-                          title="empty=any"
+                          title="Wallets that will be able to see this contract and potentially accept it. Empty = Any wallet"
                           placement="top"
                           enterTouchDelay={0}
                           arrow
@@ -646,7 +676,7 @@ export default function Description(props) {
                       </div>
                       <div className="filedInfo">
                         <Tooltip
-                          title="empty=Payzura Platform"
+                          title="State wallets that wil act as arbiters in case of a dispute. Empty = Payzura Platform"
                           placement="top"
                           enterTouchDelay={0}
                           arrow

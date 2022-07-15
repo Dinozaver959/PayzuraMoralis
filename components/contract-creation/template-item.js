@@ -15,11 +15,11 @@ function TemplateItem(props) {
   return (
     <div
       className={
-        selectedTemplate === value ? "offerCard selected" : "offerCard"
+        selectedTemplate === value ? "contractCard selected" : "contractCard"
       }
     >
       <input
-        name="offerCardTemplates"
+        name="contractCardTemplates"
         value={value}
         type="radio"
         onChange={radioChangeFn}
@@ -27,14 +27,14 @@ function TemplateItem(props) {
         id={id}
       />
       <label htmlFor={id}>
-        <div className="offerCardHeader">{title}</div>
-        <div className="offerCardBody">
-          <div className="offerBodyRow">
+        <div className="contractCardHeader">{title}</div>
+        <div className="contractCardBody">
+          <div className="contractBodyRow">
             <div className="labelData">Description</div>
             <div className="valueData">{description}</div>
           </div>
         </div>
-        <div className="offerCardFooter">
+        <div className="contractCardFooter">
           {selectedTemplate === value ? (
             <Button
               classes="button secondary rounded withIcon"
