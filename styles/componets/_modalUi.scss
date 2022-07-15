@@ -81,12 +81,25 @@
           .alertIcon {
             svg {
               path {
-                fill: $ErrorColor;
+                fill: lighten($ErrorColor, 10%);
               }
             }
           }
           .alertMessage {
-            color: $ErrorColor;
+            color: lighten($ErrorColor, 10%);
+          }
+        }
+
+        &.PendingMsg {
+          .alertIcon {
+            svg {
+              path {
+                fill: $OrangeColor;
+              }
+            }
+          }
+          .alertMessage {
+            color: $OrangeColor;
           }
         }
 

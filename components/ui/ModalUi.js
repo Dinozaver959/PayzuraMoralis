@@ -27,6 +27,24 @@ function ModalUi(props) {
             ) : (
               <></>
             )}
+            {props.content.status === "Pending" ? (
+              <div className="PendingMsg alertBody">
+                <div className="alertIcon">
+                  <ErrorIc />
+                </div>
+                <div className="alertMessage">{props.content.message}</div>
+                <div className="alertAction">
+                  <Button
+                    classes="button light rounded"
+                    onClick={props.closeModelFn}
+                  >
+                    Close
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <></>
+            )}
             {props.content.status === "Success" ? (
               <div className="SuccessMsg alertBody">
                 <div className="alertIcon">
