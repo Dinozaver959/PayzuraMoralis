@@ -33,7 +33,7 @@ import LoadingPlaceholder from "../components/ui/LoadingPlaceholder";
 import PlusIc from "../components/icons/Plus";
 import PlaceholderIc from "../components/icons/Placeholder";
 
-import Image from "next/image"
+import Image from "next/image";
 import ETHIcon from "../components/images/ETH.webp";
 import USDCIcon from "../components/images/USDC.webp";
 
@@ -225,7 +225,6 @@ function Table_normal(props) {
             <StyledTableRow>
               <StyledTableCell />
               <StyledTableCell>Title</StyledTableCell>
-              <StyledTableCell>Currency</StyledTableCell>
               <StyledTableCell>Price</StyledTableCell>
               <StyledTableCell>Time to Deliver (hours)</StyledTableCell>
               <StyledTableCell>Valid Until</StyledTableCell>
@@ -298,13 +297,10 @@ function Row_normal(props) {
           {item.ContractTitle}
         </StyledTableCell>
         <StyledTableCell>
-          <label className="mobileLabel">Currency</label>
-          <Image src={tickerToIcon(item.CurrencyTicker)} width={20} height={20} alt={item.CurrencyTicker} />
-           {item.CurrencyTicker}
-        </StyledTableCell>
-        <StyledTableCell>
           <label className="mobileLabel">Price</label>
           {item.Price}
+          <Image src={tickerToIcon(item.CurrencyTicker)} width={20} height={20} alt={item.CurrencyTicker} />
+          {item.CurrencyTicker}        
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Time to Deliver (hours)</label>
@@ -409,7 +405,7 @@ function Row_normal(props) {
             type="submit"
             value="Accept Offer"
             onClick={() =>
-              PayERC20__transfer__Moralis()     // AcceptOffer_Moralis(item.index)
+              AcceptOffer_Moralis(item.index, item.CurrencyTicker)    // PayERC20__transfer__Moralis()
                 .then(async (transactionHash) => {
                   // show the feedback text
                   document.getElementById("submitFeedback").style.display =

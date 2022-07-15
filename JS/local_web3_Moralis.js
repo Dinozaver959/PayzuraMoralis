@@ -3,7 +3,7 @@ import {ABI, ABI_ERC20} from "./ABI.js"
 
 //const ethers = Moralis.web3Library;
  
-const FactoryContractAddress = "0x84ACa57094C881eea170ECEba1fc9911868A7b23"; // "0xC580C23A982C11A3812920C51EDd104B2BB89B15"; // "0x6526447628924eea4F0578e812826f327F8d489B"; //"0x5Fc12E3eC96dd2F008DB5f32497cbAbefB049B60";   // 0x5D023afC16961d44E5fB3F29fe17fd54cE8D3487 - checked in
+const FactoryContractAddress = "0xbF534116b59feA8F90b820B9f47Ecd83dBfA6291"; // "0xC580C23A982C11A3812920C51EDd104B2BB89B15"; // "0x6526447628924eea4F0578e812826f327F8d489B"; //"0x5Fc12E3eC96dd2F008DB5f32497cbAbefB049B60";   // 0x5D023afC16961d44E5fB3F29fe17fd54cE8D3487 - checked in
 export const contractOnNetwork = "polygon";
 const commission = 0.01;
 const PayzuraDafaultArbiter = "0x80038953cE1CdFCe7561Abb73216dE83F8baAEf0"; // Payzura Team/Platform address
@@ -264,25 +264,26 @@ export async function CreateEscrow_Moralis(price, currencyTicker, timeToDeliver,
     return await MoralisWrite_("CreateEscrow", params);
 }
 
-export async function AcceptOffer_Moralis(index) {
-
-    // figure out which currency is needed (ETH or some ERC20)
-    // figure out how to pay in ERC20 tokens from JS
-
+export async function AcceptOffer_Moralis(index, CurrencyTicker) {
 
     // get the mint price
     var price = await GetPrice_Moralis(index); // will give an array with a hex value
-    price = BigInt(price) + BigInt(price * commission);
+    // price = BigInt(price);
     
-    console.log("price: " + price);                                                                             
+    console.log("price: " + price);
     console.log("index: " + index);
+    console.log("CurrencyTicker ", CurrencyTicker);
     
     const params = {                                                                                                        // do we not need the price????
         index: index,
     }
 
     // org - works fine with ethereum
-    return await MoralisWrite__("AcceptOffer", params, 0); //    2000000000000000
+    if (CurrencyTicker == "ETH"){
+        return await MoralisWrite__("AcceptOffer", params, price); // for ETH
+    } else {
+        return await MoralisWrite__("AcceptOffer", params, 0); // for USDC 
+    }
 
     //return await MoralisWrite_("AcceptOffer", params);
 }
@@ -546,12 +547,12 @@ export async function ApproveERC20_Moralis(index){
     console.log("address: " + address);
 
     var price = await GetPrice_Moralis(index); // will give an array with a hex value
-    price = BigInt(price) + BigInt(price * commission);
+    price = BigInt(price);
     console.log("price: " + price);
 
     const params = {
-        // _spender: address, // contract address of this instance              // ORG: for the instance of escrow contract
-        _spender: FactoryContractAddress,
+        _spender: address, // contract address of this instance              // ORG: for the instance of escrow contract
+        //_spender: FactoryContractAddress,
         _value: price,
     }
 

@@ -29,6 +29,10 @@ import Button from "../components/ui/Button";
 import PlaceholderIc from "../components/icons/Placeholder";
 import LoadingPlaceholder from "../components/ui/LoadingPlaceholder";
 
+import Image from "next/image";
+import ETHIcon from "../components/images/ETH.webp";
+import USDCIcon from "../components/images/USDC.webp";
+
 const StyledTableRow = styled(TableRow)({
   //'&:nth-of-type(odd)': {
   //  backgroundColor: "#343a3f",
@@ -90,6 +94,14 @@ function wrapDelegates(wallets) {
   } else {
     return wallets.replaceAll(",", "\n");
   }
+}
+
+function tickerToIcon(ticker){
+  if(ticker == "USDC"){
+    return USDCIcon;
+  } else if(ticker == "ETH"){
+    return ETHIcon;
+  }  
 }
 
 export default function MyAgreements(props) {
@@ -251,7 +263,7 @@ function Table_normal(props) {
               <StyledTableCell />
               <StyledTableCell>Title</StyledTableCell>
               <StyledTableCell>State</StyledTableCell>
-              <StyledTableCell>Price (ETH)</StyledTableCell>
+              <StyledTableCell>Price</StyledTableCell>
               <StyledTableCell>Time to Deliver (hours)</StyledTableCell>
 
               {isBuyer ? (
@@ -307,8 +319,10 @@ function Row_normal(props) {
           {item.State}
         </StyledTableCell>
         <StyledTableCell>
-          <label className="mobileLabel">Price (ETH)</label>
+          <label className="mobileLabel">Price</label>
           {item.Price}
+          <Image src={tickerToIcon(item.CurrencyTicker)} width={20} height={20} alt={item.CurrencyTicker} />
+          {item.CurrencyTicker}
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Time to Deliver (hours)</label>
