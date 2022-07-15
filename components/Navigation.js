@@ -19,6 +19,8 @@ import CloseIc from "./icons/Close";
 import MobileMenuIc from "./icons/MobileMenu";
 import PlusIc from "./icons/Plus";
 
+import ConnectWallet from "./../components/ConnectWallet";
+
 export default function Navigation(props) {
   const {
     darkMode,
@@ -78,6 +80,9 @@ export default function Navigation(props) {
             onClick={props.mobileDrawerFn}
           >
             <Link href="/my-contracts">My Contracts</Link>
+          </li>
+          <li>
+            <ConnectWallet/>
           </li>
           <li className="headerButton" onClick={props.mobileDrawerFn}>
             <span></span>

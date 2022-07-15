@@ -19,7 +19,7 @@ contract Escrow is ReentrancyGuard {
     uint256 public immutable gracePeriod = 0;
 
     uint256 public immutable commision = 10; // 1000 = 100%
-    address public immutable payzuraWallet = 0x1aE0EA34a72D944a8C7603FfB3eC30a6669E454C;
+    address public immutable payzuraWallet = 0x1591C783EfB2Bf91b348B6b31F2B04De1442836c;
     
     address payable public buyer;
     address[] public arbiters;
@@ -189,73 +189,40 @@ contract Escrow is ReentrancyGuard {
     // new buyer accepts the agreement
     function acceptOffer(address payable _buyer) instate(State.await_payment) external payable {
 
-
         require(isOfferValid(), "offer is not valid anymore");
         require(isWalletEligibleToAcceptOffer(_buyer), "wallet is not eligible to accept");
 
-
-        // require(msg.value >= price + GetCommision(), "not enough ETH send");
-
-
         if(tokenContractAddress == address(0)){
             // payment in ETH
-            require(msg.value >= price + GetCommision(), "not enough ETH send");
+            require(msg.value >= price, "not enough ETH send");
         } else {
             // payment in tokenContractAddress currency
-
             IERC20 tokenContract = IERC20(tokenContractAddress);
-            bool transferred = tokenContract.transferFrom(_buyer, address(this), price + GetCommision());
+            bool transferred = tokenContract.transferFrom(_buyer, address(this), price);
             require(transferred, "ERC20 tokens failed to transfer to contract wallet");
         }
 
-
         buyer = _buyer; 
-
-        // set the deadline
         deadline = block.timestamp + 3600 * timeToDeliver;
-
-        // update state
         state = State.paid;
     }
 
     function acceptOffer_ERC20(address payable _buyer) instate(State.await_payment) external {
 
-
         require(isOfferValid(), "offer is not valid anymore");
         require(isWalletEligibleToAcceptOffer(_buyer), "wallet is not eligible to accept");
 
-
         // payment in tokenContractAddress currency
         IERC20 tokenContract = IERC20(tokenContractAddress);
-        uint256 amount = price + GetCommision();
-        //bool approved = tokenContract.approve(address(this), amount);
-        //require(approved, "ERC20 tokens failed to be approved for contract wallet");
-        bool transferred = tokenContract.transferFrom(_buyer, address(this), amount);
+        bool transferred = tokenContract.transferFrom(_buyer, address(this), price);
         require(transferred, "ERC20 tokens failed to transfer to contract wallet");
 
-
         buyer = _buyer; 
-
-        // set the deadline
         deadline = block.timestamp + 3600 * timeToDeliver;
-
-        // update state
         state = State.paid;
     }
 
-
-    /* 
-        function TranferFunds(address payable receiver) internal {
-
-            // transfer commision to the Payzura wallet
-            payable(payzuraWallet).transfer(GetCommision());
-
-            // transfer the remaining amount to the receiver
-            receiver.transfer(address(this).balance);
-        }
-    */
-
-    function TranferFunds(address payable receiver) internal {
+    function TransferFunds(address payable receiver) internal {
 
         if(tokenContractAddress == address(0)){
             // transfer ETH
@@ -268,22 +235,21 @@ contract Escrow is ReentrancyGuard {
         
         } else {
 
-            IERC20 tokenContract = IERC20(tokenContractAddress);
-            //bool transferred = tokenContract.transferFrom(address(this), payzuraWallet, GetCommision());
             uint256 commision_ = GetCommision();
-            bool transferred = tokenContract.transfer(payzuraWallet, commision_);
+            IERC20 tokenContract = IERC20(tokenContractAddress);
+            bool transferred = tokenContract.transferFrom(address(this), payzuraWallet, GetCommision());                    // think we might need to set the approval for the EscrowFactory to move ERC20 of the contract instance (we set the approval when creating the escrow contract instance)
+            //bool transferred = tokenContract.transfer(payzuraWallet, commision_);
             require(transferred, "ERC20 tokens failed to transfer to payzuraWallet");
             emit TransferSent(address(this), payzuraWallet, commision_);
 
-            //bool transferred_2 = tokenContract.transferFrom(address(this), receiver, price);
-            bool transferred_2 = tokenContract.transfer(receiver, price);
+            bool transferred_2 = tokenContract.transferFrom(address(this), receiver, price);
+            //bool transferred_2 = tokenContract.transfer(receiver, price - commision_);
             require(transferred_2, "ERC20 tokens failed to transfer to receiver");
-            emit TransferSent(address(this), receiver, price);
+            emit TransferSent(address(this), receiver, price - commision_);
         }
 
         // change from 'transferFrom' function to 'transfer' function
         // deploy on Polygon and test on payzura local 
-
     }
 
 
@@ -295,14 +261,14 @@ contract Escrow is ReentrancyGuard {
     // seller can claim the funds if no dispute and the (deadline + gracePeriod) has passed
     function claimFunds(address _seller) instate(State.paid) onlySellerOrDelegate(_seller) external payable {
         require(block.timestamp > deadline + gracePeriod, "Not able to claim yet. Buyer still has time to open dispute");
-        TranferFunds(seller);
+        TransferFunds(seller);
         state = State.complete;
         return;
     }
 
     // seller can return the payment and cancel the agreement
     function returnPayment(address _seller) instate(State.paid) onlySellerOrDelegate(_seller) external payable {
-        TranferFunds(buyer);
+        TransferFunds(buyer);
         state = State.complete;
         return;
     }
@@ -334,7 +300,7 @@ contract Escrow is ReentrancyGuard {
 
     // buyer can release the funds - work was done and confirmed
     function confirmDelivery(address _buyer) instate(State.paid) onlyBuyerOrDelegate(_buyer) external payable { 
-        TranferFunds(seller);
+        TransferFunds(seller);
         state = State.complete;
         return;
     }
@@ -372,7 +338,7 @@ contract Escrow is ReentrancyGuard {
         if(votes[1] > votes[2] + votes[0]){
             // send funds to the buyes
             //buyer.transfer(address(this).balance);
-            TranferFunds(buyer);
+            TransferFunds(buyer);
             state = State.complete;
             return true;
         } 
@@ -380,7 +346,7 @@ contract Escrow is ReentrancyGuard {
         if(votes[2] > votes[1] + votes[0]){
             // send funds to the seller
             //seller.transfer(address(this).balance);
-            TranferFunds(seller);
+            TransferFunds(seller);
             state = State.complete;
             return true;
         }

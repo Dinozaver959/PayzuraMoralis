@@ -415,9 +415,7 @@ export default function Description(props) {
                     </div>
 
                     <div className="formRow">
-                      <div className="formLabel">
-                        Contract Description
-                      </div>
+                      <div className="formLabel">Contract Description</div>
                       <div className="formField">
                         <textarea
                           cols="40"

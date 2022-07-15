@@ -19,12 +19,21 @@ import Moralis from "moralis";
 import {
   GetWallet_NonMoralis,
   AcceptOffer_Moralis,
+  ApproveERC20_Moralis,
+  PayERC20__TEST__Moralis,
+  PayERC20__TEST__WO_Moralis,
+  PayERC20__transfer__Moralis,
+  PayERC20__transfer__direct_USDC,
 } from "../JS/local_web3_Moralis";
 import Navigation from "../components/Navigation.js";
 import Button from "../components/ui/Button";
 import PlaceholderIc from "../components/icons/Placeholder";
 import PlusIc from "../components/icons/Plus";
 import LoadingPlaceholder from "../components/ui/LoadingPlaceholder";
+
+import Image from "next/image";
+import ETHIcon from "../components/images/ETH.webp";
+import USDCIcon from "../components/images/USDC.webp";
 
 const StyledTableRow = styled(TableRow)({
   //'&:nth-of-type(odd)': {
@@ -119,7 +128,10 @@ export default function PersonalizedContracts(props) {
         <div className="pageHeader">
           <h1>Personalized Contracts Listed</h1>
           <div className="headerAction">
-            <Button link="/create-contract" classes={"button secondary withIcon"}>
+            <Button
+              link="/create-contract"
+              classes={"button secondary withIcon"}
+            >
               <i>
                 <PlusIc />
               </i>
@@ -140,9 +152,7 @@ export default function PersonalizedContracts(props) {
           <div className="cardBody">
             {placeholder ? (
               <div className="blockLoading">
-                <LoadingPlaceholder
-                  extraStyles={{ position: "absolute" }}
-                />
+                <LoadingPlaceholder extraStyles={{ position: "absolute" }} />
               </div>
             ) : data[0] && data ? (
               <Table_normal data={data} />
@@ -190,6 +200,26 @@ function wrapEpochToDate(epoch) {
   return d.toString(); // d.toDateString();
 }
 
+function tickerToIcon(ticker) {
+  if (ticker == "USDC") {
+    return USDCIcon;
+  } else if (ticker == "ETH") {
+    return ETHIcon;
+  }
+}
+
+async function hasTheConnectedWalletAlreadyApprovedERC20(listApprovedBy) {
+  const connectedAddress = await GetWallet_NonMoralis();
+  if (!connectedAddress) {
+    return false;
+  }
+
+  console.log("connectedAddress: ", connectedAddress);
+  console.log(listApprovedBy);
+
+  return listApprovedBy.includes(connectedAddress);
+}
+
 function Table_normal(props) {
   const { data } = props;
 
@@ -223,6 +253,34 @@ function Table_normal(props) {
 function Row_normal(props) {
   const { item } = props;
   const [open, setOpen] = React.useState(false);
+  const [approvedERC20, setApprovedERC20] = useState(false); // need to force update on   A) wallet change
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const approved = await hasTheConnectedWalletAlreadyApprovedERC20(
+        item.ApprovedBy
+      );
+      setApprovedERC20(approved);
+    };
+
+    fetchData()
+      // make sure to catch any rerro
+      .catch(console.error);
+
+    // doesn't work - just leaving it here for reference
+    // basically idea is, when user changes wallet/account -> update the button visibility based on new user
+    /* 
+      Moralis.onAccountChanged(async (accounts) => {
+        const currentUser = Moralis.User.current();
+        console.log();
+        if(currentUser){
+          const approved = await hasTheConnectedWalletAlreadyApprovedERC20(item.ApprovedBy);
+          // console.log("hasTheConnectedWalletAlreadyApprovedERC20: ", approved)
+          setApprovedERC20(approved);
+        }
+      })
+    */
+  }, []);
 
   return (
     <React.Fragment>
@@ -246,6 +304,13 @@ function Row_normal(props) {
         <StyledTableCell>
           <label className="mobileLabel">Price (ETH)</label>
           {item.Price}
+          <Image
+            src={tickerToIcon(item.CurrencyTicker)}
+            width={20}
+            height={20}
+            alt={item.CurrencyTicker}
+          />
+          {item.CurrencyTicker}
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Time to Deliver (hours)</label>
@@ -256,13 +321,90 @@ function Row_normal(props) {
           {wrapEpochToDate(item.OfferValidUntil)}
         </StyledTableCell>
 
+        {item.CurrencyTicker == "ETH" || approvedERC20 ? (
+          <>
+            <StyledTableCell></StyledTableCell>
+            {/* don't show approval button */}
+          </>
+        ) : (
+          <>
+            <StyledTableCell>
+              <input
+                className="button primary rounded"
+                type="submit"
+                /* value="Approve USDC" */
+                value={"Approve " + item.CurrencyTicker}
+                onClick={() => {
+                  ApproveERC20_Moralis(item.index)
+                    .then(async (transactionHash) => {
+                      console.log("approval for ERC20 successfully completed");
+                      console.log("transactionHash: ", transactionHash);
+
+                      // hide approve button
+                      setApprovedERC20(true);
+
+                      var formData = new FormData();
+                      formData.append(
+                        "BuyerAccount",
+                        Moralis.User.current().id
+                      );
+
+                      const connectedAddress = await GetWallet_NonMoralis();
+                      formData.append("BuyerWallet", connectedAddress);
+                      formData.append("transactionHash", transactionHash);
+                      formData.append("objectId", item.objectId);
+
+                      var xhr = new XMLHttpRequest();
+                      xhr.open("POST", "/api/api-approvedERC20", false);
+                      xhr.onload = function () {
+                        // update the feedback text
+                        document.getElementById(
+                          "submitFeedback"
+                        ).style.display = "inline";
+                        document.getElementById("submitFeedback").innerText =
+                          "granting approval...";
+
+                        var formData = new FormData();
+                        formData.append(
+                          "BuyerAccount",
+                          Moralis.User.current().id
+                        );
+
+                        // think about also removing the hover effect
+                        // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+                        console.log("approval granted");
+                      };
+                      xhr.send(formData);
+                    })
+                    .catch((error) => {
+                      console.error(error);
+                      console.log("approval error code: " + error.code);
+                      console.log("approval error message: " + error.message);
+                      if (error.data && error.data.message) {
+                        document.getElementById("submitFeedback").innerText =
+                          error.data.message;
+                      } else {
+                        document.getElementById("submitFeedback").innerText =
+                          error.message;
+                      }
+                      document.getElementById(
+                        "submitFeedback"
+                      ).style.visibility = "visible";
+                      process.exitCode = 1;
+                    });
+                }}
+              ></input>
+            </StyledTableCell>
+          </>
+        )}
+
         <StyledTableCell>
           <input
             className="button primary rounded"
             type="submit"
-            value="Accept Offer (buyer)"
+            value="Accept Offer"
             onClick={() =>
-              AcceptOffer_Moralis(item.index)
+              AcceptOffer_Moralis(item.index, item.CurrencyTicker) //PayERC20__transfer__Moralis()
                 .then(async (transactionHash) => {
                   // show the feedback text
                   document.getElementById("submitFeedback").style.display =
@@ -288,9 +430,14 @@ function Row_normal(props) {
                     document.getElementById("submitFeedback").innerText =
                       "offer accepted";
 
-                    // prevent the Submit button to be clickable and functionable
-                    // removeHover()
-                    // document.getElementById('SubmitButton').disabled = true
+                    // show the feedback text
+                    document.getElementById("submitFeedback").style.display =
+                      "inline";
+                    document.getElementById("submitFeedback").innerText =
+                      "Accepting offer...";
+
+                    var formData = new FormData();
+                    formData.append("BuyerAccount", Moralis.User.current().id);
 
                     // think about also removing the hover effect
                     // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
@@ -316,6 +463,69 @@ function Row_normal(props) {
             }
           ></input>
         </StyledTableCell>
+
+        {/* OLD - org 
+          <StyledTableCell>
+            <input
+              className="button primary rounded"
+              type="submit"
+              value="Accept Offer (buyer)"
+              onClick={() =>
+                AcceptOffer_Moralis(item.index)
+                  .then(async (transactionHash) => {
+                    // show the feedback text
+                    document.getElementById("submitFeedback").style.display =
+                      "inline";
+                    document.getElementById("submitFeedback").innerText =
+                      "Creating offer...";
+
+                    var formData = new FormData();
+                    formData.append("BuyerAccount", Moralis.User.current().id);
+                    formData.append("SellerWallet", item.SellerWallet);   
+
+                    const connectedAddress = await GetWallet_NonMoralis();
+                    formData.append("BuyerWallet", connectedAddress);
+                    formData.append("transactionHash", transactionHash);
+                    formData.append("objectId", item.objectId);
+
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("POST", "/api/api-acceptedOffer", false);
+                    xhr.onload = function () {
+                      // update the feedback text
+                      document.getElementById("submitFeedback").style.display =
+                        "inline";
+                      document.getElementById("submitFeedback").innerText =
+                        "offer accepted";
+
+                      // prevent the Submit button to be clickable and functionable
+                      // removeHover()
+                      // document.getElementById('SubmitButton').disabled = true
+
+                      // think about also removing the hover effect
+                      // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+                      console.log("offer created");
+                    };
+                    xhr.send(formData);
+                  })
+                  .catch((error) => {
+                    console.error(error);
+                    console.log("accept offer error code: " + error.code);
+                    console.log("accept offer error message: " + error.message);
+                    if (error.data && error.data.message) {
+                      document.getElementById("submitFeedback").innerText =
+                        error.data.message;
+                    } else {
+                      document.getElementById("submitFeedback").innerText =
+                        error.message;
+                    }
+                    document.getElementById("submitFeedback").style.visibility =
+                      "visible";
+                    process.exitCode = 1;
+                  })
+              }
+            ></input>
+          </StyledTableCell>
+        */}
       </StyledTableRow>
 
       <TableRow>

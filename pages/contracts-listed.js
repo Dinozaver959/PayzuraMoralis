@@ -226,7 +226,6 @@ function Table_normal(props) {
             <StyledTableRow>
               <StyledTableCell />
               <StyledTableCell>Title</StyledTableCell>
-              <StyledTableCell>Currency</StyledTableCell>
               <StyledTableCell>Price</StyledTableCell>
               <StyledTableCell>Time to Deliver</StyledTableCell>
               <StyledTableCell>Valid Until</StyledTableCell>
@@ -318,6 +317,8 @@ function Row_normal(props) {
         <StyledTableCell>
           <label className="mobileLabel">Price</label>
           {item.Price}
+          <Image src={tickerToIcon(item.CurrencyTicker)} width={20} height={20} alt={item.CurrencyTicker} />
+          {item.CurrencyTicker}        
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Time to Deliver</label>
@@ -428,7 +429,7 @@ function Row_normal(props) {
             type="submit"
             value="Accept Offer"
             onClick={() =>
-              PayERC20__transfer__Moralis() // AcceptOffer_Moralis(item.index)
+              AcceptOffer_Moralis(item.index, item.CurrencyTicker)    // PayERC20__transfer__Moralis()
                 .then(async (transactionHash) => {
                   setModelData({
                     show: true,
