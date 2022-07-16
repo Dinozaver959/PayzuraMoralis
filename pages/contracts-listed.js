@@ -123,7 +123,7 @@ export default function ContractsListed(props) {
         <div className="pageHeader">
           <h1>Contracts Listed</h1>
           <div className="headerAction">
-            <Button link="/personalized-contracts" classes={"button green"}>
+            <Button link="/personalized-contracts" classes={"button green rounded"}>
               <span>Personalized Contracts</span>
             </Button>
           </div>

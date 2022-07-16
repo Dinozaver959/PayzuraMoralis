@@ -1,14 +1,17 @@
-import React, {useState, useEffect} from 'react';
-import {useMoralis} from "react-moralis";
+import React, { useState, useEffect } from "react";
+import { useMoralis } from "react-moralis";
 import { ethers } from "ethers";
 
 const style = {
     headerItem: `px-2 py-2 cursor-pointer`,
     headerIcon: `text-2xl px-2 py-2 cursor-pointer`,
-}
+};
 
 function checkConnection() {
-    ethereum.request({ method: 'eth_accounts' }).then(handleAccountsChanged).catch(console.error);
+    ethereum
+        .request({ method: "eth_accounts" })
+        .then(handleAccountsChanged)
+        .catch(console.error);
 }
 
 /*
@@ -33,7 +36,6 @@ function handleAccountsChanged(accounts) {
         $('#connect-btn').disabled = true;
     }
 */
-
 
 /*
 const provider = new Web3Provider(wallet);
@@ -70,23 +72,20 @@ useEffect( () =>{
 }, []);
 */
 
-
-
 function ConnectWallet() {
-
     const [currentAccount, setCurrentAccount] = useState("");
     const [userAddress, setUserAddress] = useState("");
     const [chainId, setChainId] = useState("");
 
-    const detailsOn = async () =>{
+    const detailsOn = async () => {
         const { ethereum } = window;
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
-        
+
         const addr = await signer.getAddress();
 
         setUserAddress(addr.toString());
-    }
+    };
 
     /*
     const handleAccountsChanged = (accounts) => { 
@@ -101,63 +100,63 @@ function ConnectWallet() {
         } 
     } 
     ethereum.on('accountsChanged', handleAccountsChanged); 
-    */    
+    */
 
-    const checkIfWalletIsConnected = async () =>{
-        try{
+    const truncateAccountAddress = currentAccount.slice(0, 6) + "..." + currentAccount.slice(-4);
+
+    const checkIfWalletIsConnected = async () => {
+        try {
             const { ethereum } = window;
 
-            if(!ethereum){
+            if (!ethereum) {
                 console.log("Use Metamask!");
-            } else{
+            } else {
                 console.log("Ethereum object found", ethereum);
                 detailsOn();
             }
 
-            const accounts = await ethereum.request({method: 'eth_accounts'});
+            const accounts = await ethereum.request({ method: "eth_accounts" });
 
-            if(accounts.length !== 0){
+            if (accounts.length !== 0) {
                 const account = accounts[0];
                 console.log("Found an authorized account ", account);
                 setCurrentAccount(account);
                 detailsOn();
-            } else{
+            } else {
                 console.log("Could not find an authorized account");
             }
-        } catch(error){
+        } catch (error) {
             console.log(error);
         }
-    }
+    };
 
-    const connectWallet = async () =>{
-        try{
+    const connectWallet = async () => {
+        try {
             const { ethereum } = window;
 
-            if(!ethereum){
+            if (!ethereum) {
                 alert("Use Metamask!");
-            } else{
-                const accounts = await ethereum.request({ method: 'eth_requestAccounts'});
+            } else {
+                const accounts = await ethereum.request({
+                    method: "eth_requestAccounts",
+                });
                 console.log("Account connected ", accounts[0]);
                 setCurrentAccount(accounts[0]);
             }
-        } catch(error){
+        } catch (error) {
             console.log(error);
         }
-    }
+    };
 
-
-
-    useEffect( () =>{
-
+    useEffect(() => {
         const handleAccountsChanged = async (accounts) => {
-            
-            if(accounts.length > 0) {
+            if (accounts.length > 0) {
                 //console.log(`Using account ${accounts[0]}`);
                 setCurrentAccount(accounts[0]);
             } else {
                 console.error("0 accounts");
             }
-        }
+        };
 
         // not working properly
         /*
@@ -173,33 +172,32 @@ function ConnectWallet() {
 
         checkIfWalletIsConnected();
 
-        if(window.ethereum){
+        if (window.ethereum) {
             window.ethereum.on("accountsChanged", handleAccountsChanged);
             //window.ethereum.on("chainChanged", handleChainChanged);
         }
-
     }, []);
-    
 
     return (
         <>
-            {!currentAccount ? 
-                (
-                    <>
-                        <button className="generalButton" onClick={connectWallet}>
-                            Connect Wallet
-                        </button>
-                    </>
-                ) : (
-                    <>
-                        <button className="generalButton">
-                            {currentAccount}
-                        </button>    
-                    </>
-                )
-            }
-        </> 
-    )
+            {!currentAccount ? (
+                <>
+                    <button
+                        className="button default rounded"
+                        onClick={connectWallet}
+                    >
+                        Connect Wallet
+                    </button>
+                </>
+            ) : (
+                <>
+                    <button className="button default rounded">
+                        {truncateAccountAddress}
+                    </button>
+                </>
+            )}
+        </>
+    );
 }
 
-export default ConnectWallet
+export default ConnectWallet;

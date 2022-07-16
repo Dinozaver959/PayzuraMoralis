@@ -82,7 +82,8 @@ header {
 
       li {
         height: 100%;
-        padding: 0 7px;
+        padding: 0 5px;
+        @extend %FlexCol-CenterCenter;
 
         @include RespondTo(IpadDevices) {
           height: auto;
@@ -127,7 +128,10 @@ header {
         &.headerButton {
           @extend %FlexRow-CenterCenter;
           flex: 2;
-          padding-right: 10px;
+
+          + .headerButton {
+            flex: unset;
+          }
 
           @include RespondTo(IpadDevices) {
             display: block;
@@ -143,7 +147,6 @@ header {
 
           .button {
             height: auto;
-            padding-right: 10px;
 
             @include RespondTo(IpadDevices) {
               font-size: 1rem;
@@ -158,6 +161,7 @@ header {
     @extend %FlexRow-CenterCenter;
     border-left: 1px solid $BorderDark;
     padding: 0 10px;
+    margin-left: 10px;
 
     .modeChange {
       > span {

@@ -28,7 +28,6 @@ import {
 import Navigation from "../components/Navigation.js";
 import Button from "../components/ui/Button";
 import PlaceholderIc from "../components/icons/Placeholder";
-import PlusIc from "../components/icons/Plus";
 import LoadingPlaceholder from "../components/ui/LoadingPlaceholder";
 
 import Image from "next/image";
@@ -127,17 +126,6 @@ export default function PersonalizedContracts(props) {
       <div className="containerMain">
         <div className="pageHeader">
           <h1>Personalized Contracts Listed</h1>
-          <div className="headerAction">
-            <Button
-              link="/create-contract"
-              classes={"button secondary withIcon"}
-            >
-              <i>
-                <PlusIc />
-              </i>
-              <span>Create New Contract</span>
-            </Button>
-          </div>
         </div>
 
         <div className="card mt-10">
