@@ -98,7 +98,7 @@ Moralis.Cloud.define("GetUsersAgreementsOnlySeller", async (request) => {
 
 Moralis.Cloud.define("GetUsersDetails", async (request) => {
 
-  const querySeller = new Moralis.Query("DisputeMeter");
+  const querySeller = new Moralis.Query("UserParticipationData");
   querySeller.equalTo("userAddress", request.params.UserWallet);
 
   return await querySeller.find();

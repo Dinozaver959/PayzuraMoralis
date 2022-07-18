@@ -21,10 +21,6 @@ import {
   GetWallet_NonMoralis,
   AcceptOffer_Moralis,
   ApproveERC20_Moralis,
-  PayERC20__TEST__Moralis,
-  PayERC20__TEST__WO_Moralis,
-  PayERC20__transfer__Moralis,
-  PayERC20__transfer__direct_USDC
 } from "../JS/local_web3_Moralis";
 import Navigation from "../components/Navigation.js";
 import Button from "../components/ui/Button";
@@ -405,7 +401,7 @@ function Row_normal(props) {
             type="submit"
             value="Accept Offer"
             onClick={() =>
-              AcceptOffer_Moralis(item.index, item.CurrencyTicker)    // PayERC20__transfer__Moralis()
+              AcceptOffer_Moralis(item.index, item.CurrencyTicker)
                 .then(async (transactionHash) => {
                   // show the feedback text
                   document.getElementById("submitFeedback").style.display =
@@ -415,7 +411,8 @@ function Row_normal(props) {
 
                   var formData = new FormData();
                   formData.append("BuyerAccount", Moralis.User.current().id);
-                  formData.append("SellerWallet", item.SellerWallet);                 
+                  formData.append("SellerWallet", item.SellerWallet);
+                  formData.append("PersonalizedOffer", "false");                 
 
                   const connectedAddress = await GetWallet_NonMoralis();
                   formData.append("BuyerWallet", connectedAddress);

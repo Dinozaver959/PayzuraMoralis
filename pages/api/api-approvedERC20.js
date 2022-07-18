@@ -1,15 +1,8 @@
 import middleware from '../../middleware/middleware'
 import nextConnect from 'next-connect'
+import { UpdateContracts_ERC20ApprovalList } from '../../JS/DB-pushFunctions';
 
-var Moralis = require("moralis/node");
-var fs = require("fs");
-var fse = require('fs-extra')
-var path = require("path");
 const DOMPurify = require('isomorphic-dompurify');
-
-const serverUrl = "https://fordrbswdskl.usemoralis.com:2053/server";
-const appId = "8AGWP86FEWcfCRwNLa0LGffGPs5kpcHxqRpEp4PF";
-Moralis.start({ serverUrl, appId });
 
 const apiRoute = nextConnect()
 apiRoute.use(middleware)
@@ -29,8 +22,7 @@ apiRoute.post(async (req, res) => {
     console.log("objectId: " + objectId);
     console.log("transactionHash: " + transactionHash);
     
-    await UpdateApprovalListMoralisDB(BuyerWallet, objectId);
-
+    await UpdateContracts_ERC20ApprovalList(BuyerWallet, objectId);
 
     res.status(201).end("Offer created");
 })
@@ -42,43 +34,3 @@ export const config = {
 }
 
 export default apiRoute
-
-
-
-async function UpdateApprovalListMoralisDB(BuyerWallet, objectId) {
-
-    const Agreements = Moralis.Object.extend("Agreements");
-    const query = new Moralis.Query(Agreements);
-    query.equalTo("objectId", objectId);
-    const results_ = await query.find();
-
-    if (results_.length > 0) {
-        const agreement = results_[0];
-
-        // check if 'ApprovedBy' is already set -> then just update/append
-        // otherwise set 'ApprovedBy'
-
-        var ApprovedBy = agreement.get("ApprovedBy");
-        console.log("ApprovedBy:", ApprovedBy);
-
-        if(!ApprovedBy){
-            agreement.set("ApprovedBy", BuyerWallet);
-        }
-        else {
-
-            const unique = (value, index, self) => {
-                return self.indexOf(value) === index
-            }        
-
-            const newApprovedBy = ApprovedBy.concat(",", BuyerWallet);
-            agreement.set("ApprovedBy", newApprovedBy);
-        }
-
-        await agreement.save()
-        .then((agreement) => {
-            console.log('New object created with objectId: ' + agreement.id);
-        }, (error) => {
-            console.log('Failed to create new object, with error code: ' + error.message);
-        });
-    }
-}
