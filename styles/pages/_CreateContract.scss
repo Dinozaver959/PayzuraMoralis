@@ -165,8 +165,62 @@
 }
 
 .buyerSelerSelection {
-    svg {
-        @include Size(50px, 50px);
+    ul {
+        @extend %FlexRow-CenterCenter;
+        margin-bottom: 1rem;
+
+        li {
+            display: inline-block;
+
+            + li {
+                margin-left: 10px;
+            }
+
+            input[type="radio"] {
+                display: none;
+
+                + label {
+                    @include Size(150px, 92px);
+                    border: 2px solid $BorderDark;
+                    @include BorderRadius(10px);
+                    @extend %FlexCol-CenterCenter;
+                    cursor: pointer;
+
+                    svg {
+                        @include Size(50px, 50px);
+                    }
+
+                    span {
+                        display: block;
+                        margin-top: 7px;
+                    }
+                }
+
+                &:checked {
+                    + label {
+                        border-color: $PrimaryColor;
+                        color: $PrimaryColor;
+                        background: lighten($PrimaryColor, 55%);
+                    }
+                }
+            }
+        }
+    }
+}
+
+.customPriceField {
+    @include Size(100%, auto);
+    padding: 10px 10px;
+    @include BorderRadius($FormControlRadius);
+    border: 1px solid $BorderDark;
+    background-color: transparent;
+    @extend %FlexRow-CenterBetween;
+
+    .formInput {
+        flex: 2;
+        height: auto;
+        padding: 0;
+        border: none;
     }
 }
 

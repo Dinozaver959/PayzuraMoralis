@@ -1,142 +1,152 @@
 .modalMain {
-  @include Size(100%, 100vh);
-  @include Fixed($Left: 0, $Top: 0);
-  background: rgba($BlackColor, 0.85);
-  overflow-x: hidden;
-  overflow-y: auto;
-  z-index: 99;
+    @include Size(100%, 100vh);
+    @include Fixed($Left: 0, $Top: 0);
+    background: rgba($BlackColor, 0.85);
+    overflow-x: hidden;
+    overflow-y: auto;
+    z-index: 99;
 
-  .modalContainer {
-    width: auto;
-    @include Relative;
-    @include Flexbox;
-    @include AlignItems(center);
-    max-width: 500px;
-    margin: 1.75rem auto;
-    transform: translate(0, 0);
-    transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
-    min-height: calc(100% - (1.75rem * 2));
-
-    .modalBox {
-      @include Relative;
-      @include Flexbox;
-      @include FlexDirection(column);
-      width: 100%;
-      pointer-events: auto;
-      background-color: $WhiteColor;
-      background-clip: padding-box;
-      border: 1px solid rgba($BlackColor, 0.2);
-      @include BorderRadius($CardRounded);
-      outline: 0;
-
-      .modalHeader {
-        @include Flexbox;
-        @include AlignItems(flex-start);
-        @include JustifyContent(space-between);
-        padding: 1rem;
-        border-bottom: 1px solid #e9ecef;
-        border-top-left-radius: $CardRounded;
-        border-top-right-radius: $CardRounded;
-      }
-
-      .modalBody {
+    .modalContainer {
+        width: auto;
         @include Relative;
-        flex: 1 1 auto;
-        padding: 1rem;
-      }
-
-      .modalFooter {
         @include Flexbox;
         @include AlignItems(center);
-        @include JustifyContent(flex-end);
-        padding: 1rem;
-        border-top: 1px solid #e9ecef;
-      }
+        max-width: 500px;
+        margin: 1.75rem auto;
+        transform: translate(0, 0);
+        transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
+        min-height: calc(100% - (1.75rem * 2));
 
-      .alertBody {
-        padding: 1.5rem 1rem;
-        text-align: center;
+        .modalBox {
+            @include Relative;
+            @include Flexbox;
+            @include FlexDirection(column);
+            width: 100%;
+            pointer-events: auto;
+            background-color: $WhiteColor;
+            background-clip: padding-box;
+            border: 1px solid rgba($BlackColor, 0.2);
+            @include BorderRadius($CardRounded);
+            outline: 0;
 
-        .alertIcon {
-          svg {
-            @include Size(72px, 72px);
-          }
-        }
-
-        .alertMessage {
-          padding-top: 12px;
-        }
-
-        .alertAction {
-          padding-top: 15px;
-
-          .button {
-            + .button {
-              margin-left: 10px;
+            .modalHeader {
+                @include Flexbox;
+                @include AlignItems(flex-start);
+                @include JustifyContent(space-between);
+                padding: 1rem;
+                border-bottom: 1px solid #e9ecef;
+                border-top-left-radius: $CardRounded;
+                border-top-right-radius: $CardRounded;
             }
-          }
-        }
 
-        &.ErrorMsg {
-          .alertIcon {
-            svg {
-              path {
-                fill: lighten($ErrorColor, 10%);
-              }
+            .modalBody {
+                @include Relative;
+                flex: 1 1 auto;
+                padding: 1rem;
             }
-          }
-          .alertMessage {
-            color: lighten($ErrorColor, 10%);
-          }
-        }
 
-        &.PendingMsg {
-          .alertIcon {
-            svg {
-              path {
-                fill: $OrangeColor;
-              }
+            .modalFooter {
+                @include Flexbox;
+                @include AlignItems(center);
+                @include JustifyContent(flex-end);
+                padding: 1rem;
+                border-top: 1px solid #e9ecef;
             }
-          }
-          .alertMessage {
-            color: $OrangeColor;
-          }
-        }
 
-        &.SuccessMsg {
-          .alertIcon {
-            svg {
-              path,
-              polygon {
-                fill: $GreenColor;
-              }
+            .alertBody {
+                padding: 1.5rem 1rem;
+                text-align: center;
+
+                .alertIcon {
+                    svg {
+                        @include Size(72px, 72px);
+                    }
+                }
+
+                .alertMessage {
+                    padding-top: 12px;
+                    font-size: 1.2rem;
+                }
+
+                .alertAction {
+                    padding-top: 15px;
+
+                    .button {
+                        + .button {
+                            margin-left: 10px;
+                        }
+                    }
+                }
+
+                .transactionHash {
+                    color: $FontColorDark;
+                    padding: 1.5rem 0;
+
+                    > span {
+                        display: block;
+                        word-break: break-all;
+                    }
+                }
+
+                &.ErrorMsg {
+                    .alertIcon {
+                        svg {
+                            path {
+                                fill: lighten($ErrorColor, 10%);
+                            }
+                        }
+                    }
+                    .alertMessage {
+                        color: lighten($ErrorColor, 10%);
+                    }
+                }
+
+                &.PendingMsg {
+                    .alertIcon {
+                        svg {
+                            path {
+                                fill: $OrangeColor;
+                            }
+                        }
+                    }
+                    .alertMessage {
+                        color: $OrangeColor;
+                    }
+                }
+
+                &.SuccessMsg {
+                    .alertIcon {
+                        svg {
+                            path,
+                            polygon {
+                                fill: $GreenColor;
+                            }
+                        }
+                    }
+                    .alertMessage {
+                        color: darken($GreenColor, 10%);
+                    }
+                }
             }
-          }
-          .alertMessage {
-            color: darken($GreenColor, 10%);
-          }
         }
-      }
     }
-  }
 }
 
-
 .darkMode {
-  .modalMain {
-    .modalContainer {
-      .modalBox {
-        background-color: $DarkBg;
-        border: 1px solid rgba($BlackColor, 0.2);
-  
-        .modalHeader {
-          border-bottom: 1px solid $BorderLight;
+    .modalMain {
+        .modalContainer {
+            .modalBox {
+                background-color: $DarkBg;
+                border: 1px solid rgba($BlackColor, 0.2);
+
+                .modalHeader {
+                    border-bottom: 1px solid $BorderLight;
+                }
+
+                .modalFooter {
+                    border-top: 1px solid $BorderLight;
+                }
+            }
         }
-  
-        .modalFooter {
-          border-top: 1px solid $BorderLight;
-        }
-      }
     }
-  }
 }

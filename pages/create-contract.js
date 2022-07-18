@@ -27,6 +27,13 @@ import DownloadIc from "../components/icons/Download";
 import BuyerIc from "../components/icons/Buyer";
 import SellerIc from "../components/icons/Seller";
 
+import ModalUi from "../components/ui/ModalUi";
+import Button from "../components/ui/Button";
+
+import ETHIcon from "../components/images/ETH.webp";
+import USDCIcon from "../components/images/USDC.webp";
+import Image from "next/image";
+
 export default function Description(props) {
     // SUBMIT - validation
     const {
@@ -51,6 +58,19 @@ export default function Description(props) {
         return 1;
     });
 
+    const [modelData, setModelData] = React.useState({
+        show: false,
+        type: "alert",
+        status: "Error",
+        message: "",
+    });
+
+    function closeModelDataHandler() {
+        setModelData({
+            show: false,
+        });
+    }
+
     async function SubmitForm() {
         CreateEscrow_Moralis(
             document.getElementById("Price").value,
@@ -63,10 +83,12 @@ export default function Description(props) {
         )
             .then(async (transactionHash) => {
                 // show the feedback text
-                document.getElementById("submitFeedback").style.display =
-                    "inline";
-                document.getElementById("submitFeedback").innerText =
-                    "Creating offer...";
+                setModelData({
+                    show: true,
+                    type: "alert",
+                    status: "Pending",
+                    message: "Creating offer...",
+                });
 
                 var form = document.querySelector("form");
                 var formData = new FormData(form);
@@ -103,10 +125,13 @@ export default function Description(props) {
                     // console.log(this.responseText);
 
                     // update the feedback text
-                    document.getElementById("submitFeedback").style.display =
-                        "inline";
-                    document.getElementById("submitFeedback").innerText =
-                        "offer created";
+                    setModelData({
+                        show: true,
+                        type: "alert",
+                        status: "Success",
+                        message: "Offer created",
+                        transactionHash: transactionHash,
+                    });
 
                     // prevent the Submit button to be clickable and functionable
                     removeHover();
@@ -123,14 +148,20 @@ export default function Description(props) {
                 console.log("create offer error code: " + error.code);
                 console.log("create offer error message: " + error.message);
                 if (error.data && error.data.message) {
-                    document.getElementById("submitFeedback").innerText =
-                        error.data.message;
+                    setModelData({
+                        show: true,
+                        type: "alert",
+                        status: "Error",
+                        message: error.data.message,
+                    });
                 } else {
-                    document.getElementById("submitFeedback").innerText =
-                        error.message;
+                    setModelData({
+                        show: true,
+                        type: "alert",
+                        status: "Error",
+                        message: error.message,
+                    });
                 }
-                document.getElementById("submitFeedback").style.visibility =
-                    "visible";
                 process.exitCode = 1;
             });
     }
@@ -387,10 +418,32 @@ export default function Description(props) {
                                     onSubmit={handleSubmit(onSubmit)}
                                 >
                                     <div className="formMain formHorizontal">
-                                        {/* <div className="buyerSelerSelection">
-                                            <BuyerIc />
-                                            <SellerIc />
-                                        </div> */}
+                                        <div className="buyerSelerSelection">
+                                            <ul>
+                                                <li>
+                                                    <input
+                                                        type="radio"
+                                                        name="contractType"
+                                                        id="asBuyer"
+                                                    />
+                                                    <label htmlFor="asBuyer">
+                                                        <BuyerIc />
+                                                        <span>As a Buyer</span>
+                                                    </label>
+                                                </li>
+                                                <li>
+                                                    <input
+                                                        type="radio"
+                                                        name="contractType"
+                                                        id="asSeller"
+                                                    />
+                                                    <label htmlFor="asSeller">
+                                                        <SellerIc />
+                                                        <span>As a Seller</span>
+                                                    </label>
+                                                </li>
+                                            </ul>
+                                        </div>
                                         <div className="formRow">
                                             <div className="formLabel">
                                                 Contract Title
@@ -527,6 +580,34 @@ export default function Description(props) {
                                                         />
                                                     </i>
                                                 </Tooltip>
+                                            </div>
+                                        </div>
+
+                                        <div className="formRow">
+                                            <div className="formLabel">
+                                                Set Price
+                                            </div>
+                                            <div className="formField">
+                                                <div className="customPriceField">
+                                                    <input
+                                                        className="formInput"
+                                                        id="Price"
+                                                        type="text"
+                                                        min="0"
+                                                        step="0.001"
+                                                        placeholder="0.0"
+                                                    ></input>
+
+                                                    <Button link="/">
+                                                        <Image
+                                                            src={ETHIcon}
+                                                            width={28}
+                                                            height={28}
+                                                            alt={ETHIcon}
+                                                        />
+                                                        <span>ETH</span>
+                                                    </Button>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -874,7 +955,10 @@ export default function Description(props) {
                                     </div>
                                 </form>
 
-                                <p id="submitFeedback"></p>
+                                <ModalUi
+                                    content={modelData}
+                                    closeModelFn={closeModelDataHandler}
+                                />
                             </div>
                         </div>
                     </div>
