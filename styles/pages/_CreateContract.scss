@@ -210,7 +210,7 @@
 
 .customPriceField {
     @include Size(100%, auto);
-    padding: 10px 10px;
+    padding: 5px;
     @include BorderRadius($FormControlRadius);
     border: 1px solid $BorderDark;
     background-color: transparent;
@@ -219,8 +219,27 @@
     .formInput {
         flex: 2;
         height: auto;
-        padding: 0;
+        padding: 0 7px;
         border: none;
+    }
+
+    .button {
+        @extend %FlexRow-CenterBetween;
+        border: 1px solid $BorderDark;
+        @include BorderRadius(2rem);
+        padding: 3px;
+        height: auto;
+
+        img {
+            background-color: rgba($BorderDark, 0.5);
+            @include BorderRadius(50%);
+            object-fit: contain;
+        }
+
+        > span {
+            flex: 2;
+            margin-left: 5px;
+        }
     }
 }
 

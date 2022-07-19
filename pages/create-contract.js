@@ -33,6 +33,8 @@ import Button from "../components/ui/Button";
 import ETHIcon from "../components/images/ETH.webp";
 import USDCIcon from "../components/images/USDC.webp";
 import Image from "next/image";
+import DownArrowIc from "../components/icons/DownArrow";
+import CurrencyList from "../components/contract-creation/currency-list";
 
 export default function Description(props) {
     // SUBMIT - validation
@@ -585,33 +587,81 @@ export default function Description(props) {
 
                                         <div className="formRow">
                                             <div className="formLabel">
-                                                Set Price
+                                                Price
                                             </div>
                                             <div className="formField">
                                                 <div className="customPriceField">
                                                     <input
                                                         className="formInput"
                                                         id="Price"
-                                                        type="text"
+                                                        type="number"
+                                                        {...register("Price", {
+                                                            required: true,
+                                                            min: 0,
+                                                        })}
                                                         min="0"
                                                         step="0.001"
                                                         placeholder="0.0"
                                                     ></input>
 
-                                                    <Button link="/">
-                                                        <Image
-                                                            src={ETHIcon}
-                                                            width={28}
-                                                            height={28}
-                                                            alt={ETHIcon}
-                                                        />
+                                                    <Button
+                                                        classes="button"
+                                                        {...register(
+                                                            "CurrencyTicker",
+                                                            {
+                                                                required: true,
+                                                            }
+                                                        )}
+                                                        onClick={() =>
+                                                            setModelData({
+                                                                show: true,
+                                                                type: "modal",
+                                                                title: "Select Currency",
+                                                                body: (
+                                                                    <CurrencyList />
+                                                                ),
+                                                            })
+                                                        }
+                                                        value="ETH"
+                                                    >
+                                                        <i className="currencyIc">
+                                                            <Image
+                                                                src={ETHIcon}
+                                                                width={25}
+                                                                height={25}
+                                                                alt={ETHIcon}
+                                                            />
+                                                        </i>
                                                         <span>ETH</span>
+                                                        <DownArrowIc
+                                                            size={20}
+                                                        />
                                                     </Button>
+                                                </div>
+                                                <div className="fieldError">
+                                                    {errors.Price &&
+                                                        errors.Price.type ===
+                                                            "required" && (
+                                                            <p>Price required</p>
+                                                        )}
+                                                    {errors.Price &&
+                                                        errors.Price.type ===
+                                                            "min" && (
+                                                            <p>
+                                                                Min price is 0
+                                                            </p>
+                                                        )}
+                                                    {/* {errors.CurrencyTicker &&
+                                                        errors.CurrencyTicker
+                                                            .type ===
+                                                            "required" && (
+                                                            <p>Currency required</p>
+                                                        )} */}
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="formRow">
+                                        {/* <div className="formRow">
                                             <div className="formLabel">
                                                 Currency
                                             </div>
@@ -636,8 +686,8 @@ export default function Description(props) {
                                                     <option value="USDC">
                                                         USD Coin (USDC)
                                                     </option>
-                                                    {/* <option value="APE">APEcoin (APE)</option>
-                                                    <option value="WBTC">Wrapped Bitcoin (WBTC)</option> */}
+                                                    <option value="APE">APEcoin (APE)</option>
+                                                    <option value="WBTC">Wrapped Bitcoin (WBTC)</option>
                                                 </select>
 
                                                 <div className="fieldError">
@@ -649,9 +699,9 @@ export default function Description(props) {
                                                         )}
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> */}
 
-                                        <div className="formRow">
+                                        {/* <div className="formRow">
                                             <div className="formLabel">
                                                 Price
                                             </div>
@@ -682,7 +732,7 @@ export default function Description(props) {
                                                         )}
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> */}
 
                                         <div className="formRow">
                                             <div className="formLabel">

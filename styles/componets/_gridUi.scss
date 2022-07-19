@@ -95,14 +95,6 @@
       }
     }
 
-    .currencyIc {
-      @include Size(24px, 24px);
-      @extend %FlexCol-CenterCenter;
-      display: inline-flex;
-      border: 1px solid $BorderDark;
-      @include BorderRadius(40px);
-    }
-
     .mobileLabel {
       display: none;
 

@@ -1,0 +1,40 @@
+.currenciesList {
+    .currencyItem {
+        @extend %FlexRow-CenterBetween;
+        width: 100%;
+        padding: 10px 0;
+        border-bottom: 1px solid #e9ecef;
+
+        &:first-child {
+            padding-top: 0;
+        }
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        .currencyIcon {
+            .currencyIc {
+                @include Size(32px, 32px);
+            }
+        }
+
+        .currencyDetails {
+            flex: 2;
+            padding: 0 10px;
+            letter-spacing: 0;
+
+            h2 {
+                @include Font(null, 1.1rem, $FontColorDark, null, 500);
+            }
+
+            h5 {
+                @include Font(null, 0.75rem, rgba($FontColorDark, 0.6), null, 500);
+            }
+        }
+
+        .available {
+            @include Font(null, 1.2rem, $FontColorDark, null, 400);
+        }
+    }
+}

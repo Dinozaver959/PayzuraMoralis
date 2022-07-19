@@ -37,6 +37,18 @@
                 border-bottom: 1px solid #e9ecef;
                 border-top-left-radius: $CardRounded;
                 border-top-right-radius: $CardRounded;
+
+                h5 {
+                    @include Font(null, 1.1rem, $FontColorDark, null, 400);
+                }
+
+                .linkButton {
+                    @include Font(null, 1.2rem, rgba($FontColorDark, 0.7), null, 500);
+
+                    &:hover {
+                        color: $BlackColor;
+                    }
+                }
             }
 
             .modalBody {

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import CloseIc from "../icons/Close";
 import ErrorIc from "../icons/Error";
 import SuccessIc from "../icons/Success";
 import Button from "./Button";
@@ -101,13 +100,25 @@ function ModalUi(props) {
             <div className="modalContainer">
                 <div className="modalBox">
                     <div className="modalHeader">
-                        <h5>title</h5>
-                        <Button classes="linkButton">x</Button>
+                        <h5>{props.content.title}</h5>
+                        <Button
+                            classes="linkButton"
+                            onClick={props.closeModelFn}
+                        >
+                            x
+                        </Button>
                     </div>
-                    <div className="modalBody">modal content</div>
-                    <div className="modalFooter">
-                        <Button classes="button default rounded">Action</Button>
-                    </div>
+                    <div className="modalBody">{props.content.body}</div>
+                    {props.content.action && (
+                        <div className="modalFooter">
+                            <Button
+                                classes="button default rounded"
+                                onClick={props.closeModelFn}
+                            >
+                                {props.content.action}
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
