@@ -214,6 +214,44 @@ export default function Description(props) {
             templateDescription: "Some text for template E",
         },
     ];
+    const CurrenciesData = [
+        {
+            id: 1,
+            icon: ETHIcon,
+            shortName: "ETH",
+            name: "Ethereum",
+            availability: true,
+        },
+        {
+            id: 2,
+            icon: USDCIcon,
+            shortName: "USDC",
+            name: "USD Coin",
+            availability: true,
+        },
+        {
+            id: 3,
+            icon: USDCIcon,
+            shortName: "APE",
+            name: "APEcoin",
+            availability: false,
+        },
+        {
+            id: 4,
+            icon: USDCIcon,
+            shortName: "WBTC",
+            name: "Wrapped Bitcoin",
+            availability: false,
+        },
+        {
+            id: 5,
+            icon: USDCIcon,
+            shortName: "SHIB",
+            name: "Shiba Inu coin",
+            availability: false,
+        },
+    ];
+
     const [selectedTemplate, setSelectedTemplate] = React.useState("Empty");
     const [showForm, setShowForm] = React.useState(false);
     const [tempDesc, setTempDesc] = React.useState();
@@ -223,6 +261,21 @@ export default function Description(props) {
 
     const [contractDuration, setContractDuration] = React.useState("1");
     const [showCustomDuration, setShowCustomDuration] = React.useState(false);
+
+    const [selectCurrency, setSelectCurrency] = React.useState({
+        id: 1,
+        icon: ETHIcon,
+        shortName: "ETH",
+        name: "Ethereum",
+        availability: true,
+    });
+
+    function handleCurrencyChange(e) {
+        setSelectCurrency(e.target.value);
+        setModelData({
+            show: false,
+        });
+    }
 
     const handleRadioChange = (e) => {
         const { value } = e.target;
@@ -446,6 +499,7 @@ export default function Description(props) {
                                                 </li>
                                             </ul>
                                         </div>
+
                                         <div className="formRow">
                                             <div className="formLabel">
                                                 Contract Title
@@ -618,31 +672,47 @@ export default function Description(props) {
                                                                 type: "modal",
                                                                 title: "Select Currency",
                                                                 body: (
-                                                                    <CurrencyList />
+                                                                    <CurrencyList
+                                                                        CurrenciesData={CurrenciesData}
+                                                                        currencyChangeFn={handleCurrencyChange}
+                                                                    />
                                                                 ),
                                                             })
                                                         }
-                                                        value="ETH"
                                                     >
-                                                        <i className="currencyIc">
-                                                            <Image
-                                                                src={ETHIcon}
-                                                                width={25}
-                                                                height={25}
-                                                                alt={ETHIcon}
-                                                            />
-                                                        </i>
-                                                        <span>ETH</span>
-                                                        <DownArrowIc
-                                                            size={20}
-                                                        />
+                                                        {CurrenciesData.filter(
+                                                            (item) =>
+                                                                item.shortName ===
+                                                                selectCurrency
+                                                        ).map(
+                                                            (selectedItem) => (
+                                                                <>
+                                                                    <i className="currencyIc">
+                                                                        <Image
+                                                                            src={selectedItem.icon}
+                                                                            width={25}
+                                                                            height={25}
+                                                                            alt={selectedItem.name}
+                                                                        />
+                                                                    </i>
+                                                                    <span>
+                                                                        {selectedItem.shortName}
+                                                                    </span>
+                                                                    <DownArrowIc
+                                                                        size={20}
+                                                                    />
+                                                                </>
+                                                            )
+                                                        )}
                                                     </Button>
                                                 </div>
                                                 <div className="fieldError">
                                                     {errors.Price &&
                                                         errors.Price.type ===
                                                             "required" && (
-                                                            <p>Price required</p>
+                                                            <p>
+                                                                Price required
+                                                            </p>
                                                         )}
                                                     {errors.Price &&
                                                         errors.Price.type ===
