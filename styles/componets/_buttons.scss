@@ -13,6 +13,11 @@
     padding: 0.5rem 1.1rem;
   }
 
+  &.small {
+    height: 34px;
+    padding: 0.5rem 0.9rem;
+  }
+
   &.withIcon {
     @extend %FlexRow-CenterStart;
     display: inline-flex;

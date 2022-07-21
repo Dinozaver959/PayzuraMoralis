@@ -114,7 +114,7 @@ export default function Description(props) {
                 );
                 formData.append("TimeToDeliver", TimeToDeliver);
 
-                formData.append("CurrencyTicker", CurrencyTicker);
+                formData.append("CurrencyTicker", selectCurrency); //CurrencyTicker
                 formData.append(
                     "ChainID",
                     ConvertNetworkNameToChainID(contractOnNetwork)
@@ -259,16 +259,10 @@ export default function Description(props) {
     const [contractValidity, setContractValidity] = React.useState("7 Days");
     const [showDatepicker, setShowDatepicker] = React.useState(false);
 
-    const [contractDuration, setContractDuration] = React.useState("1");
+    const [contractDuration, setContractDuration] = React.useState("1 Hour");
     const [showCustomDuration, setShowCustomDuration] = React.useState(false);
 
-    const [selectCurrency, setSelectCurrency] = React.useState({
-        id: 1,
-        icon: ETHIcon,
-        shortName: "ETH",
-        name: "Ethereum",
-        availability: true,
-    });
+    const [selectCurrency, setSelectCurrency] = React.useState("ETH");
 
     function handleCurrencyChange(e) {
         setSelectCurrency(e.target.value);
@@ -309,26 +303,26 @@ export default function Description(props) {
     const contractValidityHandler = (event, selectedValidity) => {
         setContractValidity(selectedValidity);
 
-        if (selectedValidity === "Set Custom") {
-            setShowDatepicker(!showDatepicker);
-        } else {
+        let days = 365;
+        if (selectedValidity === "7 Days") {
+            days = 7;
+        }
+        else if (selectedValidity === "14 Days") {
+            days = 14;
+        }
+        else if (selectedValidity === "30 Days") {
+            days = 30;
+        }
+        else if (selectedValidity === "90 days") {
+            days = 90;
+        }
+        
+        if(days == 365) {
+            setShowDatepicker(true);
+        }
+        else { //Set Custom
             setShowDatepicker(false);
-
-            let days = 365;
-            if (selectedValidity === "7 Days") {
-                days = 7;
-            }
-            if (selectedValidity === "14 Days") {
-                days = 14;
-            }
-            if (selectedValidity === "30 Days") {
-                days = 30;
-            }
-            if (selectedValidity === "90 days") {
-                days = 90;
-            }
-
-            updateOfferValidVariable(days);
+            updateOfferValidVariable(days);    
         }
     };
 
@@ -480,6 +474,8 @@ export default function Description(props) {
                                                         type="radio"
                                                         name="contractType"
                                                         id="asBuyer"
+                                                        value="buyer"
+                                                        disabled="disabled"
                                                     />
                                                     <label htmlFor="asBuyer">
                                                         <BuyerIc />
@@ -491,6 +487,8 @@ export default function Description(props) {
                                                         type="radio"
                                                         name="contractType"
                                                         id="asSeller"
+                                                        value="saller"
+                                                        defaultChecked={true}
                                                     />
                                                     <label htmlFor="asSeller">
                                                         <SellerIc />
@@ -658,8 +656,10 @@ export default function Description(props) {
                                                         placeholder="0.0"
                                                     ></input>
 
-                                                    <Button
-                                                        classes="button"
+                                                    <button
+                                                        className="button"
+                                                        id="CurrencyTicker"
+                                                        value={selectCurrency}
                                                         {...register(
                                                             "CurrencyTicker",
                                                             {
@@ -675,6 +675,7 @@ export default function Description(props) {
                                                                     <CurrencyList
                                                                         CurrenciesData={CurrenciesData}
                                                                         currencyChangeFn={handleCurrencyChange}
+                                                                        defaultValue={selectCurrency}
                                                                     />
                                                                 ),
                                                             })
@@ -686,7 +687,7 @@ export default function Description(props) {
                                                                 selectCurrency
                                                         ).map(
                                                             (selectedItem) => (
-                                                                <>
+                                                                <Fragment key={selectedItem}>
                                                                     <i className="currencyIc">
                                                                         <Image
                                                                             src={selectedItem.icon}
@@ -701,10 +702,10 @@ export default function Description(props) {
                                                                     <DownArrowIc
                                                                         size={20}
                                                                     />
-                                                                </>
+                                                                </Fragment>
                                                             )
                                                         )}
-                                                    </Button>
+                                                    </button>
                                                 </div>
                                                 <div className="fieldError">
                                                     {errors.Price &&
@@ -721,12 +722,12 @@ export default function Description(props) {
                                                                 Min price is 0
                                                             </p>
                                                         )}
-                                                    {/* {errors.CurrencyTicker &&
+                                                    {errors.CurrencyTicker &&
                                                         errors.CurrencyTicker
                                                             .type ===
                                                             "required" && (
                                                             <p>Currency required</p>
-                                                        )} */}
+                                                        )} 
                                                 </div>
                                             </div>
                                         </div>
