@@ -262,13 +262,7 @@ export default function Description(props) {
     const [contractDuration, setContractDuration] = React.useState("1");
     const [showCustomDuration, setShowCustomDuration] = React.useState(false);
 
-    const [selectCurrency, setSelectCurrency] = React.useState({
-        id: 1,
-        icon: ETHIcon,
-        shortName: "ETH",
-        name: "Ethereum",
-        availability: true,
-    });
+    const [selectCurrency, setSelectCurrency] = React.useState("ETH");
 
     function handleCurrencyChange(e) {
         setSelectCurrency(e.target.value);
@@ -480,6 +474,8 @@ export default function Description(props) {
                                                         type="radio"
                                                         name="contractType"
                                                         id="asBuyer"
+                                                        value="buyer"
+                                                        disabled="disabled"
                                                     />
                                                     <label htmlFor="asBuyer">
                                                         <BuyerIc />
@@ -491,6 +487,8 @@ export default function Description(props) {
                                                         type="radio"
                                                         name="contractType"
                                                         id="asSeller"
+                                                        value="saller"
+                                                        defaultChecked={true}
                                                     />
                                                     <label htmlFor="asSeller">
                                                         <SellerIc />
@@ -658,8 +656,8 @@ export default function Description(props) {
                                                         placeholder="0.0"
                                                     ></input>
 
-                                                    <Button
-                                                        classes="button"
+                                                    <button
+                                                        className="button"
                                                         {...register(
                                                             "CurrencyTicker",
                                                             {
@@ -675,6 +673,7 @@ export default function Description(props) {
                                                                     <CurrencyList
                                                                         CurrenciesData={CurrenciesData}
                                                                         currencyChangeFn={handleCurrencyChange}
+                                                                        defaultValue={selectCurrency}
                                                                     />
                                                                 ),
                                                             })
@@ -686,7 +685,7 @@ export default function Description(props) {
                                                                 selectCurrency
                                                         ).map(
                                                             (selectedItem) => (
-                                                                <>
+                                                                <Fragment key={selectedItem}>
                                                                     <i className="currencyIc">
                                                                         <Image
                                                                             src={selectedItem.icon}
@@ -701,10 +700,10 @@ export default function Description(props) {
                                                                     <DownArrowIc
                                                                         size={20}
                                                                     />
-                                                                </>
+                                                                </Fragment>
                                                             )
                                                         )}
-                                                    </Button>
+                                                    </button>
                                                 </div>
                                                 <div className="fieldError">
                                                     {errors.Price &&

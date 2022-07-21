@@ -203,6 +203,14 @@
                         background: lighten($PrimaryColor, 55%);
                     }
                 }
+
+                &:disabled {
+                    + label {
+                        opacity: 0.5;
+                        background: rgba($BlackColor, 0.1);
+                        cursor: default;
+                    }
+                }
             }
         }
     }

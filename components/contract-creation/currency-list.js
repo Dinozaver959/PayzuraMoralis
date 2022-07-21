@@ -12,6 +12,7 @@ function CurrencyList(props) {
                     name={item.name}
                     availability={item.availability}
                     currencyChangeFn={props.currencyChangeFn}
+                    defaultValue={props.defaultValue}
                 />
             ))}
         </div>
