@@ -392,7 +392,7 @@ function Row_normal(props) {
             type="submit"
             value="Accept Offer"
             onClick={() =>
-              AcceptOffer_Moralis(item.index, item.CurrencyTicker) //PayERC20__transfer__Moralis()
+              AcceptOffer_Moralis(item.index, item.CurrencyTicker)
                 .then(async (transactionHash) => {
                   // show the feedback text
                   document.getElementById("submitFeedback").style.display =
@@ -402,7 +402,8 @@ function Row_normal(props) {
 
                   var formData = new FormData();
                   formData.append("BuyerAccount", Moralis.User.current().id);
-                  formData.append("SellerWallet", item.SellerWallet);
+                  formData.append("SellerWallet", item.SellerWallet);        
+                  formData.append("PersonalizedOffer", "true");            
 
                   const connectedAddress = await GetWallet_NonMoralis();
                   formData.append("BuyerWallet", connectedAddress);

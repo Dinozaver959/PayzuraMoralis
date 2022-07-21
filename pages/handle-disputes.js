@@ -263,6 +263,8 @@ function Row_normal(props) {
 
                   const connectedAddress = await GetWallet_NonMoralis();
                   formData.append("ArbiterWallet", connectedAddress);
+                  formData.append("BuyerWallet", BuyerWallet);
+                  formData.append("SellerWallet", SellerWallet);
                   formData.append("votedForBuyer", "true");
                   formData.append(
                     "ArbitersVoteConcluded",

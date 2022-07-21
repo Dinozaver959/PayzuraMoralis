@@ -18,6 +18,22 @@ function UserDetails({userDetails}){
         <div> 
             <h2>userAddress: {userDetails.userAddress}</h2>
 
+            {/**
+                new possible values from DB:   userDetails.
+                    ContractsCreatedAsSeller
+                    ContractsInvolvedAsSeller
+                    ContractsAcceptedAsBuyer
+                    ContractsInvolvedAsBuyer
+                    ConfirmedDeliveryAsBuyer
+                    PersonalizedContractsCreatedAsSeller
+                    PersonalizedContractsInvolvedAsSeller
+                    PersonalizedContractsInvolvedAsBuyer
+                    PersonalizedContractsAcceptedAsBuyer
+                    ReceivedArbiterRole
+                    ReceivedPersonalizedOffer
+            
+             */}
+
             <p>
                 Involved in disputes as buyer/seller (yea, we need to distinguish between buyer and seller case when recording in DB):
                 <br/>

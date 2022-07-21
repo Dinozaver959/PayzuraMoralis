@@ -438,7 +438,7 @@ function Row_normal(props) {
             type="submit"
             value="Accept Offer"
             onClick={() =>
-              AcceptOffer_Moralis(item.index, item.CurrencyTicker) // PayERC20__transfer__Moralis()
+              AcceptOffer_Moralis(item.index, item.CurrencyTicker)
                 .then(async (transactionHash) => {
                   setModelData({
                     show: true,
@@ -450,6 +450,7 @@ function Row_normal(props) {
                   var formData = new FormData();
                   formData.append("BuyerAccount", Moralis.User.current().id);
                   formData.append("SellerWallet", item.SellerWallet);
+                  formData.append("PersonalizedOffer", "false");                 
 
                   const connectedAddress = await GetWallet_NonMoralis();
                   formData.append("BuyerWallet", connectedAddress);
