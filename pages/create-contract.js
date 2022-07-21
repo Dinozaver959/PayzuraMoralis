@@ -114,7 +114,7 @@ export default function Description(props) {
                 );
                 formData.append("TimeToDeliver", TimeToDeliver);
 
-                formData.append("CurrencyTicker", CurrencyTicker);
+                formData.append("CurrencyTicker", selectCurrency); //CurrencyTicker
                 formData.append(
                     "ChainID",
                     ConvertNetworkNameToChainID(contractOnNetwork)
@@ -259,7 +259,7 @@ export default function Description(props) {
     const [contractValidity, setContractValidity] = React.useState("7 Days");
     const [showDatepicker, setShowDatepicker] = React.useState(false);
 
-    const [contractDuration, setContractDuration] = React.useState("1");
+    const [contractDuration, setContractDuration] = React.useState("1 Hour");
     const [showCustomDuration, setShowCustomDuration] = React.useState(false);
 
     const [selectCurrency, setSelectCurrency] = React.useState("ETH");
@@ -303,26 +303,26 @@ export default function Description(props) {
     const contractValidityHandler = (event, selectedValidity) => {
         setContractValidity(selectedValidity);
 
-        if (selectedValidity === "Set Custom") {
-            setShowDatepicker(!showDatepicker);
-        } else {
+        let days = 365;
+        if (selectedValidity === "7 Days") {
+            days = 7;
+        }
+        else if (selectedValidity === "14 Days") {
+            days = 14;
+        }
+        else if (selectedValidity === "30 Days") {
+            days = 30;
+        }
+        else if (selectedValidity === "90 days") {
+            days = 90;
+        }
+        
+        if(days == 365) {
+            setShowDatepicker(true);
+        }
+        else { //Set Custom
             setShowDatepicker(false);
-
-            let days = 365;
-            if (selectedValidity === "7 Days") {
-                days = 7;
-            }
-            if (selectedValidity === "14 Days") {
-                days = 14;
-            }
-            if (selectedValidity === "30 Days") {
-                days = 30;
-            }
-            if (selectedValidity === "90 days") {
-                days = 90;
-            }
-
-            updateOfferValidVariable(days);
+            updateOfferValidVariable(days);    
         }
     };
 
@@ -658,6 +658,8 @@ export default function Description(props) {
 
                                                     <button
                                                         className="button"
+                                                        id="CurrencyTicker"
+                                                        value={selectCurrency}
                                                         {...register(
                                                             "CurrencyTicker",
                                                             {
@@ -720,12 +722,12 @@ export default function Description(props) {
                                                                 Min price is 0
                                                             </p>
                                                         )}
-                                                    {/* {errors.CurrencyTicker &&
+                                                    {errors.CurrencyTicker &&
                                                         errors.CurrencyTicker
                                                             .type ===
                                                             "required" && (
                                                             <p>Currency required</p>
-                                                        )} */}
+                                                        )} 
                                                 </div>
                                             </div>
                                         </div>
