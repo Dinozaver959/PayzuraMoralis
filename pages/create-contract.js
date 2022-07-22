@@ -657,6 +657,7 @@ export default function Description(props) {
                                                     ></input>
 
                                                     <button
+                                                        type="button"
                                                         className="button"
                                                         id="CurrencyTicker"
                                                         value={selectCurrency}
