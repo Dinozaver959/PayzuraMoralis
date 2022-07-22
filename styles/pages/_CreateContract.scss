@@ -432,6 +432,18 @@
     }
 
     .contractCreationFormMain {
+        .formLabel {
+            i {
+                border: 1px solid $BorderLight;
+    
+                svg {
+                    path {
+                        fill: $FontColorLight;
+                    }
+                }
+            }
+        }
+
         .formRow {
             .formField {
                 .MuiToggleButtonGroup-root {
@@ -466,6 +478,46 @@
                             fill: $FontColorLight;
                         }
                     }
+                }
+            }
+        }
+    }
+
+    .buyerSelerSelection {
+        ul {
+            li {
+                input[type="radio"] {
+                    + label {
+                        border-color: $BorderLight;
+                    }
+    
+                    &:checked {
+                        + label {
+                            border-color: $LightBlueColor;
+                            color: $LightBlueColor;
+                            background: lighten($DarkBlueBg, 1%);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .customPriceField {
+        border-color: $BorderLight;
+    
+        .button {
+            border-color: $LightBlueColor;
+            background: transparent;
+            color: $FontColorLight;
+    
+            img {
+                background-color: rgba($BorderLight, 0.5);
+            }
+
+            svg {
+                path {
+                    fill: $FontColorLight;
                 }
             }
         }
