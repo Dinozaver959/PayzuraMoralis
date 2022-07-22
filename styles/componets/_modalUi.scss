@@ -43,7 +43,13 @@
                 }
 
                 .linkButton {
-                    @include Font(null, 1.2rem, rgba($FontColorDark, 0.7), null, 500);
+                    @include Font(
+                        null,
+                        1.2rem,
+                        rgba($FontColorDark, 0.7),
+                        null,
+                        500
+                    );
 
                     &:hover {
                         color: $BlackColor;
@@ -148,15 +154,33 @@
     .modalMain {
         .modalContainer {
             .modalBox {
-                background-color: $DarkBg;
-                border: 1px solid rgba($BlackColor, 0.2);
+                background-color: $DarkBlueBg;
+                border-color: lighten($DarkBlueBg, 10%);
 
                 .modalHeader {
-                    border-bottom: 1px solid $BorderLight;
+                    border-bottom-color: lighten($BorderLight, 5%);
+
+                    h5 {
+                        color: $FontColorLight;
+                    }
+
+                    .linkButton {
+                        color: rgba($FontColorLight, 0.7);
+
+                        &:hover {
+                            color: $WhiteColor;
+                        }
+                    }
                 }
 
                 .modalFooter {
-                    border-top: 1px solid $BorderLight;
+                    border-top-color: lighten($BorderLight, 5%);
+                }
+
+                .alertBody {
+                    .transactionHash {
+                        color: $FontColorLight;
+                    }
                 }
             }
         }

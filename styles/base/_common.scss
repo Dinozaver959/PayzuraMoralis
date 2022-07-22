@@ -126,4 +126,8 @@
             }
         }
     }
+
+    .currencyIc {
+        border-color: lighten($BorderLight, 5%);
+    }
 }

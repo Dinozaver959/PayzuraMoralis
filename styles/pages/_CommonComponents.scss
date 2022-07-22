@@ -30,6 +30,8 @@
             }
 
             .currencyIcon {
+                position: relative;
+
                 .currencyIc {
                     @include Size(32px, 32px);
                 }
@@ -39,6 +41,7 @@
                 flex: 2;
                 padding: 0 10px;
                 letter-spacing: 0;
+                position: relative;
 
                 h2 {
                     @include Font(null, 1.1rem, $FontColorDark, null, 500);
@@ -56,6 +59,7 @@
             }
 
             .available {
+                position: relative;
                 @include Font(null, 1.2rem, $FontColorDark, null, 400);
             }
 
@@ -64,7 +68,12 @@
 
                 &::before {
                     content: "";
-                    @include Absolute($Left: 0, $Top: 2px, $Right: 0, $Bottom: 3px);
+                    @include Absolute(
+                        $Left: 0,
+                        $Top: 2px,
+                        $Right: 0,
+                        $Bottom: 3px
+                    );
                     background-color: rgba($PrimaryColor, 0.1);
                     @include BorderRadius(1rem);
                     @include Transition(0.2s);
@@ -83,14 +92,56 @@
                 }
 
                 .currencyIcon {
-                    opacity: 0.5;
+                    opacity: 0.35;
                 }
 
                 .currencyDetails {
-                    opacity: 0.5;
+                    opacity: 0.35;
                 }
                 .available {
-                    opacity: 0.5;
+                    opacity: 0.35;
+                }
+            }
+        }
+    }
+}
+
+.darkMode {
+    .currenciesList {
+        > input[type="radio"] {
+            + .currencyItem {
+                &:after {
+                    border-bottom-color: lighten($BorderLight, 5%);
+                }
+
+                .currencyDetails {
+                    h2 {
+                        color: $WhiteColor;
+                    }
+
+                    h5 {
+                        color: rgba($FontColorLight, 0.6);
+                    }
+                }
+
+                .available {
+                    color: $FontColorLight;
+                }
+
+                &:hover {
+                    &::before {
+                        background-color: lighten($DarkBlueBg, 5%);
+                    }
+                }
+            }
+
+            &:disabled {
+                + .currencyItem {
+                    &:hover {
+                        &::before {
+                            background: none;
+                        }
+                    }
                 }
             }
         }
