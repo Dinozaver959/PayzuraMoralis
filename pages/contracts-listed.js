@@ -369,6 +369,10 @@ function Row_normal(props) {
                                                 connectedAddress
                                             );
                                             formData.append(
+                                                "PersonalizedOffer",
+                                                "false"
+                                            );
+                                            formData.append(
                                                 "transactionHash",
                                                 transactionHash
                                             );
@@ -479,6 +483,10 @@ function Row_normal(props) {
                                             formData.append(
                                                 "BuyerWallet",
                                                 connectedAddress
+                                            );
+                                            formData.append(
+                                                "PersonalizedOffer",
+                                                "false"
                                             );
                                             formData.append(
                                                 "transactionHash",
