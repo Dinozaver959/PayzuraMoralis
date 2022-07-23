@@ -28,7 +28,6 @@ import BuyerIc from "../components/icons/Buyer";
 import SellerIc from "../components/icons/Seller";
 
 import ModalUi from "../components/ui/ModalUi";
-import Button from "../components/ui/Button";
 
 import ETHIcon from "../components/images/ETH.webp";
 import USDCIcon from "../components/images/USDC.webp";
@@ -565,7 +564,7 @@ export default function Description(props) {
                                             <div className="formLabel">
                                                 Contract Description
                                             </div>
-                                            <div className="formField">
+                                            <div className="formField descriptionField">
                                                 <textarea
                                                     cols="40"
                                                     rows="10"

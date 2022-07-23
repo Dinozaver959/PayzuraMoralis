@@ -18,6 +18,8 @@
 
         @include RespondTo(MobileDevices) {
             width: 100%;
+            margin-left: 0;
+            margin-right: 0;
         }
 
         &.selected {
@@ -38,16 +40,29 @@
             @include Size(100%, 100%);
             padding: 18px;
             cursor: pointer;
+
+            @include RespondTo(MobileDevices) {
+                padding: 12px;
+            }
         }
 
         .contractCardHeader {
             @include Font(null, 1.5rem, $FontColorDark, null, 500);
             padding: 10px 0 20px 0;
             text-align: center;
+
+            @include RespondTo(MobileDevices) {
+                font-size: 1.1rem;
+                padding: 5px 0 15px 0;
+            }
         }
 
         .contractCardBody {
             min-height: 180px;
+
+            @include RespondTo(MobileDevices) {
+                min-height: 120px;
+            }
 
             .blankCard {
                 @include Size(100%, auto);
@@ -103,6 +118,11 @@
         padding: 25px 20px;
         margin-bottom: 15px;
         border-bottom: 1px solid darken($BorderDark, 5%);
+
+        @include RespondTo(MobileDevices) {
+            font-size: 1.1rem;
+            padding: 17px;
+        }
     }
 
     ul {
@@ -137,6 +157,11 @@
                 padding: 15px 20px;
                 cursor: pointer;
 
+                @include RespondTo(MobileDevices) {
+                    font-size: 0.8rem;
+                    padding: 12px 17px;
+                }
+
                 &:hover {
                     box-shadow: none;
                     background: rgba($PrimaryColor, 0.1);
@@ -150,8 +175,16 @@
                         @include Size(18px, 18px);
                         @extend %FlexCol-CenterCenter;
 
+                        @include RespondTo(MobileDevices) {
+                            @include Size(15px, 15px);
+                        }
+
                         svg {
                             @include Size(12px, 12px);
+
+                            @include RespondTo(MobileDevices) {
+                                @include Size(10px, 10px);
+                            }
 
                             path {
                                 fill: $FontColorDark;
@@ -169,6 +202,10 @@
         @extend %FlexRow-CenterCenter;
         margin-bottom: 1rem;
 
+        @include RespondTo(MobileDevices) {
+            margin-bottom: 0.7rem;
+        }
+
         li {
             display: inline-block;
 
@@ -185,6 +222,11 @@
                     @include BorderRadius(10px);
                     @extend %FlexCol-CenterCenter;
                     cursor: pointer;
+
+                    @include RespondTo(MobileDevices) {
+                        width: 120px;
+                        height: 86px;
+                    }
 
                     svg {
                         @include Size(50px, 50px);
@@ -282,12 +324,28 @@
             max-width: calc(100% - 40px);
         }
 
+        @include RespondTo(MobileDevices) {
+            max-width: 100%;
+        }
+
         .formField {
+            &.descriptionField {
+                @include RespondTo(MobileDevices) {
+                    max-width: calc(100% - 40px);
+                }
+
+                + .filedInfo {
+                    @include RespondTo(MobileDevices) {
+                        position: static;
+                    }
+                }
+            }
+
             .MuiToggleButtonGroup-root {
                 width: 100%;
 
                 @include RespondTo(MobileDevices) {
-                    flex-direction: column;
+                    flex-flow: wrap;
                 }
 
                 .MuiButtonBase-root {
@@ -297,6 +355,10 @@
                     padding-top: 9px;
                     padding-bottom: 9px;
                     border-color: $BorderDark;
+
+                    @include RespondTo(MobileDevices) {
+                        font-size: 0.7rem;
+                    }
 
                     &.Mui-selected {
                         background-color: $PrimaryColor;
@@ -435,7 +497,7 @@
         .formLabel {
             i {
                 border: 1px solid $BorderLight;
-    
+
                 svg {
                     path {
                         fill: $FontColorLight;
@@ -490,7 +552,7 @@
                     + label {
                         border-color: $BorderLight;
                     }
-    
+
                     &:checked {
                         + label {
                             border-color: $LightBlueColor;
@@ -505,12 +567,12 @@
 
     .customPriceField {
         border-color: $BorderLight;
-    
+
         .button {
             border-color: $LightBlueColor;
             background: transparent;
             color: $FontColorLight;
-    
+
             img {
                 background-color: rgba($BorderLight, 0.5);
             }

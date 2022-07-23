@@ -52,6 +52,10 @@ export default function Navigation(props) {
                 </Link>
             </div>
 
+            <div className="mobileHeaderWallet">
+                <ConnectWallet />
+            </div>
+
             <nav className="navbarMain" ref={drawerRef}>
                 <div
                     className={
@@ -95,7 +99,7 @@ export default function Navigation(props) {
                     >
                         <Link href="/my-contracts">My Contracts</Link>
                     </li>
-                    <li className="headerButton">
+                    <li className="headerButton hideSmallerThanIpad">
                         <span></span>
                         <ConnectWallet />
                     </li>

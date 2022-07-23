@@ -157,9 +157,14 @@ export default function ContractsListed(props) {
                                 <div className="submitButtonOuter">
                                     <Button
                                         link="/create-contract"
-                                        classes={"button primary rounded"}
+                                        classes={
+                                            "button secondary withIcon rounded"
+                                        }
                                     >
-                                        <span>Create Contract Now</span>
+                                        <i>
+                                            <PlusIc />
+                                        </i>
+                                        <span>Create Contract</span>
                                     </Button>
                                 </div>
                             </div>

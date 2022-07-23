@@ -1,321 +1,350 @@
 header {
-  // @include Fixed($Top: 0, $Left: 0, $Right: 0);
-  @include Relative;
-  @include Flexbox;
-  @include FlexFlow(nowrap);
-  background: rgba($WhiteColor, 0.7);
-  height: 64px;
-  border-bottom: 1px solid $BorderDark;
-  backdrop-filter: blur(20px);
-  z-index: 99;
+    @include Relative;
+    @include Flexbox;
+    @include FlexFlow(nowrap);
+    background: rgba($WhiteColor, 0.7);
+    height: 64px;
+    border-bottom: 1px solid $BorderDark;
+    backdrop-filter: blur(20px);
+    z-index: 99;
 
-  @include RespondTo(IpadDevices) {
-    @include JustifyContent(space-between);
-  }
-
-  .logo {
-    @include Size(200px, 100%);
-    @extend %FlexCol-CenterCenter;
-    border-right: 1px solid $BorderDark;
+    @include RespondTo(IpadDevices) {
+        @include JustifyContent(space-between);
+    }
 
     @include RespondTo(MobileDevices) {
-      width: 150px;
+        height: 52px;
     }
-
-    svg {
-      @include Size(150px, 40px);
-
-      @include RespondTo(MobileDevices) {
-        @include Size(120px, 24px);
-      }
-
-      path {
-        fill: $PrimaryColor;
-      }
-    }
-  }
-
-  nav.navbarMain {
-    flex: 2;
-
-    @include RespondTo(IpadDevices) {
-      @include Size(100%, 100vh);
-      // max-width: 90%;
-      @include Fixed($Top: 0, $Right: -100%);
-      background: rgba($BlackColor, 0.95);
-      backdrop-filter: blur(20px);
-      z-index: 99;
-      @include Transition(0.1s);
-    }
-
-    .navbarClose {
-      display: none;
-      @include Absolute($Right: 9px, $Top: 9px);
-
-      @include RespondTo(IpadDevices) {
-        display: block;
-      }
-
-      > button {
-        border: none;
-        background: transparent;
-      }
-
-      svg {
-        @include Size(42px, 42px);
-
-        path {
-          fill: $FontColorLight;
-        }
-      }
-    }
-
-    ul {
-      @include Size(100%, 100%);
-      @extend %FlexRow-CenterStart;
-
-      @include RespondTo(IpadDevices) {
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
-
-      li {
-        height: 100%;
-        padding: 0 5px;
-        @extend %FlexCol-CenterCenter;
-
-        @include RespondTo(IpadDevices) {
-          height: auto;
-          margin-bottom: 20px;
-          width: 100%;
-          padding: 0 20px;
-        }
-
-        a {
-          @extend %FlexCol-CenterCenter;
-          display: inline-flex;
-          height: 100%;
-          padding: 10px;
-          text-decoration: none;
-          border-bottom: 2px solid transparent;
-
-          @include RespondTo(SmallDesktop) {
-            padding-left: 0;
-            padding-right: 0;
-          }
-
-          @include RespondTo(IpadDevices) {
-            color: $WhiteColor;
-            font-size: 1.4rem;
-            font-weight: 400;
-            display: block;
-            text-align: center;
-            border: none;
-          }
-        }
-
-        &.active {
-          a {
-            border-bottom-color: $PrimaryColor;
-
-            @include RespondTo(IpadDevices) {
-              border-bottom-color: $LightBlueColor;
-            }
-          }
-        }
-
-        &.headerButton {
-          @extend %FlexRow-CenterCenter;
-          flex: 2;
-
-          + .headerButton {
-            flex: unset;
-          }
-
-          @include RespondTo(IpadDevices) {
-            display: block;
-            flex: unset;
-            padding-right: 0;
-            text-align: center;
-          }
-
-          > span {
-            flex: 2;
-            display: inline-block;
-          }
-
-          .button {
-            height: auto;
-
-            @include RespondTo(IpadDevices) {
-              font-size: 1rem;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  .headerActions {
-    @extend %FlexRow-CenterCenter;
-    border-left: 1px solid $BorderDark;
-    padding: 0 10px;
-    margin-left: 10px;
-
-    .modeChange {
-      > span {
-        cursor: pointer;
-      }
-    }
-
-    > div {
-      padding: 0 10px;
-      height: 100%;
-      @extend %FlexCol-CenterCenter;
-
-      &.headerNotification {
-        .notiIc {
-          position: relative;
-
-          svg {
-            @include Size(22px, 22px);
-
-            @include RespondTo(MobileDevices) {
-              @include Size(20px, 20px);
-            }
-          }
-
-          .notiIndicator {
-            @include Size(10px, 10px);
-            @include Absolute($Right: -2px, $Top: -2px);
-            @include BorderRadius(50%);
-            background: red;
-            border: 2px solid $WhiteColor;
-          }
-        }
-      }
-
-      &.headerUser {
-        position: relative;
-
-        .headerUserIc {
-          cursor: pointer;
-        }
-      }
-    }
-
-    svg {
-      @include Size(28px, 28px);
-
-      @include RespondTo(MobileDevices) {
-        @include Size(22px, 22px);
-      }
-
-      path {
-        fill: $PrimaryColor;
-      }
-    }
-  }
-
-  &.drawerOpen {
-    nav.navbarMain {
-      right: 0px;
-      @include Transition(0.1s);
-    }
-  }
-
-  .mobileNavTrigger {
-    padding: 0px 10px 0px 20px !important;
-    @extend %FlexCol-CenterCenter;
-    border-left: 1px solid $BorderDark;
-    display: none !important;
-
-    @include RespondTo(IpadDevices) {
-      display: inline-flex !important;
-      flex: 2;
-      @include AlignItems(flex-end);
-    }
-
-    @media only screen and (max-width: 355px) {
-      padding: 0px 0px 0px 10px !important;
-    }
-
-    > button {
-      border: none;
-      background: transparent;
-    }
-
-    svg {
-      @include Size(24px, 24px);
-
-      path {
-        fill: $PrimaryColor;
-      }
-    }
-  }
-}
-
-.darkMode {
-  header {
-    background: rgba($DarkBg, 0.7);
-    border-bottom-color: $BorderLight;
 
     .logo {
-      border-right-color: $BorderLight;
+        @include Size(200px, 100%);
+        @extend %FlexCol-CenterCenter;
+        border-right: 1px solid $BorderDark;
 
-      svg {
-        path {
-          fill: $SecondaryColor;
+        @include RespondTo(MobileDevices) {
+            width: 110px;
         }
-      }
+
+        svg {
+            @include Size(150px, 40px);
+
+            @include RespondTo(MobileDevices) {
+                @include Size(88px, 20px);
+            }
+
+            path {
+                fill: $PrimaryColor;
+            }
+        }
     }
 
     nav.navbarMain {
-      ul {
-        li {
-          &.active {
-            a {
-              border-bottom-color: $SecondaryColor;
-            }
-          }
+        flex: 2;
 
-          &.headerButton {
-            .button.secondary {
-              color: $BlackColor;
-            }
-          }
+        @include RespondTo(IpadDevices) {
+            @include Size(100%, 100vh);
+            // max-width: 90%;
+            @include Fixed($Top: 0, $Right: -100%);
+            background: rgba($BlackColor, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 99;
+            @include Transition(0.1s);
         }
-      }
+
+        .navbarClose {
+            display: none;
+            @include Absolute($Right: 9px, $Top: 9px);
+
+            @include RespondTo(IpadDevices) {
+                display: block;
+            }
+
+            > button {
+                border: none;
+                background: transparent;
+            }
+
+            svg {
+                @include Size(42px, 42px);
+
+                path {
+                    fill: $FontColorLight;
+                }
+            }
+        }
+
+        ul {
+            @include Size(100%, 100%);
+            @extend %FlexRow-CenterStart;
+
+            @include RespondTo(IpadDevices) {
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            li {
+                height: 100%;
+                padding: 0 5px;
+                @extend %FlexCol-CenterCenter;
+
+                @include RespondTo(IpadDevices) {
+                    height: auto;
+                    margin-bottom: 20px;
+                    width: 100%;
+                    padding: 0 20px;
+                }
+
+                a {
+                    @extend %FlexCol-CenterCenter;
+                    display: inline-flex;
+                    height: 100%;
+                    padding: 10px;
+                    text-decoration: none;
+                    border-bottom: 2px solid transparent;
+
+                    @include RespondTo(SmallDesktop) {
+                        padding-left: 0;
+                        padding-right: 0;
+                    }
+
+                    @include RespondTo(IpadDevices) {
+                        color: $WhiteColor;
+                        font-size: 1.4rem;
+                        font-weight: 400;
+                        display: block;
+                        text-align: center;
+                        border: none;
+                    }
+                }
+
+                &.active {
+                    a {
+                        border-bottom-color: $PrimaryColor;
+
+                        @include RespondTo(IpadDevices) {
+                            border-bottom-color: $LightBlueColor;
+                        }
+                    }
+                }
+
+                &.headerButton {
+                    @extend %FlexRow-CenterCenter;
+                    flex: 2;
+
+                    + .headerButton {
+                        flex: unset;
+                    }
+
+                    @include RespondTo(IpadDevices) {
+                        display: block;
+                        flex: unset;
+                        padding-right: 0;
+                        text-align: center;
+                    }
+
+                    > span {
+                        flex: 2;
+                        display: inline-block;
+                    }
+
+                    .button {
+                        height: auto;
+
+                        @include RespondTo(IpadDevices) {
+                            font-size: 1rem;
+                            padding-right: 0.8rem;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     .headerActions {
-      border-left-color: $BorderLight;
+        @extend %FlexRow-CenterCenter;
+        border-left: 1px solid $BorderDark;
+        padding: 0 10px;
+        margin-left: 10px;
 
-      svg {
-        path {
-          fill: $FontColorLight;
+        @include RespondTo(MobileDevices) {
+            padding-left: 5px;
         }
-      }
 
-      .headerNotification {
-        .notiIc {
-          .notiIndicator {
-            background: red;
-            border-color: $DarkBg;
-          }
+        .modeChange {
+            > span {
+                cursor: pointer;
+            }
         }
-      }
+
+        > div {
+            padding: 0 10px;
+            height: 100%;
+            @extend %FlexCol-CenterCenter;
+
+            @include RespondTo(MobileDevices) {
+                padding: 0 5px;
+            }
+
+            &.headerNotification {
+                .notiIc {
+                    position: relative;
+
+                    svg {
+                        @include Size(22px, 22px);
+
+                        @include RespondTo(MobileDevices) {
+                            @include Size(20px, 20px);
+                        }
+                    }
+
+                    .notiIndicator {
+                        @include Size(10px, 10px);
+                        @include Absolute($Right: -2px, $Top: -2px);
+                        @include BorderRadius(50%);
+                        background: red;
+                        border: 2px solid $WhiteColor;
+                    }
+                }
+            }
+
+            &.headerUser {
+                position: relative;
+
+                .headerUserIc {
+                    cursor: pointer;
+                }
+            }
+        }
+
+        svg {
+            @include Size(28px, 28px);
+
+            @include RespondTo(MobileDevices) {
+                @include Size(22px, 22px);
+            }
+
+            path {
+                fill: $PrimaryColor;
+            }
+        }
+    }
+
+    &.drawerOpen {
+        nav.navbarMain {
+            right: 0px;
+            @include Transition(0.1s);
+        }
     }
 
     .mobileNavTrigger {
-      border-left-color: $BorderLight;
+        padding: 0px 10px 0px 20px !important;
+        @extend %FlexCol-CenterCenter;
+        border-left: 1px solid $BorderDark;
+        display: none !important;
 
-      svg {
-        path {
-          fill: $FontColorLight;
+        @include RespondTo(IpadDevices) {
+            display: inline-flex !important;
+            flex: 2;
+            @include AlignItems(flex-end);
+            margin-left: 5px;
         }
-      }
+
+        @include RespondTo(MobileDevices) {
+            padding: 0px 0px 0px 10px !important;
+        }
+
+        > button {
+            border: none;
+            background: transparent;
+        }
+
+        svg {
+            @include Size(24px, 24px);
+
+            path {
+                fill: $PrimaryColor;
+            }
+        }
     }
-  }
+
+    .mobileHeaderWallet {
+        display: none;
+
+        @include RespondTo(IpadDevices) {
+            display: block;
+            padding: 7px 0 0 7px;
+        }
+
+        .button {
+            @include RespondTo(MobileDevices) {
+                font-size: 0.6rem;
+                padding: 0.5rem 0.8rem;
+            }
+        }
+    }
+}
+
+.darkMode {
+    header {
+        background: rgba($DarkBg, 0.7);
+        border-bottom-color: $BorderLight;
+
+        .logo {
+            border-right-color: $BorderLight;
+
+            svg {
+                path {
+                    fill: $SecondaryColor;
+                }
+            }
+        }
+
+        nav.navbarMain {
+            ul {
+                li {
+                    &.active {
+                        a {
+                            border-bottom-color: $SecondaryColor;
+                        }
+                    }
+
+                    &.headerButton {
+                        .button.secondary {
+                            color: $BlackColor;
+                        }
+                    }
+                }
+            }
+        }
+
+        .headerActions {
+            border-left-color: $BorderLight;
+
+            svg {
+                path {
+                    fill: $FontColorLight;
+                }
+            }
+
+            .headerNotification {
+                .notiIc {
+                    .notiIndicator {
+                        background: red;
+                        border-color: $DarkBg;
+                    }
+                }
+            }
+        }
+
+        .mobileNavTrigger {
+            border-left-color: $BorderLight;
+
+            svg {
+                path {
+                    fill: $FontColorLight;
+                }
+            }
+        }
+    }
 }
