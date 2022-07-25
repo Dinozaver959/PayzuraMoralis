@@ -479,10 +479,19 @@ export default function Description(props) {
                                                         value="buyer"
                                                         disabled="disabled"
                                                     />
-                                                    <label htmlFor="asBuyer">
-                                                        <BuyerIc />
-                                                        <span>As a Buyer</span>
-                                                    </label>
+                                                    <Tooltip
+                                                        title="Not available yet"
+                                                        placement="top"
+                                                        enterTouchDelay={0}
+                                                        arrow
+                                                    >
+                                                        <label htmlFor="asBuyer">
+                                                            <BuyerIc />
+                                                            <span>
+                                                                As a Buyer
+                                                            </span>
+                                                        </label>
+                                                    </Tooltip>
                                                 </li>
                                                 <li>
                                                     <input
