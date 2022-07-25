@@ -344,7 +344,13 @@ function Row_normal(props) {
                                 className="button primary rounded small"
                                 type="submit"
                                 value="Accept Offer"
-                                onClick={() =>
+                                onClick={() => {
+                                    setModelData({
+                                        show: true,
+                                        type: "alert",
+                                        status: "Pending",
+                                        message: "Accepting Offer...",
+                                    });
                                     AcceptOffer_Moralis(
                                         item.index,
                                         item.CurrencyTicker
@@ -393,20 +399,22 @@ function Row_normal(props) {
                                                 false
                                             );
                                             xhr.onload = function () {
-                                                // setModelData({
-                                                //   show: true,
-                                                //   type: "alert",
-                                                //   status: "Success",
-                                                //   message: "offer accepted",
-                                                // });
-
                                                 setModelData({
                                                     show: true,
                                                     type: "alert",
-                                                    status: "Pending",
-                                                    message:
-                                                        "Accepting offer...",
+                                                    status: "Success",
+                                                    message: "offer created",
+                                                    transactionHash:
+                                                        transactionHash,
                                                 });
+
+                                                // setModelData({
+                                                //     show: true,
+                                                //     type: "alert",
+                                                //     status: "Pending",
+                                                //     message:
+                                                //         "Accepting offer...",
+                                                // });
 
                                                 var formData = new FormData();
                                                 formData.append(
@@ -447,8 +455,8 @@ function Row_normal(props) {
                                                 });
                                             }
                                             process.exitCode = 1;
-                                        })
-                                }
+                                        });
+                                }}
                             ></input>
                         </StyledTableCell>
                         {/* don't show approval button */}
@@ -456,11 +464,17 @@ function Row_normal(props) {
                 ) : (
                     <>
                         <StyledTableCell>
-                            <input
+                            {/* <input
                                 className="button primary rounded small"
                                 type="submit"
                                 value="Accept Offer"
-                                onClick={() =>
+                                onClick={() => {
+                                    setModelData({
+                                        show: true,
+                                        type: "alert",
+                                        status: "Pending",
+                                        message: "Accepting Offer...",
+                                    });
                                     AcceptOffer_Moralis(
                                         item.index,
                                         item.CurrencyTicker
@@ -509,19 +523,13 @@ function Row_normal(props) {
                                                 false
                                             );
                                             xhr.onload = function () {
-                                                // setModelData({
-                                                //   show: true,
-                                                //   type: "alert",
-                                                //   status: "Success",
-                                                //   message: "offer accepted",
-                                                // });
-
                                                 setModelData({
                                                     show: true,
                                                     type: "alert",
-                                                    status: "Pending",
-                                                    message:
-                                                        "Accepting offer...",
+                                                    status: "Success",
+                                                    message: "offer created",
+                                                    transactionHash:
+                                                        transactionHash,
                                                 });
 
                                                 var formData = new FormData();
@@ -565,15 +573,21 @@ function Row_normal(props) {
                                                 });
                                             }
                                             process.exitCode = 1;
-                                        })
-                                }
-                            ></input>
+                                        });
+                                }}
+                            ></input> */}
                             <input
                                 className="button green rounded small"
                                 type="submit"
                                 /* value="Approve USDC" */
                                 value={"Approve " + item.CurrencyTicker}
                                 onClick={() => {
+                                    setModelData({
+                                        show: true,
+                                        type: "alert",
+                                        status: "Pending",
+                                        message: "granting approval...",
+                                    });
                                     ApproveERC20_Moralis(item.index)
                                         .then(async (transactionHash) => {
                                             console.log(
@@ -618,9 +632,10 @@ function Row_normal(props) {
                                                 setModelData({
                                                     show: true,
                                                     type: "alert",
-                                                    status: "Pending",
-                                                    message:
-                                                        "granting approval...",
+                                                    status: "Success",
+                                                    message: "approval granted",
+                                                    transactionHash:
+                                                        transactionHash,
                                                 });
 
                                                 var formData = new FormData();
