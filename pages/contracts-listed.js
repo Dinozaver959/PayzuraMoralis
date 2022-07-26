@@ -345,12 +345,12 @@ function Row_normal(props) {
                                 type="submit"
                                 value="Accept Offer"
                                 onClick={() => {
-                                    setModelData({
-                                        show: true,
-                                        type: "alert",
-                                        status: "Pending",
-                                        message: "Accepting Offer...",
-                                    });
+                                    // setModelData({
+                                    //     show: true,
+                                    //     type: "alert",
+                                    //     status: "Pending",
+                                    //     message: "Accepting Offer...",
+                                    // });
                                     AcceptOffer_Moralis(
                                         item.index,
                                         item.CurrencyTicker
@@ -582,12 +582,12 @@ function Row_normal(props) {
                                 /* value="Approve USDC" */
                                 value={"Approve " + item.CurrencyTicker}
                                 onClick={() => {
-                                    setModelData({
-                                        show: true,
-                                        type: "alert",
-                                        status: "Pending",
-                                        message: "granting approval...",
-                                    });
+                                    // setModelData({
+                                    //     show: true,
+                                    //     type: "alert",
+                                    //     status: "Pending",
+                                    //     message: "granting approval...",
+                                    // });
                                     ApproveERC20_Moralis(item.index)
                                         .then(async (transactionHash) => {
                                             console.log(

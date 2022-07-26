@@ -73,12 +73,12 @@ export default function Description(props) {
     }
 
     async function SubmitForm() {
-        setModelData({
-            show: true,
-            type: "alert",
-            status: "Pending",
-            message: "Creating Offer...",
-        });
+        // setModelData({
+        //     show: true,
+        //     type: "alert",
+        //     status: "Pending",
+        //     message: "Creating Offer...",
+        // });
         CreateEscrow_Moralis(
             document.getElementById("Price").value,
             document.getElementById("CurrencyTicker").value, // expected values: `ETH`, `USDC`
