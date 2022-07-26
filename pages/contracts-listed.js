@@ -337,7 +337,7 @@ function Row_normal(props) {
                     <label className="mobileLabel">Valid Until</label>
                     {wrapEpochToDate(item.OfferValidUntil)}
                 </StyledTableCell>
-                {item.CurrencyTicker == "ETH" || approvedERC20 ? (
+                {item.CurrencyTicker == "ETH" && approvedERC20 ? (
                     <>
                         <StyledTableCell>
                             <input
@@ -462,19 +462,20 @@ function Row_normal(props) {
                         {/* don't show approval button */}
                     </>
                 ) : (
+                    approvedERC20 ? (
                     <>
                         <StyledTableCell>
-                            {/* <input
+                            <input
                                 className="button primary rounded small"
                                 type="submit"
                                 value="Accept Offer"
                                 onClick={() => {
-                                    setModelData({
-                                        show: true,
-                                        type: "alert",
-                                        status: "Pending",
-                                        message: "Accepting Offer...",
-                                    });
+                                    // setModelData({
+                                    //     show: true,
+                                    //     type: "alert",
+                                    //     status: "Pending",
+                                    //     message: "Accepting Offer...",
+                                    // });
                                     AcceptOffer_Moralis(
                                         item.index,
                                         item.CurrencyTicker
@@ -575,7 +576,12 @@ function Row_normal(props) {
                                             process.exitCode = 1;
                                         });
                                 }}
-                            ></input> */}
+                            ></input>
+                        </StyledTableCell>
+                        </>
+                            ) : (
+                        <>
+                        <StyledTableCell>
                             <input
                                 className="button green rounded small"
                                 type="submit"
@@ -684,6 +690,7 @@ function Row_normal(props) {
                             ></input>
                         </StyledTableCell>
                     </>
+                    )
                 )}
             </StyledTableRow>
 
