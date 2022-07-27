@@ -20,6 +20,7 @@ import MobileMenuIc from "./icons/MobileMenu";
 import PlusIc from "./icons/Plus";
 
 import ConnectWallet from "./../components/ConnectWallet";
+import ServicesListedIc from "./icons/ServicesListed";
 
 export default function Navigation(props) {
     const {
@@ -71,7 +72,7 @@ export default function Navigation(props) {
                     >
                         <Link href="/">Dashboard</Link>
                     </li>
-                    <li
+                    {/* <li
                         className={
                             router.pathname == "/contracts-listed"
                                 ? "active"
@@ -80,7 +81,7 @@ export default function Navigation(props) {
                         onClick={props.mobileDrawerFn}
                     >
                         <Link href="/contracts-listed">Contracts Listed</Link>
-                    </li>
+                    </li> */}
                     <li
                         className={
                             router.pathname == "/contracts-seeked"
@@ -157,6 +158,14 @@ export default function Navigation(props) {
                                             <UserIc />
                                         </i>
                                         <span>My Profile</span>
+                                    </Button>
+                                </li>
+                                <li onClick={() => setDropdownOpen(false)}>
+                                    <Button link="/contracts-listed">
+                                        <i>
+                                            <ServicesListedIc />
+                                        </i>
+                                        <span>Contracts Listed</span>
                                     </Button>
                                 </li>
                                 <li onClick={() => setDropdownOpen(false)}>
