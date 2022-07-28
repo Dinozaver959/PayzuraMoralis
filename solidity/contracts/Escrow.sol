@@ -3,7 +3,7 @@ pragma solidity >=0.7.0 <0.9.0;
 
 import "./ReentrancyGuard.sol";
 import "./IERC20.sol";
-// import "hardhat/console.sol";
+//import "../node_modules/hardhat/console.sol";
 
 contract Escrow is ReentrancyGuard {
 
@@ -30,9 +30,20 @@ contract Escrow is ReentrancyGuard {
 
 
     address payable public FactoryAddress;
-  
-    address[] public personalizedOffer;
-    enum State { await_payment, paid, dispute, complete }
+
+    mapping(address => bool) personalizedOffer;
+    uint256 personalizedOfferCounter;
+    enum State { await_payment, buyer_initialized, buyer_initialized_and_paid, await_seller_accepts, paid, dispute, complete, canceled }
+    // need to update the naming:
+    /*
+        await_payment               - seller started the contract, no buyer has paid/accepted yet
+        buyer_initialized           - buyer just initialized the contract
+        buyer_initialized_and_paid  - buyer had initialized and paid
+        await_seller_accepts        - buyer has updated the list of personalizedOffer for potential sellers
+        paid                        - contract has been signed by both parties
+        dispute                     - contract has entered the dispute
+        complete                    - contract is complete (either the service was delivered and acknowledge or a dispute has ended)    
+     */
     State public state;
       
     event TransferSent(address _from, address _destAddr, uint _amount);
@@ -46,6 +57,16 @@ contract Escrow is ReentrancyGuard {
     modifier instate(State expected_state){
         require(state == expected_state);
         _;
+    }
+
+    modifier inEitherStates(State one, State two){
+        require(state == one || state == two);
+        _;
+    }
+
+    modifier inEitherStates3(State one, State two, State three){
+        require(state == one || state == two || state == three);
+        _;        
     }
   
     modifier onlyBuyer(address _buyer){
@@ -85,7 +106,7 @@ contract Escrow is ReentrancyGuard {
 
     constructor(){} // not sure if needed
 
-    function Initialize (  
+    function InitializeSeller (  
         address payable _FactoryAddress,
         address payable _seller,
         address[] calldata _arbiters, 
@@ -109,8 +130,9 @@ contract Escrow is ReentrancyGuard {
 
         // loop through to copy all
         // personalizedOffer
+        personalizedOfferCounter = _personalizedOffer.length;
         for(uint256 i = 0; i < _personalizedOffer.length; i++) {
-            personalizedOffer.push(_personalizedOffer[i]);
+            personalizedOffer[_personalizedOffer[i]] = true;
         }
 
         // arbiters
@@ -118,6 +140,54 @@ contract Escrow is ReentrancyGuard {
             arbiters.push(_arbiters[i]);
         }
     }
+
+    function InitializeBuyer (                                      // NOTE: currently set up to work only with ETH
+        address payable _FactoryAddress,
+        address payable _buyer,
+        address[] calldata _arbiters, 
+        uint256 _price,
+        address _tokenContractAddress,
+        uint256 _timeAllowedInHours,
+        string memory _hashOfDescription,       // calldata?
+        uint256 _offerValidUntil,
+        address[] calldata _personalizedOffer
+        
+        ) public payable {
+        FactoryAddress = _FactoryAddress;
+        state = State.buyer_initialized;
+        buyer = _buyer;
+        price = _price;
+        tokenContractAddress = _tokenContractAddress;
+        hashOfDescription = _hashOfDescription;
+        timeToDeliver = _timeAllowedInHours;      
+        offerValidUntil = _offerValidUntil;
+
+
+
+        if(_tokenContractAddress == address(0)){
+            require(msg.value >= _price, "not enough ETH send");        // only for ETH 
+            state = State.buyer_initialized_and_paid;
+        }
+        else{
+            // cannot approve ERC20 directly
+            // because we are using proxy, and only msg.sender can issue the approval
+        }
+
+
+
+        // loop through to copy all
+        // personalizedOffer
+        personalizedOfferCounter = _personalizedOffer.length;
+        for(uint256 i = 0; i < _personalizedOffer.length; i++) {
+            personalizedOffer[_personalizedOffer[i]] = true;
+        }
+
+        // arbiters
+        for(uint256 i = 0; i < _arbiters.length; i++) {
+            arbiters.push(_arbiters[i]);
+        }
+    }
+
 
 
 
@@ -164,16 +234,8 @@ contract Escrow is ReentrancyGuard {
     }
 
     function isWalletEligibleToAcceptOffer(address wallet) public view returns(bool){
-        if (personalizedOffer.length == 0){
-            return true;
-        } else {
-            for(uint256 i = 0; i < personalizedOffer.length; i++){
-                if(personalizedOffer[i] == wallet){
-                    return true;
-                }
-            }
-            return false;
-        }
+        if(personalizedOfferCounter == 0) { return true;}
+        return personalizedOffer[wallet];
     }
 
     function GetCommision() public view returns(uint256){
@@ -187,7 +249,7 @@ contract Escrow is ReentrancyGuard {
     // ---------------------------------------------------------------------------
 
     // new buyer accepts the agreement
-    function acceptOffer(address payable _buyer) instate(State.await_payment) external payable {
+    function acceptOfferBuyer(address payable _buyer) instate(State.await_payment) external payable {
 
         require(isOfferValid(), "offer is not valid anymore");
         require(isWalletEligibleToAcceptOffer(_buyer), "wallet is not eligible to accept");
@@ -207,7 +269,20 @@ contract Escrow is ReentrancyGuard {
         state = State.paid;
     }
 
-    function acceptOffer_ERC20(address payable _buyer) instate(State.await_payment) external {
+
+    // Seller accepts on agreement made by a Buyer
+    function acceptOfferSeller(address payable _seller) instate(State.await_seller_accepts) external {
+
+        require(isOfferValid(), "offer is not valid anymore");
+        require(isWalletEligibleToAcceptOffer(_seller), "wallet is not eligible to accept");
+
+        seller = _seller; 
+        deadline = block.timestamp + 3600 * timeToDeliver;
+        state = State.paid;
+    }
+
+    // not sure if needed
+    function acceptOfferBuyer_ERC20(address payable _buyer) instate(State.await_payment) external {
 
         require(isOfferValid(), "offer is not valid anymore");
         require(isWalletEligibleToAcceptOffer(_buyer), "wallet is not eligible to accept");
@@ -237,13 +312,13 @@ contract Escrow is ReentrancyGuard {
 
             uint256 commision_ = GetCommision();
             IERC20 tokenContract = IERC20(tokenContractAddress);
-            bool transferred = tokenContract.transferFrom(address(this), payzuraWallet, GetCommision());                    // think we might need to set the approval for the EscrowFactory to move ERC20 of the contract instance (we set the approval when creating the escrow contract instance)
-            //bool transferred = tokenContract.transfer(payzuraWallet, commision_);
+            //bool transferred = tokenContract.transferFrom(address(this), payzuraWallet, commision_);                    // think we might need to set the approval for the EscrowFactory to move ERC20 of the contract instance (we set the approval when creating the escrow contract instance)
+            bool transferred = tokenContract.transfer(payzuraWallet, commision_);
             require(transferred, "ERC20 tokens failed to transfer to payzuraWallet");
             emit TransferSent(address(this), payzuraWallet, commision_);
 
-            bool transferred_2 = tokenContract.transferFrom(address(this), receiver, price);
-            //bool transferred_2 = tokenContract.transfer(receiver, price - commision_);
+            //bool transferred_2 = tokenContract.transferFrom(address(this), receiver, price);
+            bool transferred_2 = tokenContract.transfer(receiver, price - commision_);
             require(transferred_2, "ERC20 tokens failed to transfer to receiver");
             emit TransferSent(address(this), receiver, price - commision_);
         }
@@ -253,6 +328,22 @@ contract Escrow is ReentrancyGuard {
     }
 
 
+    function TransferFundsNoCommision(address payable receiver) internal {
+
+        if(tokenContractAddress == address(0)){
+            // transfer the remaining amount to the receiver
+            receiver.transfer(address(this).balance);
+        } else {
+            IERC20 tokenContract = IERC20(tokenContractAddress);
+            uint256 balance = tokenContract.balanceOf(address(this));
+            if(balance > 0) {
+                bool transferred = tokenContract.transfer(receiver, balance);
+                //bool transferred = tokenContract.transferFrom(address(this), receiver, balance);
+                require(transferred, "ERC20 tokens failed to transfer to receiver");
+                emit TransferSent(address(this), receiver, balance);                
+            }
+        }
+    }
 
     // --------------------------------------
     //             ONLY SELLER
@@ -286,6 +377,27 @@ contract Escrow is ReentrancyGuard {
     }
 
 
+    // only valid for contracts that Seller created and no buyer has accepted yet!!
+    function addSellerPersonalizedOffer(address _seller, address[] calldata _personalizedOffer) onlySeller(_seller) instate(State.await_payment) external {
+        personalizedOfferCounter += _personalizedOffer.length;
+        for (uint256 i = 0; i < _personalizedOffer.length; i++){
+            personalizedOffer[_personalizedOffer[i]] = true;
+        }
+    }
+
+    function removeSellerPersonalizedOffer(address _seller, address[] calldata _personalizedOffer) onlySeller(_seller) instate(State.await_payment) external {
+        personalizedOfferCounter -= _personalizedOffer.length;
+        for (uint256 i = 0; i < _personalizedOffer.length; i++){
+            personalizedOffer[_personalizedOffer[i]] = false;
+        }
+    }
+
+        
+    function cancelSellerContract(address _seller) instate(State.await_payment) onlySeller(_seller) external {
+        // change state to canceled
+        state = State.canceled;
+    }
+
 
     // --------------------------------------
     //             ONLY BUYER
@@ -317,6 +429,45 @@ contract Escrow is ReentrancyGuard {
         }
     }
 
+    // only valid for contracts that Buyer created and no seller has accepted yet!!
+    function addBuyerPersonalizedOffer(address _buyer, address[] calldata _personalizedOffer) onlyBuyer(_buyer) inEitherStates(State.buyer_initialized_and_paid, State.await_seller_accepts) external {
+        personalizedOfferCounter += _personalizedOffer.length;
+        for (uint256 i = 0; i < _personalizedOffer.length; i++){
+            personalizedOffer[_personalizedOffer[i]] = true;
+        }
+
+        state = State.await_seller_accepts;
+    }
+
+    function removeBuyerPersonalizedOffer(address _buyer, address[] calldata _personalizedOffer) onlyBuyer(_buyer) inEitherStates(State.buyer_initialized_and_paid, State.await_seller_accepts) external {
+        personalizedOfferCounter -= _personalizedOffer.length;
+        for (uint256 i = 0; i < _personalizedOffer.length; i++){
+            personalizedOffer[_personalizedOffer[i]] = false;
+        }
+
+        state = State.await_seller_accepts;
+    }
+
+
+    function fundContract(address _buyer) instate(State.buyer_initialized) onlyBuyer(_buyer) external {  // onlyBuyer(_buyer) - can be ommised in case somebody else would fund the contract
+        IERC20 tokenContract = IERC20(tokenContractAddress);
+        //console.log("_buyer: ", _buyer);
+        //console.log("address(this) ", address(this));
+        //console.log("price", price);
+        bool transferred = tokenContract.transferFrom(_buyer, address(this), price);
+        require(transferred, "ERC20 tokens failed to transfer to contract wallet");
+        state = State.buyer_initialized_and_paid;
+    }
+
+    function cancelBuyerContract(address _buyer) inEitherStates3(State.buyer_initialized, State.buyer_initialized_and_paid, State.await_seller_accepts) onlyBuyer(_buyer) external {
+
+        // if there is any money in the contract, return it to the buyer
+        TransferFundsNoCommision(payable(_buyer));
+
+        // change state to canceled
+        state = State.canceled;
+    }
+
 
  
     // --------------------------------------
@@ -338,7 +489,7 @@ contract Escrow is ReentrancyGuard {
         if(votes[1] > votes[2] + votes[0]){
             // send funds to the buyes
             //buyer.transfer(address(this).balance);
-            TransferFunds(buyer);
+            TransferFundsNoCommision(buyer);    // we should not be taking commision if the buyer has their money returned
             state = State.complete;
             return true;
         } 

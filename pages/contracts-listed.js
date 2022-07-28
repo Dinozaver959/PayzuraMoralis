@@ -19,7 +19,7 @@ import { styled } from "@mui/material/styles";
 import Moralis from "moralis";
 import {
     GetWallet_NonMoralis,
-    AcceptOffer_Moralis,
+    AcceptOfferBuyer_Moralis,
     ApproveERC20_Moralis,
     PayERC20__TEST__Moralis,
     PayERC20__TEST__WO_Moralis,
@@ -340,7 +340,7 @@ function Row_normal(props) {
                                 type="submit"
                                 value="Accept Offer"
                                 onClick={() =>
-                                    AcceptOffer_Moralis(
+                                    AcceptOfferBuyer_Moralis(
                                         item.index,
                                         item.CurrencyTicker
                                     ) // PayERC20__transfer__Moralis()
@@ -384,7 +384,7 @@ function Row_normal(props) {
                                             var xhr = new XMLHttpRequest();
                                             xhr.open(
                                                 "POST",
-                                                "/api/api-acceptedOffer",
+                                                "/api/api-acceptedOfferByBuyer",
                                                 false
                                             );
                                             xhr.onload = function () {
@@ -403,11 +403,13 @@ function Row_normal(props) {
                                                         "Accepting offer...",
                                                 });
 
+                                                /*
                                                 var formData = new FormData();
                                                 formData.append(
                                                     "BuyerAccount",
                                                     Moralis.User.current().id
                                                 );
+                                                */
 
                                                 console.log("offer created");
                                             };
@@ -456,7 +458,7 @@ function Row_normal(props) {
                                 type="submit"
                                 value="Accept Offer"
                                 onClick={() =>
-                                    AcceptOffer_Moralis(
+                                    AcceptOfferBuyer_Moralis(
                                         item.index,
                                         item.CurrencyTicker
                                     ) // PayERC20__transfer__Moralis()
@@ -500,7 +502,7 @@ function Row_normal(props) {
                                             var xhr = new XMLHttpRequest();
                                             xhr.open(
                                                 "POST",
-                                                "/api/api-acceptedOffer",
+                                                "/api/api-acceptedOfferByBuyer",
                                                 false
                                             );
                                             xhr.onload = function () {
@@ -584,14 +586,14 @@ function Row_normal(props) {
 
                                             var formData = new FormData();
                                             formData.append(
-                                                "BuyerAccount",
+                                                "userAccount",
                                                 Moralis.User.current().id
                                             );
 
                                             const connectedAddress =
                                                 await GetWallet_NonMoralis();
                                             formData.append(
-                                                "BuyerWallet",
+                                                "wallet",
                                                 connectedAddress
                                             );
                                             formData.append(

@@ -75,6 +75,7 @@ export default function Description(props) {
 
     async function SubmitForm() {
         CreateEscrow_Moralis(
+            selectContractType, // "buyer",   // "seller",   // need to account for both the 'buyer' and 'seller' options 
             document.getElementById("Price").value,
             document.getElementById("CurrencyTicker").value, // expected values: `ETH`, `USDC`
             TimeToDeliver, // document.getElementById("TimeToDeliver").value,
@@ -92,36 +93,33 @@ export default function Description(props) {
                     message: "Creating offer...",
                 });
 
+                var xhr = new XMLHttpRequest();
                 var form = document.querySelector("form");
                 var formData = new FormData(form);
-                formData.append("SellerAccount", Moralis.User.current().id);
-
+                
                 // read the current number of agreements to figure out what is the agreement index for this case
                 const index = (await clonedContractsIndex_Moralis()) - 1;
                 console.log("new index: " + index);
                 formData.append("index", index);
+                formData.append("hashDescription", sha256(document.getElementById("OfferDescription").value));
+                formData.append("transactionHash", transactionHash);
+                formData.append("OfferValidUntil", OfferValidUntil.getTime() / 1000);
+                formData.append("TimeToDeliver", TimeToDeliver);
+                formData.append("CurrencyTicker", selectCurrency); //CurrencyTicker
+                formData.append("ChainID", ConvertNetworkNameToChainID(contractOnNetwork));
 
                 const connectedAddress = await GetWallet_NonMoralis();
-                formData.append("SellerWallet", connectedAddress);
-                formData.append(
-                    "hashDescription",
-                    sha256(document.getElementById("OfferDescription").value)
-                );
-                formData.append("transactionHash", transactionHash);
-                formData.append(
-                    "OfferValidUntil",
-                    OfferValidUntil.getTime() / 1000
-                );
-                formData.append("TimeToDeliver", TimeToDeliver);
 
-                formData.append("CurrencyTicker", selectCurrency); //CurrencyTicker
-                formData.append(
-                    "ChainID",
-                    ConvertNetworkNameToChainID(contractOnNetwork)
-                );
+                if(selectContractType == "seller") {
+                    formData.append("SellerWallet", connectedAddress);
+                    formData.append("SellerAccount", Moralis.User.current().id);
+                    xhr.open("POST", "/api/api-createOfferBySeller", false);
+                } else {
+                    formData.append("BuyerWallet", connectedAddress);
+                    formData.append("BuyerAccount", Moralis.User.current().id);
+                    xhr.open("POST", "/api/api-createOfferByBuyer", false);  
+                }
 
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "/api/api-createOffer", false);
                 xhr.onload = function () {
                     // do something to response
                     // console.log(this.responseText);
@@ -263,6 +261,8 @@ export default function Description(props) {
     const [showCustomDuration, setShowCustomDuration] = React.useState(false);
 
     const [selectCurrency, setSelectCurrency] = React.useState("ETH");
+
+    const [selectContractType, setSelectContractType] = React.useState("seller");
 
     function handleCurrencyChange(e) {
         setSelectCurrency(e.target.value);
@@ -475,7 +475,7 @@ export default function Description(props) {
                                                         name="contractType"
                                                         id="asBuyer"
                                                         value="buyer"
-                                                        disabled="disabled"
+                                                        onClick={() => setSelectContractType("buyer")}
                                                     />
                                                     <label htmlFor="asBuyer">
                                                         <BuyerIc />
@@ -487,7 +487,8 @@ export default function Description(props) {
                                                         type="radio"
                                                         name="contractType"
                                                         id="asSeller"
-                                                        value="saller"
+                                                        value="seller"
+                                                        onClick={() => setSelectContractType("seller")}
                                                         defaultChecked={true}
                                                     />
                                                     <label htmlFor="asSeller">
