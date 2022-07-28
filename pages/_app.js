@@ -1,7 +1,7 @@
 import "../styles/globals.scss";
 import Head from "next/head";
 import { MoralisProvider } from "react-moralis";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import NextNProgress from "./../components/ui/NextNProgress";
 
@@ -24,6 +24,17 @@ function MyApp({ Component, pageProps }) {
     function toggleMobileDrawerHandler() {
         setMenuDrawer(!hasMenuDrawer);
     }
+
+    useEffect(() => {
+        if (window.ethereum) {
+            window.ethereum.on("chainChanged", () => {
+                window.location.reload();
+            });
+            window.ethereum.on("accountsChanged", () => {
+                window.location.reload();
+            });
+        }
+    });
 
     return (
         <div className={darkMode ? "layoutMain darkMode" : "layoutMain"}>
