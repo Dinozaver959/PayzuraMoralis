@@ -1,0 +1,59 @@
+.modal {
+	overflow: hidden;
+	width: 350px;
+	height: 220px;
+	background: lighten($PrimaryColor, 55%);
+	border: 1px solid $BorderDark;
+	z-index: 10;
+	@include BorderRadius($CardRounded);
+	box-shadow: 5px 5px 15px 15px rgba(0, 0, 0, 0.05);
+
+	&::before {
+		@include Absolute($Top: -10px, $Left: 50%);
+		@include Triangle(Top, 10px, 7px, $PrimaryColor);
+	}
+	
+	&::after {
+		@include Absolute($Top: -10px, $Left: 50%);
+		@include Triangle(Top, 10px, 7px, lighten($PrimaryColor, 55%));
+	}
+}
+
+.modalHeader {
+	display: flex;
+	flex-direction: column;
+	border-top-left-radius: 16px;
+	border-top-right-radius: 16px;
+	padding: 1em 1em;
+	word-wrap: break-word;
+}
+
+.itemModal {
+	color: #2c3e50;
+	margin-bottom: 6px;
+}
+
+.itemModal > h3 {
+	margin-bottom: 6px;
+}
+
+.addressButton {
+	position: relative;
+}
+
+.Modal {
+	position: absolute;
+	left: -115px;
+	top: 50px;
+	display: none;
+}
+
+.hoverModal:hover + .Modal {
+	display: block;
+}
+
+@media screen and (max-width: 768px) {
+	.hoverModal:hover + .Modal {
+		display: none;
+	}
+}

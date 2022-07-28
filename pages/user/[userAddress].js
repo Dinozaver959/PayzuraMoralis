@@ -1,92 +1,170 @@
-import { useRouter} from 'next/router'
-import React from "react";
-const DOMPurify = require('isomorphic-dompurify');
+import { useRouter } from "next/router";
+import React, { useState, useEffect } from "react";
+import Navigation from "../../components/Navigation.js";
+import { Fragment } from "react";
 
+const DOMPurify = require("isomorphic-dompurify");
 
-function UserDetails({userDetails}){
+function UserDetails(props) {
+  const { userDetails } = props;
 
-    /*
-    console.log("userAddress: ", userDetails.userAddress);
-    console.log("AgreementsMade: ", userDetails.AgreementsMade);
-    console.log("DisputesInvolved: ", userDetails.DisputesInvolved);
+  return (
+    <Fragment>
+      <Navigation
+        darkMode={props.darkMode}
+        changeDarkMode={props.changeDarkMode}
+        dropdownOpen={props.dropdownOpen}
+        setDropdownOpen={props.setDropdownOpen}
+        OpenDropdownFn={props.OpenDropdownFn}
+        hasMenuDrawer={props.hasMenuDrawer}
+        setMenuDrawer={props.setMenuDrawer}
+        mobileDrawerFn={props.mobileDrawerFn}
+      />
+      <div className='containerMain'>
+        <div className='sectionMain'>
+          <h2 className='address'>Address : {userDetails.userAddress}</h2>
+          <div className='card'>
+            <div className='cardCategory'>
+              <div className='categoryBuyer'>
+                <h1>As Buyer</h1>
+                <div className='cardHeader'>
+                  <div className='cardTitle'>
+                    <p>
+                      Contracts created :{" "}
+                      {userDetails.ContractsCreatedAsBuyer === undefined
+                        ? "0"
+                        : userDetails.ContractsCreatedAsBuyer}
+                    </p>
+                    <br />
+                    <p>
+                      Contracts involved :{" "}
+                      {userDetails.ContractsInvolvedAsBuyer === undefined
+                        ? "0"
+                        : userDetails.ContractsInvolvedAsBuyer}
+                    </p>
+                    <br />
+                    <p>
+                      Contracts accepted :{" "}
+                      {userDetails.ContractsAcceptedAsBuyer === undefined
+                        ? "0"
+                        : userDetails.ContractsAcceptedAsBuyer}
+                    </p>
+                    <br />
+                    <p>
+                      Confirm deliveries :{" "}
+                      {userDetails.ConfirmedDeliveryAsBuyer === undefined
+                        ? "0"
+                        : userDetails.ConfirmedDeliveryAsBuyer}
+                    </p>
+                    <br />
+                    <p>
+                      Personalized contracts involved :{" "}
+                      {userDetails.PersonalizedContractsInvolvedAsBuyer ===
+                      undefined
+                        ? "0"
+                        : userDetails.PersonalizedContractsInvolvedAsBuyer}
+                    </p>
+                    <br />
+                    <p>
+                      Personalized contracts accepted :{" "}
+                      {userDetails.PersonalizedContractsAcceptedAsBuyer ===
+                      undefined
+                        ? "0"
+                        : userDetails.PersonalizedContractsAcceptedAsBuyer}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className='categorySeller'>
+                <h1>As Seller</h1>
+                <div className='cardHeader'>
+                  <div className='cardTitle'>
+                    <p>
+                      Contracts created :{" "}
+                      {userDetails.ContractsCreatedAsSeller === undefined
+                        ? "0"
+                        : userDetails.ContractsCreatedAsSeller}
+                    </p>
+                    <br />
+                    <p>
+                      Contracts involved :{" "}
+                      {userDetails.ContractsInvolvedAsSeller === undefined
+                        ? "0"
+                        : userDetails.ContractsInvolvedAsSeller}
+                    </p>
+                    <br />
+                    <p>
+                      Disputes managed :{" "}
+                      {userDetails.DisputesManaged === undefined
+                        ? "0"
+                        : userDetails.DisputesInvolved}
+                    </p>
+                    <br />
+                    <p>
+                      Disputes in favor of the buyer :{" "}
+                      {userDetails.DisputesInFavorOfBuyer === undefined
+                        ? "0"
+                        : userDetails.DisputesInFavorOfBuyer}
+                    </p>
+                    <br />
+                    <p>
+                      Personalized contracts involved :{" "}
+                      {userDetails.PersonalizedContractsInvolvedAsSeller ===
+                      undefined
+                        ? "0"
+                        : userDetails.PersonalizedContractsInvolvedAsSeller}
+                    </p>
+                    <br />
+                    <p>
+                      Personalized contracts created :{" "}
+                      {userDetails.PersonalizedContractsCreatedAsSeller ===
+                      undefined
+                        ? "0"
+                        : userDetails.PersonalizedContractsCreatedAsSeller}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-    console.log("DisputesManaged: ", userDetails.DisputesManaged);
-    console.log("DisputesInFavorOfBuyer: ", userDetails.DisputesInFavorOfBuyer);
-    */
-
-    return (
-        <div> 
-            <h2>userAddress: {userDetails.userAddress}</h2>
-
-            {/**
-                new possible values from DB:   userDetails.
-                    ContractsCreatedAsSeller
-                    ContractsInvolvedAsSeller
-                    ContractsAcceptedAsBuyer
-                    ContractsInvolvedAsBuyer
-                    ConfirmedDeliveryAsBuyer
-                    PersonalizedContractsCreatedAsSeller
-                    PersonalizedContractsInvolvedAsSeller
-                    PersonalizedContractsInvolvedAsBuyer
-                    PersonalizedContractsAcceptedAsBuyer
-                    ReceivedArbiterRole
-                    ReceivedPersonalizedOffer
-            
-             */}
-
-            <p>
-                Involved in disputes as buyer/seller (yea, we need to distinguish between buyer and seller case when recording in DB):
-                <br/>
-                AgreementsMade: {userDetails.AgreementsMade}
-                <br/>
-                DisputesInvolved: {userDetails.DisputesInvolved}
-            </p>
-
-            <br/>
-            <br/>
-
-            <p>
-                Disputes voted on as arbiter:
-                <br/>
-                DisputesManaged: {userDetails.DisputesManaged}
-                <br/>
-                DisputesInFavorOfBuyer: {userDetails.DisputesInFavorOfBuyer}
-            </p>
+          <br />
+          <br />
         </div>
-    )
+      </div>
+    </Fragment>
+  );
 }
 
 export default UserDetails;
 
-
-function validateInput(userAddress){
-    const validated = (/^(0x[a-f0-9A-F]{40})$/.test(userAddress));
-    return validated;
+function validateInput(userAddress) {
+  const validated = /^(0x[a-f0-9A-F]{40})$/.test(userAddress);
+  return validated;
 }
 
+export async function getServerSideProps({ params }) {
+  const userAddress = DOMPurify.sanitize(params.userAddress);
+  const valid = validateInput(userAddress);
+  console.log("userAddress valid: ", valid);
+  console.log("userAddress: ", userAddress);
 
-export async function getServerSideProps({ params }){
+  // if true, return query, otherwise return error message
+  if (valid) {
+    const userDetails = await fetch(
+      `http://localhost:3000/api/api-getUserDetails?UserWallet=${userAddress}`
+    ).then((r) => r.json()); // need to replace with payzura global path
 
-    const userAddress = DOMPurify.sanitize(params.userAddress);
-    const valid = validateInput(userAddress);
-    console.log("userAddress valid: ", valid);
-    console.log("userAddress: ", userAddress);
-
-    // if true, return query, otherwise return error message
-    if(valid){
-
-        const userDetails = await fetch(`http://localhost:3000/api/api-getUserDetails?UserWallet=${userAddress}`).then(r => r.json());         // need to replace with payzura global path
-
-        if(userDetails.length > 0){
-            return {
-                props: {
-                    userDetails : userDetails[0]["name"]
-                }
-            } 
-        } 
-    } 
-
-    return {
-        notFound: true
+    if (userDetails.length > 0) {
+      return {
+        props: {
+          userDetails: userDetails[0]["name"],
+        },
+      };
     }
+  }
+
+  return {
+    notFound: true,
+  };
 }
