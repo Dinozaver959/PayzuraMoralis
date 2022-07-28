@@ -26,12 +26,70 @@ Moralis.Cloud.define("GetPublicOffers", async (request) => {
 });
 */
 
-Moralis.Cloud.define("GetPublicOffers", async (request) => {    
+
+
+
+//-----------------------------------------------------------------------------------------------
+//                                  Contract created by Seller
+//-----------------------------------------------------------------------------------------------
+
+Moralis.Cloud.define("GetPublicOffers", async (request) => {            //  need to differentiate between Contract created by Buyer and Contract created by Seller 
   const query = new Moralis.Query("Agreements");    
   query.equalTo("State", "Available");
   query.equalTo("PersonalizedOffer", "");
   return await query.find();                  
 });
+
+
+Moralis.Cloud.define("GetPersonalizedOffers", async (request) => {      //  need to differentiate between Contract created by Buyer and Contract created by Seller
+  const query = new Moralis.Query("Agreements");    
+  query.equalTo("State", "Available");
+  query.fullText("PersonalizedOffer", request.params.UserWallet);
+  return await query.find();                  
+});
+
+
+
+
+//-----------------------------------------------------------------------------------------------
+//                                  Contract created by Buyer
+//-----------------------------------------------------------------------------------------------
+
+Moralis.Cloud.define("GetPublicOffers_CreatedByBuyer_await_seller_accepts_ALL", async (request) => {            
+  const query = new Moralis.Query("Agreements");    
+  query.equalTo("State", "await_seller_accepts");                       // possible states on smart contract level:
+                                                                        // buyer_initialized, buyer_initialized_and_paid, await_seller_accepts
+  //query.equalTo("PersonalizedOffer", "");   // ?
+  return await query.find();                  
+});
+
+Moralis.Cloud.define("GetPublicOffers_CreatedByBuyer_await_seller_accepts", async (request) => {            
+  const query = new Moralis.Query("Agreements");    
+  query.equalTo("State", "await_seller_accepts");
+  query.equalTo("BuyerWallet", request.params.UserWallet);
+  return await query.find();                  
+});
+
+Moralis.Cloud.define("GetPublicOffers_CreatedByBuyer_buyer_initialized", async (request) => {            
+  const query = new Moralis.Query("Agreements");    
+  query.equalTo("State", "buyer_initialized");
+  query.equalTo("BuyerWallet", request.params.UserWallet);
+  return await query.find();                  
+});
+
+Moralis.Cloud.define("GetPublicOffers_CreatedByBuyer_buyer_initialized_and_paid", async (request) => {            
+  const query = new Moralis.Query("Agreements");    
+  query.equalTo("State", "buyer_initialized_and_paid");
+  query.equalTo("BuyerWallet", request.params.UserWallet);
+  return await query.find();                  
+});
+
+
+
+
+//------------------------------------------------------------------------------------------------
+//                    Later Stage of Contracts - Common for both initiators
+//------------------------------------------------------------------------------------------------
 
 
 Moralis.Cloud.define("GetDisputesToManage", async (request) => {    
@@ -52,16 +110,6 @@ Moralis.Cloud.define("GetDisputesToManage", async (request) => {
   //mainQuery.fullText("Arbiters", request.params.UserWallet);    // comment out for testing - no idea why it is causing problems
   return await mainQuery.find();  
 });
-
-
-Moralis.Cloud.define("GetPersonalizedOffers", async (request) => {    
-  const query = new Moralis.Query("Agreements");    
-  query.equalTo("State", "Available");
-  query.fullText("PersonalizedOffer", request.params.UserWallet);
-  return await query.find();                  
-});
-
-
 
 
 Moralis.Cloud.define("GetUsersAgreements", async (request) => {

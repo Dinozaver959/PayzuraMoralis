@@ -5,8 +5,9 @@
 /.pnp
 .pnp.js
 
-# cloud functions for Moralis
-.cloudFunctions.js
+# hardhat config file
+#/solidity/hardhat.config.js
+
 
 # solidity auxiliary ABI outputs
 /solidity/output/_CloneFactory_sol_Clones.abi
