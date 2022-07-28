@@ -340,7 +340,7 @@ function Row_normal(props) {
                     <label className="mobileLabel">Valid Until</label>
                     {wrapEpochToDate(item.OfferValidUntil)}
                 </StyledTableCell>
-                {item.CurrencyTicker == "ETH" && approvedERC20 ? (
+                {item.CurrencyTicker == "ETH" || approvedERC20 ? (
                     <>
                         <StyledTableCell>
                             <input
