@@ -107,51 +107,52 @@ function tickerToIcon(ticker) {
 
 export default function MyAgreements(props) {
     const [data, setData] = useState([]);
-    const [dataOnlyBuyer, setDataOnlyBuyer] = useState([]);
-    const [dataOnlySeller, setDataOnlySeller] = useState([]);
-    const [placeholder, setPlaceholder] = useState(true);
+    const {dataOnlyBuyer, dataOnlySeller, placeholder} = props;
+    // const [dataOnlyBuyer, setDataOnlyBuyer] = useState([]);
+    // const [dataOnlySeller, setDataOnlySeller] = useState([]);
+    // const [placeholder, setPlaceholder] = useState(true);
 
     // load options using API call
-    async function getCollectionsDetails() {
-        // setPlaceholder(true);
-        const connectedAddress = await GetWallet_NonMoralis();
-        // const data = await fetch(`./api/api-getUserAgreements`)   /// append user wallet
-        const data = await fetch(
-            `./api/api-getUserAgreements` + "?UserWallet=" + connectedAddress
-        )
-            .then((res) => res.json())
-            .then((json) => setData(json));
+    // async function getCollectionsDetails() {
+    //     // setPlaceholder(true);
+    //     const connectedAddress = await GetWallet_NonMoralis();
+    //     // const data = await fetch(`./api/api-getUserAgreements`)   /// append user wallet
+    //     const data = await fetch(
+    //         `./api/api-getUserAgreements` + "?UserWallet=" + connectedAddress
+    //     )
+    //         .then((res) => res.json())
+    //         .then((json) => setData(json));
 
-        const dataOnlyBuyer = await fetch(
-            `./api/api-getUserAgreementsOnlyBuyer` +
-                "?UserWallet=" +
-                connectedAddress
-        )
-            .then((res) => res.json())
-            .then((json) => setDataOnlyBuyer(json));
+    //     const dataOnlyBuyer = await fetch(
+    //         `./api/api-getUserAgreementsOnlyBuyer` +
+    //             "?UserWallet=" +
+    //             connectedAddress
+    //     )
+    //         .then((res) => res.json())
+    //         .then((json) => setDataOnlyBuyer(json));
 
-        const dataOnlySeller = await fetch(
-            `./api/api-getUserAgreementsOnlySeller` +
-                "?UserWallet=" +
-                connectedAddress
-        )
-            .then((res) => res.json())
-            .then((json) => setDataOnlySeller(json));
-        setPlaceholder(false);
+    //     const dataOnlySeller = await fetch(
+    //         `./api/api-getUserAgreementsOnlySeller` +
+    //             "?UserWallet=" +
+    //             connectedAddress
+    //     )
+    //         .then((res) => res.json())
+    //         .then((json) => setDataOnlySeller(json));
+    //     setPlaceholder(false);
 
-        console.log("data:");
-        console.log(data);
-        console.log("dataOnlyBuyer:");
-        console.log(dataOnlyBuyer);
-        console.log("dataOnlySeller:");
-        console.log(dataOnlySeller);
-        return data;
-    }
+    //     console.log("data:");
+    //     console.log(data);
+    //     console.log("dataOnlyBuyer:");
+    //     console.log(dataOnlyBuyer);
+    //     console.log("dataOnlySeller:");
+    //     console.log(dataOnlySeller);
+    //     return data;
+    // }
 
-    // Calling the function on component mount
-    useEffect(() => {
-        getCollectionsDetails();
-    }, []);
+    // // Calling the function on component mount
+    // useEffect(() => {
+    //     getCollectionsDetails();
+    // }, []);
 
     return (
         <Fragment>
