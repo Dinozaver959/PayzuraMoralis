@@ -341,7 +341,10 @@ function Row_normal(props) {
                         "Starting Dispute...";
 
                       var formData = new FormData();
-                      formData.append("BuyerAccount",Moralis.User.current().id);
+                      formData.append(
+                        "BuyerAccount",
+                        Moralis.User.current().id
+                      );
 
                       const connectedAddress = await GetWallet_NonMoralis();
                       formData.append("BuyerWallet", connectedAddress);
@@ -353,8 +356,18 @@ function Row_normal(props) {
                       xhr.open("POST", "/api/api-startDispute", false); // new API required
                       xhr.onload = function () {
                         // update the feedback text
-                        document.getElementById("submitFeedback").style.display = "inline";
-                        document.getElementById("submitFeedback").innerText = "Dispute started";
+                        document.getElementById(
+                          "submitFeedback"
+                        ).style.display = "inline";
+                        document.getElementById("submitFeedback").innerText =
+                          "Dispute started";
+
+                        // prevent the Submit button to be clickable and functionable
+                        // removeHover()
+                        // document.getElementById('SubmitButton').disabled = true
+
+                        // think about also removing the hover effect
+                        // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
                         console.log("Dispute started");
                       };
                       xhr.send(formData);

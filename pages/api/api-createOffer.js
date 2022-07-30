@@ -11,8 +11,8 @@ apiRoute.post(async (req, res) => {
     console.log(req.body)
     console.log(req.files)
 
-    const BuyerAccount = DOMPurify.sanitize(req.body.BuyerAccount[0].toString());
-    const BuyerWallet = DOMPurify.sanitize(req.body.BuyerWallet[0].toString());
+    const SellerAccount = DOMPurify.sanitize(req.body.SellerAccount[0].toString());
+    const SellerWallet = DOMPurify.sanitize(req.body.SellerWallet[0].toString());
     const ContractTitle = DOMPurify.sanitize(req.body.ContractTitle[0].toString());
     const OfferDescription = DOMPurify.sanitize(req.body.OfferDescription[0].toString());
     const hashDescription = DOMPurify.sanitize(req.body.hashDescription[0].toString());
@@ -26,8 +26,8 @@ apiRoute.post(async (req, res) => {
     const CurrencyTicker = DOMPurify.sanitize(req.body.CurrencyTicker[0].toString());
     const ChainID = DOMPurify.sanitize(req.body.ChainID[0].toString());
 
-    console.log("BuyerAccount: " + BuyerAccount);
-    console.log("BuyerWallet: " + BuyerWallet);
+    console.log("SellerAccount: " + SellerAccount);
+    console.log("SellerWallet: " + SellerWallet);
     console.log("ContractTitle: " + ContractTitle);
     console.log("OfferDescription: " + OfferDescription);
     console.log("hashDescription: " + hashDescription);
@@ -42,7 +42,7 @@ apiRoute.post(async (req, res) => {
     console.log("Arbiters: " + Arbiters);
 
 
-    await UpdateContracts_ContractCreatedByBuyer(BuyerAccount, BuyerWallet, ContractTitle, OfferDescription, hashDescription, Price, CurrencyTicker, ChainID, TimeToDeliver, transactionHash, index, OfferValidUntil, PersonalizedOffer, Arbiters)
+    await UpdateContracts_ContractCreatedByBuyer(SellerAccount, SellerWallet, ContractTitle, OfferDescription, hashDescription, Price, CurrencyTicker, ChainID, TimeToDeliver, transactionHash, index, OfferValidUntil, PersonalizedOffer, Arbiters)
 
 
     // if artbiters are not empty, split it by commma and increment for each
@@ -73,10 +73,10 @@ apiRoute.post(async (req, res) => {
     // if PersonalizedOffer  is empty...
     if(IsPersonalized(!PersonalizedOffer)){
         console.log("not personalized, general contract created");
-        await UpdateUserParticipationData(BuyerWallet, "ContractsCreatedAsBuyer");
+        await UpdateUserParticipationData(SellerWallet, "ContractsCreatedAsSeller");
     } else {
         console.log("personalized contract created");
-        await UpdateUserParticipationData(BuyerWallet, "PersonalizedContractsCreatedAsBuyer");
+        await UpdateUserParticipationData(SellerWallet, "PersonalizedContractsCreatedAsSeller");
     }
 
     res.status(201).end("Offer created");

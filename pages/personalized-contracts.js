@@ -18,7 +18,7 @@ import { styled } from "@mui/material/styles";
 import Moralis from "moralis";
 import {
   GetWallet_NonMoralis,
-  AcceptOfferBuyer_Moralis,
+  AcceptOffer_Moralis,
   ApproveERC20_Moralis,
   PayERC20__TEST__Moralis,
   PayERC20__TEST__WO_Moralis,
@@ -332,10 +332,13 @@ function Row_normal(props) {
                       setApprovedERC20(true);
 
                       var formData = new FormData();
-                      formData.append("userAccount", Moralis.User.current().id);
+                      formData.append(
+                        "BuyerAccount",
+                        Moralis.User.current().id
+                      );
 
                       const connectedAddress = await GetWallet_NonMoralis();
-                      formData.append("wallet", connectedAddress);
+                      formData.append("BuyerWallet", connectedAddress);
                       formData.append("transactionHash", transactionHash);
                       formData.append("objectId", item.objectId);
 
@@ -343,11 +346,17 @@ function Row_normal(props) {
                       xhr.open("POST", "/api/api-approvedERC20", false);
                       xhr.onload = function () {
                         // update the feedback text
-                        document.getElementById("submitFeedback").style.display = "inline";
-                        document.getElementById("submitFeedback").innerText = "granting approval...";
+                        document.getElementById(
+                          "submitFeedback"
+                        ).style.display = "inline";
+                        document.getElementById("submitFeedback").innerText =
+                          "granting approval...";
 
-                        //var formData = new FormData();
-                        //formData.append("BuyerAccount", Moralis.User.current().id);
+                        var formData = new FormData();
+                        formData.append(
+                          "BuyerAccount",
+                          Moralis.User.current().id
+                        );
 
                         // think about also removing the hover effect
                         // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
@@ -383,7 +392,7 @@ function Row_normal(props) {
             type="submit"
             value="Accept Offer"
             onClick={() =>
-              AcceptOfferBuyer_Moralis(item.index, item.CurrencyTicker)
+              AcceptOffer_Moralis(item.index, item.CurrencyTicker)
                 .then(async (transactionHash) => {
                   // show the feedback text
                   document.getElementById("submitFeedback").style.display =
@@ -402,7 +411,7 @@ function Row_normal(props) {
                   formData.append("objectId", item.objectId);
 
                   var xhr = new XMLHttpRequest();
-                  xhr.open("POST", "/api/api-acceptedOfferByBuyer", false);
+                  xhr.open("POST", "/api/api-acceptedOffer", false);
                   xhr.onload = function () {
                     // update the feedback text
                     document.getElementById("submitFeedback").style.display =
@@ -451,7 +460,7 @@ function Row_normal(props) {
               type="submit"
               value="Accept Offer (buyer)"
               onClick={() =>
-                AcceptOfferBuyer_Moralis(item.index)
+                AcceptOffer_Moralis(item.index)
                   .then(async (transactionHash) => {
                     // show the feedback text
                     document.getElementById("submitFeedback").style.display =
@@ -469,7 +478,7 @@ function Row_normal(props) {
                     formData.append("objectId", item.objectId);
 
                     var xhr = new XMLHttpRequest();
-                    xhr.open("POST", "/api/api-acceptedOfferByBuyer", false);
+                    xhr.open("POST", "/api/api-acceptedOffer", false);
                     xhr.onload = function () {
                       // update the feedback text
                       document.getElementById("submitFeedback").style.display =
