@@ -91,8 +91,7 @@ export default function ContractsListed(props) {
 
     // load options using API call
     async function getCollectionsDetails() {
-        const connectedAddress = await GetWallet_NonMoralis();
-        const data = await fetch(`./api/api-getPublicOffers` + "?UserWallet=" + connectedAddress)
+        const data = await fetch(`./api/api-getPublicOffers`)
             .then((res) => res.json())
             .then((json) => setData(json)); // uncomment this line to see the data in the console
 
