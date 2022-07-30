@@ -28,7 +28,6 @@ import BuyerIc from "../components/icons/Buyer";
 import SellerIc from "../components/icons/Seller";
 
 import ModalUi from "../components/ui/ModalUi";
-import Button from "../components/ui/Button";
 
 import ETHIcon from "../components/images/ETH.webp";
 import USDCIcon from "../components/images/USDC.webp";
@@ -74,6 +73,12 @@ export default function Description(props) {
     }
 
     async function SubmitForm() {
+        // setModelData({
+        //     show: true,
+        //     type: "alert",
+        //     status: "Pending",
+        //     message: "Creating Offer...",
+        // });
         CreateEscrow_Moralis(
             document.getElementById("Price").value,
             document.getElementById("CurrencyTicker").value, // expected values: `ETH`, `USDC`
@@ -306,23 +311,20 @@ export default function Description(props) {
         let days = 365;
         if (selectedValidity === "7 Days") {
             days = 7;
-        }
-        else if (selectedValidity === "14 Days") {
+        } else if (selectedValidity === "14 Days") {
             days = 14;
-        }
-        else if (selectedValidity === "30 Days") {
+        } else if (selectedValidity === "30 Days") {
             days = 30;
-        }
-        else if (selectedValidity === "90 days") {
+        } else if (selectedValidity === "90 days") {
             days = 90;
         }
-        
-        if(days == 365) {
+
+        if (days == 365) {
             setShowDatepicker(true);
-        }
-        else { //Set Custom
+        } else {
+            //Set Custom
             setShowDatepicker(false);
-            updateOfferValidVariable(days);    
+            updateOfferValidVariable(days);
         }
     };
 
@@ -477,10 +479,19 @@ export default function Description(props) {
                                                         value="buyer"
                                                         disabled="disabled"
                                                     />
-                                                    <label htmlFor="asBuyer">
-                                                        <BuyerIc />
-                                                        <span>As a Buyer</span>
-                                                    </label>
+                                                    <Tooltip
+                                                        title="Not available yet"
+                                                        placement="top"
+                                                        enterTouchDelay={0}
+                                                        arrow
+                                                    >
+                                                        <label htmlFor="asBuyer">
+                                                            <BuyerIc />
+                                                            <span>
+                                                                As a Buyer
+                                                            </span>
+                                                        </label>
+                                                    </Tooltip>
                                                 </li>
                                                 <li>
                                                     <input
@@ -565,7 +576,7 @@ export default function Description(props) {
                                             <div className="formLabel">
                                                 Contract Description
                                             </div>
-                                            <div className="formField">
+                                            <div className="formField descriptionField">
                                                 <textarea
                                                     cols="40"
                                                     rows="10"
@@ -674,9 +685,15 @@ export default function Description(props) {
                                                                 title: "Select Currency",
                                                                 body: (
                                                                     <CurrencyList
-                                                                        CurrenciesData={CurrenciesData}
-                                                                        currencyChangeFn={handleCurrencyChange}
-                                                                        defaultValue={selectCurrency}
+                                                                        CurrenciesData={
+                                                                            CurrenciesData
+                                                                        }
+                                                                        currencyChangeFn={
+                                                                            handleCurrencyChange
+                                                                        }
+                                                                        defaultValue={
+                                                                            selectCurrency
+                                                                        }
                                                                     />
                                                                 ),
                                                             })
@@ -688,20 +705,36 @@ export default function Description(props) {
                                                                 selectCurrency
                                                         ).map(
                                                             (selectedItem) => (
-                                                                <Fragment key={selectedItem}>
+                                                                <Fragment
+                                                                    key={
+                                                                        selectedItem
+                                                                    }
+                                                                >
                                                                     <i className="currencyIc">
                                                                         <Image
-                                                                            src={selectedItem.icon}
-                                                                            width={25}
-                                                                            height={25}
-                                                                            alt={selectedItem.name}
+                                                                            src={
+                                                                                selectedItem.icon
+                                                                            }
+                                                                            width={
+                                                                                25
+                                                                            }
+                                                                            height={
+                                                                                25
+                                                                            }
+                                                                            alt={
+                                                                                selectedItem.name
+                                                                            }
                                                                         />
                                                                     </i>
                                                                     <span>
-                                                                        {selectedItem.shortName}
+                                                                        {
+                                                                            selectedItem.shortName
+                                                                        }
                                                                     </span>
                                                                     <DownArrowIc
-                                                                        size={20}
+                                                                        size={
+                                                                            20
+                                                                        }
                                                                     />
                                                                 </Fragment>
                                                             )
@@ -727,8 +760,11 @@ export default function Description(props) {
                                                         errors.CurrencyTicker
                                                             .type ===
                                                             "required" && (
-                                                            <p>Currency required</p>
-                                                        )} 
+                                                            <p>
+                                                                Currency
+                                                                required
+                                                            </p>
+                                                        )}
                                                 </div>
                                             </div>
                                         </div>

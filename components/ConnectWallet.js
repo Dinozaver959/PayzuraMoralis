@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useMoralis } from "react-moralis";
 import { ethers } from "ethers";
 
+const Web3 = require('web3');
 const style = {
     headerItem: `px-2 py-2 cursor-pointer`,
     headerIcon: `text-2xl px-2 py-2 cursor-pointer`,
@@ -102,7 +103,7 @@ function ConnectWallet() {
     ethereum.on('accountsChanged', handleAccountsChanged); 
     */
 
-    const truncateAccountAddress = currentAccount.slice(0, 6) + "..." + currentAccount.slice(-4);
+    const truncateAccountAddress = currentAccount.slice(0, 5) + "..." + currentAccount.slice(-4);
 
     const checkIfWalletIsConnected = async () => {
         try {
@@ -120,7 +121,7 @@ function ConnectWallet() {
             if (accounts.length !== 0) {
                 const account = accounts[0];
                 console.log("Found an authorized account ", account);
-                setCurrentAccount(account);
+                setCurrentAccount(Web3.utils.toChecksumAddress(account));
                 detailsOn();
             } else {
                 console.log("Could not find an authorized account");
@@ -141,7 +142,7 @@ function ConnectWallet() {
                     method: "eth_requestAccounts",
                 });
                 console.log("Account connected ", accounts[0]);
-                setCurrentAccount(accounts[0]);
+                setCurrentAccount(Web3.utils.toChecksumAddress(accounts[0]));
             }
         } catch (error) {
             console.log(error);
@@ -152,7 +153,7 @@ function ConnectWallet() {
         const handleAccountsChanged = async (accounts) => {
             if (accounts.length > 0) {
                 //console.log(`Using account ${accounts[0]}`);
-                setCurrentAccount(accounts[0]);
+                setCurrentAccount(Web3.utils.toChecksumAddress(accounts[0]));
             } else {
                 console.error("0 accounts");
             }

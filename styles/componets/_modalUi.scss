@@ -17,6 +17,10 @@
         transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
         min-height: calc(100% - (1.75rem * 2));
 
+        @include RespondTo(MobileDevices) {
+            max-width: 95%;
+        }
+
         .modalBox {
             @include Relative;
             @include Flexbox;
@@ -61,6 +65,10 @@
                 @include Relative;
                 flex: 1 1 auto;
                 padding: 1rem;
+
+                @include RespondTo(MobileDevices) {
+                    padding: 0.7rem;
+                }
             }
 
             .modalFooter {
