@@ -31,6 +31,9 @@ export default function Navigation(props) {
         setMenuDrawer,
     } = props;
 
+    console.log("props");
+    console.log(props);
+
     const router = useRouter();
 
     const dropdownRef = useRef();
@@ -54,7 +57,10 @@ export default function Navigation(props) {
             </div>
 
             <div className="mobileHeaderWallet">
-                <ConnectWallet />
+                <ConnectWallet
+                    currentAccount={props.currentAccount}
+                    setCurrentAccount={props.setCurrentAccount}
+                />
             </div>
 
             <nav className="navbarMain" ref={drawerRef}>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useMoralis } from "react-moralis";
 import { ethers } from "ethers";
 
-const Web3 = require('web3');
+const Web3 = require("web3");
 const style = {
     headerItem: `px-2 py-2 cursor-pointer`,
     headerIcon: `text-2xl px-2 py-2 cursor-pointer`,
@@ -73,7 +73,10 @@ useEffect( () =>{
 }, []);
 */
 
-function ConnectWallet() {
+function ConnectWallet(props) {
+    // console.log("props");
+    // console.log(props);
+    // const { currentAccount, setCurrentAccount } = props;
     const [currentAccount, setCurrentAccount] = useState("");
     const [userAddress, setUserAddress] = useState("");
     const [chainId, setChainId] = useState("");
@@ -103,7 +106,8 @@ function ConnectWallet() {
     ethereum.on('accountsChanged', handleAccountsChanged); 
     */
 
-    const truncateAccountAddress = currentAccount.slice(0, 5) + "..." + currentAccount.slice(-4);
+    const truncateAccountAddress =
+        currentAccount.slice(0, 5) + "..." + currentAccount.slice(-4);
 
     const checkIfWalletIsConnected = async () => {
         try {
@@ -131,7 +135,7 @@ function ConnectWallet() {
         }
     };
 
-    const connectWallet = async () => {
+    const connectWalletFn = async () => {
         try {
             const { ethereum } = window;
 
@@ -185,7 +189,7 @@ function ConnectWallet() {
                 <>
                     <button
                         className="button default rounded"
-                        onClick={connectWallet}
+                        onClick={connectWalletFn}
                     >
                         Connect Wallet
                     </button>

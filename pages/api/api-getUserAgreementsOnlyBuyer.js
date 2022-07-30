@@ -18,13 +18,7 @@ apiRoute.get(async (req, res) => {
     var packagedOffers = [];
 
     for (let i = 0; i < offers.length; i++) {
-        if (
-            JSON.parse(JSON.stringify(offers[i], null, 3)).BuyerWallet ==
-            UserWallet
-        ) {
-            packagedOffers.push({ id: i + 1, name: offers[i] });
-            //console.log("offers[i]: " + offers[i]);
-        }
+        packagedOffers.push({ id: i + 1, name: offers[i] });
     }
 
     res.end(JSON.stringify(packagedOffers, null, 3));

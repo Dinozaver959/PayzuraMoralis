@@ -1,24 +1,15 @@
 import "../styles/globals.scss";
 import Head from "next/head";
 import { MoralisProvider } from "react-moralis";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import NextNProgress from "./../components/ui/NextNProgress";
-import { useRouter } from "next/router";
-
-import {
-    GetWallet_NonMoralis,
-    ReturnPayment_Moralis,
-    ClaimFunds_Moralis,
-    StartDispute_Moralis,
-    ConfirmDelivery_Moralis,
-} from "../JS/local_web3_Moralis";
-
 
 function MyApp({ Component, pageProps }) {
     const [darkMode, setDarkMode] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [hasMenuDrawer, setMenuDrawer] = useState(false);
+    const [currentAccount, setCurrentAccount] = useState("");
 
     // Light and Dark Mode function
     function changeDarkModeHalndler() {
@@ -34,72 +25,6 @@ function MyApp({ Component, pageProps }) {
     function toggleMobileDrawerHandler() {
         setMenuDrawer(!hasMenuDrawer);
     }
-
-
-
-
-
-    const [data, setData] = useState([]);
-    const [dataOnlyBuyer, setDataOnlyBuyer] = useState([]);
-    const [dataOnlySeller, setDataOnlySeller] = useState([]);
-    const [placeholder, setPlaceholder] = useState(true);
-
-    async function getCollectionsDetails() {
-        // setPlaceholder(true);
-        const connectedAddress = await GetWallet_NonMoralis();
-        // const data = await fetch(`./api/api-getUserAgreements`)   /// append user wallet
-        const data = await fetch(
-            `./api/api-getUserAgreements` + "?UserWallet=" + connectedAddress
-        )
-            .then((res) => res.json())
-            .then((json) => setData(json));
-
-        const dataOnlyBuyer = await fetch(
-            `./api/api-getUserAgreementsOnlyBuyer` +
-                "?UserWallet=" +
-                connectedAddress
-        )
-            .then((res) => res.json())
-            .then((json) => setDataOnlyBuyer(json));
-
-        const dataOnlySeller = await fetch(
-            `./api/api-getUserAgreementsOnlySeller` +
-                "?UserWallet=" +
-                connectedAddress
-        )
-            .then((res) => res.json())
-            .then((json) => setDataOnlySeller(json));
-        setPlaceholder(false);
-
-        console.log("data:");
-        console.log(data);
-        console.log("dataOnlyBuyer:");
-        console.log(dataOnlyBuyer);
-        console.log("dataOnlySeller:");
-        console.log(dataOnlySeller);
-        return data;
-    }
-
-    const router = useRouter();
-    useEffect(() => {
-        if (window.ethereum) {
-            window.ethereum.on("chainChanged", () => {
-                window.location.reload();
-            });
-            window.ethereum.on("accountsChanged", () => {
-                // window.location.reload();
-                getCollectionsDetails();
-                // router.push("/", "/", { shallow: true });
-                // router.push("/contracts-listed", "/contracts-listed", {
-                //     shallow: false,
-                // });
-            });
-        }
-    }, []);
-
-    useEffect(() => {
-        getCollectionsDetails();
-    }, []);
 
     return (
         <div className={darkMode ? "layoutMain darkMode" : "layoutMain"}>
@@ -153,9 +78,8 @@ function MyApp({ Component, pageProps }) {
                     setMenuDrawer={setMenuDrawer}
                     mobileDrawerFn={toggleMobileDrawerHandler}
 
-                    dataOnlyBuyer={dataOnlyBuyer}
-                    dataOnlySeller={dataOnlySeller}
-                    placeholder={placeholder}
+                    currentAccount={currentAccount}
+                    setCurrentAccount={setCurrentAccount}
                 />
             </MoralisProvider>
         </div>

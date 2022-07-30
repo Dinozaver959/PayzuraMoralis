@@ -107,52 +107,64 @@ function tickerToIcon(ticker) {
 
 export default function MyAgreements(props) {
     const [data, setData] = useState([]);
-    const {dataOnlyBuyer, dataOnlySeller, placeholder} = props;
-    // const [dataOnlyBuyer, setDataOnlyBuyer] = useState([]);
-    // const [dataOnlySeller, setDataOnlySeller] = useState([]);
-    // const [placeholder, setPlaceholder] = useState(true);
+    const [forceUpdateCount, setForceUpdateCount] = useState(0);
+    const [dataOnlyBuyer, setDataOnlyBuyer] = useState([]);
+    const [dataOnlySeller, setDataOnlySeller] = useState([]);
+    const [placeholder, setPlaceholder] = useState(true);
+
+    // console.log('props',props);
+    // console.log('tesstttss.11..');
+    // const [, updateState] = React.useState();
+    // const forceUpdate = React.useCallback(() => updateState({}), []);
+    const forceUpdate = () => {
+        setForceUpdateCount(forceUpdateCount + 1);
+        console.log("foceUpdate" + forceUpdateCount);
+    };
+    // getCollectionsDetails();
 
     // load options using API call
-    // async function getCollectionsDetails() {
-    //     // setPlaceholder(true);
-    //     const connectedAddress = await GetWallet_NonMoralis();
-    //     // const data = await fetch(`./api/api-getUserAgreements`)   /// append user wallet
-    //     const data = await fetch(
-    //         `./api/api-getUserAgreements` + "?UserWallet=" + connectedAddress
-    //     )
-    //         .then((res) => res.json())
-    //         .then((json) => setData(json));
+    async function getCollectionsDetails() {
+        // setPlaceholder(true);
+        const connectedAddress = await GetWallet_NonMoralis();
+        // const data = await fetch(`./api/api-getUserAgreements`)   /// append user wallet
+        const data = await fetch(
+            `./api/api-getUserAgreements` + "?UserWallet=" + connectedAddress
+        )
+            .then((res) => res.json())
+            .then((json) => setData(json));
 
-    //     const dataOnlyBuyer = await fetch(
-    //         `./api/api-getUserAgreementsOnlyBuyer` +
-    //             "?UserWallet=" +
-    //             connectedAddress
-    //     )
-    //         .then((res) => res.json())
-    //         .then((json) => setDataOnlyBuyer(json));
+        const dataOnlyBuyer = await fetch(
+            `./api/api-getUserAgreementsOnlyBuyer` +
+                "?UserWallet=" +
+                connectedAddress
+        )
+            .then((res) => res.json())
+            .then((json) => setDataOnlyBuyer(json));
 
-    //     const dataOnlySeller = await fetch(
-    //         `./api/api-getUserAgreementsOnlySeller` +
-    //             "?UserWallet=" +
-    //             connectedAddress
-    //     )
-    //         .then((res) => res.json())
-    //         .then((json) => setDataOnlySeller(json));
-    //     setPlaceholder(false);
+        const dataOnlySeller = await fetch(
+            `./api/api-getUserAgreementsOnlySeller` +
+                "?UserWallet=" +
+                connectedAddress
+        )
+            .then((res) => res.json())
+            .then((json) => setDataOnlySeller(json));
+        setPlaceholder(false);
 
-    //     console.log("data:");
-    //     console.log(data);
-    //     console.log("dataOnlyBuyer:");
-    //     console.log(dataOnlyBuyer);
-    //     console.log("dataOnlySeller:");
-    //     console.log(dataOnlySeller);
-    //     return data;
-    // }
+        console.log("data:");
+        console.log(data);
+        console.log("dataOnlyBuyer:");
+        console.log(dataOnlyBuyer);
+        console.log("dataOnlySeller:");
+        console.log(dataOnlySeller);
+        return data;
+    }
 
-    // // Calling the function on component mount
-    // useEffect(() => {
-    //     getCollectionsDetails();
-    // }, []);
+    // Calling the function on component mount
+    useEffect(() => {
+        console.log("tesstttss.112..");
+
+        getCollectionsDetails();
+    }, [forceUpdateCount]);
 
     return (
         <Fragment>
@@ -165,17 +177,23 @@ export default function MyAgreements(props) {
                 hasMenuDrawer={props.hasMenuDrawer}
                 setMenuDrawer={props.setMenuDrawer}
                 mobileDrawerFn={props.mobileDrawerFn}
+                
+                currentAccount={props.currentAccount}
+                setCurrentAccount={props.setCurrentAccount}
             />
 
             <div className="containerMain">
                 <div className="pageHeader">
-                    <h1>My Contracts</h1>
+                    <h1>My Contracts:{props.darkMode}</h1>
                 </div>
 
                 <div className="card mt-10">
                     <div className="cardHeader">
                         <div className="cardTitle">
                             <h2>My Contracts as Buyer</h2>
+                            <button onClick={forceUpdate}>
+                                Force re-render
+                            </button>
                         </div>
                     </div>
 
