@@ -31,9 +31,6 @@ export default function Navigation(props) {
         setMenuDrawer,
     } = props;
 
-    console.log("props");
-    console.log(props);
-
     const router = useRouter();
 
     const dropdownRef = useRef();
@@ -108,7 +105,10 @@ export default function Navigation(props) {
                     </li>
                     <li className="headerButton hideSmallerThanIpad">
                         <span></span>
-                        <ConnectWallet />
+                        <ConnectWallet
+                            currentAccount={props.currentAccount}
+                            setCurrentAccount={props.setCurrentAccount}
+                        />
                     </li>
                     <li className="headerButton" onClick={props.mobileDrawerFn}>
                         <Button

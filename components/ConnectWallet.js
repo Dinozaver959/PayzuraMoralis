@@ -1,83 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { useMoralis } from "react-moralis";
+import React, { useState, useEffect, Fragment } from "react";
 import { ethers } from "ethers";
 
 const Web3 = require("web3");
-const style = {
-    headerItem: `px-2 py-2 cursor-pointer`,
-    headerIcon: `text-2xl px-2 py-2 cursor-pointer`,
-};
-
-function checkConnection() {
-    ethereum
-        .request({ method: "eth_accounts" })
-        .then(handleAccountsChanged)
-        .catch(console.error);
-}
-
-/*
-function handleAccountsChanged(accounts) {
-    console.log(accounts);
-
-    if (accounts.length === 0) {
-        return false;
-    } else if (accounts[0] !== currentAccount) {
-        return true;
-    }
-}
-*/
-
-/*
-    if (accounts.length === 0) {
-        $('#connection-status').innerText = "You're not connected to MetaMask";
-        $('#connect-btn').disabled = false;
-    } else if (accounts[0] !== currentAccount) {
-        currentAccount = accounts[0];
-        $('#connection-status').innerText = `Address: ${currentAccount}`;
-        $('#connect-btn').disabled = true;
-    }
-*/
-
-/*
-const provider = new Web3Provider(wallet);
-await provider.send('eth_requestAccounts', []);
-const signer = await provider.getSigner(0);
-
-if (signer === undefined) userIsNotConnected();
-else userIsConnected();
-
-*/
-
-/*
-window.ethereum.on('accountsChanged', function (accounts) {
-    // Time to reload your interface with accounts[0]!
-
-})
-*/
-
-/*
-useEffect( () =>{
-    const onNewSigner = async () =>{
-      let addr;
-      if(window.ethereum){
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-
-        addr = await signer.getAddress();
-
-        setUserAddress(addr.toString());
-      }
-    }
-
-    onNewSigner();
-}, []);
-*/
 
 function ConnectWallet(props) {
-    // console.log("props");
-    // console.log(props);
-    // const { currentAccount, setCurrentAccount } = props;
-    const [currentAccount, setCurrentAccount] = useState("");
+    const { currentAccount, setCurrentAccount } = props;
     const [userAddress, setUserAddress] = useState("");
     const [chainId, setChainId] = useState("");
 
@@ -90,21 +17,6 @@ function ConnectWallet(props) {
 
         setUserAddress(addr.toString());
     };
-
-    /*
-    const handleAccountsChanged = (accounts) => { 
-        if (accounts.length === 0) { 
-            console.log('Please connect to MetaMask.(handleaccounts)'); 
-            setCurrentAccount(""); 
-            //setUserBalance(0); 
-            //setLoading(false);
-         } else if (accounts[0] !== currentAccount) { 
-            setCurrentAccount(accounts[0]); 
-            console.log("Account connected ", accounts[0]); 
-        } 
-    } 
-    ethereum.on('accountsChanged', handleAccountsChanged); 
-    */
 
     const truncateAccountAddress =
         currentAccount.slice(0, 5) + "..." + currentAccount.slice(-4);
@@ -163,18 +75,6 @@ function ConnectWallet(props) {
             }
         };
 
-        // not working properly
-        /*
-        const handleChainChanged = async (chainId) => {
-            const chainId_ = await ethers.getDefaultProvider().getNetwork().chainId;  
-            console.log(`Chain id: ${chainId_}`);
-            setChainId(chainId_);
-
-            const chainName_ = await ethers.getDefaultProvider().getNetwork().name;
-            console.log(`Chain name: ${chainName_}`);
-        }
-        */
-
         checkIfWalletIsConnected();
 
         if (window.ethereum) {
@@ -184,24 +84,20 @@ function ConnectWallet(props) {
     }, []);
 
     return (
-        <>
+        <Fragment>
             {!currentAccount ? (
-                <>
-                    <button
-                        className="button default rounded"
-                        onClick={connectWalletFn}
-                    >
-                        Connect Wallet
-                    </button>
-                </>
+                <button
+                    className="button default rounded"
+                    onClick={connectWalletFn}
+                >
+                    Connect Wallet
+                </button>
             ) : (
-                <>
-                    <button className="button default rounded">
-                        {truncateAccountAddress}
-                    </button>
-                </>
+                <button className="button default rounded">
+                    {truncateAccountAddress}
+                </button>
             )}
-        </>
+        </Fragment>
     );
 }
 

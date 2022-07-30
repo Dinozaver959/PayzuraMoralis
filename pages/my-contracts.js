@@ -107,20 +107,9 @@ function tickerToIcon(ticker) {
 
 export default function MyAgreements(props) {
     const [data, setData] = useState([]);
-    const [forceUpdateCount, setForceUpdateCount] = useState(0);
     const [dataOnlyBuyer, setDataOnlyBuyer] = useState([]);
     const [dataOnlySeller, setDataOnlySeller] = useState([]);
     const [placeholder, setPlaceholder] = useState(true);
-
-    // console.log('props',props);
-    // console.log('tesstttss.11..');
-    // const [, updateState] = React.useState();
-    // const forceUpdate = React.useCallback(() => updateState({}), []);
-    const forceUpdate = () => {
-        setForceUpdateCount(forceUpdateCount + 1);
-        console.log("foceUpdate" + forceUpdateCount);
-    };
-    // getCollectionsDetails();
 
     // load options using API call
     async function getCollectionsDetails() {
@@ -161,10 +150,8 @@ export default function MyAgreements(props) {
 
     // Calling the function on component mount
     useEffect(() => {
-        console.log("tesstttss.112..");
-
         getCollectionsDetails();
-    }, [forceUpdateCount]);
+    }, [props.currentAccount]);
 
     return (
         <Fragment>
@@ -177,7 +164,6 @@ export default function MyAgreements(props) {
                 hasMenuDrawer={props.hasMenuDrawer}
                 setMenuDrawer={props.setMenuDrawer}
                 mobileDrawerFn={props.mobileDrawerFn}
-                
                 currentAccount={props.currentAccount}
                 setCurrentAccount={props.setCurrentAccount}
             />
@@ -191,9 +177,6 @@ export default function MyAgreements(props) {
                     <div className="cardHeader">
                         <div className="cardTitle">
                             <h2>My Contracts as Buyer</h2>
-                            <button onClick={forceUpdate}>
-                                Force re-render
-                            </button>
                         </div>
                     </div>
 
