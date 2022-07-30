@@ -1,7 +1,7 @@
 import "../styles/globals.scss";
 import Head from "next/head";
 import { MoralisProvider } from "react-moralis";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import NextNProgress from "./../components/ui/NextNProgress";
 
@@ -9,6 +9,7 @@ function MyApp({ Component, pageProps }) {
     const [darkMode, setDarkMode] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [hasMenuDrawer, setMenuDrawer] = useState(false);
+    const [currentAccount, setCurrentAccount] = useState("");
 
     // Light and Dark Mode function
     function changeDarkModeHalndler() {
@@ -24,17 +25,6 @@ function MyApp({ Component, pageProps }) {
     function toggleMobileDrawerHandler() {
         setMenuDrawer(!hasMenuDrawer);
     }
-
-    useEffect(() => {
-        if (window.ethereum) {
-            window.ethereum.on("chainChanged", () => {
-                window.location.reload();
-            });
-            window.ethereum.on("accountsChanged", () => {
-                window.location.reload();
-            });
-        }
-    });
 
     return (
         <div className={darkMode ? "layoutMain darkMode" : "layoutMain"}>
@@ -87,6 +77,9 @@ function MyApp({ Component, pageProps }) {
                     hasMenuDrawer={hasMenuDrawer}
                     setMenuDrawer={setMenuDrawer}
                     mobileDrawerFn={toggleMobileDrawerHandler}
+
+                    currentAccount={currentAccount}
+                    setCurrentAccount={setCurrentAccount}
                 />
             </MoralisProvider>
         </div>

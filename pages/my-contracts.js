@@ -151,7 +151,7 @@ export default function MyAgreements(props) {
     // Calling the function on component mount
     useEffect(() => {
         getCollectionsDetails();
-    }, []);
+    }, [props.currentAccount]);
 
     return (
         <Fragment>
@@ -164,11 +164,13 @@ export default function MyAgreements(props) {
                 hasMenuDrawer={props.hasMenuDrawer}
                 setMenuDrawer={props.setMenuDrawer}
                 mobileDrawerFn={props.mobileDrawerFn}
+                currentAccount={props.currentAccount}
+                setCurrentAccount={props.setCurrentAccount}
             />
 
             <div className="containerMain">
                 <div className="pageHeader">
-                    <h1>My Contracts</h1>
+                    <h1>My Contracts:{props.darkMode}</h1>
                 </div>
 
                 <div className="card mt-10">
