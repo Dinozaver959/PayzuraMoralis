@@ -388,29 +388,12 @@ function Row_normal(props) {
                                             });
 
                                             var formData = new FormData();
-                                            formData.append(
-                                                "BuyerAccount",
-                                                Moralis.User.current().id
-                                            );
-
-                                            const connectedAddress =
-                                                await GetWallet_NonMoralis();
-                                            formData.append(
-                                                "BuyerWallet",
-                                                connectedAddress
-                                            );
-                                            formData.append(
-                                                "SellerWallet",
-                                                item.SellerWallet
-                                            );
-                                            formData.append(
-                                                "transactionHash",
-                                                transactionHash
-                                            );
-                                            formData.append(
-                                                "objectId",
-                                                item.objectId
-                                            );
+                                            formData.append("BuyerAccount",Moralis.User.current().id);
+                                            const connectedAddress = await GetWallet_NonMoralis();
+                                            formData.append("BuyerWallet", connectedAddress);
+                                            formData.append("SellerWallet", item.SellerWallet);
+                                            formData.append("transactionHash", transactionHash);
+                                            formData.append("objectId", item.objectId);
 
                                             var xhr = new XMLHttpRequest();
                                             xhr.open(

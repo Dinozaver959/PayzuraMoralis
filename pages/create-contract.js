@@ -36,149 +36,141 @@ import DownArrowIc from "../components/icons/DownArrow";
 import CurrencyList from "../components/contract-creation/currency-list";
 
 export default function Description(props) {
-    // SUBMIT - validation
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        control,
-    } = useForm();
-    const onSubmit = (data) => SubmitForm();
+  // SUBMIT - validation
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    control,
+  } = useForm();
+  const onSubmit = (data) => SubmitForm();
 
-    const [OfferValidUntil, setOfferValidUntil] = React.useState(() => {
-        var date = new Date();
-        date.setMilliseconds(0);
-        date.setDate(date.getDate() + 7); // 7 days is default value
+  const [OfferValidUntil, setOfferValidUntil] = React.useState(() => {
+    var date = new Date();
+    date.setMilliseconds(0);
+    date.setDate(date.getDate() + 7); // 7 days is default value
 
-        //console.log("date:");
-        //console.log(date);
+    //console.log("date:");
+    //console.log(date);
 
-        return date;
+    return date;
+  });
+  const [TimeToDeliver, setTimeToDeliver] = React.useState(() => {
+    return 1;
+  });
+
+  const [modelData, setModelData] = React.useState({
+    show: false,
+    type: "alert",
+    status: "Error",
+    message: "",
+  });
+
+  function closeModelDataHandler() {
+    setModelData({
+      show: false,
     });
-    const [TimeToDeliver, setTimeToDeliver] = React.useState(() => {
-        return 1;
-    });
+  }
 
-    const [modelData, setModelData] = React.useState({
-        show: false,
-        type: "alert",
-        status: "Error",
-        message: "",
-    });
+  async function SubmitForm() {
+    CreateEscrow_Moralis(
+      (selectContractType == "buyer") ? true : false,
+      document.getElementById("Price").value,
+      document.getElementById("CurrencyTicker").value, // expected values: `ETH`, `USDC`
+      TimeToDeliver, // document.getElementById("TimeToDeliver").value,
+      sha256(document.getElementById("OfferDescription").value),
+      OfferValidUntil.getTime() / 1000,
+      document.getElementById("PersonalizedOffer").value,
+      document.getElementById("Arbiters").value
+    ) 
+    .then(async (transactionHash) => {
+      // show the feedback text
+      //setModelData({
+      //    show: true,
+      //     type: "alert",
+      //     status: "Pending",
+      //     message: "Creating offer...",
+      // });
 
-    function closeModelDataHandler() {
+      var form = document.querySelector("form");
+      var formData = new FormData(form);
+      var xhr = new XMLHttpRequest();
+
+      // read the current number of agreements to figure out what is the agreement index for this case
+      const index = (await clonedContractsIndex_Moralis()) - 1;
+      console.log("new index: " + index);
+      formData.append("index", index);
+      formData.append("hashDescription", sha256(document.getElementById("OfferDescription").value));
+      formData.append("transactionHash", transactionHash);
+      formData.append("OfferValidUntil", OfferValidUntil.getTime() / 1000);
+      formData.append("TimeToDeliver", TimeToDeliver);
+      formData.append("CurrencyTicker", selectCurrency); //CurrencyTicker
+      formData.append("ChainID", ConvertNetworkNameToChainID(contractOnNetwork));
+
+      const connectedAddress = await GetWallet_NonMoralis();
+
+      if(selectContractType == "seller") {
+        formData.append("SellerWallet", connectedAddress);
+        formData.append("SellerAccount", Moralis.User.current().id);
+        xhr.open("POST", "/api/api-createOfferBySeller", false);
+      } else {
+        formData.append("BuyerWallet", connectedAddress);
+        formData.append("BuyerAccount", Moralis.User.current().id);
+        xhr.open("POST", "/api/api-createOfferByBuyer", false);  
+      }
+
+      xhr.onload = function () {
+        // do something to response
+        // console.log(this.responseText);
+
+        // update the feedback text
         setModelData({
-            show: false,
+          show: true,
+          type: "alert",
+          status: "Success",
+          message: "Offer created",
+          transactionHash: transactionHash,
         });
-    }
 
-    async function SubmitForm() {
-        // setModelData({
-        //     show: true,
-        //     type: "alert",
-        //     status: "Pending",
-        //     message: "Creating Offer...",
-        // });
-        CreateEscrow_Moralis(
-            document.getElementById("Price").value,
-            document.getElementById("CurrencyTicker").value, // expected values: `ETH`, `USDC`
-            TimeToDeliver, // document.getElementById("TimeToDeliver").value,
-            sha256(document.getElementById("OfferDescription").value),
-            OfferValidUntil.getTime() / 1000,
-            document.getElementById("PersonalizedOffer").value,
-            document.getElementById("Arbiters").value
-        )
-            .then(async (transactionHash) => {
-                // show the feedback text
-                setModelData({
-                    show: true,
-                    type: "alert",
-                    status: "Pending",
-                    message: "Creating offer...",
-                });
+        // prevent the Submit button to be clickable and functionable
+        removeHover();
+        document.getElementById("SubmitButton").disabled = true;
 
-                var form = document.querySelector("form");
-                var formData = new FormData(form);
-                formData.append("SellerAccount", Moralis.User.current().id);
+        // think about also removing the hover effect
+        // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+        console.log("offer created");
+      };
+      xhr.send(formData);
+    })
+    .catch((error) => {
+      console.error(error);
+      console.log("create offer error code: " + error.code);
+      console.log("create offer error message: " + error.message);
+      if (error.data && error.data.message) {
+        setModelData({
+          show: true,
+          type: "alert",
+          status: "Error",
+          message: error.data.message,
+        });
+      } else {
+        setModelData({
+          show: true,
+          type: "alert",
+          status: "Error",
+          message: error.message,
+        });
+      }
+      process.exitCode = 1;
+    });
+  }
 
-                // read the current number of agreements to figure out what is the agreement index for this case
-                const index = (await clonedContractsIndex_Moralis()) - 1;
-                console.log("new index: " + index);
-                formData.append("index", index);
-
-                const connectedAddress = await GetWallet_NonMoralis();
-                formData.append("SellerWallet", connectedAddress);
-                formData.append(
-                    "hashDescription",
-                    sha256(document.getElementById("OfferDescription").value)
-                );
-                formData.append("transactionHash", transactionHash);
-                formData.append(
-                    "OfferValidUntil",
-                    OfferValidUntil.getTime() / 1000
-                );
-                formData.append("TimeToDeliver", TimeToDeliver);
-
-                formData.append("CurrencyTicker", selectCurrency); //CurrencyTicker
-                formData.append(
-                    "ChainID",
-                    ConvertNetworkNameToChainID(contractOnNetwork)
-                );
-
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "/api/api-createOffer", false);
-                xhr.onload = function () {
-                    // do something to response
-                    // console.log(this.responseText);
-
-                    // update the feedback text
-                    setModelData({
-                        show: true,
-                        type: "alert",
-                        status: "Success",
-                        message: "Offer created",
-                        transactionHash: transactionHash,
-                    });
-
-                    // prevent the Submit button to be clickable and functionable
-                    removeHover();
-                    document.getElementById("SubmitButton").disabled = true;
-
-                    // think about also removing the hover effect
-                    // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-                    console.log("offer created");
-                };
-                xhr.send(formData);
-            })
-            .catch((error) => {
-                console.error(error);
-                console.log("create offer error code: " + error.code);
-                console.log("create offer error message: " + error.message);
-                if (error.data && error.data.message) {
-                    setModelData({
-                        show: true,
-                        type: "alert",
-                        status: "Error",
-                        message: error.data.message,
-                    });
-                } else {
-                    setModelData({
-                        show: true,
-                        type: "alert",
-                        status: "Error",
-                        message: error.message,
-                    });
-                }
-                process.exitCode = 1;
-            });
-    }
-
-    // update Submit button
-    const refButton = useRef(null);
-    function removeHover() {
-        const b1 = refButton.current; // corresponding DOM node
-        // b1.className = styles.submitButton_noHover; // overwrite the style with no hover
-    }
+  // update Submit button
+  const refButton = useRef(null);
+  function removeHover() {
+    const b1 = refButton.current; // corresponding DOM node
+    // b1.className = styles.submitButton_noHover; // overwrite the style with no hover
+  }
 
     /* Changed by FrontEnd Developer */
     const TemplatesData = [
@@ -268,6 +260,7 @@ export default function Description(props) {
     const [showCustomDuration, setShowCustomDuration] = React.useState(false);
 
     const [selectCurrency, setSelectCurrency] = React.useState("ETH");
+    const [selectContractType, setSelectContractType] = React.useState("seller");
 
     function handleCurrencyChange(e) {
         setSelectCurrency(e.target.value);
@@ -477,7 +470,7 @@ export default function Description(props) {
                                                         name="contractType"
                                                         id="asBuyer"
                                                         value="buyer"
-                                                        disabled="disabled"
+                                                        onClick={() => setSelectContractType("buyer")}
                                                     />
                                                     <Tooltip
                                                         title="Not available yet"
@@ -498,7 +491,8 @@ export default function Description(props) {
                                                         type="radio"
                                                         name="contractType"
                                                         id="asSeller"
-                                                        value="saller"
+                                                        value="seller"
+                                                        onClick={() => setSelectContractType("seller")}
                                                         defaultChecked={true}
                                                     />
                                                     <label htmlFor="asSeller">

@@ -7,7 +7,7 @@ import "./ReentrancyGuard.sol";
 
 // test
 import "./IERC20.sol";
-
+//import "./IERC1363.sol";
 
 contract EscrowFactory is ReentrancyGuard {
 
@@ -16,18 +16,24 @@ contract EscrowFactory is ReentrancyGuard {
     mapping (uint256 => address) clonedContracts;
     uint256 public clonedContractsIndex = 0;
 
-    //Declaring Events
-    event OfferCreated(uint256 indexed clonedContractsIndex, address indexed _seller, uint256 indexed _price, address[] _personalizedOffer, address[] _arbiters);
-    // buyer
-    event OfferAccepted(uint256 indexed clonedContractsIndex, address indexed _buyer);
+    // Agreement Creation
+    event OfferCreatedBuyer(uint256 indexed clonedContractsIndex, address indexed _buyer, uint256 indexed _price, address[] _personalizedOffer, address[] _arbiters);
+    event OfferCreatedSeller(uint256 indexed clonedContractsIndex, address indexed _seller, uint256 indexed _price, address[] _personalizedOffer, address[] _arbiters);
+    // Agreement Acceptance
+    event OfferAcceptedBuyer(uint256 indexed clonedContractsIndex, address indexed _buyer);
+    event OfferAcceptedSeller(uint256 indexed clonedContractsIndex, address indexed _seller);
+    // Buyer
     event DisputeStarted(uint256 indexed clonedContractsIndex, address indexed _buyer);
-    event DeliveryConfirmed(uint256 indexed clonedContractsIndex, address indexed _buyer);
-    // seller
+    event DeliveryConfirmed(uint256 indexed clonedContractsIndex, address indexed _buyer);  
+    event ContractFunded(uint256 indexed clonedContractsIndex, address indexed _buyer);  
+    // Seller
     event FundsClaimed(uint256 indexed clonedContractsIndex, address indexed _seller);
     event PaymentReturned(uint256 indexed clonedContractsIndex, address indexed _seller);
     // dispute handling
     event DisputeVoted(uint256 indexed clonedContractsIndex, address indexed _arbiter, bool indexed _returnFundsToBuyer);
     event DisputeClosed(uint256 indexed clonedContractsIndex, bool indexed _FundsReturnedToBuyer);
+    // Contract Canceled
+    event ContractCanceled(uint256 indexed clonedContractsIndex, address indexed _contractOwner);
 
 
 
@@ -46,8 +52,7 @@ contract EscrowFactory is ReentrancyGuard {
     }
 
 
-    function CreateEscrow (
-        
+    function CreateEscrowSeller (
         address[] calldata arbiters,
         uint256 price,
         address tokenContractAddress,
@@ -56,26 +61,17 @@ contract EscrowFactory is ReentrancyGuard {
         uint256 offerValidUntil,
         address[] calldata personalizedOffer
         
-        // 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2, 
-        // ["0xdD870fA1b7C4700F2BD7f44238821C26f7392148", "0x583031D1113aD414F02576BD6afaBfb302140225", "0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB"], 100000000000000000, "0x0000000000000000000000000000000000000000", 1, a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6, 1657634353, ["0x5B38Da6a701c568545dCfcB03FcB875f56beddC4", "0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2"]
-        // ["0xdD870fA1b7C4700F2BD7f44238821C26f7392148", "0x583031D1113aD414F02576BD6afaBfb302140225", "0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB"], 100000000000000000, "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", 1, a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6, 1657634353, ["0x5B38Da6a701c568545dCfcB03FcB875f56beddC4", "0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2"]
         // 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 - USDC
         // 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174 - USDC on Polygon
         // 0x07865c6E87B9F70255377e024ace6630C1Eaa37F - USDC on Goerli
         // 0x0000000000000000000000000000000000000000 - ETH
 
-
-        // ["0xdD870fA1b7C4700F2BD7f44238821C26f7392148", "0x583031D1113aD414F02576BD6afaBfb302140225", "0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB"], 100000000000000000, "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", 1, a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6, 1657634353, []
-
-        // Goerli
-        // ["0xdD870fA1b7C4700F2BD7f44238821C26f7392148"], 100000000000000000, "0x07865c6E87B9F70255377e024ace6630C1Eaa37F", 1, a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6, 1667634353, []
-
-
+        // ["0xdD870fA1b7C4700F2BD7f44238821C26f7392148", "0x583031D1113aD414F02576BD6afaBfb302140225", "0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB"], 100000000000000000, "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", 1, a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6, 1784214826, []
 
     ) external {
         address clone = Clones.clone(implementation);
 
-        Escrow(clone).Initialize(
+        Escrow(clone).InitializeSeller(
             payable(address(this)),         // the Factory contract
             payable(msg.sender),            // seller,
             arbiters,
@@ -90,7 +86,58 @@ contract EscrowFactory is ReentrancyGuard {
         clonedContracts[clonedContractsIndex] = clone;
         clonedContractsIndex++;
 
-        emit OfferCreated(clonedContractsIndex, msg.sender, price, personalizedOffer, arbiters);
+        emit OfferCreatedSeller(clonedContractsIndex, msg.sender, price, personalizedOffer, arbiters);
+    }
+
+
+
+    function CreateEscrowBuyer (  
+        address[] calldata arbiters,
+        uint256 price,
+        address tokenContractAddress,
+        uint256 timeToDeliver,
+        string memory hashOfDescription,
+        uint256 offerValidUntil,
+        address[] calldata personalizedOffer
+        
+        // 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 - USDC
+        // 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174 - USDC on Polygon
+        // 0x07865c6E87B9F70255377e024ace6630C1Eaa37F - USDC on Goerli
+        // 0x0000000000000000000000000000000000000000 - ETH
+
+        // ["0xdD870fA1b7C4700F2BD7f44238821C26f7392148", "0x583031D1113aD414F02576BD6afaBfb302140225", "0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB"], 100000000000000000, "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", 1, a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6, 1784214826, []
+        // 100000000000000000
+
+    ) external payable{
+        address clone = Clones.clone(implementation);
+
+        Escrow(clone).InitializeBuyer{value: msg.value}(
+            payable(address(this)),         // the Factory contract
+            payable(msg.sender),            // buyer,
+            arbiters,
+            price,
+            tokenContractAddress,
+            timeToDeliver,
+            hashOfDescription,
+            offerValidUntil,
+            personalizedOffer
+        );
+
+        clonedContracts[clonedContractsIndex] = clone;
+
+        // 1st prefered option is to do the payment transfer inside the InitializeBuyer, on the Escrow level
+        // coded - need to test it now
+
+        // 1st option seems to be working, need to consider 2 options:   price in ETH (working)   and   price in ERC20 (so need to handle both cases - might need 2 initializations on Escrow level)
+        // problem:  for ERC20 transfer, you need a seperate approval Tx......
+        // ERC667 implementation would be the only option
+
+        // 2nd option is to pay just after creation of the instance
+        // Escrow(clonedContracts[clonedContractsIndex]).getArbiters();
+
+        clonedContractsIndex++;
+
+        emit OfferCreatedBuyer(clonedContractsIndex, msg.sender, price, personalizedOffer, arbiters);
     }
 
 
@@ -161,7 +208,7 @@ contract EscrowFactory is ReentrancyGuard {
     }
 
     function GetIsWalletEligibleToAcceptOffer(uint256 index, address wallet) view public returns(bool) {
-    return Escrow(clonedContracts[index]).isWalletEligibleToAcceptOffer(wallet);
+        return Escrow(clonedContracts[index]).isWalletEligibleToAcceptOffer(wallet);
     }
 
     function GetIsWalletABuyerDelegate(uint256 index, address wallet) view public returns(bool) {
@@ -186,29 +233,22 @@ contract EscrowFactory is ReentrancyGuard {
     // WRITE FUNCTIONS
 
     // new buyer accepts the agreement
-    function AcceptOffer(uint256 index) external payable {
-        Escrow(clonedContracts[index]).acceptOffer{value: msg.value}(payable(msg.sender));        // forward the buyers address
-        emit OfferAccepted(clonedContractsIndex, msg.sender);
+    function AcceptOfferBuyer(uint256 index) external payable {                                            // RENAME!!!!       AcceptOffer   ->   AcceptOfferBuyer
+        Escrow(clonedContracts[index]).acceptOfferBuyer{value: msg.value}(payable(msg.sender));
+        emit OfferAcceptedBuyer(clonedContractsIndex, msg.sender);
     } 
 
-    function AcceptOffer_ERC20(uint256 index) external {
-        Escrow(clonedContracts[index]).acceptOffer_ERC20(payable(msg.sender));        // forward the buyers address
-        emit OfferAccepted(clonedContractsIndex, msg.sender);
+    function AcceptOfferSeller(uint256 index) external {
+        Escrow(clonedContracts[index]).acceptOfferSeller(payable(msg.sender));
+        emit OfferAcceptedSeller(clonedContractsIndex, msg.sender);
     } 
 
+    // not sure if needed
+    function AcceptOfferBuyer_ERC20(uint256 index) external {                                              // RENAME!!!!       AcceptOffer_ERC20   ->   AcceptOfferBuyer_ERC20
+        Escrow(clonedContracts[index]).acceptOfferBuyer_ERC20(payable(msg.sender));
+        emit OfferAcceptedBuyer(clonedContractsIndex, msg.sender);
+    } 
 
-    // test
-    function PayERC20_transferFrom(address erc20TokenAddress, uint256 amount) external {
-        IERC20 tokenContract = IERC20(erc20TokenAddress);
-        bool transferred = tokenContract.transferFrom(msg.sender, address(this), amount);
-        require(transferred, "ERC20 tokens failed to transfer to contract wallet");
-    }
-
-    function PayERC20_transfer(address erc20TokenAddress, uint256 amount) external {
-        IERC20 tokenContract = IERC20(erc20TokenAddress);
-        bool transferred = tokenContract.transfer(address(this), amount);
-        require(transferred, "ERC20 tokens failed to transfer to contract wallet");
-    }
 
 
     // NOTE:
@@ -216,7 +256,7 @@ contract EscrowFactory is ReentrancyGuard {
     // best if we can rename the argument, if not -> we will just use supply the ERC20TokenAddress for the recipient argument (it will look weird, but it should do the job)
 
     // 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174
-    function transfer(address recipient, uint256 amount) public returns (bool) {
+    function transfer_ERC20(address recipient, uint256 amount) public returns (bool) {
 
         IERC20 tokenContract = IERC20(recipient);          // USDC on polygon
         bool transferred = tokenContract.transferFrom(msg.sender, address(this), amount);
@@ -226,9 +266,43 @@ contract EscrowFactory is ReentrancyGuard {
         return transferred;
     }
 
-    function decimals() public view virtual returns (uint8) {
-        return 6;
-    }
+
+    /*
+        function transfer_ERC1363(address erc20contractAddress, uint256 amount) public returns (bool) {
+
+            IERC1363 tokenContract = IERC1363(erc20contractAddress);          // USDC on polygon
+
+            tokenContract.approveAndCall(address(this), amount);
+            tokenContract.onApprovalReceived(msg.sender, amount, "function");      
+
+            bool transferred = tokenContract.transferFrom(msg.sender, address(this), amount);
+            // bool transferred = tokenContract.transfer(address(this), amount);                // same behaviour as 'transferFrom'
+            require(transferred, "ERC20 tokens failed to transfer to contract wallet");
+
+            return transferred;
+        }
+    */
+
+
+    /*
+        function approveAndCall(address erc20contractAddress, uint256 value, bytes memory data) public override returns (bool) {
+            approve(msg.sender, value);
+            require(_checkAndCallApprove(msg.sender, value, data), "ERC1363: _checkAndCallApprove reverts");
+            return true;
+        }
+
+        function _checkAndCallApprove(address spender, uint256 value, bytes memory data) internal returns (bool) {
+            if (!spender.isContract()) {
+                return false;
+            }
+            bytes4 retval = IERC1363Spender(spender).onApprovalReceived(
+                _msgSender(), value, data
+            );
+            return (retval == _ERC1363_APPROVED);
+        }
+    */
+
+
 
     //-------------------------------------------------------------------------------------------------------------------------------------
 
@@ -244,6 +318,12 @@ contract EscrowFactory is ReentrancyGuard {
         emit FundsClaimed(clonedContractsIndex, msg.sender);
     } 
 
+    function CancelSellerContract(uint256 index) external {
+        Escrow(clonedContracts[index]).cancelSellerContract(msg.sender);
+        emit ContractCanceled(clonedContractsIndex, msg.sender);
+    } 
+
+
     // ONLY SELLER - DELEGATES
     function AddSellerDelegates(uint256 index, address[] calldata delegates) external {
         Escrow(clonedContracts[index]).addSellerDelegates(msg.sender, delegates);
@@ -254,6 +334,18 @@ contract EscrowFactory is ReentrancyGuard {
     function UpdateSellerDelegates(uint256 index, address[] calldata delegatesToAdd, address[] calldata delegatesToRemove) external {
         Escrow(clonedContracts[index]).removeSellerDelegates(msg.sender, delegatesToRemove);
         Escrow(clonedContracts[index]).addSellerDelegates(msg.sender, delegatesToAdd);        
+    }
+
+    // ONLY SELLER - PERSONALIZED OFFER
+    function AddSellerPersonalizedOffer(uint256 index, address[] calldata personalizedOffer) external {
+        Escrow(clonedContracts[index]).addSellerPersonalizedOffer(msg.sender, personalizedOffer);
+    }
+    function RemoveSellerPersonalizedOffer(uint256 index, address[] calldata personalizedOffer) external {
+        Escrow(clonedContracts[index]).removeSellerPersonalizedOffer(msg.sender, personalizedOffer);
+    }
+    function UpdateSellerPersonalizedOffer(uint256 index, address[] calldata personalizedOfferToAdd, address[] calldata personalizedOfferToRemove) external {
+        Escrow(clonedContracts[index]).removeSellerPersonalizedOffer(msg.sender, personalizedOfferToRemove);
+        Escrow(clonedContracts[index]).addSellerPersonalizedOffer(msg.sender, personalizedOfferToAdd);        
     }
 
 
@@ -270,6 +362,16 @@ contract EscrowFactory is ReentrancyGuard {
         emit DeliveryConfirmed(clonedContractsIndex, msg.sender);
     } 
 
+    function FundContract(uint256 index) external {
+        Escrow(clonedContracts[index]).fundContract(msg.sender);
+        emit ContractFunded(clonedContractsIndex, msg.sender);
+    }
+
+    function CancelBuyerContract(uint256 index) external {
+        Escrow(clonedContracts[index]).cancelBuyerContract(msg.sender);
+        emit ContractCanceled(clonedContractsIndex, msg.sender);
+    } 
+
     // ONLY BUYER - DELEGATES
     function AddBuyerDelegates(uint256 index, address[] calldata delegates) external {
         Escrow(clonedContracts[index]).addBuyerDelegates(msg.sender, delegates);
@@ -282,6 +384,17 @@ contract EscrowFactory is ReentrancyGuard {
         Escrow(clonedContracts[index]).addBuyerDelegates(msg.sender, delegatesToAdd);
     }
 
+    // ONLY BUYER - PERSONALIZED OFFER
+    function AddBuyerPersonalizedOffer(uint256 index, address[] calldata personalizedOffer) external {
+        Escrow(clonedContracts[index]).addBuyerPersonalizedOffer(msg.sender, personalizedOffer);
+    }
+    function RemoveBuyerPersonalizedOffer(uint256 index, address[] calldata personalizedOffer) external {
+        Escrow(clonedContracts[index]).removeBuyerPersonalizedOffer(msg.sender, personalizedOffer);
+    }
+    function UpdateBuyerPersonalizedOffer(uint256 index, address[] calldata personalizedOfferToAdd, address[] calldata personalizedOfferToRemove) external {
+        Escrow(clonedContracts[index]).removeBuyerPersonalizedOffer(msg.sender, personalizedOfferToRemove);
+        Escrow(clonedContracts[index]).addBuyerPersonalizedOffer(msg.sender, personalizedOfferToAdd);        
+    }
 
 
 
