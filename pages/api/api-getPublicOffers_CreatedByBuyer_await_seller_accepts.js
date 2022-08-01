@@ -1,7 +1,7 @@
 import middleware from '../../middleware/middleware'
 import nextConnect from 'next-connect'
-import {GetPersonalizedOffers} from '../../JS/DB-cloudFunctions'
-import {ParsePathGiveUserWallet} from "../../JS/BackendFunctions";
+import {GetPublicOffers_CreatedByBuyer_await_seller_accepts} from '../../JS/DB-cloudFunctions'
+import {ParsePathGiveUserWallet} from "../../JS/BackendFunctions"
 
 const apiRoute = nextConnect()
 apiRoute.use(middleware)
@@ -9,17 +9,18 @@ apiRoute.use(middleware)
 
 apiRoute.get(async (req, res) => {     
     console.log(req.body)
- 
+
     const UserWallet = ParsePathGiveUserWallet(req.url);
     if(UserWallet == -1){res.end()}
-
     console.log("UserWallet: " + UserWallet);
+ 
+    const offers = await GetPublicOffers_CreatedByBuyer_await_seller_accepts(UserWallet);
 
-    const offers = await GetPersonalizedOffers(UserWallet.toLowerCase());
+    console.log("offers: ", offers);
 
     var packagedOffers = []
     //console.log("offers.length: " + offers.length);
-
+    
     for(let i = 0; i < offers.length; i++){
         packagedOffers.push({id: i+1, name : offers[i]})
         //console.log("offers[i]: " + offers[i]);

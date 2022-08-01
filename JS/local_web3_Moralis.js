@@ -3,7 +3,7 @@ import {ABI, ABI_ERC20} from "./ABI.js"
 
 //const ethers = Moralis.web3Library;
  
-const FactoryContractAddress = "0xbF534116b59feA8F90b820B9f47Ecd83dBfA6291"; // "0xC580C23A982C11A3812920C51EDd104B2BB89B15"; // "0x6526447628924eea4F0578e812826f327F8d489B"; //"0x5Fc12E3eC96dd2F008DB5f32497cbAbefB049B60";   // 0x5D023afC16961d44E5fB3F29fe17fd54cE8D3487 - checked in
+const FactoryContractAddress = "0x7129E3D35618221aCFA0d3777205414DB55aD709"; // "0xC580C23A982C11A3812920C51EDd104B2BB89B15"; // "0x6526447628924eea4F0578e812826f327F8d489B"; //"0x5Fc12E3eC96dd2F008DB5f32497cbAbefB049B60";   // 0x5D023afC16961d44E5fB3F29fe17fd54cE8D3487 - checked in
 export const contractOnNetwork = "polygon";
 const commission = 0.01;
 const PayzuraDafaultArbiter = "0x80038953cE1CdFCe7561Abb73216dE83F8baAEf0"; // Payzura Team/Platform address
@@ -213,7 +213,7 @@ async function MoralisRead(method, params) {
 
 // WRITE Functions
 
-export async function CreateEscrow_Moralis(price, currencyTicker, timeToDeliver, hashOfDescription, offerValidUntil, personalizedOffer, arbiters) {
+export async function CreateEscrow_Moralis(isBuyer, price, currencyTicker, timeToDeliver, hashOfDescription, offerValidUntil, personalizedOffer, arbiters) {
 
     var personalizedOffer_parts = personalizedOffer.split(",");
 
@@ -260,11 +260,21 @@ export async function CreateEscrow_Moralis(price, currencyTicker, timeToDeliver,
         offerValidUntil: offerValidUntil, 
         personalizedOffer: personalizedOffer_parts,
     }
-  
-    return await MoralisWrite_("CreateEscrow", params);
+
+    console.log("isBuyer ", isBuyer);
+
+    if(isBuyer && currencyTicker == "ETH") {
+        price = price_.toString();
+        return await MoralisWrite__("CreateEscrowBuyer", params, price);
+    } else if(isBuyer){
+        return await MoralisWrite_("CreateEscrowBuyer", params);
+    }
+    else {
+        return await MoralisWrite_("CreateEscrowSeller", params);
+    }
 }
 
-export async function AcceptOffer_Moralis(index, CurrencyTicker) {
+export async function AcceptOfferBuyer_Moralis(index, CurrencyTicker) {
 
     // get the mint price
     var price = await GetPrice_Moralis(index); // will give an array with a hex value
@@ -280,42 +290,57 @@ export async function AcceptOffer_Moralis(index, CurrencyTicker) {
 
     // org - works fine with ethereum
     if (CurrencyTicker == "ETH"){
-        return await MoralisWrite__("AcceptOffer", params, price); // for ETH
+        return await MoralisWrite__("AcceptOfferBuyer", params, price); // for ETH
     } else {
-        return await MoralisWrite__("AcceptOffer", params, 0); // for USDC 
+        return await MoralisWrite__("AcceptOfferBuyer", params, 0); // for USDC 
     }
 
     //return await MoralisWrite_("AcceptOffer", params);
 }
 
+export async function AcceptOfferSeller_Moralis(index) {
 
+    console.log("index: " + index);
 
-async function InitializeSmartContract() {
-    // web3 lib instance
-    const web3 = new Web3(window.ethereum);
-    return (new web3.eth.Contract(ABI, FactoryContractAddress));
-}
-
-async function UpdateConnectedAddrress() {
-    if (window.ethereum) {
-      try {
-        connectedAddress = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        console.log('action performed by account: ' + connectedAddress);
-  
-      } catch (error) {
-        if (error.code === 4001) {
-          // User rejected request
-          console.log('user denied request');
-        }
-        console.log('error: ' + error);
-      }
+    const params = {                                                                                                        // do we not need the price????
+        index: index,
     }
+
+    return await MoralisWrite_("AcceptOfferSeller", params);
 }
 
+export async function FundContract_Moralis(index) {
 
+    console.log("index: " + index);
 
+    const params = {                                                                                                        // do we not need the price????
+        index: index,
+    }
 
+    return await MoralisWrite_("FundContract", params);
+}
 
+export async function CancelSellerContract_Moralis(index) {
+
+    console.log("index: " + index);
+
+    const params = {                                                                                                        // do we not need the price????
+        index: index,
+    }
+
+    return await MoralisWrite_("CancelSellerContract", params);
+}
+
+export async function CancelBuyerContract_Moralis(index) {
+
+    console.log("index: " + index);
+
+    const params = {                                                                                                        // do we not need the price????
+        index: index,
+    }
+
+    return await MoralisWrite_("CancelBuyerContract", params);
+}
 
 export async function ReturnPayment_Moralis(index) {
 
@@ -353,7 +378,7 @@ export async function ConfirmDelivery_Moralis(index) {
     await MoralisWrite__("ConfirmDelivery", params);
 }
 
-export async function UpdateDelegates_Moralis(index, areForBuyer, delegatesToAdd, delegatesToRemove){
+export async function UpdateDelegates_Moralis(index, isBuyer, delegatesToAdd, delegatesToRemove){
 
     var delegatesToAdd_parts = delegatesToAdd.split(",");
     if(!delegatesToAdd){
@@ -372,12 +397,37 @@ export async function UpdateDelegates_Moralis(index, areForBuyer, delegatesToAdd
     }
 
 
-    if(areForBuyer){
+    if(isBuyer){
         return await MoralisWrite__("UpdateBuyerDelegates", params);
     } else {
         return await MoralisWrite__("UpdateSellerDelegates", params);
     }
-    
+}
+
+export async function UpdatePersonalizedOffer_Moralis(index, isBuyer, personalizedToAdd, personalizedToRemove){
+
+    var personalizedToAdd_parts = personalizedToAdd.split(",");
+    if(!personalizedToAdd){
+        personalizedToAdd_parts = [];
+    }
+
+    var personalizedToRemove_parts = personalizedToRemove.split(",");
+    if(!personalizedToRemove){
+        personalizedToRemove_parts = [];
+    }
+
+    const params = {
+        index: index,
+        personalizedOfferToAdd: personalizedToAdd_parts,
+        personalizedOfferToRemove: personalizedToRemove_parts,
+    }
+
+
+    if(isBuyer){
+        return await MoralisWrite__("UpdateBuyerPersonalizedOffer", params);
+    } else {
+        return await MoralisWrite__("UpdateSellerPersonalizedOffer", params);
+    }
 }
 
 export async function HandleDispute_Moralis(index, returnFundsToBuyer) {
@@ -452,7 +502,6 @@ async function MoralisWrite__(method, params, value) {
 
     return transaction.hash;
 }
-
 
 export async function ApproveERC20_Moralis(index){
 
