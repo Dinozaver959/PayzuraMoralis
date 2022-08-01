@@ -100,7 +100,7 @@ export default function ContractsListed(props) {
   // Calling the function on component mount
   useEffect(() => {
     getCollectionsDetails();
-  }, [props.currentAccount]);
+  }, []);
 
   return (
     <>

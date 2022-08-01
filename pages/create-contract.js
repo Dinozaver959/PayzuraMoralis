@@ -19,6 +19,18 @@ import Tooltip from "@mui/material/Tooltip";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
+import ChipInput from 'material-ui-chip-input';
+
+const top100Films = [
+  { title: 'The Shawshank Redemption', year: 1994 },
+  { title: 'The Godfather', year: 1972 },
+  { title: 'The Godfather: Part II', year: 1974 },
+  { title: 'The Dark Knight', year: 2008 },
+  { title: '12 Angry Men', year: 1957 },
+  { title: "Schindler's List", year: 1993 },
+  { title: 'Pulp Fiction', year: 1994 },
+];
+
 import LinkArrowIc from "../components/icons/LinkArrow";
 import CheckIc from "../components/icons/Check";
 import InfoIc from "../components/icons/Info";
@@ -1051,12 +1063,19 @@ export default function Description(props) {
                                                 </Tooltip>
                                             </div>
                                             <div className="formField">
-                                                <input
-                                                    className="formInput"
-                                                    id="PersonalizedOffer"
-                                                    type="text"
-                                                    name="PersonalizedOffer"
-                                                ></input>
+                                              <ChipInput
+                                                // value={yourChips}
+                                                defaultValue={['']}
+                                                onAdd={(chip) => handleAddChip(chip)}
+                                                onDelete={(chip, index) => handleDeleteChip(chip, index)}
+                                              />
+
+                                              <input
+                                                  className="formInput"
+                                                  id="PersonalizedOffer"
+                                                  type="text"
+                                                  name="PersonalizedOffer"
+                                              ></input>
                                             </div>
                                         </div>
 
