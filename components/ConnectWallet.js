@@ -17,8 +17,7 @@ function ConnectWallet(props) {
         setUserAddress(addr.toString());
     };
 
-    const truncateAccountAddress =
-        currentAccount.slice(0, 5) + "..." + currentAccount.slice(-4);
+    const truncateAccountAddress = (currentAccount) ? currentAccount.slice(0, 5) + "..." + currentAccount.slice(-4) : '';
 
     const checkIfWalletIsConnected = async () => {
         try {
