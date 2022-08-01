@@ -54,7 +54,10 @@ export default function Navigation(props) {
             </div>
 
             <div className="mobileHeaderWallet">
-                <ConnectWallet />
+                <ConnectWallet
+                    currentAccount={props.currentAccount}
+                    setCurrentAccount={props.setCurrentAccount}
+                />
             </div>
 
             <nav className="navbarMain" ref={drawerRef}>
@@ -102,7 +105,10 @@ export default function Navigation(props) {
                     </li>
                     <li className="headerButton hideSmallerThanIpad">
                         <span></span>
-                        <ConnectWallet />
+                        <ConnectWallet
+                            currentAccount={props.currentAccount}
+                            setCurrentAccount={props.setCurrentAccount}
+                        />
                     </li>
                     <li className="headerButton" onClick={props.mobileDrawerFn}>
                         <Button
