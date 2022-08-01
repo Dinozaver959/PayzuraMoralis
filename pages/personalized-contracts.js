@@ -113,14 +113,16 @@ export default function PersonalizedContracts(props) {
     return (
         <Fragment>
             <Navigation
-                darkMode={props.darkMode}
-                changeDarkMode={props.changeDarkMode}
-                dropdownOpen={props.dropdownOpen}
-                setDropdownOpen={props.setDropdownOpen}
-                OpenDropdownFn={props.OpenDropdownFn}
-                hasMenuDrawer={props.hasMenuDrawer}
-                setMenuDrawer={props.setMenuDrawer}
-                mobileDrawerFn={props.mobileDrawerFn}
+              darkMode={props.darkMode}
+              changeDarkMode={props.changeDarkMode}
+              dropdownOpen={props.dropdownOpen}
+              setDropdownOpen={props.setDropdownOpen}
+              OpenDropdownFn={props.OpenDropdownFn}
+              hasMenuDrawer={props.hasMenuDrawer}
+              setMenuDrawer={props.setMenuDrawer}
+              mobileDrawerFn={props.mobileDrawerFn}
+              currentAccount={props.currentAccount}
+              setCurrentAccount={props.setCurrentAccount}
             />
 
             <div className="containerMain">
