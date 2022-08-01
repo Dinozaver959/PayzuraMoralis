@@ -108,7 +108,7 @@ export default function PersonalizedContracts(props) {
         setTimeout(() => {
             setPlaceholder(false);
         }, 1200);
-    }, []);
+    }, [props.currentAccount]);
 
     return (
         <Fragment>
