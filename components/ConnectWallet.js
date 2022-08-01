@@ -6,7 +6,6 @@ const Web3 = require("web3");
 function ConnectWallet(props) {
     const { currentAccount, setCurrentAccount } = props;
     const [userAddress, setUserAddress] = useState("");
-    const [chainId, setChainId] = useState("");
 
     const detailsOn = async () => {
         const { ethereum } = window;
