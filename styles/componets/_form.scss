@@ -101,6 +101,27 @@
   }
 }
 
+.MuiAutocomplete-root {
+  .MuiFilledInput-root {
+    &.MuiFilledInput-underline {
+      background: none;
+      padding: 5px 20px 5px 5px !important;
+      border: 1px solid $BorderDark !important;
+      border-radius: 3px !important;
+      box-shadow: none;
+
+      &::after,
+      &::before {
+        display: none;
+      }
+
+      &:hover {
+        background: none;
+      }
+    }
+  }
+}
+
 .darkMode {
   .formInput {
     border-color: $BorderLight;
