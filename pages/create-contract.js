@@ -19,16 +19,17 @@ import Tooltip from "@mui/material/Tooltip";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
-import ChipInput from 'material-ui-chip-input';
+import Chip from '@mui/material/Chip';
+import Autocomplete from '@mui/material/Autocomplete';
 
 const top100Films = [
-  { title: 'The Shawshank Redemption', year: 1994 },
-  { title: 'The Godfather', year: 1972 },
-  { title: 'The Godfather: Part II', year: 1974 },
-  { title: 'The Dark Knight', year: 2008 },
-  { title: '12 Angry Men', year: 1957 },
-  { title: "Schindler's List", year: 1993 },
-  { title: 'Pulp Fiction', year: 1994 },
+  // { title: 'The Shawshank Redemption', year: 1994 },
+  // { title: 'The Godfather', year: 1972 },
+  // { title: 'The Godfather: Part II', year: 1974 },
+  // { title: 'The Dark Knight', year: 2008 },
+  // { title: '12 Angry Men', year: 1957 },
+  // { title: "Schindler's List", year: 1993 },
+  // { title: 'Pulp Fiction', year: 1994 },
 ];
 
 import LinkArrowIc from "../components/icons/LinkArrow";
@@ -1063,11 +1064,25 @@ export default function Description(props) {
                                                 </Tooltip>
                                             </div>
                                             <div className="formField">
-                                              <ChipInput
-                                                // value={yourChips}
-                                                defaultValue={['']}
-                                                onAdd={(chip) => handleAddChip(chip)}
-                                                onDelete={(chip, index) => handleDeleteChip(chip, index)}
+                                              <Autocomplete
+                                                multiple
+                                                id="tags-filled"
+                                                options={top100Films.map((option) => option.title)}
+                                                // defaultValue={[top100Films[1].title]}
+                                                freeSolo={true}
+                                                renderTags={(value, getTagProps) =>
+                                                value.map((option, index) => (
+                                                  <Chip key={index} variant="outlined" label={option} {...getTagProps({ index })} />
+                                                ))
+                                                }
+                                                renderInput={(params) => (
+                                                  <TextField
+                                                      {...params}
+                                                      variant="filled"
+                                                      // label="Wallets"
+                                                      placeholder="Wallets"
+                                                  />
+                                                )}
                                               />
 
                                               <input
