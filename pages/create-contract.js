@@ -678,78 +678,57 @@ export default function Description(props) {
                       </div>
                     </div>
 
-                    {/* <div className="formRow">
-                                            <div className="formLabel">
-                                                Currency
-                                            </div>
-                                            <div className="formField">
-                                                <select
-                                                    className="formSelect"
-                                                    id="CurrencyTicker"
-                                                    defaultValue={""}
-                                                    {...register(
-                                                        "CurrencyTicker",
-                                                        {
-                                                            required: true,
-                                                        }
-                                                    )}
-                                                >
-                                                    <option value="">
-                                                        Please Select
-                                                    </option>
-                                                    <option value="ETH">
-                                                        Ethereum (ETH)
-                                                    </option>
-                                                    <option value="USDC">
-                                                        USD Coin (USDC)
-                                                    </option>
-                                                    <option value="APE">APEcoin (APE)</option>
-                                                    <option value="WBTC">Wrapped Bitcoin (WBTC)</option>
-                                                </select>
+                    {/* <div className='formRow'>
+                      <div className='formLabel'>Currency</div>
+                      <div className='formField'>
+                        <select
+                          className='formSelect'
+                          id='CurrencyTicker'
+                          defaultValue={""}
+                          {...register("CurrencyTicker", {
+                            required: true,
+                          })}
+                        >
+                          <option value=''>Please Select</option>
+                          <option value='ETH'>Ethereum (ETH)</option>
+                          <option value='USDC'>USD Coin (USDC)</option>
+                          <option value='APE'>APEcoin (APE)</option>
+                          <option value='WBTC'>Wrapped Bitcoin (WBTC)</option>
+                        </select>
 
-                                                <div className="fieldError">
-                                                    {errors.CurrencyTicker &&
-                                                        errors.CurrencyTicker
-                                                            .type ===
-                                                            "required" && (
-                                                            <p>required</p>
-                                                        )}
-                                                </div>
-                                            </div>
-                                        </div> */}
+                        <div className='fieldError'>
+                          {errors.CurrencyTicker &&
+                            errors.CurrencyTicker.type === "required" && (
+                              <p>required</p>
+                            )}
+                        </div>
+                      </div>
+                    </div> */}
 
-                    {/* <div className="formRow">
-                                            <div className="formLabel">
-                                                Price
-                                            </div>
-                                            <div className="formField">
-                                                <input
-                                                    className="formInput"
-                                                    id="Price"
-                                                    type="number"
-                                                    {...register("Price", {
-                                                        required: true,
-                                                        min: 0,
-                                                    })}
-                                                    min="0"
-                                                    step="0.001"
-                                                ></input>
-                                                <div className="fieldError">
-                                                    {errors.Price &&
-                                                        errors.Price.type ===
-                                                            "required" && (
-                                                            <p>required</p>
-                                                        )}
-                                                    {errors.Price &&
-                                                        errors.Price.type ===
-                                                            "min" && (
-                                                            <p>
-                                                                Min price is 0
-                                                            </p>
-                                                        )}
-                                                </div>
-                                            </div>
-                                        </div> */}
+                    {/* <div className='formRow'>
+                      <div className='formLabel'>Price</div>
+                      <div className='formField'>
+                        <input
+                          className='formInput'
+                          id='Price'
+                          type='number'
+                          {...register("Price", {
+                            required: true,
+                            min: 0,
+                          })}
+                          min='0'
+                          step='0.001'
+                        ></input>
+                        <div className='fieldError'>
+                          {errors.Price && errors.Price.type === "required" && (
+                            <p>required</p>
+                          )}
+                          {errors.Price && errors.Price.type === "min" && (
+                            <p>Min price is 0</p>
+                          )}
+                        </div>
+                      </div>
+                    </div> */}
 
                     <div className='formRow'>
                       <div className='formLabel'>
@@ -830,16 +809,32 @@ export default function Description(props) {
                       </div>
                     </div>
 
-                    {/* 
-                                        <div className={styles.gridItem}> 
-                                        Contract Valid for (in Hours, after publishing the offer, 0=infinity): 
-                                        <input className={styles.inlineField} id="OfferValidUntil" type="number" {...register('OfferValidUntil', { required: true, min : 0})} min="0" step="1" ></input> 
-                                        </div>
-                                        <div className={styles.gridItem}> 
-                                        {errors.OfferValidUntil && errors.OfferValidUntil.type === "required" && <span>required</span> }
-                                        {errors.OfferValidUntil && errors.OfferValidUntil.type === "min" && <span>Min time for a valid offer is 0</span>}
-                                        </div>
-                                        */}
+                    {/* <div className={styles.gridItem}>
+                      Contract Valid for (in Hours, after publishing the offer,
+                      0=infinity):
+                      <input
+                        className={styles.inlineField}
+                        id='OfferValidUntil'
+                        type='number'
+                        {...register("OfferValidUntil", {
+                          required: true,
+                          min: 0,
+                        })}
+                        min='0'
+                        step='1'
+                      ></input>
+                    </div>
+                    <div className={styles.gridItem}>
+                      {errors.OfferValidUntil &&
+                        errors.OfferValidUntil.type === "required" && (
+                          <span>required</span>
+                        )}
+                      {errors.OfferValidUntil &&
+                        errors.OfferValidUntil.type === "min" && (
+                          <span>Min time for a valid offer is 0</span>
+                        )}
+                    </div> */}
+
                     <div className='formRow contractValidity'>
                       <div className='formLabel'>
                         Can Accept Until
@@ -934,7 +929,6 @@ export default function Description(props) {
                           multiple
                           id='PersonalizedOffer-Fld'
                           options={top100Films.map((option) => option.title)}
-                          // defaultValue={[top100Films[1].title]}
                           freeSolo={true}
                           renderTags={(value, getTagProps) =>
                             value.map((option, index) => (
@@ -955,6 +949,11 @@ export default function Description(props) {
                               id='PersonalizedOffer'
                               type='text'
                               name='PersonalizedOffer'
+                              {...register("PersonalizedOffer", {
+                                required: false,
+                                maxLength: 42,
+                                pattern: /^[a-z][a-z0-9_-]*/i,
+                              })}
                             />
                           )}
                         />
@@ -965,6 +964,15 @@ export default function Description(props) {
                           type="text"
                           name="PersonalizedOffer"
                         ></input> */}
+
+                        <div className='fieldError'>
+                          {errors.PersonalizedOffer && errors.PersonalizedOffer.type === "maxLength" && (
+                            <p>Max length is 42 chars</p>
+                          )}
+                          {errors.PersonalizedOffer && errors.PersonalizedOffer.type === "pattern" && (
+                            <p>Start with 0x</p>
+                          )}
+                        </div>
                       </div>
                     </div>
 
@@ -987,7 +995,6 @@ export default function Description(props) {
                           multiple
                           id='Arbiters-Fld'
                           options={top100Films.map((option) => option.title)}
-                          // defaultValue={[top100Films[1].title]}
                           freeSolo={true}
                           renderTags={(value, getTagProps) =>
                             value.map((option, index) => (

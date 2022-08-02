@@ -160,9 +160,6 @@ button {
       .MuiInputBase-input {
         @include Font($PrimaryFont, 0.85rem, $FontColorDark, null, null);
       }
-
-      .MuiChip-root {
-      }
     }
   }
 }
