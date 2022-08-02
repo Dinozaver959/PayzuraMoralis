@@ -133,6 +133,7 @@ contract Escrow is ReentrancyGuard {
         personalizedOfferCounter = _personalizedOffer.length;
         for(uint256 i = 0; i < _personalizedOffer.length; i++) {
             personalizedOffer[_personalizedOffer[i]] = true;
+            personalizedOfferCounter += 1;
         }
 
         // arbiters
@@ -167,11 +168,16 @@ contract Escrow is ReentrancyGuard {
         if(_tokenContractAddress == address(0)){
             require(msg.value >= _price, "not enough ETH send");        // only for ETH 
             state = State.buyer_initialized_and_paid;
+
+            if(_personalizedOffer.length > 0){
+                state = State.await_seller_accepts;
+            }
         }
         else{
             // cannot approve ERC20 directly
             // because we are using proxy, and only msg.sender can issue the approval
         }
+
 
 
 
@@ -457,6 +463,11 @@ contract Escrow is ReentrancyGuard {
         bool transferred = tokenContract.transferFrom(_buyer, address(this), price);
         require(transferred, "ERC20 tokens failed to transfer to contract wallet");
         state = State.buyer_initialized_and_paid;
+
+        // if personalized was already set initially, we can jump the step of adding them
+        if(personalizedOfferCounter > 0){
+            state = State.await_seller_accepts;
+        }
     }
 
     function cancelBuyerContract(address _buyer) inEitherStates3(State.buyer_initialized, State.buyer_initialized_and_paid, State.await_seller_accepts) onlyBuyer(_buyer) external {
