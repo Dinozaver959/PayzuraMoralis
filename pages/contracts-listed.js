@@ -113,6 +113,8 @@ export default function ContractsListed(props) {
         hasMenuDrawer={props.hasMenuDrawer}
         setMenuDrawer={props.setMenuDrawer}
         mobileDrawerFn={props.mobileDrawerFn}
+        currentAccount={props.currentAccount}
+        setCurrentAccount={props.setCurrentAccount}
       />
 
       <div className='containerMain'>
