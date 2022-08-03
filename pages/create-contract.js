@@ -22,16 +22,6 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Chip from "@mui/material/Chip";
 import Autocomplete from "@mui/material/Autocomplete";
 
-const top100Films = [
-  // { title: 'The Shawshank Redemption', year: 1994 },
-  // { title: 'The Godfather', year: 1972 },
-  // { title: 'The Godfather: Part II', year: 1974 },
-  // { title: 'The Dark Knight', year: 2008 },
-  // { title: '12 Angry Men', year: 1957 },
-  // { title: "Schindler's List", year: 1993 },
-  // { title: 'Pulp Fiction', year: 1994 },
-];
-
 import LinkArrowIc from "../components/icons/LinkArrow";
 import CheckIc from "../components/icons/Check";
 import InfoIc from "../components/icons/Info";
@@ -68,6 +58,9 @@ export default function Description(props) {
 
     return date;
   });
+  const [personalizedOfferValue, setPersonalizedOfferValue] = React.useState([]);
+  const [arbitersValue, setArbitersValue] = React.useState([]);
+  
   const [TimeToDeliver, setTimeToDeliver] = React.useState(() => {
     return 1;
   });
@@ -93,8 +86,8 @@ export default function Description(props) {
       TimeToDeliver, // document.getElementById("TimeToDeliver").value,
       sha256(document.getElementById("OfferDescription").value),
       OfferValidUntil.getTime() / 1000,
-      document.getElementById("PersonalizedOffer").value,
-      document.getElementById("Arbiters").value
+      personalizedOfferValue.join(","), // document.getElementById("PersonalizedOffer").value,
+      arbitersValue.join(",") // document.getElementById("Arbiters").value
     )
       .then(async (transactionHash) => {
         // show the feedback text
@@ -928,7 +921,10 @@ export default function Description(props) {
                         <Autocomplete
                           multiple
                           id='PersonalizedOffer-Fld'
-                          options={top100Films.map((option) => option.title)}
+                          onChange={(e, newval, reason) => {
+                            setPersonalizedOfferValue([...newval]); //newval
+                          }}
+                          options={[].map((option) => option.title)}
                           freeSolo={true}
                           renderTags={(value, getTagProps) =>
                             value.map((option, index) => (
@@ -951,8 +947,9 @@ export default function Description(props) {
                               name='PersonalizedOffer'
                               {...register("PersonalizedOffer", {
                                 required: false,
+                                minLength: 42,
                                 maxLength: 42,
-                                pattern: /^[a-z][a-z0-9_-]*/i,
+                                pattern: /^0x/i,
                               })}
                             />
                           )}
@@ -968,6 +965,9 @@ export default function Description(props) {
                         <div className='fieldError'>
                           {errors.PersonalizedOffer && errors.PersonalizedOffer.type === "maxLength" && (
                             <p>Max length is 42 chars</p>
+                          )}
+                          {errors.PersonalizedOffer && errors.PersonalizedOffer.type === "minLength" && (
+                            <p>Min length is 42 chars</p>
                           )}
                           {errors.PersonalizedOffer && errors.PersonalizedOffer.type === "pattern" && (
                             <p>Start with 0x</p>
@@ -991,10 +991,13 @@ export default function Description(props) {
                         </Tooltip>
                       </div>
                       <div className='formField'>
-                        <Autocomplete
+                      <Autocomplete
                           multiple
                           id='Arbiters-Fld'
-                          options={top100Films.map((option) => option.title)}
+                          onChange={(e, newval, reason) => {
+                            setArbitersValue([...newval]); //newval
+                          }}
+                          options={[].map((option) => option.title)}
                           freeSolo={true}
                           renderTags={(value, getTagProps) =>
                             value.map((option, index) => (
@@ -1015,6 +1018,12 @@ export default function Description(props) {
                               id='Arbiters'
                               type='text'
                               name='Arbiters'
+                              {...register("Arbiters", {
+                                required: false,
+                                minLength: 42,
+                                maxLength: 42,
+                                pattern: /^0x/i,
+                              })}
                             />
                           )}
                         />
@@ -1024,6 +1033,18 @@ export default function Description(props) {
                           type="text"
                           name="Arbiters"
                       ></input> */}
+
+                        <div className='fieldError'>
+                          {errors.Arbiters && errors.Arbiters.type === "maxLength" && (
+                            <p>Max length is 42 chars</p>
+                          )}
+                          {errors.Arbiters && errors.Arbiters.type === "minLength" && (
+                            <p>Min length is 42 chars</p>
+                          )}
+                          {errors.Arbiters && errors.Arbiters.type === "pattern" && (
+                            <p>Start with 0x</p>
+                          )}
+                        </div>
                       </div>
                     </div>
 
