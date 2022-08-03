@@ -100,6 +100,17 @@
         }
     }
 
+    &.default {
+        background: $LightBg;
+        border-color: $LightBg;
+
+        &:hover {
+            background: darken($LightBg, 7%);
+            border-color: darken($LightBg, 7%);
+            @include BoxShadow(2px 2px 5px rgba($LightBg, 0.4));
+        }
+    }
+
     &.light {
         background: $LightBg;
         border-color: $LightBg;
