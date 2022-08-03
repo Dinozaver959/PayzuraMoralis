@@ -19,12 +19,8 @@ import { styled } from "@mui/material/styles";
 import Moralis from "moralis";
 import {
   GetWallet_NonMoralis,
-  AcceptOffer_Moralis,
+  AcceptOfferBuyer_Moralis,
   ApproveERC20_Moralis,
-  PayERC20__TEST__Moralis,
-  PayERC20__TEST__WO_Moralis,
-  PayERC20__transfer__Moralis,
-  PayERC20__transfer__direct_USDC,
 } from "../JS/local_web3_Moralis";
 import Navigation from "../components/Navigation.js";
 import Button from "../components/ui/Button";
@@ -155,7 +151,7 @@ export default function ContractsListed(props) {
                 <div className='submitButtonOuter'>
                   <Button
                     link='/create-contract'
-                    classes={"button primary rounded"}
+                    classes={"button secondary withIcon rounded"} // button secondary withIcon rounded // button primary rounded
                   >
                     <span>Create Contract Now</span>
                   </Button>
@@ -287,27 +283,31 @@ function Row_normal(props) {
   return (
     <React.Fragment>
       <StyledTableRow sx={{ "& > *": { borderBottom: "unset" } }}>
-        <StyledTableCell className='gridMoreArrow'>
+        <StyledTableCell className="gridMoreArrow">
           <IconButton
-            aria-label='expand row'
-            size='small'
-            onClick={() => setOpen(!open)}
+              aria-label="expand row"
+              size="small"
+              onClick={() => setOpen(!open)}
           >
             <IconContext.Provider value={{ color: "black" }}>
               {/*  specify the color for the arrow */}
-              {open ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
+              {open ? (
+                <MdKeyboardArrowUp />
+              ) : (
+                <MdKeyboardArrowDown />
+              )}
             </IconContext.Provider>
           </IconButton>
         </StyledTableCell>
-        <StyledTableCell component='th' scope='row'>
-          <label className='mobileLabel'>Title</label>
+        <StyledTableCell component="th" scope="row">
+          <label className="mobileLabel">Title</label>
           {item.ContractTitle}
         </StyledTableCell>
         <StyledTableCell>
-          <label className='mobileLabel'>Price</label>
-          <div className='flex-center'>
+          <label className="mobileLabel">Price</label>
+          <div className="flex-center">
             {item.Price}
-            <i className='currencyIc ml-10 mr-5'>
+            <i className="currencyIc ml-10 mr-5">
               <Image
                 src={tickerToIcon(item.CurrencyTicker)}
                 width={22}
@@ -319,107 +319,98 @@ function Row_normal(props) {
           </div>
         </StyledTableCell>
         <StyledTableCell>
-          <label className='mobileLabel'>Time to Deliver</label>
+          <label className="mobileLabel">Time to Deliver</label>
           {item.TimeToDeliver} H
         </StyledTableCell>
         <StyledTableCell>
-          <label className='mobileLabel'>Valid Until</label>
+          <label className="mobileLabel">Valid Until</label>
           {wrapEpochToDate(item.OfferValidUntil)}
         </StyledTableCell>
         {item.CurrencyTicker == "ETH" || approvedERC20 ? (
           <>
             <StyledTableCell>
               <input
-                className='button primary rounded small'
-                type='submit'
-                value='Accept Offer'
-                onClick={() =>
-                  AcceptOffer_Moralis(item.index, item.CurrencyTicker) // PayERC20__transfer__Moralis()
-                    .then(async (transactionHash) => {
+                className="button primary rounded small"
+                type="submit"
+                value="Accept Offer"
+                onClick={() => {
+                  AcceptOfferBuyer_Moralis(item.index, item.CurrencyTicker) // PayERC20__transfer__Moralis()
+                  .then(async (transactionHash) => {
+                    setModelData({
+                      show: true,
+                      type: "alert",
+                      status: "Pending",
+                      message: "Creating offer...",
+                    });
+
+                    var formData = new FormData();
+                    formData.append("BuyerAccount", Moralis.User.current().id);
+                    formData.append("SellerWallet", item.SellerWallet);
+
+                    const connectedAddress = await GetWallet_NonMoralis();
+                    formData.append("BuyerWallet", connectedAddress);
+                    formData.append("PersonalizedOffer", "false");
+                    formData.append("transactionHash", transactionHash);
+                    formData.append("objectId", item.objectId);
+
+                    var xhr = new XMLHttpRequest();
+                    xhr.open(
+                      "POST",
+                      "/api/api-acceptedOfferByBuyer",
+                      false
+                    );
+                    xhr.onload = function () {
                       setModelData({
                         show: true,
                         type: "alert",
-                        status: "Pending",
-                        message: "Creating offer...",
+                        status: "Success",
+                        message: "offer created",
+                        transactionHash: transactionHash,
                       });
 
-                      var formData = new FormData();
-                      formData.append(
-                        "BuyerAccount",
-                        Moralis.User.current().id
-                      );
-                      formData.append("SellerWallet", item.SellerWallet);
+                      console.log("offer created");
+                    };
 
-                      const connectedAddress = await GetWallet_NonMoralis();
-                      formData.append("BuyerWallet", connectedAddress);
-                      formData.append("PersonalizedOffer", "false");
-                      formData.append("transactionHash", transactionHash);
-                      formData.append("objectId", item.objectId);
-
-                      var xhr = new XMLHttpRequest();
-                      xhr.open("POST", "/api/api-acceptedOffer", false);
-                      xhr.onload = function () {
-                        // setModelData({
-                        //   show: true,
-                        //   type: "alert",
-                        //   status: "Success",
-                        //   message: "offer accepted",
-                        // });
-
-                        setModelData({
-                          show: true,
-                          type: "alert",
-                          status: "Pending",
-                          message: "Accepting offer...",
-                        });
-
-                        var formData = new FormData();
-                        formData.append(
-                          "BuyerAccount",
-                          Moralis.User.current().id
-                        );
-
-                        console.log("offer created");
-                      };
-                      xhr.send(formData);
-                    })
-                    .catch((error) => {
-                      console.error(error);
-                      console.log("accept offer error code: " + error.code);
-                      console.log(
-                        "accept offer error message: " + error.message
-                      );
-                      if (error.data && error.data.message) {
-                        setModelData({
-                          show: true,
-                          type: "alert",
-                          status: "Error",
-                          message: error.data.message,
-                        });
-                      } else {
-                        setModelData({
-                          show: true,
-                          type: "alert",
-                          status: "Error",
-                          message: error.message,
-                        });
-                      }
-                      process.exitCode = 1;
-                    })
-                }
+                    xhr.send(formData);
+                  })
+                  .catch((error) => {
+                    console.error(error);
+                    console.log("accept offer error code: " + error.code);
+                    console.log("accept offer error message: " + error.message);
+                    if (error.data && error.data.message) {
+                      setModelData({
+                        show: true,
+                        type: "alert",
+                        status: "Error",
+                        message: error.data.message,
+                      });
+                    } else {
+                      setModelData({
+                        show: true,
+                        type: "alert",
+                        status: "Error",
+                        message: error.message,
+                      });
+                    }
+                    process.exitCode = 1;
+                  });
+                }}
               ></input>
             </StyledTableCell>
-            {/* don't show approval button */}
           </>
-        ) : (
-          <>
-            <StyledTableCell>
-              <input
-                className='button primary rounded small'
-                type='submit'
-                value='Accept Offer'
-                onClick={() =>
-                  AcceptOffer_Moralis(item.index, item.CurrencyTicker) // PayERC20__transfer__Moralis()
+        ) 
+        
+        
+        /* 
+          : approvedERC20 ? (
+            <>
+              <StyledTableCell>
+                <input
+                  className="button primary rounded small"
+                  type="submit"
+                  value="Accept Offer"
+                  onClick={() => {
+                    AcceptOfferBuyer_Moralis(item.index, item.CurrencyTicker) // PayERC20__transfer__Moralis()
                     .then(async (transactionHash) => {
                       setModelData({
                         show: true,
@@ -429,10 +420,7 @@ function Row_normal(props) {
                       });
 
                       var formData = new FormData();
-                      formData.append(
-                        "BuyerAccount",
-                        Moralis.User.current().id
-                      );
+                      formData.append("BuyerAccount", Moralis.User.current().id);
                       formData.append("SellerWallet", item.SellerWallet);
 
                       const connectedAddress = await GetWallet_NonMoralis();
@@ -442,30 +430,20 @@ function Row_normal(props) {
                       formData.append("objectId", item.objectId);
 
                       var xhr = new XMLHttpRequest();
-                      xhr.open("POST", "/api/api-acceptedOffer", false);
+                      xhr.open(
+                        "POST",
+                        "/api/api-acceptedOfferByBuyer",
+                        false
+                      );
                       xhr.onload = function () {
-                        // setModelData({
-                        //   show: true,
-                        //   type: "alert",
-                        //   status: "Success",
-                        //   message: "offer accepted",
-                        // });
-
                         setModelData({
                           show: true,
                           type: "alert",
-                          status: "Pending",
-                          message: "Accepting offer...",
+                          status: "Success",
+                          message: "offer created",
+                          transactionHash: transactionHash,
                         });
 
-                        var formData = new FormData();
-                        formData.append(
-                          "BuyerAccount",
-                          Moralis.User.current().id
-                        );
-
-                        // think about also removing the hover effect
-                        // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
                         console.log("offer created");
                       };
                       xhr.send(formData);
@@ -473,79 +451,7 @@ function Row_normal(props) {
                     .catch((error) => {
                       console.error(error);
                       console.log("accept offer error code: " + error.code);
-                      console.log(
-                        "accept offer error message: " + error.message
-                      );
-                      if (error.data && error.data.message) {
-                        setModelData({
-                          show: true,
-                          type: "alert",
-                          status: "Error",
-                          message: error.data.message,
-                        });
-                      } else {
-                        setModelData({
-                          show: true,
-                          type: "alert",
-                          status: "Error",
-                          message: error.message,
-                        });
-                      }
-                      process.exitCode = 1;
-                    })
-                }
-              ></input>
-              <input
-                className='button green rounded small'
-                type='submit'
-                /* value="Approve USDC" */
-                value={"Approve " + item.CurrencyTicker}
-                onClick={() => {
-                  ApproveERC20_Moralis(item.index)
-                    .then(async (transactionHash) => {
-                      console.log("approval for ERC20 successfully completed");
-                      console.log("transactionHash: ", transactionHash);
-
-                      // hide approve button
-                      setApprovedERC20(true);
-
-                      var formData = new FormData();
-                      formData.append(
-                        "BuyerAccount",
-                        Moralis.User.current().id
-                      );
-
-                      const connectedAddress = await GetWallet_NonMoralis();
-                      formData.append("BuyerWallet", connectedAddress);
-                      formData.append("transactionHash", transactionHash);
-                      formData.append("objectId", item.objectId);
-
-                      var xhr = new XMLHttpRequest();
-                      xhr.open("POST", "/api/api-approvedERC20", false);
-                      xhr.onload = function () {
-                        setModelData({
-                          show: true,
-                          type: "alert",
-                          status: "Pending",
-                          message: "granting approval...",
-                        });
-
-                        var formData = new FormData();
-                        formData.append(
-                          "BuyerAccount",
-                          Moralis.User.current().id
-                        );
-
-                        // think about also removing the hover effect
-                        // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-                        console.log("approval granted");
-                      };
-                      xhr.send(formData);
-                    })
-                    .catch((error) => {
-                      console.error(error);
-                      console.log("approval error code: " + error.code);
-                      console.log("approval error message: " + error.message);
+                      console.log("accept offer error message: " + error.message);
                       if (error.data && error.data.message) {
                         setModelData({
                           show: true,
@@ -563,6 +469,94 @@ function Row_normal(props) {
                       }
                       process.exitCode = 1;
                     });
+                  }}
+                ></input>
+              </StyledTableCell>
+            </>
+          ) 
+        */
+        
+
+
+        : (
+          <>
+            <StyledTableCell>
+              <input
+                className="button green rounded small"
+                type="submit"
+                /* value="Approve USDC" */
+                value={"Approve " + item.CurrencyTicker}
+                onClick={() => {
+                  // setModelData({
+                  //     show: true,
+                  //     type: "alert",
+                  //     status: "Pending",
+                  //     message: "granting approval...",
+                  // });
+                  ApproveERC20_Moralis(item.index)
+                  .then(async (transactionHash) => {
+                    console.log("approval for ERC20 successfully completed");
+                    console.log("transactionHash: ", transactionHash);
+
+                    // hide approve button
+                    setApprovedERC20(true);
+
+                    var formData = new FormData();
+                    formData.append("userAccount", Moralis.User.current().id);
+
+                    const connectedAddress = await GetWallet_NonMoralis();
+                    formData.append("wallet", connectedAddress);
+                    formData.append("transactionHash", transactionHash);
+                    formData.append("objectId", item.objectId);
+
+                    var xhr = new XMLHttpRequest();
+                    xhr.open(
+                      "POST",
+                      "/api/api-approvedERC20",
+                      false
+                    );
+                    xhr.onload = function () {
+                      setModelData({
+                        show: true,
+                        type: "alert",
+                        status: "Success",
+                        message: "approval granted",
+                        transactionHash: transactionHash,
+                      });
+
+                      var formData = new FormData();
+                      formData.append(
+                        "BuyerAccount",
+                        Moralis.User.current().id
+                      );
+
+                      // think about also removing the hover effect
+                      // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+                      console.log("approval granted");
+                    };
+                    xhr.send(formData);
+                  })
+                  .catch((error) => {
+                    console.error(error);
+                    console.log("approval error code: " + error.code);
+                    console.log("approval error message: " + error.message);
+                    if (error.data && error.data.message) {
+                      setModelData({
+                        show: true,
+                        type: "alert",
+                        status: "Error",
+                        message: error.data.message,
+                      });
+                    } else {
+                      setModelData({
+                        show: true,
+                        type: "alert",
+                        status: "Error",
+                        message: error.message,
+                      });
+                    }
+                    process.exitCode = 1;
+                  });
                 }}
               ></input>
             </StyledTableCell>

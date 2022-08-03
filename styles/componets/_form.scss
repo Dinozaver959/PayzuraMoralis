@@ -52,6 +52,11 @@
         @include FlexDirection(column);
       }
 
+      @include RespondTo(MobileDevices) {
+        flex-direction: unset !important;
+        flex-flow: wrap;
+      }
+
       .formLabel {
         width: 200px;
         margin-right: 15px;

@@ -260,7 +260,9 @@ export async function CreateEscrow_Moralis(isBuyer, price, currencyTicker, timeT
         offerValidUntil: offerValidUntil, 
         personalizedOffer: personalizedOffer_parts,
     }
-  
+
+    console.log("isBuyer ", isBuyer);
+
     if(isBuyer && currencyTicker == "ETH") {
         price = price_.toString();
         return await MoralisWrite__("CreateEscrowBuyer", params, price);
@@ -306,8 +308,6 @@ export async function AcceptOfferSeller_Moralis(index) {
 
     return await MoralisWrite_("AcceptOfferSeller", params);
 }
-
-
 
 export async function FundContract_Moralis(index) {
 
@@ -502,7 +502,6 @@ async function MoralisWrite__(method, params, value) {
 
     return transaction.hash;
 }
-
 
 export async function ApproveERC20_Moralis(index){
 
