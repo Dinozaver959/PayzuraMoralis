@@ -228,13 +228,7 @@ export async function UpdateContracts_ContractCreatedByBuyer(BuyerAccount, Buyer
     agreement.set("PersonalizedOffer", PersonalizedOffer.toLowerCase());  
     agreement.set("Arbiters", Arbiters.toLowerCase());  
     agreement.set("CreatedTxHash", transactionHash);
-
-    if(CurrencyTicker == "ETH"){
-        agreement.set("State", "buyer_initialized_and_paid");
-    } else {
-        agreement.set("State", "buyer_initialized");
-    }
-
+    agreement.set("State", "buyer_initialized_and_paid");
     agreement.set("index", index);
     agreement.set("ApprovedBy", "");
   
@@ -246,6 +240,10 @@ export async function UpdateContracts_ContractCreatedByBuyer(BuyerAccount, Buyer
     });
 }
 
+
+
+// Can Delete
+/*
 export async function UpdateContracts_ContractFunded(objectId) {
 
     const Agreements = Moralis.Object.extend("Agreements");
@@ -265,6 +263,8 @@ export async function UpdateContracts_ContractFunded(objectId) {
         });
     }
 }
+*/
+
 
 export async function UpdateContracts_ContractAcceptedByBuyer(BuyerAccount, BuyerWallet, objectId, transactionHash) {
 

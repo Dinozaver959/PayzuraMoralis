@@ -75,6 +75,7 @@ export default function Description(props) {
   async function SubmitForm() {
     CreateEscrow_Moralis(
       (selectContractType == "buyer") ? true : false,
+      (await GetWallet_NonMoralis())[0],
       document.getElementById("Price").value,
       document.getElementById("CurrencyTicker").value, // expected values: `ETH`, `USDC`
       TimeToDeliver, // document.getElementById("TimeToDeliver").value,
@@ -472,19 +473,10 @@ export default function Description(props) {
                                                         value="buyer"
                                                         onClick={() => setSelectContractType("buyer")}
                                                     />
-                                                    <Tooltip
-                                                        title="Not available yet"
-                                                        placement="top"
-                                                        enterTouchDelay={0}
-                                                        arrow
-                                                    >
-                                                        <label htmlFor="asBuyer">
-                                                            <BuyerIc />
-                                                            <span>
-                                                                As a Buyer
-                                                            </span>
-                                                        </label>
-                                                    </Tooltip>
+                                                    <label htmlFor="asBuyer">
+                                                        <BuyerIc />
+                                                        <span>As a Buyer</span>
+                                                    </label>
                                                 </li>
                                                 <li>
                                                     <input

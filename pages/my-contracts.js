@@ -571,25 +571,12 @@ function Row_normal(props) {
                                             });
 
                                             var formData = new FormData();
-                                            formData.append(
-                                                "BuyerAccount",
-                                                Moralis.User.current().id
-                                            );
+                                            formData.append("SellerAccount", Moralis.User.current().id);
 
-                                            const connectedAddress =
-                                                await GetWallet_NonMoralis();
-                                            formData.append(
-                                                "BuyerWallet",
-                                                connectedAddress
-                                            );
-                                            formData.append(
-                                                "transactionHash",
-                                                transactionHash
-                                            );
-                                            formData.append(
-                                                "objectId",
-                                                item.objectId
-                                            );
+                                            const connectedAddress = await GetWallet_NonMoralis();
+                                            formData.append("SellerWallet", connectedAddress);
+                                            formData.append("transactionHash", transactionHash);
+                                            formData.append("objectId", item.objectId);
 
                                             var xhr = new XMLHttpRequest();
                                             xhr.open(
@@ -665,25 +652,12 @@ function Row_normal(props) {
                                             });
 
                                             var formData = new FormData();
-                                            formData.append(
-                                                "BuyerAccount",
-                                                Moralis.User.current().id
-                                            );
+                                            formData.append("SellerAccount", Moralis.User.current().id);
 
-                                            const connectedAddress =
-                                                await GetWallet_NonMoralis();
-                                            formData.append(
-                                                "BuyerWallet",
-                                                connectedAddress
-                                            );
-                                            formData.append(
-                                                "transactionHash",
-                                                transactionHash
-                                            );
-                                            formData.append(
-                                                "objectId",
-                                                item.objectId
-                                            );
+                                            const connectedAddress = await GetWallet_NonMoralis();
+                                            formData.append("SellerWallet", connectedAddress);
+                                            formData.append("transactionHash", transactionHash);
+                                            formData.append("objectId", item.objectId);
 
                                             var xhr = new XMLHttpRequest();
                                             xhr.open(

@@ -72,13 +72,11 @@ async function main() {
   let addressOfContract0 = await escrowFactory.GetAddress(0);
   console.log(`addressOfContract0: ${addressOfContract0}`);
 
-  // buyer needs to approve USDC spending
-  const amount = 1000; // 0.001 USDC
-  await usdc.approve(addressOfContract0, amount);
-  console.log("USDC approval successful");
+  // NEW - approve USDC just once to the EscrowFactory
+  await usdc.approve(escrowFactory.address, 1000000000000000);
+  console.log(`USDC approval successful, for the contract: ${escrowFactory.address}`);
 
-  // buyer accepts the contract
-  await escrowFactory.AcceptOfferBuyer(numberOfContracts - 1);
+  await escrowFactory.NEW_AcceptOfferBuyer(numberOfContracts - 1);
   console.log(`Contract Accepted: ${addressOfContract0}`);
 
   // buyer confirms delivery
@@ -86,13 +84,17 @@ async function main() {
   console.log(`Delivery Confirmed: ${addressOfContract0}`);
 
 
-
+  
   //------------------------------------------------------------------------------
   //                  create a buyer -> seller contract (USDC)
   //------------------------------------------------------------------------------
 
-  
-  await escrowFactory.CreateEscrowBuyer(
+
+  // approve USDC
+  await usdc.approve(escrowFactory.address, 1000);      // should the approval here be to the EscrowFactory ???
+  console.log(`USDC approval successful, for the contract: ${escrowFactory.address}`);
+
+  await escrowFactory.NEW_CreateEscrowBuyer(
     ["0xdD870fA1b7C4700F2BD7f44238821C26f7392148", "0x583031D1113aD414F02576BD6afaBfb302140225", "0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB"], 
     1000, // 0.001 USDC 
     usdc.address, 
@@ -107,19 +109,6 @@ async function main() {
 
   let addressOfContract1 = await escrowFactory.GetAddress(1);
   console.log(`addressOfContract1: ${addressOfContract1}`);
-
-  // approve USDC
-  const amount_ = 1000; // 0.001 USDC
-  await usdc.approve(addressOfContract1, amount_);      // should the approval here be to the EscrowFactory ???
-
-  console.log(`approver: ${deployer.address}`);
-  console.log(`approve escrow: ${addressOfContract1}`);
-  console.log(`approve escrowFactory: ${escrowFactory.address}`);
-  console.log("USDC approval successful");
-
-  // fund Contract with USDC
-  await escrowFactory.FundContract(numberOfContracts - 1);
-  console.log(`Contract Funded: ${addressOfContract1}`);
 
   // update personalized
   await escrowFactory.AddBuyerPersonalizedOffer(numberOfContracts - 1, [deployer.address]);
