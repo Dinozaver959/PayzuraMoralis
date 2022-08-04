@@ -376,6 +376,27 @@ export async function UpdateContracts_ReturnPayment(objectId, transactionHash) {
 }
 
 
+// Cancel Contract
+export async function UpdateContracts_CancelContract(objectId, transactionHash) {
+
+  const Agreements = Moralis.Object.extend("Agreements");
+  const query = new Moralis.Query(Agreements);
+  query.equalTo("objectId", objectId);
+  const results_ = await query.find();
+
+  if (results_.length > 0) {
+      const agreement = results_[0];
+      agreement.set("State", "canceled");
+      agreement.set("canceledTxHash", transactionHash);
+
+      await agreement.save()
+      .then((agreement) => {
+          console.log('New object created with objectId: ' + agreement.id);
+      }, (error) => {
+          console.log('Failed to create new object, with error code: ' + error.message);
+      });
+  }
+}
 
 // Disputes
 export async function UpdateContracts_StartDispute(objectId, transactionHash) {
