@@ -60,7 +60,7 @@ export default function Description(props) {
   });
   const [personalizedOfferValue, setPersonalizedOfferValue] = React.useState([]);
   const [arbitersValue, setArbitersValue] = React.useState([]);
-  
+
   const [TimeToDeliver, setTimeToDeliver] = React.useState(() => {
     return 1;
   });
@@ -920,11 +920,12 @@ export default function Description(props) {
                       <div className='formField'>
                         <Autocomplete
                           multiple
+                          clearOnBlur
                           id='PersonalizedOffer-Fld'
                           onChange={(e, newval, reason) => {
                             setPersonalizedOfferValue([...newval]); //newval
                           }}
-                          options={[].map((option) => option.title)}
+                          options={[]}
                           freeSolo={true}
                           renderTags={(value, getTagProps) =>
                             value.map((option, index) => (
@@ -945,6 +946,11 @@ export default function Description(props) {
                               id='PersonalizedOffer'
                               type='text'
                               name='PersonalizedOffer'
+                              onKeyDown={(e) => {
+                                if (e.key == "," || e.key == " " || e.key == "Tab") {
+                                  e.key = "Enter";
+                                }
+                              }}
                               {...register("PersonalizedOffer", {
                                 required: false,
                                 minLength: 42,
@@ -963,15 +969,18 @@ export default function Description(props) {
                         ></input> */}
 
                         <div className='fieldError'>
-                          {errors.PersonalizedOffer && errors.PersonalizedOffer.type === "maxLength" && (
-                            <p>Max length is 42 chars</p>
-                          )}
-                          {errors.PersonalizedOffer && errors.PersonalizedOffer.type === "minLength" && (
-                            <p>Min length is 42 chars</p>
-                          )}
-                          {errors.PersonalizedOffer && errors.PersonalizedOffer.type === "pattern" && (
-                            <p>Start with 0x</p>
-                          )}
+                          {errors.PersonalizedOffer &&
+                            errors.PersonalizedOffer.type === "maxLength" && (
+                              <p>Max length is 42 chars</p>
+                            )}
+                          {errors.PersonalizedOffer &&
+                            errors.PersonalizedOffer.type === "minLength" && (
+                              <p>Min length is 42 chars</p>
+                            )}
+                          {errors.PersonalizedOffer &&
+                            errors.PersonalizedOffer.type === "pattern" && (
+                              <p>Start with 0x</p>
+                            )}
                         </div>
                       </div>
                     </div>
@@ -991,8 +1000,9 @@ export default function Description(props) {
                         </Tooltip>
                       </div>
                       <div className='formField'>
-                      <Autocomplete
+                        <Autocomplete
                           multiple
+                          clearOnBlur
                           id='Arbiters-Fld'
                           onChange={(e, newval, reason) => {
                             setArbitersValue([...newval]); //newval
@@ -1018,6 +1028,11 @@ export default function Description(props) {
                               id='Arbiters'
                               type='text'
                               name='Arbiters'
+                              onKeyDown={(e) => {
+                                if (e.key == "," || e.key == " " || e.key == "Tab") {
+                                  e.key = "Enter";
+                                }
+                              }}
                               {...register("Arbiters", {
                                 required: false,
                                 minLength: 42,
@@ -1035,15 +1050,18 @@ export default function Description(props) {
                       ></input> */}
 
                         <div className='fieldError'>
-                          {errors.Arbiters && errors.Arbiters.type === "maxLength" && (
-                            <p>Max length is 42 chars</p>
-                          )}
-                          {errors.Arbiters && errors.Arbiters.type === "minLength" && (
-                            <p>Min length is 42 chars</p>
-                          )}
-                          {errors.Arbiters && errors.Arbiters.type === "pattern" && (
-                            <p>Start with 0x</p>
-                          )}
+                          {errors.Arbiters &&
+                            errors.Arbiters.type === "maxLength" && (
+                              <p>Max length is 42 chars</p>
+                            )}
+                          {errors.Arbiters &&
+                            errors.Arbiters.type === "minLength" && (
+                              <p>Min length is 42 chars</p>
+                            )}
+                          {errors.Arbiters &&
+                            errors.Arbiters.type === "pattern" && (
+                              <p>Start with 0x</p>
+                            )}
                         </div>
                       </div>
                     </div>
