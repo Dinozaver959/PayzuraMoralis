@@ -12,21 +12,19 @@ apiRoute.post(async (req, res) => {
     console.log(req.body)
     console.log(req.files)
 
-    const SellerAccount = DOMPurify.sanitize(req.body.SellerAccount[0].toString());
     const BuyerWallet = DOMPurify.sanitize(req.body.BuyerWallet[0].toString());
     const SellerWallet = DOMPurify.sanitize(req.body.SellerWallet[0].toString());
     const objectId = DOMPurify.sanitize(req.body.objectId[0].toString());
     const transactionHash = DOMPurify.sanitize(req.body.transactionHash[0].toString());
     const PersonalizedOffer = DOMPurify.sanitize(req.body.PersonalizedOffer[0].toString());
 
-    console.log("SellerAccount: " + SellerAccount);
     console.log("BuyerWallet: " + BuyerWallet);
     console.log("SellerWallet: " + SellerWallet);
     console.log("objectId: " + objectId);
     console.log("transactionHash: " + transactionHash);
     console.log("PersonalizedOffer: " + PersonalizedOffer);
     
-    await UpdateContracts_ContractAcceptedBySeller(SellerAccount, SellerWallet, objectId, transactionHash);
+    await UpdateContracts_ContractAcceptedBySeller(SellerWallet, objectId, transactionHash);
     
     if(PersonalizedOffer == "false") { // it won't be the case for the sellers accepting
         await UpdateUserParticipationData(SellerWallet, "ContractsAcceptedAsSeller");

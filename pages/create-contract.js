@@ -108,11 +108,9 @@ export default function Description(props) {
 
       if(selectContractType == "seller") {
         formData.append("SellerWallet", connectedAddress);
-        formData.append("SellerAccount", Moralis.User.current().id);
         xhr.open("POST", "/api/api-createOfferBySeller", false);
       } else {
         formData.append("BuyerWallet", connectedAddress);
-        formData.append("BuyerAccount", Moralis.User.current().id);
         xhr.open("POST", "/api/api-createOfferByBuyer", false);  
       }
 
