@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useMoralis } from "react-moralis";
 import { ethers } from "ethers";
+import Modal from "./Modal";
 
 const Web3 = require('web3');
 const style = {
@@ -191,11 +192,16 @@ function ConnectWallet() {
                     </button>
                 </>
             ) : (
-                <>
-                    <button className="button default rounded">
-                        {truncateAccountAddress}
-                    </button>
-                </>
+                <div>
+                <div className='addressButton'>
+                  <button className='button default rounded hoverModal'>
+                    {truncateAccountAddress}
+                  </button>
+                  <div className='Modal'>
+                    <Modal userDetails={userAddress} />
+                  </div>
+                </div>
+              </div>
             )}
         </>
     );

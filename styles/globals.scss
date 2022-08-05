@@ -32,6 +32,7 @@ http://www.payzura.com
 @import "componets/modalUi";
 @import "componets/loadingPlaceholder";
 @import "componets/cssLoader";
+@import "componets/modal";
 
 /* Layout */
 @import "layout/header";
@@ -42,3 +43,4 @@ http://www.payzura.com
 @import "pages/Login";
 @import "pages/ContractsListed";
 @import "pages/CreateContract";
+@import "pages/UserAddress";
