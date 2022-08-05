@@ -1,6 +1,6 @@
 import middleware from '../../middleware/middleware'
 import nextConnect from 'next-connect'
-import { UpdateContracts_ContractFunded } from '../../JS/DB-pushFunctions';
+import { UpdateContracts_ClaimFunds } from '../../JS/DB-pushFunctions';
 
 const DOMPurify = require('isomorphic-dompurify');
 
@@ -20,7 +20,7 @@ apiRoute.post(async (req, res) => {
     console.log("objectId: " + objectId);
     console.log("transactionHash: " + transactionHash);
     
-    await UpdateContracts_ContractFunded(objectId);
+    await UpdateContracts_ClaimFunds(objectId, transactionHash)
 
     res.status(201).end("Offer created");
 })
@@ -32,3 +32,8 @@ export const config = {
 }
 
 export default apiRoute
+
+
+
+
+

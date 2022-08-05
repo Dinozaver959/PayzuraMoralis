@@ -22,6 +22,8 @@ import {
     ClaimFunds_Moralis,
     StartDispute_Moralis,
     ConfirmDelivery_Moralis,
+    CancelBuyerContract_Moralis,
+    CancelSellerContract_Moralis
 } from "../JS/local_web3_Moralis";
 import Navigation from "../components/Navigation.js";
 import Button from "../components/ui/Button";
@@ -116,25 +118,15 @@ export default function MyAgreements(props) {
         // setPlaceholder(true);
         const connectedAddress = await GetWallet_NonMoralis();
         // const data = await fetch(`./api/api-getUserAgreements`)   /// append user wallet
-        const data = await fetch(
-            `./api/api-getUserAgreements` + "?UserWallet=" + connectedAddress
-        )
+        const data = await fetch(`./api/api-getUserAgreements` + "?UserWallet=" + connectedAddress)
             .then((res) => res.json())
             .then((json) => setData(json));
 
-        const dataOnlyBuyer = await fetch(
-            `./api/api-getUserAgreementsOnlyBuyer` +
-                "?UserWallet=" +
-                connectedAddress
-        )
+        const dataOnlyBuyer = await fetch(`./api/api-getUserAgreementsOnlyBuyer` + "?UserWallet=" + connectedAddress)
             .then((res) => res.json())
             .then((json) => setDataOnlyBuyer(json));
 
-        const dataOnlySeller = await fetch(
-            `./api/api-getUserAgreementsOnlySeller` +
-                "?UserWallet=" +
-                connectedAddress
-        )
+        const dataOnlySeller = await fetch(`./api/api-getUserAgreementsOnlySeller` + "?UserWallet=" + connectedAddress)
             .then((res) => res.json())
             .then((json) => setDataOnlySeller(json));
         setPlaceholder(false);
@@ -369,382 +361,442 @@ function Row_normal(props) {
                     {item.TimeToDeliver}
                 </StyledTableCell>
 
-                {isBuyer ? (
-                    <>
-                        <StyledTableCell>
-                            <input
-                                className="rounded button green small"
-                                type="submit"
-                                value="Start Dispute"
-                                onClick={() =>
-                                    StartDispute_Moralis(item.index)
-                                        .then(async (transactionHash) => {
-                                            // show the feedback text
-                                            setModelData({
-                                                show: true,
-                                                type: "alert",
-                                                status: "Pending",
-                                                message: "Starting Dispute...",
-                                            });
-
-                                            var formData = new FormData();
-                                            formData.append("BuyerAccount",Moralis.User.current().id);
-                                            const connectedAddress = await GetWallet_NonMoralis();
-                                            formData.append("BuyerWallet", connectedAddress);
-                                            formData.append("SellerWallet", item.SellerWallet);
-                                            formData.append("transactionHash", transactionHash);
-                                            formData.append("objectId", item.objectId);
-
-                                            var xhr = new XMLHttpRequest();
-                                            xhr.open(
-                                                "POST",
-                                                "/api/api-startDispute",
-                                                false
-                                            ); // new API required
-                                            xhr.onload = function () {
-                                                // update the feedback text
-                                                setModelData({
-                                                    show: true,
-                                                    type: "alert",
-                                                    status: "Success",
-                                                    message: "Dispute started",
-                                                });
-
-                                                // prevent the Submit button to be clickable and functionable
-                                                // removeHover()
-                                                // document.getElementById('SubmitButton').disabled = true
-
-                                                // think about also removing the hover effect
-                                                // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-                                                console.log("Dispute started");
-                                            };
-                                            xhr.send(formData);
-                                        })
-                                        .catch((error) => {
-                                            console.error(error);
-                                            console.log(
-                                                "accept Offer error code: " +
-                                                    error.code
-                                            );
-                                            console.log(
-                                                "accept Offer error message: " +
-                                                    error.message
-                                            );
-                                            if (
-                                                error.data &&
-                                                error.data.message
-                                            ) {
-                                                setModelData({
-                                                    show: true,
-                                                    type: "alert",
-                                                    status: "Error",
-                                                    message: error.data.message,
-                                                });
-                                            } else {
-                                                setModelData({
-                                                    show: true,
-                                                    type: "alert",
-                                                    status: "Error",
-                                                    message: error.message,
-                                                });
-                                            }
-                                            process.exitCode = 1;
-                                        })
-                                }
-                            ></input>
-
-                            <input
-                                className="button rounded secondary small"
-                                type="submit"
-                                value="Confirm Delivery"
-                                onClick={() =>
-                                    ConfirmDelivery_Moralis(item.index)
-                                        .then(async (transactionHash) => {
-                                            // show the feedback text
-                                            setModelData({
-                                                show: true,
-                                                type: "alert",
-                                                status: "Pending",
-                                                message:
-                                                    "Confirming Delivery...",
-                                            });
-
-                                            var formData = new FormData();
-                                            formData.append(
-                                                "BuyerAccount",
-                                                Moralis.User.current().id
-                                            );
-
-                                            const connectedAddress =
-                                                await GetWallet_NonMoralis();
-                                            formData.append(
-                                                "BuyerWallet",
-                                                connectedAddress
-                                            );
-                                            formData.append(
-                                                "transactionHash",
-                                                transactionHash
-                                            );
-                                            formData.append(
-                                                "objectId",
-                                                item.objectId
-                                            );
-
-                                            var xhr = new XMLHttpRequest();
-                                            xhr.open(
-                                                "POST",
-                                                "/api/api-confirmDelivery",
-                                                false
-                                            ); // new API required
-                                            xhr.onload = function () {
-                                                // update the feedback text
-                                                setModelData({
-                                                    show: true,
-                                                    type: "alert",
-                                                    status: "Success",
-                                                    message:
-                                                        "Delivery confirmed",
-                                                });
-
-                                                // prevent the Submit button to be clickable and functionable
-                                                // removeHover()
-                                                // document.getElementById('SubmitButton').disabled = true
-
-                                                // think about also removing the hover effect
-                                                // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-                                                console.log(
-                                                    "Delivery confirmed"
-                                                );
-                                            };
-                                            xhr.send(formData);
-                                        })
-                                        .catch((error) => {
-                                            console.error(error);
-                                            console.log(
-                                                "accept Offer error code: " +
-                                                    error.code
-                                            );
-                                            console.log(
-                                                "accept Offer error message: " +
-                                                    error.message
-                                            );
-                                            if (
-                                                error.data &&
-                                                error.data.message
-                                            ) {
-                                                setModelData({
-                                                    show: true,
-                                                    type: "alert",
-                                                    status: "Error",
-                                                    message: error.data.message,
-                                                });
-                                            } else {
-                                                setModelData({
-                                                    show: true,
-                                                    type: "alert",
-                                                    status: "Error",
-                                                    message: error.message,
-                                                });
-                                            }
-                                            process.exitCode = 1;
-                                        })
-                                }
-                            ></input>
-                        </StyledTableCell>
-                    </>
+                    
+                {(item.State == 'complete' || item.State == 'canceled' || item.State == 'dispute') ?(
+                  <>
+                      {/* NO BUTTONS */}
+                  </>
                 ) : (
-                    <>
-                        <StyledTableCell>
+                  <>
+                    {isBuyer ? (
+                      (item.State == 'await_payment' || item.State == 'buyer_initialized_and_paid' || item.State == 'await_seller_accepts' || item.State == 'Available') ? (
+                        // show a cancel button (RED COLOR)
+                        <>
+                          <StyledTableCell>
                             <input
-                                className="button primary rounded small"
-                                type="submit"
-                                value="Return Payment"
-                                onClick={() =>
-                                    ReturnPayment_Moralis(item.index)
-                                        .then(async (transactionHash) => {
-                                            // show the feedback text
-                                            setModelData({
-                                                show: true,
-                                                type: "alert",
-                                                status: "Pending",
-                                                message: "Returning payment...",
-                                            });
+                              className="rounded button red small"
+                              type="submit"
+                              value="Cancel Contract"
+                              onClick={() =>
+                                CancelBuyerContract_Moralis(item.index)
+                                  .then(async (transactionHash) => {
+                                    // show the feedback text
+                                    setModelData({
+                                      show: true,
+                                      type: "alert",
+                                      status: "Pending",
+                                      message: "Canceling contract...",
+                                    });
 
-                                            var formData = new FormData();
-                                            formData.append(
-                                                "BuyerAccount",
-                                                Moralis.User.current().id
-                                            );
+                                    var formData = new FormData();
+                                    const connectedAddress = await GetWallet_NonMoralis();
+                                    formData.append("userWallet", connectedAddress);
+                                    formData.append("transactionHash", transactionHash);
+                                    formData.append("objectId", item.objectId);
 
-                                            const connectedAddress =
-                                                await GetWallet_NonMoralis();
-                                            formData.append(
-                                                "BuyerWallet",
-                                                connectedAddress
-                                            );
-                                            formData.append(
-                                                "transactionHash",
-                                                transactionHash
-                                            );
-                                            formData.append(
-                                                "objectId",
-                                                item.objectId
-                                            );
+                                    var xhr = new XMLHttpRequest();
+                                    xhr.open("POST", "/api/api-cancelContract", false);
+                                    xhr.onload = function () {
+                                      // update the feedback text
+                                      setModelData({
+                                        show: true,
+                                        type: "alert",
+                                        status: "Success",
+                                        message: "contract canceled",
+                                        transactionHash: transactionHash,
+                                      });
 
-                                            var xhr = new XMLHttpRequest();
-                                            xhr.open(
-                                                "POST",
-                                                "/api/api-returnPayment",
-                                                false
-                                            ); // new API required
-                                            xhr.onload = function () {
-                                                // update the feedback text
-                                                setModelData({
-                                                    show: true,
-                                                    type: "alert",
-                                                    status: "Success",
-                                                    message: "Payment returned",
-                                                });
+                                      // prevent the Submit button to be clickable and functionable
+                                      // removeHover()
+                                      // document.getElementById('SubmitButton').disabled = true
 
-                                                // prevent the Submit button to be clickable and functionable
-                                                // removeHover()
-                                                // document.getElementById('SubmitButton').disabled = true
+                                      // think about also removing the hover effect
+                                      // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+                                      console.log("contract canceled");
+                                    };
+                                    xhr.send(formData);
+                                  })
+                                  .catch((error) => {
+                                    console.error(error);
+                                    console.log("accept Offer error code: " + error.code);
+                                    console.log("accept Offer error message: " + error.message);
+                                    if (error.data && error.data.message) {
+                                      setModelData({
+                                        show: true,
+                                        type: "alert",
+                                        status: "Error",
+                                        message: error.data.message,
+                                      });
+                                    } else {
+                                      setModelData({
+                                        show: true,
+                                        type: "alert",
+                                        status: "Error",
+                                        message: error.message,
+                                      });
+                                    }
+                                    process.exitCode = 1;
+                                  })
+                              }
+                            ></input>
+                          </StyledTableCell>
+                        </>
+                      ) : (
+                        <>
+                          <StyledTableCell>
+                            <input
+                              className="rounded button green small"
+                              type="submit"
+                              value="Start Dispute"
+                              onClick={() =>
+                                StartDispute_Moralis(item.index)
+                                .then(async (transactionHash) => {
+                                  // show the feedback text
+                                  setModelData({
+                                    show: true,
+                                    type: "alert",
+                                    status: "Pending",
+                                    message: "Starting Dispute...",
+                                  });
 
-                                                // think about also removing the hover effect
-                                                // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-                                                console.log("Payment returned");
-                                            };
-                                            xhr.send(formData);
-                                        })
-                                        .catch((error) => {
-                                            console.error(error);
-                                            console.log(
-                                                "accept Offer error code: " +
-                                                    error.code
-                                            );
-                                            console.log(
-                                                "accept Offer error message: " +
-                                                    error.message
-                                            );
-                                            if (
-                                                error.data &&
-                                                error.data.message
-                                            ) {
-                                                setModelData({
-                                                    show: true,
-                                                    type: "alert",
-                                                    status: "Error",
-                                                    message: error.data.message,
-                                                });
-                                            } else {
-                                                setModelData({
-                                                    show: true,
-                                                    type: "alert",
-                                                    status: "Error",
-                                                    message: error.message,
-                                                });
-                                            }
-                                            process.exitCode = 1;
-                                        })
-                                }
+                                  var formData = new FormData();
+                                  const connectedAddress = await GetWallet_NonMoralis();
+                                  formData.append("BuyerWallet", connectedAddress);
+                                  formData.append("SellerWallet", item.SellerWallet);
+                                  formData.append("transactionHash", transactionHash);
+                                  formData.append("objectId", item.objectId);
+
+                                  var xhr = new XMLHttpRequest();
+                                  xhr.open("POST", "/api/api-startDispute", false);
+                                  xhr.onload = function () {
+                                    // update the feedback text
+                                    setModelData({
+                                      show: true,
+                                      type: "alert",
+                                      status: "Success",
+                                      message: "Dispute started",
+                                      transactionHash: transactionHash,
+                                    });
+
+                                    // prevent the Submit button to be clickable and functionable
+                                    // removeHover()
+                                    // document.getElementById('SubmitButton').disabled = true
+
+                                    // think about also removing the hover effect
+                                    // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+                                    console.log("Dispute started");
+                                  };
+                                  xhr.send(formData);
+                                })
+                                .catch((error) => {
+                                  console.error(error);
+                                  console.log("accept Offer error code: " + error.code);
+                                  console.log("accept Offer error message: " + error.message);
+                                  if (error.data && error.data.message) {
+                                    setModelData({
+                                      show: true,
+                                      type: "alert",
+                                      status: "Error",
+                                      message: error.data.message,
+                                    });
+                                  } else {
+                                    setModelData({
+                                      show: true,
+                                      type: "alert",
+                                      status: "Error",
+                                      message: error.message,
+                                    });
+                                  }
+                                  process.exitCode = 1;
+                                })
+                              }
                             ></input>
 
                             <input
-                                className="button rounded orange small"
-                                type="submit"
-                                value="Claim funds"
-                                onClick={() =>
-                                    ClaimFunds_Moralis(item.index)
-                                        .then(async (transactionHash) => {
-                                            // show the feedback text
-                                            setModelData({
-                                                show: true,
-                                                type: "alert",
-                                                status: "Pending",
-                                                message: "Claiming Funds...",
-                                            });
+                              className="button rounded secondary small"
+                              type="submit"
+                              value="Confirm Delivery"
+                              onClick={() =>
+                                ConfirmDelivery_Moralis(item.index)
+                                  .then(async (transactionHash) => {
+                                    // show the feedback text
+                                    setModelData({
+                                      show: true,
+                                      type: "alert",
+                                      status: "Pending",
+                                      message: "Confirming Delivery...",
+                                    });
 
-                                            var formData = new FormData();
-                                            formData.append(
-                                                "BuyerAccount",
-                                                Moralis.User.current().id
-                                            );
+                                    var formData = new FormData();
+                                    const connectedAddress = await GetWallet_NonMoralis();
+                                    formData.append("BuyerWallet", connectedAddress);
+                                    formData.append("transactionHash", transactionHash);
+                                    formData.append("objectId", item.objectId);
 
-                                            const connectedAddress =
-                                                await GetWallet_NonMoralis();
-                                            formData.append(
-                                                "BuyerWallet",
-                                                connectedAddress
-                                            );
-                                            formData.append(
-                                                "transactionHash",
-                                                transactionHash
-                                            );
-                                            formData.append(
-                                                "objectId",
-                                                item.objectId
-                                            );
+                                    var xhr = new XMLHttpRequest();
+                                    xhr.open("POST", "/api/api-confirmDelivery", false);
+                                    xhr.onload = function () {
+                                      // update the feedback text
+                                      setModelData({
+                                        show: true,
+                                        type: "alert",
+                                        status: "Success",
+                                        message: "Delivery confirmed",
+                                        transactionHash: transactionHash,
+                                      });
 
-                                            var xhr = new XMLHttpRequest();
-                                            xhr.open(
-                                                "POST",
-                                                "/api/api-claimFunds",
-                                                false
-                                            ); // new API required
-                                            xhr.onload = function () {
-                                                // update the feedback text
-                                                setModelData({
-                                                    show: true,
-                                                    type: "alert",
-                                                    status: "Success",
-                                                    message: "Funds claimed",
-                                                });
+                                      // prevent the Submit button to be clickable and functionable
+                                      // removeHover()
+                                      // document.getElementById('SubmitButton').disabled = true
 
-                                                // prevent the Submit button to be clickable and functionable
-                                                // removeHover()
-                                                // document.getElementById('SubmitButton').disabled = true
-
-                                                // think about also removing the hover effect
-                                                // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-                                                console.log("Funds claimed");
-                                            };
-                                            xhr.send(formData);
-                                        })
-                                        .catch((error) => {
-                                            console.error(error);
-                                            console.log(
-                                                "accept Offer error code: " +
-                                                    error.code
-                                            );
-                                            console.log(
-                                                "accept Offer error message: " +
-                                                    error.message
-                                            );
-                                            if (
-                                                error.data &&
-                                                error.data.message
-                                            ) {
-                                                setModelData({
-                                                    show: true,
-                                                    type: "alert",
-                                                    status: "Error",
-                                                    message: error.data.message,
-                                                });
-                                            } else {
-                                                setModelData({
-                                                    show: true,
-                                                    type: "alert",
-                                                    status: "Error",
-                                                    message: error.message,
-                                                });
-                                            }
-                                            process.exitCode = 1;
-                                        })
-                                }
+                                      // think about also removing the hover effect
+                                      // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+                                      console.log("Delivery confirmed");
+                                    };
+                                    xhr.send(formData);
+                                  })
+                                  .catch((error) => {
+                                    console.error(error);
+                                    console.log("accept Offer error code: " + error.code);
+                                    console.log("accept Offer error message: " + error.message);
+                                    if (error.data && error.data.message) {
+                                      setModelData({
+                                        show: true,
+                                        type: "alert",
+                                        status: "Error",
+                                        message: error.data.message,
+                                      });
+                                    } else {
+                                      setModelData({
+                                        show: true,
+                                        type: "alert",
+                                        status: "Error",
+                                        message: error.message,
+                                      });
+                                    }
+                                    process.exitCode = 1;
+                                  })
+                              }
                             ></input>
-                        </StyledTableCell>
-                    </>
-                )}
+                          </StyledTableCell>
+                        </>
+                      )
+                    ) : (
+                      (item.State == 'await_payment' || item.State == 'buyer_initialized_and_paid' || item.State == 'await_seller_accepts' || item.State == 'Available') ? (
+                        // show a cancel button (RED COLOR)
+                        <>
+                          <StyledTableCell>
+                            <input
+                              className="rounded button red small"
+                              type="submit"
+                              value="Cancel Contract"
+                              onClick={() =>
+                                CancelSellerContract_Moralis(item.index)
+                                  .then(async (transactionHash) => {
+                                    // show the feedback text
+                                    setModelData({
+                                      show: true,
+                                      type: "alert",
+                                      status: "Pending",
+                                      message: "Canceling contract...",
+                                    });
+
+                                    var formData = new FormData();
+                                    const connectedAddress = await GetWallet_NonMoralis();
+                                    formData.append("userWallet", connectedAddress);
+                                    formData.append("transactionHash", transactionHash);
+                                    formData.append("objectId", item.objectId);
+
+                                    var xhr = new XMLHttpRequest();
+                                    xhr.open("POST", "/api/api-cancelContract", false);
+                                    xhr.onload = function () {
+                                      // update the feedback text
+                                      setModelData({
+                                        show: true,
+                                        type: "alert",
+                                        status: "Success",
+                                        message: "contract canceled",
+                                        transactionHash: transactionHash,
+                                      });
+
+                                      // prevent the Submit button to be clickable and functionable
+                                      // removeHover()
+                                      // document.getElementById('SubmitButton').disabled = true
+
+                                      // think about also removing the hover effect
+                                      // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+                                      console.log("contract canceled");
+                                    };
+                                    xhr.send(formData);
+                                  })
+                                  .catch((error) => {
+                                    console.error(error);
+                                    console.log("accept Offer error code: " + error.code);
+                                    console.log("accept Offer error message: " + error.message);
+                                    if (error.data && error.data.message) {
+                                      setModelData({
+                                        show: true,
+                                        type: "alert",
+                                        status: "Error",
+                                        message: error.data.message,
+                                      });
+                                    } else {
+                                      setModelData({
+                                        show: true,
+                                        type: "alert",
+                                        status: "Error",
+                                        message: error.message,
+                                      });
+                                    }
+                                    process.exitCode = 1;
+                                  })
+                              }
+                            ></input>
+                          </StyledTableCell>
+                        </>
+                      ) : (
+                        <>
+                          <StyledTableCell>
+                            <input
+                              className="button primary rounded small"
+                              type="submit"
+                              value="Return Payment"
+                              onClick={() =>
+                                ReturnPayment_Moralis(item.index)
+                                  .then(async (transactionHash) => {
+                                    // show the feedback text
+                                    setModelData({
+                                      show: true,
+                                      type: "alert",
+                                      status: "Pending",
+                                      message: "Returning payment...",
+                                    });
+
+                                    var formData = new FormData();
+                                    const connectedAddress = await GetWallet_NonMoralis();
+                                    formData.append("SellerWallet", connectedAddress);
+                                    formData.append("transactionHash", transactionHash);
+                                    formData.append("objectId", item.objectId);
+
+                                    var xhr = new XMLHttpRequest();
+                                    xhr.open("POST", "/api/api-returnPayment", false);
+                                    xhr.onload = function () {
+                                      // update the feedback text
+                                      setModelData({
+                                        show: true,
+                                        type: "alert",
+                                        status: "Success",
+                                        message: "Payment returned",
+                                        transactionHash: transactionHash,
+                                      });
+
+                                      // prevent the Submit button to be clickable and functionable
+                                      // removeHover()
+                                      // document.getElementById('SubmitButton').disabled = true
+
+                                      // think about also removing the hover effect
+                                      // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+                                      console.log("Payment returned");
+                                    };
+                                    xhr.send(formData);
+                                  })
+                                  .catch((error) => {
+                                    console.error(error);
+                                    console.log("accept Offer error code: " + error.code);
+                                    console.log("accept Offer error message: " + error.message);
+                                    if (error.data && error.data.message) {
+                                      setModelData({
+                                        show: true,
+                                        type: "alert",
+                                        status: "Error",
+                                        message: error.data.message,
+                                      });
+                                    } else {
+                                      setModelData({
+                                        show: true,
+                                        type: "alert",
+                                        status: "Error",
+                                        message: error.message,
+                                      });
+                                    }
+                                    process.exitCode = 1;
+                                  })
+                              }
+                            ></input>
+
+                            <input
+                              className="button rounded orange small"
+                              type="submit"
+                              value="Claim funds"
+                              onClick={() =>
+                                ClaimFunds_Moralis(item.index)
+                                  .then(async (transactionHash) => {
+                                    // show the feedback text
+                                    setModelData({
+                                      show: true,
+                                      type: "alert",
+                                      status: "Pending",
+                                      message: "Claiming Funds...",
+                                    });
+
+                                    var formData = new FormData();
+                                    const connectedAddress = await GetWallet_NonMoralis();
+                                    formData.append("SellerWallet", connectedAddress);
+                                    formData.append("transactionHash", transactionHash);
+                                    formData.append("objectId", item.objectId);
+
+                                    var xhr = new XMLHttpRequest();
+                                    xhr.open("POST", "/api/api-claimFunds", false);
+                                    xhr.onload = function () {
+                                      // update the feedback text
+                                      setModelData({
+                                        show: true,
+                                        type: "alert",
+                                        status: "Success",
+                                        message: "Funds claimed",
+                                        transactionHash: transactionHash,
+                                      });
+
+                                      // prevent the Submit button to be clickable and functionable
+                                      // removeHover()
+                                      // document.getElementById('SubmitButton').disabled = true
+
+                                      // think about also removing the hover effect
+                                      // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+                                      console.log("Funds claimed");
+                                    };
+                                    xhr.send(formData);
+                                  })
+                                  .catch((error) => {
+                                    console.error(error);
+                                    console.log("accept Offer error code: " + error.code);
+                                    console.log("accept Offer error message: " + error.message);
+                                    if (error.data && error.data.message) {
+                                      setModelData({
+                                        show: true,
+                                        type: "alert",
+                                        status: "Error",
+                                        message: error.data.message,
+                                      });
+                                    } else {
+                                      setModelData({
+                                        show: true,
+                                        type: "alert",
+                                        status: "Error",
+                                        message: error.message,
+                                      });
+                                    }
+                                    process.exitCode = 1;
+                                  })
+                              }
+                            ></input>
+                          </StyledTableCell>
+                        </>
+                      )
+                    )} 
+                  </>
+                )}              
+              
             </StyledTableRow>
 
             <StyledTableRow>
@@ -856,8 +908,8 @@ function Row_normal(props) {
                                                                             show: true,
                                                                             type: "alert",
                                                                             status: "Success",
-                                                                            message:
-                                                                                "Delegates updated",
+                                                                            message: "Delegates updated",
+                                                                            transactionHash: transactionHash,
                                                                         }
                                                                     );
                                                                     console.log(
@@ -981,8 +1033,8 @@ function Row_normal(props) {
                                                                             show: true,
                                                                             type: "alert",
                                                                             status: "Success",
-                                                                            message:
-                                                                                "Delegates updated",
+                                                                            message: "Delegates updated",
+                                                                            transactionHash: transactionHash,
                                                                         }
                                                                     );
                                                                     console.log(

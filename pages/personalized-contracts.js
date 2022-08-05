@@ -371,8 +371,6 @@ function Row_normal(props) {
                                                 setApprovedERC20(true);
 
                                                 var formData = new FormData();
-                                                formData.append("userAccount", Moralis.User.current().id);
-
                                                 const connectedAddress = await GetWallet_NonMoralis();
                                                 formData.append("wallet", connectedAddress);
                                                 formData.append("transactionHash", transactionHash);
@@ -384,9 +382,6 @@ function Row_normal(props) {
                                                     // update the feedback text
                                                     document.getElementById("submitFeedback").style.display = "inline";
                                                     document.getElementById("submitFeedback").innerText = "granting approval...";
-
-                                                    //var formData = new FormData();
-                                                    //formData.append("BuyerAccount", Moralis.User.current().id);
 
                                                     // think about also removing the hover effect
                                                     // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
@@ -440,7 +435,6 @@ function Row_normal(props) {
                                     });
 
                                     var formData = new FormData();
-                                    formData.append("BuyerAccount", Moralis.User.current().id);
                                     formData.append("SellerWallet", item.SellerWallet);
                                     formData.append("PersonalizedOffer", "true");
 
@@ -471,12 +465,6 @@ function Row_normal(props) {
                                         //   status: "Success",
                                         //   message: "offer accepted",
                                         // });
-
-                                        var formData = new FormData();
-                                        formData.append(
-                                            "BuyerAccount",
-                                            Moralis.User.current().id
-                                        );
 
                                         // think about also removing the hover effect
                                         // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
@@ -525,7 +513,6 @@ function Row_normal(props) {
                       "Creating offer...";
 
                     var formData = new FormData();
-                    formData.append("BuyerAccount", Moralis.User.current().id);
                     formData.append("SellerWallet", item.SellerWallet);   
 
                     const connectedAddress = await GetWallet_NonMoralis();

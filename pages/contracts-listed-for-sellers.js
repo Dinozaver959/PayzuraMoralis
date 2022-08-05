@@ -311,7 +311,6 @@ function Row_normal(props) {
                                     });
 
                                     var formData = new FormData();
-                                    formData.append("SellerAccount", Moralis.User.current().id);
                                     formData.append("BuyerWallet", item.BuyerWallet);
 
                                     const connectedAddress = await GetWallet_NonMoralis();

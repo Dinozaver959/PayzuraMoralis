@@ -1,29 +1,27 @@
 import middleware from '../../middleware/middleware'
 import nextConnect from 'next-connect'
-import { UpdateContracts_ERC20ApprovalList } from '../../JS/DB-pushFunctions';
+import { UpdateContracts_CancelContract, UpdateUserParticipationData } from '../../JS/DB-pushFunctions';
 
 const DOMPurify = require('isomorphic-dompurify');
 
 const apiRoute = nextConnect()
 apiRoute.use(middleware)
 
-
 apiRoute.post(async (req, res) => {
     console.log(req.body)
     console.log(req.files)
 
-    const userAccount = DOMPurify.sanitize(req.body.userAccount[0].toString());
-    const wallet = DOMPurify.sanitize(req.body.wallet[0].toString());
+    const userWallet = DOMPurify.sanitize(req.body.userWallet[0].toString());
     const objectId = DOMPurify.sanitize(req.body.objectId[0].toString());
     const transactionHash = DOMPurify.sanitize(req.body.transactionHash[0].toString());
-    
-    console.log("userAccount: " + userAccount);
-    console.log("wallet: " + wallet);
+
+    console.log("userWallet: " + userWallet);
     console.log("objectId: " + objectId);
     console.log("transactionHash: " + transactionHash);
     
-    await UpdateContracts_ERC20ApprovalList(wallet, objectId);
-
+    await UpdateContracts_CancelContract(objectId, transactionHash);
+    await UpdateUserParticipationData(userWallet, "ContractsCanceled");
+    
     res.status(201).end("Offer created");
 })
 
@@ -34,3 +32,4 @@ export const config = {
 }
 
 export default apiRoute
+
