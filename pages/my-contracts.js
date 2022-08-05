@@ -462,7 +462,6 @@ function Row_normal(props) {
                                   });
 
                                   var formData = new FormData();
-                                  formData.append("BuyerAccount",Moralis.User.current().id);
                                   const connectedAddress = await GetWallet_NonMoralis();
                                   formData.append("BuyerWallet", connectedAddress);
                                   formData.append("SellerWallet", item.SellerWallet);
@@ -531,8 +530,6 @@ function Row_normal(props) {
                                     });
 
                                     var formData = new FormData();
-                                    formData.append("BuyerAccount", Moralis.User.current().id);
-
                                     const connectedAddress = await GetWallet_NonMoralis();
                                     formData.append("BuyerWallet", connectedAddress);
                                     formData.append("transactionHash", transactionHash);
@@ -678,8 +675,6 @@ function Row_normal(props) {
                                     });
 
                                     var formData = new FormData();
-                                    formData.append("SellerAccount", Moralis.User.current().id);
-
                                     const connectedAddress = await GetWallet_NonMoralis();
                                     formData.append("SellerWallet", connectedAddress);
                                     formData.append("transactionHash", transactionHash);
@@ -747,8 +742,6 @@ function Row_normal(props) {
                                     });
 
                                     var formData = new FormData();
-                                    formData.append("SellerAccount", Moralis.User.current().id);
-
                                     const connectedAddress = await GetWallet_NonMoralis();
                                     formData.append("SellerWallet", connectedAddress);
                                     formData.append("transactionHash", transactionHash);

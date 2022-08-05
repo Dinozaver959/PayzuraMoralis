@@ -12,7 +12,6 @@ apiRoute.post(async (req, res) => {
     console.log(req.body)
     console.log(req.files)
 
-    const ArbiterAccount = DOMPurify.sanitize(req.body.ArbiterAccount[0].toString());
     const ArbiterWallet = DOMPurify.sanitize(req.body.ArbiterWallet[0].toString());
     const BuyerWallet = DOMPurify.sanitize(req.body.BuyerWallet[0].toString());
     const SellerWallet = DOMPurify.sanitize(req.body.SellerWallet[0].toString());
@@ -20,7 +19,6 @@ apiRoute.post(async (req, res) => {
     const votedForBuyer = DOMPurify.sanitize(req.body.votedForBuyer[0].toString());
     const ArbitersVoteConcluded = DOMPurify.sanitize(req.body.ArbitersVoteConcluded[0].toString());
 
-    console.log("ArbiterAccount: " + ArbiterAccount);
     console.log("ArbiterWallet: " + ArbiterWallet);
     console.log("BuyerWallet: " + BuyerWallet);
     console.log("SellerWallet: " + SellerWallet);

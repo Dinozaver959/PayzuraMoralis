@@ -11,12 +11,10 @@ apiRoute.post(async (req, res) => {
     console.log(req.body)
     console.log(req.files)
 
-    const SellerAccount = DOMPurify.sanitize(req.body.SellerAccount[0].toString());
     const SellerWallet = DOMPurify.sanitize(req.body.SellerWallet[0].toString());
     const objectId = DOMPurify.sanitize(req.body.objectId[0].toString());
     const transactionHash = DOMPurify.sanitize(req.body.transactionHash[0].toString());
 
-    console.log("SellerAccount: " + SellerAccount);
     console.log("SellerWallet: " + SellerWallet);
     console.log("objectId: " + objectId);
     console.log("transactionHash: " + transactionHash);

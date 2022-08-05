@@ -1,7 +1,7 @@
 var Moralis = require("moralis/node");
 
-const serverUrl = "https://fordrbswdskl.usemoralis.com:2053/server";
-const appId = "8AGWP86FEWcfCRwNLa0LGffGPs5kpcHxqRpEp4PF";
+const serverUrl = "https://rbfqybjb4vga.usemoralis.com:2053/server";
+const appId = "FltzNNp8ebZsRkVnPTd6RKWTF2XoTLmVDMHSicVd";
 Moralis.start({ serverUrl, appId });
 
 
@@ -180,12 +180,11 @@ export async function UpdateContracts_UpdatePersonalized(objectId, areForBuyer, 
 
 
 // Contract Flow
-export async function UpdateContracts_ContractCreatedBySeller(SellerAccount, SellerWallet, ContractTitle, OfferDescription, hashDescription, Price, CurrencyTicker, ChainID, TimeToDeliver, transactionHash, index, OfferValidUntil, PersonalizedOffer, Arbiters) {
+export async function UpdateContracts_ContractCreatedBySeller( SellerWallet, ContractTitle, OfferDescription, hashDescription, Price, CurrencyTicker, ChainID, TimeToDeliver, transactionHash, index, OfferValidUntil, PersonalizedOffer, Arbiters) {
 
     const Agreements = Moralis.Object.extend("Agreements");
     const agreement = new Agreements();
     agreement.set("ContractStartedBy", "Seller");
-    agreement.set("SellerAccount", SellerAccount);
     agreement.set("SellerWallet", SellerWallet.toLowerCase());
     agreement.set("ContractTitle", ContractTitle);
     agreement.set("OfferDescription", OfferDescription);
@@ -210,12 +209,11 @@ export async function UpdateContracts_ContractCreatedBySeller(SellerAccount, Sel
     });
 }
 
-export async function UpdateContracts_ContractCreatedByBuyer(BuyerAccount, BuyerWallet, ContractTitle, OfferDescription, hashDescription, Price, CurrencyTicker, ChainID, TimeToDeliver, transactionHash, index, OfferValidUntil, PersonalizedOffer, Arbiters) {
+export async function UpdateContracts_ContractCreatedByBuyer(BuyerWallet, ContractTitle, OfferDescription, hashDescription, Price, CurrencyTicker, ChainID, TimeToDeliver, transactionHash, index, OfferValidUntil, PersonalizedOffer, Arbiters) {
 
     const Agreements = Moralis.Object.extend("Agreements");
     const agreement = new Agreements();
     agreement.set("ContractStartedBy", "Buyer");
-    agreement.set("BuyerAccount", BuyerAccount);
     agreement.set("BuyerWallet", BuyerWallet.toLowerCase());
     agreement.set("ContractTitle", ContractTitle);
     agreement.set("OfferDescription", OfferDescription);
@@ -266,7 +264,7 @@ export async function UpdateContracts_ContractFunded(objectId) {
 */
 
 
-export async function UpdateContracts_ContractAcceptedByBuyer(BuyerAccount, BuyerWallet, objectId, transactionHash) {
+export async function UpdateContracts_ContractAcceptedByBuyer(BuyerWallet, objectId, transactionHash) {
 
     const Agreements = Moralis.Object.extend("Agreements");
     const query = new Moralis.Query(Agreements);
@@ -276,7 +274,6 @@ export async function UpdateContracts_ContractAcceptedByBuyer(BuyerAccount, Buye
     if (results_.length > 0) {
         const agreement = results_[0];
         agreement.set("State", "paid");
-        agreement.set("BuyerAccount", BuyerAccount);
         agreement.set("BuyerWallet", BuyerWallet.toLowerCase());
         agreement.set("AcceptedTxHash", transactionHash);
 
@@ -289,7 +286,7 @@ export async function UpdateContracts_ContractAcceptedByBuyer(BuyerAccount, Buye
     }
 }
 
-export async function UpdateContracts_ContractAcceptedBySeller(SellerAccount, SellerWallet, objectId, transactionHash) {
+export async function UpdateContracts_ContractAcceptedBySeller(SellerWallet, objectId, transactionHash) {
 
     const Agreements = Moralis.Object.extend("Agreements");
     const query = new Moralis.Query(Agreements);
@@ -299,7 +296,6 @@ export async function UpdateContracts_ContractAcceptedBySeller(SellerAccount, Se
     if (results_.length > 0) {
         const agreement = results_[0];
         agreement.set("State", "paid");
-        agreement.set("SellerAccount", SellerAccount);
         agreement.set("SellerWallet", SellerWallet.toLowerCase());
         agreement.set("AcceptedTxHash", transactionHash);
 
