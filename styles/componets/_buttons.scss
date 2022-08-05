@@ -6,11 +6,16 @@
     text-decoration: none;
     cursor: pointer;
     min-width: 90px;
+    @include Transition(0.2s);
 
     @include RespondTo(MobileDevices) {
         text-align: center;
         height: 36px;
         padding: 0.5rem 1.1rem;
+    }
+
+    &:hover {
+        @include Transition(0.2s);
     }
 
     &.small {

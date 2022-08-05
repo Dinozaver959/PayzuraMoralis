@@ -35,6 +35,7 @@ import USDCIcon from "../components/images/USDC.webp";
 import Image from "next/image";
 import DownArrowIc from "../components/icons/DownArrow";
 import CurrencyList from "../components/contract-creation/currency-list";
+import WalletAddressField from "../components/ui/WalletAddress-Input";
 
 export default function Description(props) {
   // SUBMIT - validation
@@ -58,6 +59,9 @@ export default function Description(props) {
 
   const [personalizedOfferValue, setPersonalizedOfferValue] = React.useState([]);
   const [arbitersValue, setArbitersValue] = React.useState([]);
+  const [errorPersonalizedOfferValue, setErrorPersonalizedOfferValue] = React.useState(false);
+  const [errorArbitersValue, setErrorArbitersValue] = React.useState(false);
+
 
   const [modelData, setModelData] = React.useState({
     show: false,
@@ -86,12 +90,12 @@ export default function Description(props) {
     ) 
     .then(async (transactionHash) => {
       // show the feedback text
-      //setModelData({
-      //    show: true,
-      //     type: "alert",
-      //     status: "Pending",
-      //     message: "Creating offer...",
-      // });
+      setModelData({
+        show: true,
+        type: "alert",
+        status: "Pending",
+        message: "Creating offer...",
+      });
 
       var form = document.querySelector("form");
       var formData = new FormData(form);
@@ -847,69 +851,17 @@ export default function Description(props) {
                         </Tooltip>
                       </div>
                       <div className="formField">
-                      <Autocomplete
-                          multiple
-                          clearOnBlur
-                          id='PersonalizedOffer-Fld'
-                          onChange={(e, newval, reason) => {
-                            setPersonalizedOfferValue([...newval]); //newval
-                          }}
-                          options={[]}
-                          freeSolo={true}
-                          renderTags={(value, getTagProps) =>
-                            value.map((option, index) => (
-                              <Chip
-                                key={index}
-                                variant='outlined'
-                                label={option}
-                                {...getTagProps({ index })}
-                              />
-                            ))
-                          }
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              variant='filled'
-                              // label="Wallets"
-                              placeholder='Wallets'
-                              id='PersonalizedOffer'
-                              type='text'
-                              name='PersonalizedOffer'
-                              onKeyDown={(e) => {
-                                if (e.key == "," || e.key == " " || e.key == "Tab") {
-                                  e.key = "Enter";
-                                }
-                              }}
-                              {...register("PersonalizedOffer", {
-                                required: false,
-                                minLength: 42,
-                                maxLength: 42,
-                                pattern: /^0x/i,
-                              })}
-                            />
-                          )}
+                        <WalletAddressField name="PersonalizedOffer"
+                          inputValue={personalizedOfferValue}
+                          setInputValue={setPersonalizedOfferValue}
+                          errorValue={errorPersonalizedOfferValue}
+                          setErrorValue={setErrorPersonalizedOfferValue}
                         />
 
-                        {/* <input
-                          className="formInput"
-                          id="PersonalizedOffer"
-                          type="text"
-                          name="PersonalizedOffer"
-                        ></input> */}
-
                         <div className='fieldError'>
-                          {errors.PersonalizedOffer &&
-                            errors.PersonalizedOffer.type === "maxLength" && (
-                              <p>Max length is 42 chars</p>
-                            )}
-                          {errors.PersonalizedOffer &&
-                            errors.PersonalizedOffer.type === "minLength" && (
-                              <p>Min length is 42 chars</p>
-                            )}
-                          {errors.PersonalizedOffer &&
-                            errors.PersonalizedOffer.type === "pattern" && (
-                              <p>Start with 0x</p>
-                            )}
+                          {errorPersonalizedOfferValue && (
+                            <p>Invalid Wallet Address.</p>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -929,69 +881,17 @@ export default function Description(props) {
                         </Tooltip>
                       </div>
                       <div className="formField">
-                      <Autocomplete
-                          multiple
-                          clearOnBlur
-                          id='Arbiters-Fld'
-                          onChange={(e, newval, reason) => {
-                            setArbitersValue([...newval]); //newval
-                          }}
-                          options={[]}
-                          freeSolo={true}
-                          renderTags={(value, getTagProps) =>
-                            value.map((option, index) => (
-                              <Chip
-                                key={index}
-                                variant='outlined'
-                                label={option}
-                                {...getTagProps({ index })}
-                              />
-                            ))
-                          }
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              variant='filled'
-                              // label="Wallets"
-                              placeholder='Wallets'
-                              id='Arbiters'
-                              type='text'
-                              name='Arbiters'
-                              onKeyDown={(e) => {
-                                if (e.key == "," || e.key == " " || e.key == "Tab") {
-                                  e.key = "Enter";
-                                }
-                              }}
-                              {...register("Arbiters", {
-                                required: false,
-                                minLength: 42,
-                                maxLength: 42,
-                                pattern: /^0x/i,
-                              })}
-                            />
-                          )}
+                        <WalletAddressField name="Arbiters"
+                          inputValue={arbitersValue}
+                          setInputValue={setArbitersValue}
+                          errorValue={errorArbitersValue}
+                          setErrorValue={setErrorArbitersValue}
                         />
 
-                        {/* <input
-                          className="formInput"
-                          id="Arbiters"
-                          type="text"
-                          name="Arbiters"
-                        ></input> */}
-
                         <div className='fieldError'>
-                          {errors.Arbiters &&
-                            errors.Arbiters.type === "maxLength" && (
-                              <p>Max length is 42 chars</p>
-                            )}
-                          {errors.Arbiters &&
-                            errors.Arbiters.type === "minLength" && (
-                              <p>Min length is 42 chars</p>
-                            )}
-                          {errors.Arbiters &&
-                            errors.Arbiters.type === "pattern" && (
-                              <p>Start with 0x</p>
-                            )}
+                          {errorArbitersValue && (
+                            <p>Invalid Wallet Address.</p>
+                          )}
                         </div>
                       </div>
                     </div>
