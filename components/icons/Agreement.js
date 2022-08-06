@@ -1,7 +1,7 @@
 function AgreementIc(props) {
     if (props.onClick) {
         return (
-            <button onClick={props.onClick} className="linkButton" type="button">
+            <button onClick={props.onClick} className="linkButton">
                 <svg
                     viewBox="0 0 14 17"
                     width={props.size}
