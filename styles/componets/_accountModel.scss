@@ -1,0 +1,46 @@
+.connectedAccount {
+  .accountBlock {
+    .blockTop {
+      @extend %FlexRow-CenterBetween;
+
+      .connectedWith {
+      }
+
+      .connectedActions {
+      }
+    }
+
+    .walletAddress {
+      @extend %FlexRow-CenterBetween;
+
+      .walletPic {
+        @include Size(16px, 16px);
+        margin-right: 5px;
+
+        i {
+          display: inline-block;
+          @include Size(16px, 16px);
+          @include BorderRadius(50%);
+          background: rgba($BlackColor, 0.2);
+        }
+      }
+
+      .walletID {
+        flex: 2;
+
+        .userWalletAddress {
+          opacity: 0;
+          @include Size(0px, 0px);
+          overflow: hidden;
+
+          textarea {
+            @include Size(0px, 0px);
+          }
+        }
+      }
+    }
+
+    .walletActions {
+    }
+  }
+}
