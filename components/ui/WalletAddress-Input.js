@@ -2,6 +2,8 @@ import React, { createRef, Fragment } from "react";
 import CloseIc from "../icons/Close";
 import PlusIc from "../icons/Plus";
 
+const Web3 = require("web3");
+
 function WalletAddressField(props) {
   const { inputValue, setInputValue, errorValue, setErrorValue } = props;
   let textInput = createRef();
@@ -9,7 +11,7 @@ function WalletAddressField(props) {
   const handleAddWallet = (e) => {
     let enteredValue = textInput.current.value;
     if (enteredValue.length !== 0) {
-      if (enteredValue.length !== 42 || enteredValue.match(/^0x/i) === null) {
+      if (enteredValue.match(/^0x[a-fA-F0-9]{40}$/g) === null || Web3.utils.isAddress(enteredValue) === false) {
         setErrorValue(true);
       } else {
         setErrorValue(false);
