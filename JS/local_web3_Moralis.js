@@ -1,10 +1,9 @@
 import Moralis from "moralis"
 import {ABI, ABI_ERC20} from "./ABI.js"
-import {constants} from "ethers";
 
 //const ethers = Moralis.web3Library;
  
-const FactoryContractAddress = "0x30E73f2f79e1b3a5DF33A9CF2C640eC2b757c574"; // "0xC580C23A982C11A3812920C51EDd104B2BB89B15"; // "0x6526447628924eea4F0578e812826f327F8d489B"; //"0x5Fc12E3eC96dd2F008DB5f32497cbAbefB049B60";   // 0x5D023afC16961d44E5fB3F29fe17fd54cE8D3487 - checked in
+const FactoryContractAddress = "0x7129E3D35618221aCFA0d3777205414DB55aD709"; // "0xC580C23A982C11A3812920C51EDd104B2BB89B15"; // "0x6526447628924eea4F0578e812826f327F8d489B"; //"0x5Fc12E3eC96dd2F008DB5f32497cbAbefB049B60";   // 0x5D023afC16961d44E5fB3F29fe17fd54cE8D3487 - checked in
 export const contractOnNetwork = "polygon";
 const commission = 0.01;
 const PayzuraDafaultArbiter = "0x80038953cE1CdFCe7561Abb73216dE83F8baAEf0"; // Payzura Team/Platform address
@@ -214,7 +213,7 @@ async function MoralisRead(method, params) {
 
 // WRITE Functions
 
-export async function CreateEscrow_Moralis(isBuyer, userWallet, price, currencyTicker, timeToDeliver, hashOfDescription, offerValidUntil, personalizedOffer, arbiters) {
+export async function CreateEscrow_Moralis(isBuyer, price, currencyTicker, timeToDeliver, hashOfDescription, offerValidUntil, personalizedOffer, arbiters) {
 
     var personalizedOffer_parts = personalizedOffer.split(",");
 
@@ -265,12 +264,9 @@ export async function CreateEscrow_Moralis(isBuyer, userWallet, price, currencyT
     console.log("isBuyer ", isBuyer);
 
     if(isBuyer && currencyTicker == "ETH") {
-        return await MoralisWrite__("CreateEscrowBuyer", params, price_.toString());
+        price = price_.toString();
+        return await MoralisWrite__("CreateEscrowBuyer", params, price);
     } else if(isBuyer){
-
-        // check if seller has given the EscrowFactory approval for ERC20 transfer
-        await ApproveERC20_UNLIMITED_Moralis(price_.toString(), userWallet);  // USDC on Matic hardcoded at the moment
-        
         return await MoralisWrite_("CreateEscrowBuyer", params);
     }
     else {
@@ -278,7 +274,7 @@ export async function CreateEscrow_Moralis(isBuyer, userWallet, price, currencyT
     }
 }
 
-export async function AcceptOfferBuyer_Moralis(index, CurrencyTicker, userWallet) {
+export async function AcceptOfferBuyer_Moralis(index, CurrencyTicker) {
 
     // get the mint price
     var price = await GetPrice_Moralis(index); // will give an array with a hex value
@@ -296,11 +292,6 @@ export async function AcceptOfferBuyer_Moralis(index, CurrencyTicker, userWallet
     if (CurrencyTicker == "ETH"){
         return await MoralisWrite__("AcceptOfferBuyer", params, price); // for ETH
     } else {
-
-
-        // check for the approval first 
-        await ApproveERC20_UNLIMITED_Moralis(price, userWallet);
-
         return await MoralisWrite__("AcceptOfferBuyer", params, 0); // for USDC 
     }
 
@@ -512,7 +503,6 @@ async function MoralisWrite__(method, params, value) {
     return transaction.hash;
 }
 
-// approve the escrow contract instance
 export async function ApproveERC20_Moralis(index){
 
     const ERC20_contractAddress = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
@@ -552,82 +542,6 @@ export async function ApproveERC20_Moralis(index){
 
     return transaction.hash;
 }
-
-// approve the FactoryEscrow contract
-export async function ApproveERC20_UNLIMITED_Moralis(price, userWallet){
-
-  const ERC20_contractAddress = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
-
-  await HandleNetworkSwitch(contractOnNetwork); 
-  await Moralis.enableWeb3();
-
-
-  // check if allowance is enough
-  console.log("userWallet", userWallet);
-  console.log(userWallet);
-  //console.log(userWallet[0]);
-  const ret = await Check_ERC20_Approval_Moralis(price, userWallet);
-  console.log(ret); // true/false
-
-  if(ret){
-    console.log("allowance is enough");
-    return true;
-  }
-  console.log("allowance is not enough");
-
-  const params = {
-    _spender: FactoryContractAddress, // contract address of this instance              // ORG: for the instance of escrow contract
-    _value: constants.MaxInt256,
-  }
-
-  const writeOptions = {
-    contractAddress: ERC20_contractAddress,
-    functionName: "approve",
-    abi: ABI_ERC20,
-    params: params,
-    msgValue: 0
-  };
-
-  const transaction = await Moralis.executeFunction(writeOptions);
-
-  console.log("transaction hash: " + transaction.hash);
-
-  const tx = await transaction.wait();
-  console.log("transaction is confirmed");
-
-  return transaction.hash;
-}
-
-
-// approve the FactoryEscrow contract
-export async function Check_ERC20_Approval_Moralis(price, userWallet){
-
-  const ERC20_contractAddress = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
-
-  const params = {
-    _owner: userWallet,
-    _spender: FactoryContractAddress, // contract address of this instance              // ORG: for the instance of escrow contract  
-  }
-
-  const readOptions = {
-    contractAddress: ERC20_contractAddress,
-    functionName: "allowance",
-    abi: ABI_ERC20,
-    params: params
-  };
-
-  const message = await Moralis.executeFunction(readOptions);
-  console.log("allowance:");
-  console.log(message);
-
-  price = BigInt(price);
-  console.log("price: ", price);
-
-  return (message < price) ? false : true;
-}
-
-
-
 
 
 

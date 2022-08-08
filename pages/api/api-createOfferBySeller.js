@@ -11,6 +11,7 @@ apiRoute.post(async (req, res) => {
     console.log(req.body)
     console.log(req.files)
 
+    const SellerAccount = DOMPurify.sanitize(req.body.SellerAccount[0].toString());
     const SellerWallet = DOMPurify.sanitize(req.body.SellerWallet[0].toString());
     const ContractTitle = DOMPurify.sanitize(req.body.ContractTitle[0].toString());
     const OfferDescription = DOMPurify.sanitize(req.body.OfferDescription[0].toString());
@@ -25,6 +26,7 @@ apiRoute.post(async (req, res) => {
     const CurrencyTicker = DOMPurify.sanitize(req.body.CurrencyTicker[0].toString());
     const ChainID = DOMPurify.sanitize(req.body.ChainID[0].toString());
 
+    console.log("SellerAccount: " + SellerAccount);
     console.log("SellerWallet: " + SellerWallet);
     console.log("ContractTitle: " + ContractTitle);
     console.log("OfferDescription: " + OfferDescription);
@@ -40,7 +42,7 @@ apiRoute.post(async (req, res) => {
     console.log("Arbiters: " + Arbiters);
 
 
-    await UpdateContracts_ContractCreatedBySeller( SellerWallet, ContractTitle, OfferDescription, hashDescription, Price, CurrencyTicker, ChainID, TimeToDeliver, transactionHash, index, OfferValidUntil, PersonalizedOffer, Arbiters)
+    await UpdateContracts_ContractCreatedBySeller(SellerAccount, SellerWallet, ContractTitle, OfferDescription, hashDescription, Price, CurrencyTicker, ChainID, TimeToDeliver, transactionHash, index, OfferValidUntil, PersonalizedOffer, Arbiters)
 
 
     // if artbiters are not empty, split it by commma and increment for each
