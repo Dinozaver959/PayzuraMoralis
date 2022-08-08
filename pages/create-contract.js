@@ -472,19 +472,10 @@ export default function Description(props) {
                                                         value="buyer"
                                                         onClick={() => setSelectContractType("buyer")}
                                                     />
-                                                    <Tooltip
-                                                        title="Not available yet"
-                                                        placement="top"
-                                                        enterTouchDelay={0}
-                                                        arrow
-                                                    >
-                                                        <label htmlFor="asBuyer">
-                                                            <BuyerIc />
-                                                            <span>
-                                                                As a Buyer
-                                                            </span>
-                                                        </label>
-                                                    </Tooltip>
+                                                    <label htmlFor="asBuyer">
+                                                        <BuyerIc />
+                                                        <span>As a BuyerAccount</span>
+                                                    </label>
                                                 </li>
                                                 <li>
                                                     <input
