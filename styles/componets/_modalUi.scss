@@ -1,7 +1,7 @@
 .modalMain {
     @include Size(100%, 100vh);
     @include Fixed($Left: 0, $Top: 0);
-    background: rgba($BlackColor, 0.85);
+    background: rgba($BlackColor, 0.3);
     overflow-x: hidden;
     overflow-y: auto;
     z-index: 99;
@@ -29,7 +29,7 @@
             pointer-events: auto;
             background-color: $WhiteColor;
             background-clip: padding-box;
-            border: 1px solid rgba($BlackColor, 0.2);
+            border: 1px solid rgba($BlackColor, 0.05);
             @include BorderRadius($CardRounded);
             outline: 0;
 
