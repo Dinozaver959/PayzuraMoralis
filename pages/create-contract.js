@@ -256,7 +256,7 @@ export default function Description(props) {
   const [selectedTemplate, setSelectedTemplate] = React.useState("Empty");
   const [showForm, setShowForm] = React.useState(false);
   const [tempDesc, setTempDesc] = React.useState();
-  const [contractValidity, setContractValidity] = React.useState("7 Days");
+  const [contractValidity, setContractValidity] = React.useState("1 Days");
   const [showDatepicker, setShowDatepicker] = React.useState(false);
   const [contractDuration, setContractDuration] = React.useState("1 Hour");
   const [showCustomDuration, setShowCustomDuration] = React.useState(false);
@@ -299,14 +299,14 @@ export default function Description(props) {
     setContractValidity(selectedValidity);
 
     let days = 365;
-    if (selectedValidity === "7 Days") {
+    if (selectedValidity === "1 Days") {
+      days = 1;
+    } else if (selectedValidity === "3 Days") {
+      days = 3;
+    } else if (selectedValidity === "7 Days") {
       days = 7;
-    } else if (selectedValidity === "14 Days") {
+    } else if (selectedValidity === "14 days") {
       days = 14;
-    } else if (selectedValidity === "30 Days") {
-      days = 30;
-    } else if (selectedValidity === "90 days") {
-      days = 90;
     }
 
     if (days == 365) {
@@ -615,46 +615,24 @@ export default function Description(props) {
                               })
                             }
                           >
-                              {CurrenciesData.filter(
-                                  (item) =>
-                                      item.shortName ===
-                                      selectCurrency
-                              ).map(
-                                  (selectedItem) => (
-                                      <Fragment
-                                          key={
-                                              selectedItem
-                                          }
-                                      >
-                                          <i className="currencyIc">
-                                              <Image
-                                                  src={
-                                                      selectedItem.icon
-                                                  }
-                                                  width={
-                                                      25
-                                                  }
-                                                  height={
-                                                      25
-                                                  }
-                                                  alt={
-                                                      selectedItem.name
-                                                  }
-                                              />
-                                          </i>
-                                          <span>
-                                              {
-                                                  selectedItem.shortName
-                                              }
-                                          </span>
-                                          <DownArrowIc
-                                              size={
-                                                  20
-                                              }
-                                          />
-                                      </Fragment>
-                                  )
-                              )}
+                            {CurrenciesData.filter(
+                              (item) => item.shortName === selectCurrency
+                            ).map(
+                              (selectedItem) => (
+                                <Fragment key={selectedItem}>
+                                  <i className="currencyIc">
+                                    <Image
+                                        src={selectedItem.icon}
+                                        width={25}
+                                        height={25}
+                                        alt={selectedItem.name}
+                                    />
+                                  </i>
+                                  <span>{selectedItem.shortName}</span>
+                                  <DownArrowIc size={20} />
+                                </Fragment>
+                              )
+                            )}
                           </button>
                         </div>
                         <div className="fieldError">
@@ -763,7 +741,7 @@ export default function Description(props) {
                     */}
                     <div className="formRow contractValidity">
                       <div className="formLabel">
-                        Can Accept Until
+                        Time to Accept Contract
                         <Tooltip
                           title="How long will the agreement remain available to potential buyers"
                           placement="top"
@@ -783,28 +761,28 @@ export default function Description(props) {
                           aria-label="all contractValidity"
                         >
                           <ToggleButton
+                            value="1 Days"
+                            aria-label="contractValidity"
+                          >
+                            1 Days
+                          </ToggleButton>
+                          <ToggleButton
+                            value="3 Days"
+                            aria-label="contractValidity"
+                          >
+                            3 Days
+                          </ToggleButton>
+                          <ToggleButton
                             value="7 Days"
                             aria-label="contractValidity"
                           >
                             7 Days
                           </ToggleButton>
                           <ToggleButton
-                            value="14 Days"
+                            value="14 days"
                             aria-label="contractValidity"
                           >
-                            14 Days
-                          </ToggleButton>
-                          <ToggleButton
-                            value="30 Days"
-                            aria-label="contractValidity"
-                          >
-                            30 Days
-                          </ToggleButton>
-                          <ToggleButton
-                            value="90 days"
-                            aria-label="contractValidity"
-                          >
-                            90 days
+                            14 days
                           </ToggleButton>
                           <ToggleButton
                             value={TimeToDeliver} /*Set Custom*/
