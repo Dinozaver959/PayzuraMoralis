@@ -39,8 +39,8 @@ function MyApp({ Component, pageProps }) {
     return (
         <div className={darkMode ? "layoutMain darkMode" : "layoutMain"}>
             <MoralisProvider
-                appId="FltzNNp8ebZsRkVnPTd6RKWTF2XoTLmVDMHSicVd"
-                serverUrl="https://rbfqybjb4vga.usemoralis.com:2053/server"
+                appId="8AGWP86FEWcfCRwNLa0LGffGPs5kpcHxqRpEp4PF"
+                serverUrl="https://fordrbswdskl.usemoralis.com:2053/server"
             >
                 <Head>
                     <title>Payzura</title>

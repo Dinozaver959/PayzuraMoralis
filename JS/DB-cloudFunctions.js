@@ -1,7 +1,7 @@
 var Moralis = require("moralis/node");
 
-const serverUrl = "https://rbfqybjb4vga.usemoralis.com:2053/server";
-const appId = "FltzNNp8ebZsRkVnPTd6RKWTF2XoTLmVDMHSicVd";
+const serverUrl = "https://fordrbswdskl.usemoralis.com:2053/server";
+const appId = "8AGWP86FEWcfCRwNLa0LGffGPs5kpcHxqRpEp4PF";
 Moralis.start({ serverUrl, appId });
 
 

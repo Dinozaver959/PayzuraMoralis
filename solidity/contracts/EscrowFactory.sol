@@ -125,18 +125,6 @@ contract EscrowFactory is ReentrancyGuard {
 
         clonedContracts[clonedContractsIndex] = clone;
 
-
-        // transfer ERC20 (ETH is transfered at the contract instance level)
-        if(tokenContractAddress != address(0)){
-          // payment in tokenContractAddress currency
-          IERC20 tokenContract = IERC20(tokenContractAddress);
-          bool transferred = tokenContract.transferFrom(msg.sender, GetAddress(clonedContractsIndex), price);   // transfer to the contract instance    +  make sure user gives UNLIMITED approval to the main EscrowFactory before hand
-          require(transferred, "ERC20 tokens failed to transfer to contract wallet");
-        }
-
-
-        
-
         // 1st prefered option is to do the payment transfer inside the InitializeBuyer, on the Escrow level
         // coded - need to test it now
 
@@ -151,9 +139,6 @@ contract EscrowFactory is ReentrancyGuard {
 
         emit OfferCreatedBuyer(clonedContractsIndex, msg.sender, price, personalizedOffer, arbiters);
     }
-
-
-
 
 
 
@@ -248,24 +233,10 @@ contract EscrowFactory is ReentrancyGuard {
     // WRITE FUNCTIONS
 
     // new buyer accepts the agreement
-    function AcceptOfferBuyer(uint256 index) external payable{
-
-      address tokenContractAddress = Escrow(clonedContracts[index]).tokenContractAddress();
-      uint256 price = Escrow(clonedContracts[index]).price();
-
-
-      if(tokenContractAddress != address(0)){
-        // payment in tokenContractAddress currency
-        IERC20 tokenContract = IERC20(tokenContractAddress);
-        bool transferred = tokenContract.transferFrom(msg.sender, GetAddress(index), price);   // transfer to the contract instance    +  make sure user gives UNLIMITED approval to the main EscrowFactory before hand
-        require(transferred, "ERC20 tokens failed to transfer to contract wallet");
-      }
-
-
-      // call the instance and finish the accept offer
-      Escrow(clonedContracts[index]).acceptOfferBuyer{value: msg.value}(payable(msg.sender));
-      emit OfferAcceptedBuyer(clonedContractsIndex, msg.sender);
-    }
+    function AcceptOfferBuyer(uint256 index) external payable {                                            // RENAME!!!!       AcceptOffer   ->   AcceptOfferBuyer
+        Escrow(clonedContracts[index]).acceptOfferBuyer{value: msg.value}(payable(msg.sender));
+        emit OfferAcceptedBuyer(clonedContractsIndex, msg.sender);
+    } 
 
     function AcceptOfferSeller(uint256 index) external {
         Escrow(clonedContracts[index]).acceptOfferSeller(payable(msg.sender));
@@ -390,6 +361,11 @@ contract EscrowFactory is ReentrancyGuard {
         Escrow(clonedContracts[index]).confirmDelivery(msg.sender);
         emit DeliveryConfirmed(clonedContractsIndex, msg.sender);
     } 
+
+    function FundContract(uint256 index) external {
+        Escrow(clonedContracts[index]).fundContract(msg.sender);
+        emit ContractFunded(clonedContractsIndex, msg.sender);
+    }
 
     function CancelBuyerContract(uint256 index) external {
         Escrow(clonedContracts[index]).cancelBuyerContract(msg.sender);

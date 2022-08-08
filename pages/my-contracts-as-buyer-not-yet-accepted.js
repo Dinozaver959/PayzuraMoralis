@@ -79,6 +79,7 @@ const StyledInnerTableCell = styled(TableCell)({
 });
 
 export default function ContractsCreatedByBuyer(props) {    // maybe just call all 'Contracts' and that's it
+  const [dataInitialized, setDataInitialized] = useState([]);
   const [dataInitializedandPaid, setDataInitializedandPaid] = useState([]);
   const [dataAwaitSellerAccepts, setDataAwaitSellerAccepts] = useState([]);
   const [placeholder, setPlaceholder] = useState(true);
@@ -86,6 +87,10 @@ export default function ContractsCreatedByBuyer(props) {    // maybe just call a
   // load options using API call
   async function getCollectionsDetails() {
     const connectedAddress = await GetWallet_NonMoralis();
+    const dataInitialized = await fetch(`./api/api-getPublicOffers_CreatedByBuyer_buyer_initialized` + "?UserWallet=" + connectedAddress)
+      .then((res) => res.json())
+      .then((json) => setDataInitialized(json));
+
     const dataInitializedandPaid = await fetch(`./api/api-getPublicOffers_CreatedByBuyer_buyer_initialized_and_paid` + "?UserWallet=" + connectedAddress)
       .then((res) => res.json())
       .then((json) => setDataInitializedandPaid(json));
@@ -94,6 +99,7 @@ export default function ContractsCreatedByBuyer(props) {    // maybe just call a
       .then((res) => res.json())
       .then((json) => setDataAwaitSellerAccepts(json));
 
+    console.log(dataInitialized);
     console.log(dataInitializedandPaid);
     console.log(dataAwaitSellerAccepts);
 
@@ -124,8 +130,45 @@ export default function ContractsCreatedByBuyer(props) {    // maybe just call a
 
       <div className="containerMain">
         <div className="pageHeader">
-          <h1>Contracts Created as Buyer (not yet accepted by Seller)</h1>
+          <h1>Contracts Created as Buyer (not yet accepted)</h1>
         </div>
+
+
+        <div className="card mt-10">
+          <div className="cardHeader">
+            <div className="cardTitle">
+              <h2>Contracts that need to be funded yet</h2>
+              <p>
+                Need to be funded and have the personalized Sellers set
+              </p>
+            </div>
+          </div>
+          <div className="cardBody">
+            {placeholder ? (
+              <div className="blockLoading">
+                <LoadingPlaceholder extraStyles={{ position: "absolute" }} />
+              </div>
+            ) : dataInitialized[0] && dataInitialized ? (
+              <Table_normal data={dataInitialized} isFunded={false}/>
+            ) : (
+              <div className="noData">
+                <i>
+                  <PlaceholderIc />
+                </i>
+                <h2>There are no contracts for you.</h2>
+                <div className="submitButtonOuter">
+                  <Button
+                    link="/create-contract"
+                    classes={"button primary rounded"}
+                  >
+                    <span>Create Contract Now</span>
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
 
 
         <div className="card mt-10">
@@ -143,7 +186,7 @@ export default function ContractsCreatedByBuyer(props) {    // maybe just call a
                 <LoadingPlaceholder extraStyles={{ position: "absolute" }} />
               </div>
             ) : dataInitializedandPaid[0] && dataInitializedandPaid ? (
-              <Table_normal data={dataInitializedandPaid}/>
+              <Table_normal data={dataInitializedandPaid} isFunded={true}/>
             ) : (
               <div className="noData">
                 <i>
@@ -179,7 +222,7 @@ export default function ContractsCreatedByBuyer(props) {    // maybe just call a
                 <LoadingPlaceholder extraStyles={{ position: "absolute" }} />
               </div>
             ) : dataAwaitSellerAccepts[0] && dataAwaitSellerAccepts ? (
-              <Table_normal data={dataAwaitSellerAccepts}/>
+              <Table_normal data={dataAwaitSellerAccepts} isFunded={true}/>
             ) : (
               <div className="noData">
                 <i>
@@ -248,7 +291,7 @@ async function hasTheConnectedWalletAlreadyApprovedERC20(listApprovedBy) {
 }
 
 function Table_normal(props) {
-  const { data } = props;
+  const { data, isFunded } = props;
 
   return (
     <>
@@ -260,12 +303,19 @@ function Table_normal(props) {
               <StyledTableCell>Title</StyledTableCell>
               <StyledTableCell>Price (ETH)</StyledTableCell>
               <StyledTableCell>Time to Deliver (hours)</StyledTableCell>
-              <StyledTableCell>Valid Until</StyledTableCell>      
+              <StyledTableCell>Valid Until</StyledTableCell>
+
+              { !isFunded ? (
+                <StyledTableCell>Fund the contract</StyledTableCell>
+              ) : (
+                <></>
+              )}
+              
             </StyledTableRow>
           </TableHead>
           <TableBody>
             {data.map((item) => (
-              <Row_normal key={item.id} item={item.name}/>
+              <Row_normal key={item.id} item={item.name} isFunded={isFunded}/>
             ))}
           </TableBody>
         </Table>
@@ -277,7 +327,7 @@ function Table_normal(props) {
 }
 
 function Row_normal(props) {
-  const { item } = props;
+  const { item, isFunded } = props;
   const [open, setOpen] = React.useState(false);
   const [approvedERC20, setApprovedERC20] = useState(false); // need to force update on   A) wallet change
 
@@ -347,7 +397,126 @@ function Row_normal(props) {
           {wrapEpochToDate(item.OfferValidUntil)}
         </StyledTableCell>
 
+        {isFunded ? (
+          <>
+
+          </>
+        ) : (
+          <>
+            {item.CurrencyTicker == "ETH" || approvedERC20 ? (
+              <>
+                <StyledTableCell></StyledTableCell>
+                {/* don't show approval button */}
+              </>
+            ) : (
+              <>
+                <StyledTableCell>
+                  <input
+                    className="button primary rounded"
+                    type="submit"
+                    value={"Approve " + item.CurrencyTicker}
+                    onClick={() => {
+                      ApproveERC20_Moralis(item.index)
+                        .then(async (transactionHash) => {
+                          console.log("approval for ERC20 successfully completed");
+                          console.log("transactionHash: ", transactionHash);
+
+                          // hide approve button
+                          setApprovedERC20(true);
+
+                          var formData = new FormData();
+                          formData.append("userAccount", Moralis.User.current().id);
+
+                          const connectedAddress = await GetWallet_NonMoralis();
+                          formData.append("wallet", connectedAddress);
+                          formData.append("transactionHash", transactionHash);
+                          formData.append("objectId", item.objectId);
+
+                          var xhr = new XMLHttpRequest();
+                          xhr.open("POST", "/api/api-approvedERC20", false);
+                          xhr.onload = function () {
+                            // update the feedback text
+                            document.getElementById("submitFeedback" ).style.display = "inline";
+                            document.getElementById("submitFeedback").innerText = "granting approval...";
+                            console.log("approval granted");
+                          };
+                          xhr.send(formData);
+                        })
+                        .catch((error) => {
+                          console.error(error);
+                          console.log("approval error code: " + error.code);
+                          console.log("approval error message: " + error.message);
+                          if (error.data && error.data.message) {
+                            document.getElementById("submitFeedback").innerText = error.data.message;
+                          } else {
+                            document.getElementById("submitFeedback").innerText = error.message;
+                          }
+                          document.getElementById( "submitFeedback" ).style.visibility = "visible";
+                          process.exitCode = 1;
+                        });
+                    }}
+                  ></input>
+                </StyledTableCell>
+              </>
+            )}
+
+            <StyledTableCell>
+              <input
+                className="button primary rounded"
+                type="submit"
+                value="Fund Contract"
+                onClick={() =>
+                  FundContract_Moralis(item.index)
+                    .then(async (transactionHash) => {
+                      // show the feedback text
+                      document.getElementById("submitFeedback").style.display = "inline";
+                      document.getElementById("submitFeedback").innerText = "Creating offer...";
+
+                      var formData = new FormData();
+                      formData.append("SellerWallet", item.SellerWallet);                   
+                      formData.append("transactionHash", transactionHash);
+                      formData.append("objectId", item.objectId);
+
+                      var xhr = new XMLHttpRequest();
+                      xhr.open("POST", "/api/api-contractFunded", false);
+                      xhr.onload = function () {
+                        // update the feedback text
+                        document.getElementById("submitFeedback").style.display = "inline";
+                        document.getElementById("submitFeedback").innerText = "offer accepted";
+
+                        // show the feedback text
+                        document.getElementById("submitFeedback").style.display = "inline";
+                        document.getElementById("submitFeedback").innerText = "Accepting offer...";
+                        console.log("contract funded");
+                      };
+                      xhr.send(formData);
+                    })
+                    .catch((error) => {
+                      console.error(error);
+                      console.log("accept offer error code: " + error.code);
+                      console.log("accept offer error message: " + error.message);
+                      if (error.data && error.data.message) {
+                        document.getElementById("submitFeedback").innerText = error.data.message;
+                      } else {
+                        document.getElementById("submitFeedback").innerText = error.message;
+                      }
+                      document.getElementById("submitFeedback").style.visibility = "visible";
+                      process.exitCode = 1;
+                    })
+                }
+              ></input>
+            </StyledTableCell>
+          </>
+        )}
+
+
       </StyledTableRow>
+
+      <TableRow>
+        <StyledInnerTableCell></StyledInnerTableCell>
+        <StyledInnerTableCell>Seller Wallet</StyledInnerTableCell>
+        <StyledInnerTableCell>{item.SellerWallet}</StyledInnerTableCell>
+      </TableRow>
 
       <StyledTableRow>
         <StyledTableCell
@@ -358,8 +527,14 @@ function Row_normal(props) {
             <Box sx={{ margin: 1 }}>
               <div className="listData">
                 <div className="listDataItem">
-                  <div className="listItemLabel">Buyer Wallet</div>
-                  <div className="listItemValue">{item.BuyerWallet}</div>
+                  <div className="listItemLabel">Seller Wallet</div>
+                  <div className="listItemValue">{item.SellerWallet}</div>
+                </div>
+                <div className="listDataItem">
+                  <div className="listItemLabel">Wallets Allowed to Accept</div>
+                  <div className="listItemValue">
+                    {wrapPersonalized(item.PersonalizedOffer)}
+                  </div>
                 </div>
                 <div className="listDataItem">
                   <div className="listItemLabel">Arbiters</div>
@@ -372,6 +547,7 @@ function Row_normal(props) {
                   <div className="listItemValue">{item.OfferDescription}</div>
                 </div>
 
+                {isFunded ? (<>
                   {/* show the personalized list  */}
 
                   {/* have a field to add to the list  */}
@@ -381,7 +557,7 @@ function Row_normal(props) {
                   {/* have a submit button to update the list */}
 
                   <div className="listDataItem">
-                    <div className="listItemLabel">Wallets Allowed to Accept</div>
+                    <div className="listItemLabel">Personalized List</div>
                     Current list:
                     <div className="listItemValue">{item.PersonalizedOffer}</div>
 
@@ -431,7 +607,7 @@ function Row_normal(props) {
                               // update the feedback text
                               document.getElementById("submitFeedback").style.display = "inline";
                               document.getElementById("submitFeedback").innerText = "PersonalizedOffer updated";
-                              console.log("personalizedOffer updated");
+                              console.log("contract funded");
                             };
                             xhr.send(formData);
                           })
@@ -449,7 +625,11 @@ function Row_normal(props) {
                           })
                       }
                     ></input>
+
+
                   </div>
+
+                </>) : (<></>)}
 
               </div>
             </Box>
