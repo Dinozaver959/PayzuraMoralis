@@ -77,7 +77,7 @@ export default function Description(props) {
       (selectContractType == "buyer") ? true : false,
       document.getElementById("Price").value,
       document.getElementById("CurrencyTicker").value, // expected values: `ETH`, `USDC`
-      TimeToDeliver, // document.getElementById("TimeToDeliver").value,
+      24 * TimeToDeliver, // the value should be in hours
       sha256(document.getElementById("OfferDescription").value),
       OfferValidUntil.getTime() / 1000,
       document.getElementById("PersonalizedOffer").value,
@@ -294,8 +294,8 @@ export default function Description(props) {
         setOfferValidUntil(date);
     }
 
-    function updateOfferDurationVariable(hours) {
-        setTimeToDeliver(hours);
+    function updateOfferDurationVariable(days) {
+        setTimeToDeliver(days);
     }
 
     const contractValidityHandler = (event, selectedValidity) => {
@@ -329,21 +329,21 @@ export default function Description(props) {
         } else {
             setShowCustomDuration(false);
 
-            let hours = 24;
-            if (selectedDuration === "1 Hour") {
-                hours = 1;
+            let days = 1;
+            if (selectedDuration === "1 Days") {
+                days = 1;
             }
-            if (selectedDuration === "3 Hours") {
-                hours = 3;
+            if (selectedDuration === "3 Days") {
+                days = 3;
             }
-            if (selectedDuration === "7 Hours") {
-                hours = 7;
+            if (selectedDuration === "7 Days") {
+                days = 7;
             }
-            if (selectedDuration === "14 Hours") {
-                hours = 14;
+            if (selectedDuration === "14 Days") {
+                days = 14;
             }
 
-            updateOfferDurationVariable(hours);
+            updateOfferDurationVariable(days);
         }
     };
 
@@ -854,25 +854,25 @@ export default function Description(props) {
                                                         value="1 Hour"
                                                         aria-label="contractDuration"
                                                     >
-                                                        1 Hour
+                                                        1 Days
                                                     </ToggleButton>
                                                     <ToggleButton
-                                                        value="3 Hours"
+                                                        value="3 Days"
                                                         aria-label="contractDuration"
                                                     >
-                                                        3 Hours
+                                                        3 Days
                                                     </ToggleButton>
                                                     <ToggleButton
-                                                        value="7 Hours"
+                                                        value="7 Days"
                                                         aria-label="contractDuration"
                                                     >
-                                                        7 Hours
+                                                        7 Days
                                                     </ToggleButton>
                                                     <ToggleButton
-                                                        value="14 Hours"
+                                                        value="14 Days"
                                                         aria-label="contractDuration"
                                                     >
-                                                        14 Hours
+                                                        14 Days
                                                     </ToggleButton>
                                                     <ToggleButton
                                                         value="Set Custom"
