@@ -26,14 +26,16 @@ function ConnectWallet(props) {
     const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = provider.getSigner();
 
-    const addr = await signer.getAddress();
+    try {
+      const addr = await signer.getAddress();
 
-    setUserAddress(addr.toString());
+      setUserAddress(addr.toString());
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const truncateAccountAddress = currentAccount
-    ? currentAccount.slice(0, 5) + "..." + currentAccount.slice(-4)
-    : "";
+  const truncateAccountAddress = currentAccount ? currentAccount.slice(0, 5) + "..." + currentAccount.slice(-4) : "";
 
   const checkIfWalletIsConnected = async () => {
     try {

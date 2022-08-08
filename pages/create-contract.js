@@ -3,11 +3,11 @@ import { useForm } from "react-hook-form";
 import Moralis from "moralis";
 import { sha256 } from "js-sha256";
 import {
-    contractOnNetwork,
-    ConvertNetworkNameToChainID,
-    GetWallet_NonMoralis,
-    clonedContractsIndex_Moralis,
-    CreateEscrow_Moralis,
+  contractOnNetwork,
+  ConvertNetworkNameToChainID,
+  GetWallet_NonMoralis,
+  clonedContractsIndex_Moralis,
+  CreateEscrow_Moralis,
 } from "../JS/local_web3_Moralis";
 import Navigation from "../components/Navigation.js";
 
@@ -34,6 +34,7 @@ import USDCIcon from "../components/images/USDC.webp";
 import Image from "next/image";
 import DownArrowIc from "../components/icons/DownArrow";
 import CurrencyList from "../components/contract-creation/currency-list";
+import WalletAddressField from "../components/ui/WalletAddress-Input";
 
 export default function Description(props) {
   // SUBMIT - validation
@@ -58,6 +59,11 @@ export default function Description(props) {
   const [TimeToDeliver, setTimeToDeliver] = React.useState(() => {
     return 1;
   });
+
+  const [personalizedOfferValue, setPersonalizedOfferValue] = React.useState([]);
+  const [arbitersValue, setArbitersValue] = React.useState([]);
+  const [errorPersonalizedOfferValue, setErrorPersonalizedOfferValue] = React.useState(false);
+  const [errorArbitersValue, setErrorArbitersValue] = React.useState(false);
 
   const [modelData, setModelData] = React.useState({
     show: false,
@@ -85,12 +91,12 @@ export default function Description(props) {
     ) 
     .then(async (transactionHash) => {
       // show the feedback text
-      //setModelData({
-      //    show: true,
-      //     type: "alert",
-      //     status: "Pending",
-      //     message: "Creating offer...",
-      // });
+      setModelData({
+         show: true,
+          type: "alert",
+          status: "Pending",
+          message: "Creating offer...",
+      });
 
       var form = document.querySelector("form");
       var formData = new FormData(form);
@@ -301,16 +307,16 @@ export default function Description(props) {
     const contractValidityHandler = (event, selectedValidity) => {
         setContractValidity(selectedValidity);
 
-        let days = 365;
-        if (selectedValidity === "7 Days") {
-            days = 7;
-        } else if (selectedValidity === "14 Days") {
-            days = 14;
-        } else if (selectedValidity === "30 Days") {
-            days = 30;
-        } else if (selectedValidity === "90 days") {
-            days = 90;
-        }
+    let days = 365;
+    if (selectedValidity === "1 Days") {
+      days = 1;
+    } else if (selectedValidity === "3 Days") {
+      days = 3;
+    } else if (selectedValidity === "7 Days") {
+      days = 7;
+    } else if (selectedValidity === "14 days") {
+      days = 14;
+    }
 
         if (days == 365) {
             setShowDatepicker(true);
@@ -369,18 +375,20 @@ export default function Description(props) {
         element.click();
     };
 
-    return (
-        <Fragment>
-            <Navigation
-                darkMode={props.darkMode}
-                changeDarkMode={props.changeDarkMode}
-                dropdownOpen={props.dropdownOpen}
-                setDropdownOpen={props.setDropdownOpen}
-                OpenDropdownFn={props.OpenDropdownFn}
-                hasMenuDrawer={props.hasMenuDrawer}
-                setMenuDrawer={props.setMenuDrawer}
-                mobileDrawerFn={props.mobileDrawerFn}
-            />
+  return (
+    <Fragment>
+      <Navigation
+        darkMode={props.darkMode}
+        changeDarkMode={props.changeDarkMode}
+        dropdownOpen={props.dropdownOpen}
+        setDropdownOpen={props.setDropdownOpen}
+        OpenDropdownFn={props.OpenDropdownFn}
+        hasMenuDrawer={props.hasMenuDrawer}
+        setMenuDrawer={props.setMenuDrawer}
+        mobileDrawerFn={props.mobileDrawerFn}
+        currentAccount={props.currentAccount}
+        setCurrentAccount={props.setCurrentAccount}
+      />
 
             <div className="containerMain">
                 <div className="pageHeader">
@@ -413,86 +421,78 @@ export default function Description(props) {
                     </div>
                 )}
 
-                {showForm && (
-                    <div className="card mt-10 cardInnerSplit">
-                        <div className="cardSidebar">
-                            <h2>Templates</h2>
-                            <ul>
-                                {TemplatesData.map((item) => (
-                                    <li
-                                        key={item.id}
-                                        className={
-                                            selectedTemplate ===
-                                            item.templateCode
-                                                ? "contractCard selected"
-                                                : "contractCard"
-                                        }
-                                    >
-                                        <input
-                                            name="contractCardTemplates"
-                                            value={item.templateCode}
-                                            type="radio"
-                                            onChange={handleRadioChange}
-                                            defaultChecked={
-                                                selectedTemplate ===
-                                                item.templateCode
-                                            }
-                                            id={item.id}
-                                        />
-                                        <label
-                                            htmlFor={item.id}
-                                            className="linkBlock"
-                                        >
-                                            <span>{item.templateName}</span>
-                                            <i>
-                                                <LinkArrowIc />
-                                            </i>
-                                        </label>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
+        {showForm && (
+          <div className="card mt-10 cardInnerSplit">
+            <div className="cardSidebar">
+              <h2>Templates</h2>
+              <ul>
+                {TemplatesData.map((item) => (
+                  <li
+                    key={item.id}
+                    className={selectedTemplate === item.templateCode ? "contractCard selected" : "contractCard"}
+                  >
+                    <input
+                      name="contractCardTemplates"
+                      value={item.templateCode}
+                      type="radio"
+                      onChange={handleRadioChange}
+                      defaultChecked={selectedTemplate === item.templateCode}
+                      id={item.id}
+                    />
+                    <label
+                      htmlFor={item.id}
+                      className="linkBlock"
+                    >
+                      <span>{item.templateName}</span>
+                      <i>
+                        <LinkArrowIc />
+                      </i>
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-                        <div className="cardBody">
-                            <div className="contractCreationFormMain">
-                                <form
-                                    id="formToSubmit"
-                                    method="post"
-                                    encType="multipart/form-data"
-                                    onSubmit={handleSubmit(onSubmit)}
-                                >
-                                    <div className="formMain formHorizontal">
-                                        <div className="buyerSelerSelection">
-                                            <ul>
-                                                <li>
-                                                    <input
-                                                        type="radio"
-                                                        name="contractType"
-                                                        id="asBuyer"
-                                                        value="buyer"
-                                                        onClick={() => setSelectContractType("buyer")}
-                                                    />
-                                                    <label htmlFor="asBuyer">
-                                                        <BuyerIc />
-                                                        <span>As a BuyerAccount</span>
-                                                    </label>
-                                                </li>
-                                                <li>
-                                                    <input
-                                                        type="radio"
-                                                        name="contractType"
-                                                        id="asSeller"
-                                                        value="seller"
-                                                        onClick={() => setSelectContractType("seller")}
-                                                        defaultChecked={true}
-                                                    />
-                                                    <label htmlFor="asSeller">
-                                                        <SellerIc />
-                                                        <span>As a Seller</span>
-                                                    </label>
-                                                </li>
-                                            </ul>
-                                        </div>
+            <div className="cardBody">
+              <div className="contractCreationFormMain">
+                <form
+                  id="formToSubmit"
+                  method="post"
+                  encType="multipart/form-data"
+                  onSubmit={handleSubmit(onSubmit)}
+                >
+                  <div className="formMain formHorizontal">
+                    <div className="buyerSelerSelection">
+                      <ul>
+                        <li>
+                          <input
+                            type="radio"
+                            name="contractType"
+                            id="asBuyer"
+                            value="buyer"
+                            onClick={() => setSelectContractType("buyer")}
+                          />
+                          <label htmlFor="asBuyer">
+                            <BuyerIc />
+                            <span>As a Buyer</span>
+                          </label>
+                        </li>
+                        <li>
+                          <input
+                            type="radio"
+                            name="contractType"
+                            id="asSeller"
+                            value="seller"
+                            onClick={() => setSelectContractType("seller")}
+                            defaultChecked={true}
+                          />
+                          <label htmlFor="asSeller">
+                            <SellerIc />
+                            <span>As a Seller</span>
+                          </label>
+                        </li>
+                      </ul>
+                    </div>
 
                                         <div className="formRow">
                                             <div className="formLabel">
@@ -515,47 +515,22 @@ export default function Description(props) {
                                                     )}
                                                 ></input>
 
-                                                <div className="fieldError">
-                                                    {errors.ContractTitle &&
-                                                        errors.ContractTitle
-                                                            .type ===
-                                                            "required" && (
-                                                            <p>required</p>
-                                                        )}
-                                                    {errors.ContractTitle &&
-                                                        errors.ContractTitle
-                                                            .type ===
-                                                            "maxLength" && (
-                                                            <p>
-                                                                Max length is 24
-                                                                chars
-                                                            </p>
-                                                        )}
-                                                    {errors.ContractTitle &&
-                                                        errors.ContractTitle
-                                                            .type ===
-                                                            "minLength" && (
-                                                            <p>
-                                                                Min length is 4
-                                                                chars
-                                                            </p>
-                                                        )}
-                                                    {errors.ContractTitle &&
-                                                        errors.ContractTitle
-                                                            .type ===
-                                                            "pattern" && (
-                                                            <p>
-                                                                Start with an
-                                                                alphabet
-                                                                character. No
-                                                                spaces or
-                                                                special
-                                                                characters
-                                                            </p>
-                                                        )}
-                                                </div>
-                                            </div>
-                                        </div>
+                        <div className="fieldError">
+                          {errors.ContractTitle && errors.ContractTitle.type === "required" && (
+                            <p>required</p>
+                          )}
+                          {errors.ContractTitle && errors.ContractTitle.type === "maxLength" && (
+                            <p>Max length is 24 chars</p>
+                          )}
+                          {errors.ContractTitle && errors.ContractTitle.type === "minLength" && (
+                            <p>Min length is 4 chars</p>
+                          )}
+                          {errors.ContractTitle && errors.ContractTitle.type === "pattern" && (
+                            <p>Start with an alphabet character. No spaces or special characters</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
 
                                         <div className="formRow">
                                             <div className="formLabel">
@@ -588,525 +563,392 @@ export default function Description(props) {
                                                     }
                                                 ></textarea>
 
-                                                <div className="fieldError">
-                                                    {errors.OfferDescription &&
-                                                        errors.OfferDescription
-                                                            .type ===
-                                                            "required" && (
-                                                            <p>required</p>
-                                                        )}
-                                                    {errors.OfferDescription &&
-                                                        errors.OfferDescription
-                                                            .type ===
-                                                            "maxLength" && (
-                                                            <p>
-                                                                Max length is
-                                                                440 chars
-                                                            </p>
-                                                        )}
-                                                    {errors.OfferDescription &&
-                                                        errors.OfferDescription
-                                                            .type ===
-                                                            "minLength" && (
-                                                            <p>
-                                                                Min length is 4
-                                                                chars
-                                                            </p>
-                                                        )}
-                                                </div>
-                                            </div>
-                                            <div className="filedInfo">
-                                                <Tooltip
-                                                    title="Download Description"
-                                                    placement="top"
-                                                    enterTouchDelay={0}
-                                                    arrow
-                                                >
-                                                    <i>
-                                                        <DownloadIc
-                                                            onClick={
-                                                                downloadDescriptionValue
-                                                            }
-                                                        />
-                                                    </i>
-                                                </Tooltip>
-                                            </div>
-                                        </div>
-
-                                        <div className="formRow">
-                                            <div className="formLabel">
-                                                Price
-                                            </div>
-                                            <div className="formField">
-                                                <div className="customPriceField">
-                                                    <input
-                                                        className="formInput"
-                                                        id="Price"
-                                                        type="number"
-                                                        {...register("Price", {
-                                                            required: true,
-                                                            min: 0,
-                                                        })}
-                                                        min="0"
-                                                        step="0.001"
-                                                        placeholder="0.0"
-                                                    ></input>
-
-                                                    <button
-                                                        type="button"
-                                                        className="button"
-                                                        id="CurrencyTicker"
-                                                        value={selectCurrency}
-                                                        {...register(
-                                                            "CurrencyTicker",
-                                                            {
-                                                                required: true,
-                                                            }
-                                                        )}
-                                                        onClick={() =>
-                                                            setModelData({
-                                                                show: true,
-                                                                type: "modal",
-                                                                title: "Select Currency",
-                                                                body: (
-                                                                    <CurrencyList
-                                                                        CurrenciesData={
-                                                                            CurrenciesData
-                                                                        }
-                                                                        currencyChangeFn={
-                                                                            handleCurrencyChange
-                                                                        }
-                                                                        defaultValue={
-                                                                            selectCurrency
-                                                                        }
-                                                                    />
-                                                                ),
-                                                            })
-                                                        }
-                                                    >
-                                                        {CurrenciesData.filter(
-                                                            (item) =>
-                                                                item.shortName ===
-                                                                selectCurrency
-                                                        ).map(
-                                                            (selectedItem) => (
-                                                                <Fragment
-                                                                    key={
-                                                                        selectedItem
-                                                                    }
-                                                                >
-                                                                    <i className="currencyIc">
-                                                                        <Image
-                                                                            src={
-                                                                                selectedItem.icon
-                                                                            }
-                                                                            width={
-                                                                                25
-                                                                            }
-                                                                            height={
-                                                                                25
-                                                                            }
-                                                                            alt={
-                                                                                selectedItem.name
-                                                                            }
-                                                                        />
-                                                                    </i>
-                                                                    <span>
-                                                                        {
-                                                                            selectedItem.shortName
-                                                                        }
-                                                                    </span>
-                                                                    <DownArrowIc
-                                                                        size={
-                                                                            20
-                                                                        }
-                                                                    />
-                                                                </Fragment>
-                                                            )
-                                                        )}
-                                                    </button>
-                                                </div>
-                                                <div className="fieldError">
-                                                    {errors.Price &&
-                                                        errors.Price.type ===
-                                                            "required" && (
-                                                            <p>
-                                                                Price required
-                                                            </p>
-                                                        )}
-                                                    {errors.Price &&
-                                                        errors.Price.type ===
-                                                            "min" && (
-                                                            <p>
-                                                                Min price is 0
-                                                            </p>
-                                                        )}
-                                                    {errors.CurrencyTicker &&
-                                                        errors.CurrencyTicker
-                                                            .type ===
-                                                            "required" && (
-                                                            <p>
-                                                                Currency
-                                                                required
-                                                            </p>
-                                                        )}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* <div className="formRow">
-                                            <div className="formLabel">
-                                                Currency
-                                            </div>
-                                            <div className="formField">
-                                                <select
-                                                    className="formSelect"
-                                                    id="CurrencyTicker"
-                                                    defaultValue={""}
-                                                    {...register(
-                                                        "CurrencyTicker",
-                                                        {
-                                                            required: true,
-                                                        }
-                                                    )}
-                                                >
-                                                    <option value="">
-                                                        Please Select
-                                                    </option>
-                                                    <option value="ETH">
-                                                        Ethereum (ETH)
-                                                    </option>
-                                                    <option value="USDC">
-                                                        USD Coin (USDC)
-                                                    </option>
-                                                    <option value="APE">APEcoin (APE)</option>
-                                                    <option value="WBTC">Wrapped Bitcoin (WBTC)</option>
-                                                </select>
-
-                                                <div className="fieldError">
-                                                    {errors.CurrencyTicker &&
-                                                        errors.CurrencyTicker
-                                                            .type ===
-                                                            "required" && (
-                                                            <p>required</p>
-                                                        )}
-                                                </div>
-                                            </div>
-                                        </div> */}
-
-                                        {/* <div className="formRow">
-                                            <div className="formLabel">
-                                                Price
-                                            </div>
-                                            <div className="formField">
-                                                <input
-                                                    className="formInput"
-                                                    id="Price"
-                                                    type="number"
-                                                    {...register("Price", {
-                                                        required: true,
-                                                        min: 0,
-                                                    })}
-                                                    min="0"
-                                                    step="0.001"
-                                                ></input>
-                                                <div className="fieldError">
-                                                    {errors.Price &&
-                                                        errors.Price.type ===
-                                                            "required" && (
-                                                            <p>required</p>
-                                                        )}
-                                                    {errors.Price &&
-                                                        errors.Price.type ===
-                                                            "min" && (
-                                                            <p>
-                                                                Min price is 0
-                                                            </p>
-                                                        )}
-                                                </div>
-                                            </div>
-                                        </div> */}
-
-                                        <div className="formRow">
-                                            <div className="formLabel">
-                                                Contract Duration
-                                                <Tooltip
-                                                    title="Following acceptance of the contract, how long does the service provider have to fulfill the agreement"
-                                                    placement="top"
-                                                    enterTouchDelay={0}
-                                                    arrow
-                                                >
-                                                    <i>
-                                                        <InfoIc />
-                                                    </i>
-                                                </Tooltip>
-                                            </div>
-                                            <div className="formField">
-                                                <ToggleButtonGroup
-                                                    value={contractDuration}
-                                                    exclusive
-                                                    onChange={
-                                                        contractDurationHandler
-                                                    }
-                                                    aria-label="all contractDuration"
-                                                >
-                                                    <ToggleButton
-                                                        value="1 Hour"
-                                                        aria-label="contractDuration"
-                                                    >
-                                                        1 Days
-                                                    </ToggleButton>
-                                                    <ToggleButton
-                                                        value="3 Days"
-                                                        aria-label="contractDuration"
-                                                    >
-                                                        3 Days
-                                                    </ToggleButton>
-                                                    <ToggleButton
-                                                        value="7 Days"
-                                                        aria-label="contractDuration"
-                                                    >
-                                                        7 Days
-                                                    </ToggleButton>
-                                                    <ToggleButton
-                                                        value="14 Days"
-                                                        aria-label="contractDuration"
-                                                    >
-                                                        14 Days
-                                                    </ToggleButton>
-                                                    <ToggleButton
-                                                        value="Set Custom"
-                                                        aria-label="contractDuration"
-                                                    >
-                                                        Set Custom
-                                                    </ToggleButton>
-                                                </ToggleButtonGroup>
-                                                {showCustomDuration && (
-                                                    <input
-                                                        className="formInput mt-10"
-                                                        id="TimeToDeliver"
-                                                        type="number"
-                                                        {...register(
-                                                            "TimeToDeliver",
-                                                            {
-                                                                required: true,
-                                                                min: 0,
-                                                            }
-                                                        )}
-                                                        min="0"
-                                                        step="1"
-                                                    ></input>
-                                                )}
-
-                                                <div className="fieldError">
-                                                    {errors.TimeToDeliver &&
-                                                        errors.TimeToDeliver
-                                                            .type ===
-                                                            "required" && (
-                                                            <p>required</p>
-                                                        )}
-                                                    {errors.TimeToDeliver &&
-                                                        errors.TimeToDeliver
-                                                            .type === "min" && (
-                                                            <p>
-                                                                Min contract
-                                                                duration time is
-                                                                0
-                                                            </p>
-                                                        )}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* 
-                                        <div className={styles.gridItem}> 
-                                        Contract Valid for (in Hours, after publishing the offer, 0=infinity): 
-                                        <input className={styles.inlineField} id="OfferValidUntil" type="number" {...register('OfferValidUntil', { required: true, min : 0})} min="0" step="1" ></input> 
-                                        </div>
-                                        <div className={styles.gridItem}> 
-                                        {errors.OfferValidUntil && errors.OfferValidUntil.type === "required" && <span>required</span> }
-                                        {errors.OfferValidUntil && errors.OfferValidUntil.type === "min" && <span>Min time for a valid offer is 0</span>}
-                                        </div>
-                                        */}
-                                        <div className="formRow contractValidity">
-                                            <div className="formLabel">
-                                                Can Accept Until
-                                                <Tooltip
-                                                    title="How long will the agreement remain available to potential buyers"
-                                                    placement="top"
-                                                    enterTouchDelay={0}
-                                                    arrow
-                                                >
-                                                    <i>
-                                                        <InfoIc />
-                                                    </i>
-                                                </Tooltip>
-                                            </div>
-                                            <div className="formField">
-                                                <ToggleButtonGroup
-                                                    value={contractValidity}
-                                                    exclusive
-                                                    onChange={
-                                                        contractValidityHandler
-                                                    }
-                                                    aria-label="all contractValidity"
-                                                >
-                                                    <ToggleButton
-                                                        value="7 Days"
-                                                        aria-label="contractValidity"
-                                                    >
-                                                        7 Days
-                                                    </ToggleButton>
-                                                    <ToggleButton
-                                                        value="14 Days"
-                                                        aria-label="contractValidity"
-                                                    >
-                                                        14 Days
-                                                    </ToggleButton>
-                                                    <ToggleButton
-                                                        value="30 Days"
-                                                        aria-label="contractValidity"
-                                                    >
-                                                        30 Days
-                                                    </ToggleButton>
-                                                    <ToggleButton
-                                                        value="90 days"
-                                                        aria-label="contractValidity"
-                                                    >
-                                                        90 days
-                                                    </ToggleButton>
-                                                    <ToggleButton
-                                                        value={
-                                                            TimeToDeliver /*Set Custom*/
-                                                        }
-                                                        onChange={(
-                                                            newValue
-                                                        ) => {
-                                                            setTimeToDeliver(
-                                                                newValue
-                                                            );
-                                                        }}
-                                                        aria-label="contractValidity"
-                                                    >
-                                                        Set Custom
-                                                    </ToggleButton>
-                                                </ToggleButtonGroup>
-
-                                                {showDatepicker && (
-                                                    <div className="mt-15">
-                                                        <LocalizationProvider
-                                                            dateAdapter={
-                                                                AdapterDateFns
-                                                            }
-                                                        >
-                                                            <DateTimePicker
-                                                                label="Contract Valid Until"
-                                                                renderInput={(
-                                                                    params
-                                                                ) => (
-                                                                    <TextField
-                                                                        {...params}
-                                                                    />
-                                                                )}
-                                                                value={
-                                                                    OfferValidUntil
-                                                                }
-                                                                onChange={(
-                                                                    newValue
-                                                                ) => {
-                                                                    setOfferValidUntil(
-                                                                        newValue
-                                                                    );
-                                                                }}
-                                                            />
-                                                        </LocalizationProvider>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        <div className="formRow">
-                                            <div className="formLabel">
-                                                Contract valid for these wallets
-                                                <Tooltip
-                                                    title="Wallets that will be able to see this contract and potentially accept it. Empty = Any wallet"
-                                                    placement="top"
-                                                    enterTouchDelay={0}
-                                                    arrow
-                                                >
-                                                    <i>
-                                                        <InfoIc />
-                                                    </i>
-                                                </Tooltip>
-                                            </div>
-                                            <div className="formField">
-                                                <input
-                                                    className="formInput"
-                                                    id="PersonalizedOffer"
-                                                    type="text"
-                                                    name="PersonalizedOffer"
-                                                ></input>
-                                            </div>
-                                        </div>
-
-                                        <div className="formRow">
-                                            <div className="formLabel">
-                                                Arbiters
-                                                <Tooltip
-                                                    title="State wallets that wil act as arbiters in case of a dispute. Empty = Payzura Platform"
-                                                    placement="top"
-                                                    enterTouchDelay={0}
-                                                    arrow
-                                                >
-                                                    <i>
-                                                        <InfoIc />
-                                                    </i>
-                                                </Tooltip>
-                                            </div>
-                                            <div className="formField">
-                                                <input
-                                                    className="formInput"
-                                                    id="Arbiters"
-                                                    type="text"
-                                                    name="Arbiters"
-                                                ></input>
-                                            </div>
-                                        </div>
-
-                                        {/*
-                                        <div className={styles.gridItem}> Offer valid for these wallets (empty=any):  </div>
-                                        <input className={styles.gridItem} id="PersonalizedOffer" type="text" {...register('PersonalizedOffer', { pattern: /^[a-z0-9,] /i })} ></input>
-                                        <div className={styles.gridItem}> 
-                                            {errors.PersonalizedOffer && errors.PersonalizedOffer.type === "pattern" && <span><p>Comma separated wallet addresses</p></span> }
-                                        </div>
-                                        */}
-
-                                        <div className="formAction">
-                                            <button
-                                                id="SubmitButton"
-                                                className="button withIcon secondary"
-                                                type="submit"
-                                                // value="Submit"
-                                                ref={refButton}
-                                            >
-                                                <i>
-                                                    <CheckIc />
-                                                </i>
-                                                <span>Submit</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-
-                                <ModalUi
-                                    content={modelData}
-                                    closeModelFn={closeModelDataHandler}
-                                />
-                            </div>
+                        <div className="fieldError">
+                          {errors.OfferDescription && errors.OfferDescription.type === "required" && (
+                            <p>required</p>
+                          )}
+                          {errors.OfferDescription && errors.OfferDescription.type === "maxLength" && (
+                            <p>Max length is 440 chars</p>
+                          )}
+                          {errors.OfferDescription && errors.OfferDescription.type === "minLength" && (
+                            <p>Min length is 4chars</p>
+                          )}
                         </div>
+                      </div>
+                      <div className="filedInfo">
+                        <Tooltip
+                          title="Download Description"
+                          placement="top"
+                          enterTouchDelay={0}
+                          arrow
+                        >
+                          <i>
+                            <DownloadIc onClick={downloadDescriptionValue}/>
+                          </i>
+                        </Tooltip>
+                      </div>
                     </div>
-                )}
+
+                    <div className="formRow">
+                      <div className="formLabel">
+                        Price
+                      </div>
+                      <div className="formField">
+                        <div className="customPriceField">
+                          <input
+                            className="formInput"
+                            id="Price"
+                            type="number"
+                            {...register("Price", {
+                                required: true,
+                                min: 0,
+                            })}
+                            min="0"
+                            step="0.001"
+                            placeholder="0.0"
+                          ></input>
+
+                          <button
+                            type="button"
+                            className="button"
+                            id="CurrencyTicker"
+                            value={selectCurrency}
+                            {...register(
+                              "CurrencyTicker",
+                              {
+                                required: true,
+                              }
+                            )}
+                            onClick={() =>
+                              setModelData({
+                                show: true,
+                                type: "modal",
+                                title: "Select Currency",
+                                body: (
+                                  <CurrencyList
+                                    CurrenciesData={CurrenciesData}
+                                    currencyChangeFn={handleCurrencyChange}
+                                    defaultValue={selectCurrency}
+                                  />
+                                ),
+                              })
+                            }
+                          >
+                              {CurrenciesData.filter(
+                                  (item) =>
+                                      item.shortName ===
+                                      selectCurrency
+                              ).map(
+                                  (selectedItem) => (
+                                      <Fragment
+                                          key={
+                                              selectedItem
+                                          }
+                                      >
+                                          <i className="currencyIc">
+                                              <Image
+                                                  src={
+                                                      selectedItem.icon
+                                                  }
+                                                  width={
+                                                      25
+                                                  }
+                                                  height={
+                                                      25
+                                                  }
+                                                  alt={
+                                                      selectedItem.name
+                                                  }
+                                              />
+                                          </i>
+                                          <span>
+                                              {
+                                                  selectedItem.shortName
+                                              }
+                                          </span>
+                                          <DownArrowIc
+                                              size={
+                                                  20
+                                              }
+                                          />
+                                      </Fragment>
+                                  )
+                              )}
+                          </button>
+                        </div>
+                        <div className="fieldError">
+                          {errors.Price && errors.Price.type === "required" && (
+                            <p>Price required</p>
+                          )}
+                          {errors.Price && errors.Price.type === "min" && (
+                            <p>Min price is 0</p>
+                          )}
+                          {errors.CurrencyTicker && errors.CurrencyTicker.type === "required" && (
+                            <p>Currency required</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="formRow">
+                      <div className="formLabel">
+                        Contract Duration
+                        <Tooltip
+                          title="Following acceptance of the contract, how long does the service provider have to fulfill the agreement"
+                          placement="top"
+                          enterTouchDelay={0}
+                          arrow
+                        >
+                          <i>
+                            <InfoIc />
+                          </i>
+                        </Tooltip>
+                      </div>
+                      <div className="formField">
+                        <ToggleButtonGroup
+                          value={contractDuration}
+                          exclusive
+                          onChange={contractDurationHandler}
+                          aria-label="all contractDuration"
+                        >
+                          <ToggleButton
+                            value="1 Hour"
+                            aria-label="contractDuration"
+                          >
+                            1 Hour
+                          </ToggleButton>
+                          <ToggleButton
+                            value="3 Hours"
+                            aria-label="contractDuration"
+                          >
+                            3 Hours
+                          </ToggleButton>
+                          <ToggleButton
+                            value="7 Hours"
+                            aria-label="contractDuration"
+                          >
+                            7 Hours
+                          </ToggleButton>
+                          <ToggleButton
+                            value="14 Hours"
+                            aria-label="contractDuration"
+                          >
+                            14 Hours
+                          </ToggleButton>
+                          <ToggleButton
+                            value="Set Custom"
+                            aria-label="contractDuration"
+                          >
+                            Set Custom
+                          </ToggleButton>
+                        </ToggleButtonGroup>
+                        {showCustomDuration && (
+                          <input
+                            className="formInput mt-10"
+                            id="TimeToDeliver"
+                            type="number"
+                            {...register(
+                              "TimeToDeliver",
+                              {
+                                required: true,
+                                min: 0,
+                              }
+                            )}
+                            min="0"
+                            step="1"
+                          ></input>
+                        )}
+
+                        <div className="fieldError">
+                          {errors.TimeToDeliver && errors.TimeToDeliver.type === "required" && (
+                            <p>required</p>
+                          )}
+                          {errors.TimeToDeliver && errors.TimeToDeliver.type === "min" && (
+                            <p>Min contract duration time is 0</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 
+                    <div className={styles.gridItem}> 
+                    Contract Valid for (in Hours, after publishing the offer, 0=infinity): 
+                    <input className={styles.inlineField} id="OfferValidUntil" type="number" {...register('OfferValidUntil', { required: true, min : 0})} min="0" step="1" ></input> 
+                    </div>
+                    <div className={styles.gridItem}> 
+                    {errors.OfferValidUntil && errors.OfferValidUntil.type === "required" && <span>required</span> }
+                    {errors.OfferValidUntil && errors.OfferValidUntil.type === "min" && <span>Min time for a valid offer is 0</span>}
+                    </div>
+                    */}
+                    <div className="formRow contractValidity">
+                      <div className="formLabel">
+                        Time to Accept Contract
+                        <Tooltip
+                          title="How long will the agreement remain available to potential buyers"
+                          placement="top"
+                          enterTouchDelay={0}
+                          arrow
+                        >
+                          <i>
+                            <InfoIc />
+                          </i>
+                        </Tooltip>
+                      </div>
+                      <div className="formField">
+                        <ToggleButtonGroup
+                          value={contractValidity}
+                          exclusive
+                          onChange={contractValidityHandler}
+                          aria-label="all contractValidity"
+                        >
+                          <ToggleButton
+                            value="1 Days"
+                            aria-label="contractValidity"
+                          >
+                            1 Days
+                          </ToggleButton>
+                          <ToggleButton
+                            value="3 Days"
+                            aria-label="contractValidity"
+                          >
+                            3 Days
+                          </ToggleButton>
+                          <ToggleButton
+                            value="7 Days"
+                            aria-label="contractValidity"
+                          >
+                            7 Days
+                          </ToggleButton>
+                          <ToggleButton
+                            value="14 days"
+                            aria-label="contractValidity"
+                          >
+                            14 days
+                          </ToggleButton>
+                          <ToggleButton
+                            value={TimeToDeliver} /*Set Custom*/
+                            onChange={(newValue) => { setTimeToDeliver(newValue);}}
+                            aria-label="contractValidity"
+                          >
+                            Set Custom
+                          </ToggleButton>
+                        </ToggleButtonGroup>
+
+                        {showDatepicker && (
+                          <div className="mt-15">
+                            <LocalizationProvider
+                              dateAdapter={ AdapterDateFns }
+                            >
+                              <DateTimePicker
+                                label="Contract Valid Until"
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                  />
+                                )}
+                                value={OfferValidUntil}
+                                onChange={(newValue) => {setOfferValidUntil(newValue)}}
+                              />
+                            </LocalizationProvider>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="formRow">
+                      <div className="formLabel">
+                        Contract valid for these wallets
+                        <Tooltip
+                          title="Wallets that will be able to see this contract and potentially accept it. Empty = Any wallet"
+                          placement="top"
+                          enterTouchDelay={0}
+                          arrow
+                        >
+                          <i>
+                            <InfoIc />
+                          </i>
+                        </Tooltip>
+                      </div>
+                      <div className="formField">
+                        <WalletAddressField name="PersonalizedOffer"
+                          inputValue={personalizedOfferValue}
+                          setInputValue={setPersonalizedOfferValue}
+                          errorValue={errorPersonalizedOfferValue}
+                          setErrorValue={setErrorPersonalizedOfferValue}
+                        />
+
+                        <div className='fieldError'>
+                          {errorPersonalizedOfferValue && (
+                            <p>Invalid Wallet Address.</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="formRow">
+                      <div className="formLabel">
+                        Arbiters
+                        <Tooltip
+                          title="State wallets that wil act as arbiters in case of a dispute. Empty = Payzura Platform"
+                          placement="top"
+                          enterTouchDelay={0}
+                          arrow
+                        >
+                          <i>
+                            <InfoIc />
+                          </i>
+                        </Tooltip>
+                      </div>
+                      <div className="formField">
+                        <WalletAddressField name="Arbiters"
+                          inputValue={arbitersValue}
+                          setInputValue={setArbitersValue}
+                          errorValue={errorArbitersValue}
+                          setErrorValue={setErrorArbitersValue}
+                        />
+
+                        <div className='fieldError'>
+                          {errorArbitersValue && (
+                            <p>Invalid Wallet Address.</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/*
+                    <div className={styles.gridItem}> Offer valid for these wallets (empty=any):  </div>
+                    <input className={styles.gridItem} id="PersonalizedOffer" type="text" {...register('PersonalizedOffer', { pattern: /^[a-z0-9,] /i })} ></input>
+                    <div className={styles.gridItem}> 
+                        {errors.PersonalizedOffer && errors.PersonalizedOffer.type === "pattern" && <span><p>Comma separated wallet addresses</p></span> }
+                    </div>
+                    */}
+
+                    <div className="formAction">
+                      <button
+                        id="SubmitButton"
+                        className="button withIcon secondary"
+                        type="submit"
+                        // value="Submit"
+                        ref={refButton}
+                      >
+                        <i>
+                          <CheckIc />
+                        </i>
+                        <span>Submit</span>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+
+                <ModalUi
+                  content={modelData}
+                  closeModelFn={closeModelDataHandler}
+                />
+              </div>
             </div>
-        </Fragment>
-    );
+          </div>
+        )}
+      </div>
+    </Fragment>
+  );
 }
