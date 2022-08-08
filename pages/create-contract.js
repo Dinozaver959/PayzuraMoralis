@@ -86,8 +86,8 @@ export default function Description(props) {
       24 * TimeToDeliver, // the value should be in hours
       sha256(document.getElementById("OfferDescription").value),
       OfferValidUntil.getTime() / 1000,
-      document.getElementById("PersonalizedOffer").value,
-      document.getElementById("Arbiters").value
+      personalizedOfferValue.join(","), // document.getElementById("PersonalizedOffer").value,
+      arbitersValue.join(",") // document.getElementById("Arbiters").value
     ) 
     .then(async (transactionHash) => {
       // show the feedback text
@@ -259,7 +259,7 @@ export default function Description(props) {
     const [showForm, setShowForm] = React.useState(false);
     const [tempDesc, setTempDesc] = React.useState();
 
-    const [contractValidity, setContractValidity] = React.useState("7 Days");
+    const [contractValidity, setContractValidity] = React.useState("1 Days");
     const [showDatepicker, setShowDatepicker] = React.useState(false);
 
     const [contractDuration, setContractDuration] = React.useState("1 Hour");
