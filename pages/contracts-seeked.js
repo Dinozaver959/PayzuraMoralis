@@ -10,10 +10,11 @@ function ContractsSeeked(props) {
         dropdownOpen={props.dropdownOpen}
         setDropdownOpen={props.setDropdownOpen}
         OpenDropdownFn={props.OpenDropdownFn}
-
         hasMenuDrawer={props.hasMenuDrawer}
         setMenuDrawer={props.setMenuDrawer}
         mobileDrawerFn={props.mobileDrawerFn}
+        currentAccount={props.currentAccount}
+        setCurrentAccount={props.setCurrentAccount}
       />
 
       <div className="containerMain">

@@ -143,24 +143,26 @@ export default function MyAgreements(props) {
     // Calling the function on component mount
     useEffect(() => {
         getCollectionsDetails();
-    }, []);
+    }, [props.currentAccount]);
 
     return (
         <Fragment>
             <Navigation
-                darkMode={props.darkMode}
-                changeDarkMode={props.changeDarkMode}
-                dropdownOpen={props.dropdownOpen}
-                setDropdownOpen={props.setDropdownOpen}
-                OpenDropdownFn={props.OpenDropdownFn}
-                hasMenuDrawer={props.hasMenuDrawer}
-                setMenuDrawer={props.setMenuDrawer}
-                mobileDrawerFn={props.mobileDrawerFn}
+              darkMode={props.darkMode}
+              changeDarkMode={props.changeDarkMode}
+              dropdownOpen={props.dropdownOpen}
+              setDropdownOpen={props.setDropdownOpen}
+              OpenDropdownFn={props.OpenDropdownFn}
+              hasMenuDrawer={props.hasMenuDrawer}
+              setMenuDrawer={props.setMenuDrawer}
+              mobileDrawerFn={props.mobileDrawerFn}
+              currentAccount={props.currentAccount}
+              setCurrentAccount={props.setCurrentAccount}
             />
 
             <div className="containerMain">
                 <div className="pageHeader">
-                    <h1>My Contracts</h1>
+                    <h1>My Contracts:{props.darkMode}</h1>
                 </div>
 
                 <div className="card mt-10">

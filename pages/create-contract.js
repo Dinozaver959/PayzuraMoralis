@@ -34,6 +34,7 @@ import USDCIcon from "../components/images/USDC.webp";
 import Image from "next/image";
 import DownArrowIc from "../components/icons/DownArrow";
 import CurrencyList from "../components/contract-creation/currency-list";
+import WalletAddressField from "../components/ui/WalletAddress-Input";
 
 export default function Description(props) {
   // SUBMIT - validation
@@ -54,6 +55,11 @@ export default function Description(props) {
   const [TimeToDeliver, setTimeToDeliver] = React.useState(() => {
     return 1;
   });
+
+  const [personalizedOfferValue, setPersonalizedOfferValue] = React.useState([]);
+  const [arbitersValue, setArbitersValue] = React.useState([]);
+  const [errorPersonalizedOfferValue, setErrorPersonalizedOfferValue] = React.useState(false);
+  const [errorArbitersValue, setErrorArbitersValue] = React.useState(false);
 
   const [modelData, setModelData] = React.useState({
     show: false,
@@ -77,17 +83,17 @@ export default function Description(props) {
       24 * TimeToDeliver, // the value should be in hours
       sha256(document.getElementById("OfferDescription").value),
       OfferValidUntil.getTime() / 1000,
-      document.getElementById("PersonalizedOffer").value,
-      document.getElementById("Arbiters").value
+      personalizedOfferValue.join(","), // document.getElementById("PersonalizedOffer").value,
+      arbitersValue.join(",") // document.getElementById("Arbiters").value
     ) 
     .then(async (transactionHash) => {
       // show the feedback text
-      //setModelData({
-      //    show: true,
-      //     type: "alert",
-      //     status: "Pending",
-      //     message: "Creating offer...",
-      // });
+      setModelData({
+         show: true,
+          type: "alert",
+          status: "Pending",
+          message: "Creating offer...",
+      });
 
       var form = document.querySelector("form");
       var formData = new FormData(form);
@@ -283,23 +289,25 @@ export default function Description(props) {
     setOfferValidUntil(date);
   }
 
-  function updateOfferDurationVariable(hours) {
-    setTimeToDeliver(hours);
+
+
+  function updateOfferDurationVariable(days) {
+    setTimeToDeliver(days);
   }
 
   const contractValidityHandler = (event, selectedValidity) => {
     setContractValidity(selectedValidity);
 
-    let days = 365;
-    if (selectedValidity === "7 Days") {
-      days = 7;
-    } else if (selectedValidity === "14 Days") {
-      days = 14;
-    } else if (selectedValidity === "30 Days") {
-      days = 30;
-    } else if (selectedValidity === "90 days") {
-      days = 90;
-    }
+  let days = 365;
+  if (selectedValidity === "1 Days") {
+    days = 1;
+  } else if (selectedValidity === "3 Days") {
+    days = 3;
+  } else if (selectedValidity === "7 Days") {
+    days = 7;
+  } else if (selectedValidity === "14 days") {
+    days = 14;
+  }
 
     if (days == 365) {
       setShowDatepicker(true);
@@ -318,21 +326,21 @@ export default function Description(props) {
     } else {
       setShowCustomDuration(false);
 
-      let hours = 24;
-      if (selectedDuration === "1 Hour") {
-        hours = 1;
+      let days = 1;
+      if (selectedDuration === "1 Days") {
+        days = 1;
       }
-      if (selectedDuration === "3 Hours") {
-        hours = 3;
+      if (selectedDuration === "3 Days") {
+        days = 3;
       }
-      if (selectedDuration === "7 Hours") {
-        hours = 7;
+      if (selectedDuration === "7 Days") {
+        days = 7;
       }
-      if (selectedDuration === "14 Hours") {
-        hours = 14;
+      if (selectedDuration === "14 Days") {
+        days = 14;
       }
 
-      updateOfferDurationVariable(hours);
+      updateOfferDurationVariable(days);
     }
   };
 
@@ -369,6 +377,8 @@ export default function Description(props) {
         hasMenuDrawer={props.hasMenuDrawer}
         setMenuDrawer={props.setMenuDrawer}
         mobileDrawerFn={props.mobileDrawerFn}
+        currentAccount={props.currentAccount}
+        setCurrentAccount={props.setCurrentAccount}
       />
 
       <div className="containerMain">
@@ -381,7 +391,10 @@ export default function Description(props) {
             <div className="cardHeader">
               <div className="cardTitle">
                 <h2>Choose a Template</h2>
-                <p>This will help you to generate by default template for creating offer.</p>
+                <p>
+                  This will help you to generate by default
+                  template for creating offer.
+                </p>
               </div>
             </div>
 
@@ -584,12 +597,9 @@ export default function Description(props) {
                             className="button"
                             id="CurrencyTicker"
                             value={selectCurrency}
-                            {...register(
-                              "CurrencyTicker",
-                              {
+                            {...register("CurrencyTicker",{
                                 required: true,
-                              }
-                            )}
+                            })}
                             onClick={() =>
                               setModelData({
                                 show: true,
@@ -605,58 +615,30 @@ export default function Description(props) {
                               })
                             }
                           >
-                              {CurrenciesData.filter(
-                                  (item) =>
-                                      item.shortName ===
-                                      selectCurrency
-                              ).map(
-                                  (selectedItem) => (
-                                      <Fragment
-                                          key={
-                                              selectedItem
-                                          }
-                                      >
-                                          <i className="currencyIc">
-                                              <Image
-                                                  src={
-                                                      selectedItem.icon
-                                                  }
-                                                  width={
-                                                      25
-                                                  }
-                                                  height={
-                                                      25
-                                                  }
-                                                  alt={
-                                                      selectedItem.name
-                                                  }
-                                              />
-                                          </i>
-                                          <span>
-                                              {
-                                                  selectedItem.shortName
-                                              }
-                                          </span>
-                                          <DownArrowIc
-                                              size={
-                                                  20
-                                              }
-                                          />
-                                      </Fragment>
-                                  )
-                              )}
+                            {CurrenciesData.filter((item) => item.shortName === selectCurrency).map(
+                              (selectedItem) => (
+                                <Fragment key={selectedItem}>
+                                  <i className="currencyIc">
+                                    <Image
+                                      src={selectedItem.icon}
+                                      width={25}
+                                      height={25}
+                                      alt={selectedItem.name}
+                                    />
+                                  </i>
+                                  <span>
+                                    {selectedItem.shortName}
+                                  </span>
+                                  <DownArrowIc size={20}/>
+                                </Fragment>
+                              )
+                            )}
                           </button>
                         </div>
                         <div className="fieldError">
-                          {errors.Price && errors.Price.type === "required" && (
-                            <p>Price required</p>
-                          )}
-                          {errors.Price && errors.Price.type === "min" && (
-                            <p>Min price is 0</p>
-                          )}
-                          {errors.CurrencyTicker && errors.CurrencyTicker.type === "required" && (
-                            <p>Currency required</p>
-                          )}
+                          {errors.Price && errors.Price.type === "required" && (<p>Price required</p>)}
+                          {errors.Price && errors.Price.type === "min" && (<p>Min price is 0</p>)}
+                          {errors.CurrencyTicker && errors.CurrencyTicker.type === "required" && (<p>Currency required</p>)}
                         </div>
                       </div>
                     </div>
@@ -753,7 +735,7 @@ export default function Description(props) {
                     */}
                     <div className="formRow contractValidity">
                       <div className="formLabel">
-                        Can Accept Until
+                        Time to Accept Contract
                         <Tooltip
                           title="How long will the agreement remain available to potential buyers"
                           placement="top"
@@ -773,28 +755,28 @@ export default function Description(props) {
                           aria-label="all contractValidity"
                         >
                           <ToggleButton
+                            value="1 Days"
+                            aria-label="contractValidity"
+                          >
+                            1 Days
+                          </ToggleButton>
+                          <ToggleButton
+                            value="3 Days"
+                            aria-label="contractValidity"
+                          >
+                            3 Days
+                          </ToggleButton>
+                          <ToggleButton
                             value="7 Days"
                             aria-label="contractValidity"
                           >
                             7 Days
                           </ToggleButton>
                           <ToggleButton
-                            value="14 Days"
+                            value="14 days"
                             aria-label="contractValidity"
                           >
-                            14 Days
-                          </ToggleButton>
-                          <ToggleButton
-                            value="30 Days"
-                            aria-label="contractValidity"
-                          >
-                            30 Days
-                          </ToggleButton>
-                          <ToggleButton
-                            value="90 days"
-                            aria-label="contractValidity"
-                          >
-                            90 days
+                            14 days
                           </ToggleButton>
                           <ToggleButton
                             value={TimeToDeliver} /*Set Custom*/
@@ -841,12 +823,18 @@ export default function Description(props) {
                         </Tooltip>
                       </div>
                       <div className="formField">
-                        <input
-                          className="formInput"
-                          id="PersonalizedOffer"
-                          type="text"
-                          name="PersonalizedOffer"
-                        ></input>
+                        <WalletAddressField name="PersonalizedOffer"
+                          inputValue={personalizedOfferValue}
+                          setInputValue={setPersonalizedOfferValue}
+                          errorValue={errorPersonalizedOfferValue}
+                          setErrorValue={setErrorPersonalizedOfferValue}
+                        />
+
+                        <div className='fieldError'>
+                          {errorPersonalizedOfferValue && (
+                            <p>Invalid Wallet Address.</p>
+                          )}
+                        </div>
                       </div>
                     </div>
 
@@ -865,12 +853,18 @@ export default function Description(props) {
                         </Tooltip>
                       </div>
                       <div className="formField">
-                        <input
-                          className="formInput"
-                          id="Arbiters"
-                          type="text"
-                          name="Arbiters"
-                        ></input>
+                        <WalletAddressField name="Arbiters"
+                          inputValue={arbitersValue}
+                          setInputValue={setArbitersValue}
+                          errorValue={errorArbitersValue}
+                          setErrorValue={setErrorArbitersValue}
+                        />
+
+                        <div className='fieldError'>
+                          {errorArbitersValue && (
+                            <p>Invalid Wallet Address.</p>
+                          )}
+                        </div>
                       </div>
                     </div>
 

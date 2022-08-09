@@ -58,7 +58,7 @@
       }
 
       .formLabel {
-        width: 200px;
+        width: 210px;
         margin-right: 15px;
         padding-top: 10px;
 
@@ -96,6 +96,31 @@
         @include RespondTo(MobileDevices) {
           width: 100%;
         }
+      }
+    }
+  }
+}
+
+.MuiAutocomplete-root {
+  .MuiFilledInput-root {
+    &.MuiFilledInput-underline {
+      background: none;
+      padding: 5px 20px 5px 5px !important;
+      border: 1px solid $BorderDark !important;
+      border-radius: 3px !important;
+      box-shadow: none;
+
+      &::after,
+      &::before {
+        display: none;
+      }
+
+      &:hover {
+        background: none;
+      }
+
+      .MuiInputBase-input {
+        width: 100%;
       }
     }
   }

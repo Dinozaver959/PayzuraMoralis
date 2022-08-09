@@ -120,6 +120,8 @@ export default function ContractsCreatedByBuyer(props) {    // maybe just call a
         hasMenuDrawer={props.hasMenuDrawer}
         setMenuDrawer={props.setMenuDrawer}
         mobileDrawerFn={props.mobileDrawerFn}
+        currentAccount={props.currentAccount}
+        setCurrentAccount={props.setCurrentAccount}
       />
 
       <div className="containerMain">
