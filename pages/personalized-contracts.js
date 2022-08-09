@@ -344,88 +344,13 @@ function Row_normal(props) {
                     {wrapEpochToDate(item.OfferValidUntil)}
                 </StyledTableCell>
 
-                {
-                    (item.CurrencyTicker == "ETH" || approvedERC20) ? (
-                        <>
-                            <StyledTableCell></StyledTableCell>
-                            {/* don't show approval button */}
-                        </>
-                    ) : (
-                        <>
-                            <StyledTableCell>
-                                <input
-                                    className="button primary rounded small"
-                                    type="submit"
-                                    /* value="Approve USDC" */
-                                    value={"Approve " + item.CurrencyTicker}
-                                    onClick={() => {
-                                        ApproveERC20_Moralis(item.index)
-                                            .then(async (transactionHash) => {
-                                                console.log(
-                                                    "approval for ERC20 successfully completed"
-                                                );
-                                                console.log(
-                                                    "transactionHash: ",
-                                                    transactionHash
-                                                );
-
-                                                // hide approve button
-                                                setApprovedERC20(true);
-
-                                                var formData = new FormData();
-                                                const connectedAddress = await GetWallet_NonMoralis();
-                                                formData.append("wallet", connectedAddress);
-                                                formData.append("transactionHash", transactionHash);
-                                                formData.append("objectId", item.objectId);
-
-                                                var xhr = new XMLHttpRequest();
-                                                xhr.open("POST", "/api/api-approvedERC20", false);
-                                                xhr.onload = function () {
-                                                    // update the feedback text
-                                                    document.getElementById("submitFeedback").style.display = "inline";
-                                                    document.getElementById("submitFeedback").innerText = "granting approval...";
-
-                                                    // think about also removing the hover effect
-                                                    // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-                                                    console.log("approval granted");
-                                                };
-                                                xhr.send(formData);
-                                            })
-                                            .catch((error) => {
-                                                console.error(error);
-                                                console.log("approval error code: " + error.code);
-                                                console.log("approval error message: " + error.message);
-                                                if (error.data && error.data.message) {
-                                                    setModelData({
-                                                        show: true,
-                                                        type: "alert",
-                                                        status: "Error",
-                                                        message: error.data.message,
-                                                    });
-                                                } else {
-                                                    setModelData({
-                                                        show: true,
-                                                        type: "alert",
-                                                        status: "Error",
-                                                        message: error.message,
-                                                    });
-                                                }
-                                                process.exitCode = 1;
-                                            });
-                                    }}
-                                ></input>
-                            </StyledTableCell>
-                        </>
-                    )
-                }
-
                 <StyledTableCell>
                     <input
                         className="button primary rounded" // button primary rounded small
                         type="submit"
                         value="Accept Offer"
-                        onClick={() =>
-                            AcceptOfferBuyer_Moralis(item.index, item.CurrencyTicker)
+                        onClick={ async() =>
+                            AcceptOfferBuyer_Moralis(item.index, item.CurrencyTicker, (await GetWallet_NonMoralis())[0])
                                 .then(async (transactionHash) => {
 
                                     // show the feedback text
@@ -433,7 +358,7 @@ function Row_normal(props) {
                                         show: true,
                                         type: "alert",
                                         status: "Pending",
-                                        message: "Creating offer...",
+                                        message: "Accepting offer...",
                                     });
 
                                     var formData = new FormData();
@@ -448,29 +373,16 @@ function Row_normal(props) {
                                     var xhr = new XMLHttpRequest();
                                     xhr.open("POST", "/api/api-acceptedOfferByBuyer", false);
                                     xhr.onload = function () {
-                                        // update the feedback text
-                                        document.getElementById("submitFeedback").style.display = "inline";
-                                        document.getElementById("submitFeedback").innerText = "offer accepted";
+                                      // show the feedback text
+                                      setModelData({
+                                        show: true,
+                                        type: "alert",
+                                        status: "Success",
+                                        message: "offer accepted",
+                                        transactionHash: transactionHash,
+                                      });
 
-                                        // show the feedback text
-                                        setModelData({
-                                            show: true,
-                                            type: "alert",
-                                            status: "Pending",
-                                            message: "Accepting offer...",
-                                        });
-
-                                        // update the feedback text
-                                        // setModelData({
-                                        //   show: true,
-                                        //   type: "alert",
-                                        //   status: "Success",
-                                        //   message: "offer accepted",
-                                        // });
-
-                                        // think about also removing the hover effect
-                                        // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-                                        console.log("offer created");
+                                      console.log("offer created");
                                     };
                                     xhr.send(formData);
                                 })

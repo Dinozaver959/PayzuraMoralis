@@ -294,22 +294,12 @@ function Row_normal(props) {
                                     });
 
                                     var formData = new FormData();
-                                    const connectedAddress =
-                                        await GetWallet_NonMoralis();
-                                    formData.append(
-                                        "ArbiterWallet",
-                                        connectedAddress
-                                    );
-                                    formData.append("BuyerWallet", BuyerWallet);
-                                    formData.append(
-                                        "SellerWallet",
-                                        SellerWallet
-                                    );
+                                    const connectedAddress = await GetWallet_NonMoralis();
+                                    formData.append("ArbiterWallet", connectedAddress);
+                                    formData.append("BuyerWallet", item.BuyerWallet);
+                                    formData.append("SellerWallet", item.SellerWallet);
                                     formData.append("votedForBuyer", "true");
-                                    formData.append(
-                                        "ArbitersVoteConcluded",
-                                        ArbitersVoteConcluded
-                                    ); /// maybe turn it into a string
+                                    formData.append("ArbitersVoteConcluded", ArbitersVoteConcluded); /// maybe turn it into a string
                                     //formData.append('transactionHash', transactionHash);
                                     formData.append("objectId", item.objectId);
 
@@ -374,8 +364,6 @@ function Row_normal(props) {
                         onClick={() =>
                             HandleDispute_Moralis(item.index, false)
                                 .then(async (ArbitersVoteConcluded) => {
-                                    // {transactionHash, ArbitersVoteConcluded}
-
                                     // show the feedback text
                                     setModelData({
                                         show: true,
@@ -385,17 +373,12 @@ function Row_normal(props) {
                                     });
 
                                     var formData = new FormData();
-                                    const connectedAddress =
-                                        await GetWallet_NonMoralis();
-                                    formData.append(
-                                        "ArbiterWallet",
-                                        connectedAddress
-                                    );
+                                    const connectedAddress = await GetWallet_NonMoralis();
+                                    formData.append("ArbiterWallet", connectedAddress);
+                                    formData.append("BuyerWallet", item.BuyerWallet);
+                                    formData.append("SellerWallet", item.SellerWallet);
                                     formData.append("votedForBuyer", "false");
-                                    formData.append(
-                                        "ArbitersVoteConcluded",
-                                        ArbitersVoteConcluded
-                                    ); /// maybe turn it into a string
+                                    formData.append("ArbitersVoteConcluded", ArbitersVoteConcluded); /// maybe turn it into a string
                                     //formData.append('transactionHash', transactionHash);
                                     formData.append("objectId", item.objectId);
 

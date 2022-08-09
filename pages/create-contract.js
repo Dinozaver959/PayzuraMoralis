@@ -109,6 +109,8 @@ export default function Description(props) {
       formData.append("TimeToDeliver", TimeToDeliver);
       formData.append("CurrencyTicker", selectCurrency); //CurrencyTicker
       formData.append("ChainID", ConvertNetworkNameToChainID(contractOnNetwork));
+      formData.append("PersonalizedOffer", personalizedOfferValue.join(","));
+      formData.append("Arbiters", arbitersValue.join(","));
 
       const connectedAddress = await GetWallet_NonMoralis();
 
@@ -254,9 +256,9 @@ export default function Description(props) {
   const [selectedTemplate, setSelectedTemplate] = React.useState("Empty");
   const [showForm, setShowForm] = React.useState(false);
   const [tempDesc, setTempDesc] = React.useState();
-  const [contractValidity, setContractValidity] = React.useState("7 Days");
+  const [contractValidity, setContractValidity] = React.useState("1 Days");
   const [showDatepicker, setShowDatepicker] = React.useState(false);
-  const [contractDuration, setContractDuration] = React.useState("1 Hour");
+  const [contractDuration, setContractDuration] = React.useState("1 Days");
   const [showCustomDuration, setShowCustomDuration] = React.useState(false);
   const [selectCurrency, setSelectCurrency] = React.useState("ETH");
   const [selectContractType, setSelectContractType] = React.useState("seller");
@@ -665,28 +667,28 @@ export default function Description(props) {
                           aria-label="all contractDuration"
                         >
                           <ToggleButton
-                            value="1 Hour"
+                            value="1 Days"
                             aria-label="contractDuration"
                           >
-                            1 Hour
+                            1 Day
                           </ToggleButton>
                           <ToggleButton
-                            value="3 Hours"
+                            value="3 Days"
                             aria-label="contractDuration"
                           >
-                            3 Hours
+                            3 Days
                           </ToggleButton>
                           <ToggleButton
-                            value="7 Hours"
+                            value="7 Days"
                             aria-label="contractDuration"
                           >
-                            7 Hours
+                            7 Days
                           </ToggleButton>
                           <ToggleButton
-                            value="14 Hours"
+                            value="14 Days"
                             aria-label="contractDuration"
                           >
-                            14 Hours
+                            14 Days
                           </ToggleButton>
                           <ToggleButton
                             value="Set Custom"
@@ -758,7 +760,7 @@ export default function Description(props) {
                             value="1 Days"
                             aria-label="contractValidity"
                           >
-                            1 Days
+                            1 Day
                           </ToggleButton>
                           <ToggleButton
                             value="3 Days"
