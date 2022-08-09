@@ -33,11 +33,10 @@ contract Escrow is ReentrancyGuard {
 
     mapping(address => bool) personalizedOffer;
     uint256 personalizedOfferCounter;
-    enum State { await_payment, buyer_initialized, buyer_initialized_and_paid, await_seller_accepts, paid, dispute, complete, canceled }
+    enum State { await_payment, buyer_initialized_and_paid, await_seller_accepts, paid, dispute, complete, canceled }
     // need to update the naming:
     /*
         await_payment               - seller started the contract, no buyer has paid/accepted yet
-        buyer_initialized           - buyer just initialized the contract
         buyer_initialized_and_paid  - buyer had initialized and paid
         await_seller_accepts        - buyer has updated the list of personalizedOffer for potential sellers
         paid                        - contract has been signed by both parties
@@ -142,20 +141,20 @@ contract Escrow is ReentrancyGuard {
         }
     }
 
-    function InitializeBuyer (                                      // NOTE: currently set up to work only with ETH
-        address payable _FactoryAddress,
-        address payable _buyer,
-        address[] calldata _arbiters, 
-        uint256 _price,
-        address _tokenContractAddress,
-        uint256 _timeAllowedInHours,
-        string memory _hashOfDescription,       // calldata?
-        uint256 _offerValidUntil,
-        address[] calldata _personalizedOffer
-        
-        ) public payable {
+
+    function InitializeBuyer (
+      address payable _FactoryAddress,
+      address payable _buyer,
+      address[] calldata _arbiters, 
+      uint256 _price,
+      address _tokenContractAddress,
+      uint256 _timeAllowedInHours,
+      string memory _hashOfDescription,       // calldata?
+      uint256 _offerValidUntil,
+      address[] calldata _personalizedOffer
+    ) public payable {
         FactoryAddress = _FactoryAddress;
-        state = State.buyer_initialized;
+        state = State.buyer_initialized_and_paid;
         buyer = _buyer;
         price = _price;
         tokenContractAddress = _tokenContractAddress;
@@ -163,23 +162,13 @@ contract Escrow is ReentrancyGuard {
         timeToDeliver = _timeAllowedInHours;      
         offerValidUntil = _offerValidUntil;
 
-
-
         if(_tokenContractAddress == address(0)){
-            require(msg.value >= _price, "not enough ETH send");        // only for ETH 
-            state = State.buyer_initialized_and_paid;
-
-            if(_personalizedOffer.length > 0){
-                state = State.await_seller_accepts;
-            }
+            require(msg.value >= _price, "not enough ETH send");        // only for ETH  
         }
-        else{
-            // cannot approve ERC20 directly
-            // because we are using proxy, and only msg.sender can issue the approval
+        
+        if(_personalizedOffer.length > 0){
+            state = State.await_seller_accepts;
         }
-
-
-
 
         // loop through to copy all
         // personalizedOffer
@@ -193,7 +182,6 @@ contract Escrow is ReentrancyGuard {
             arbiters.push(_arbiters[i]);
         }
     }
-
 
 
 
@@ -264,17 +252,13 @@ contract Escrow is ReentrancyGuard {
             // payment in ETH
             require(msg.value >= price, "not enough ETH send");
         } else {
-            // payment in tokenContractAddress currency
-            IERC20 tokenContract = IERC20(tokenContractAddress);
-            bool transferred = tokenContract.transferFrom(_buyer, address(this), price);
-            require(transferred, "ERC20 tokens failed to transfer to contract wallet");
+          // done on upper level - EscrowFactory
         }
 
         buyer = _buyer; 
         deadline = block.timestamp + 3600 * timeToDeliver;
         state = State.paid;
     }
-
 
     // Seller accepts on agreement made by a Buyer
     function acceptOfferSeller(address payable _seller) instate(State.await_seller_accepts) external {
@@ -454,23 +438,7 @@ contract Escrow is ReentrancyGuard {
         state = State.await_seller_accepts;
     }
 
-
-    function fundContract(address _buyer) instate(State.buyer_initialized) onlyBuyer(_buyer) external {  // onlyBuyer(_buyer) - can be ommised in case somebody else would fund the contract
-        IERC20 tokenContract = IERC20(tokenContractAddress);
-        //console.log("_buyer: ", _buyer);
-        //console.log("address(this) ", address(this));
-        //console.log("price", price);
-        bool transferred = tokenContract.transferFrom(_buyer, address(this), price);
-        require(transferred, "ERC20 tokens failed to transfer to contract wallet");
-        state = State.buyer_initialized_and_paid;
-
-        // if personalized was already set initially, we can jump the step of adding them
-        if(personalizedOfferCounter > 0){
-            state = State.await_seller_accepts;
-        }
-    }
-
-    function cancelBuyerContract(address _buyer) inEitherStates3(State.buyer_initialized, State.buyer_initialized_and_paid, State.await_seller_accepts) onlyBuyer(_buyer) external {
+    function cancelBuyerContract(address _buyer) inEitherStates(State.buyer_initialized_and_paid, State.await_seller_accepts) onlyBuyer(_buyer) external {
 
         // if there is any money in the contract, return it to the buyer
         TransferFundsNoCommision(payable(_buyer));

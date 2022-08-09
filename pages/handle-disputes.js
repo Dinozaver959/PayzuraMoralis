@@ -292,11 +292,6 @@ function Row_normal(props) {
                                     });
 
                                     var formData = new FormData();
-                                    formData.append(
-                                        "ArbiterAccount",
-                                        Moralis.User.current().id
-                                    );
-
                                     const connectedAddress =
                                         await GetWallet_NonMoralis();
                                     formData.append(
@@ -388,11 +383,6 @@ function Row_normal(props) {
                                     });
 
                                     var formData = new FormData();
-                                    formData.append(
-                                        "ArbiterAccount",
-                                        Moralis.User.current().id
-                                    );
-
                                     const connectedAddress =
                                         await GetWallet_NonMoralis();
                                     formData.append(
