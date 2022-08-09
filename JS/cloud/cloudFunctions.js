@@ -93,21 +93,15 @@ Moralis.Cloud.define("GetPublicOffers_CreatedByBuyer_buyer_initialized_and_paid"
 
 
 Moralis.Cloud.define("GetDisputesToManage", async (request) => {    
-  /*
-    const query = new Moralis.Query("Agreements");    
-    //query.equalTo("State", "dispute"); // optional - should include the complited state as well
-    query.fullText("Arbiters", request.params.UserWallet);
-    return await query.find();     
-  */
-  
-  const query1 = new Moralis.Query("Agreements");    
+ 
+  const query1 = new Moralis.Query("Agreements"); 
   query1.equalTo("State", "dispute"); 
   
   const query2 = new Moralis.Query("Agreements");    
   query2.equalTo("State", "complete"); 
   
   const mainQuery = Moralis.Query.or(query1, query2);
-  //mainQuery.fullText("Arbiters", request.params.UserWallet);    // comment out for testing - no idea why it is causing problems
+  mainQuery.contains("Arbiters", request.params.UserWallet);
   return await mainQuery.find();  
 });
 
@@ -156,4 +150,4 @@ Moralis.Cloud.define("GetUsersDetails", async (request) => {
 
 
 // to update the file run 
-// moralis-admin-cli watch-cloud-folder --moralisApiKey DmJlMFi7bq6YsSn --moralisApiSecret 0e5r309G7jnsBsZ --moralisCloudfolder D:\Test\Payzura\payzura\JS\cloud
+// moralis-admin-cli watch-cloud-folder --moralisApiKey NJb8ptNvFULrAUZ --moralisApiSecret Lk8NN6ShmEEoLx0 --mo...main rbfqybjb4vga.usemoralis.com --autoSave 1 --moralisCloudfolder D:\Test\Payzura\payzura\JS\cloud
