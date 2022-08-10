@@ -1,7 +1,7 @@
 function RightArrowIc(props) {
     if (props.onClick) {
         return (
-            <button onClick={props.onClick} className="linkButton">
+            <button onClick={props.onClick} className="linkButton" type="button">
                 <svg
                     viewBox="0 0 19 20"
                     width={props.size}

@@ -1,7 +1,7 @@
 function UserProfileIc(props) {
     if (props.onClick) {
         return (
-            <button onClick={props.onClick} className="linkButton">
+            <button onClick={props.onClick} className="linkButton" type="button">
                 <svg
                     viewBox="0 0 33 33"
                     width={props.size}
