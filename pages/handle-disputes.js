@@ -1,4 +1,3 @@
-import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { IconContext } from "react-icons";
 
@@ -28,52 +27,8 @@ import LoadingPlaceholder from "../components/ui/LoadingPlaceholder";
 import PlusIc from "../components/icons/Plus";
 import ModalUi from "../components/ui/ModalUi";
 
-const StyledTableRow = styled(TableRow)({
-    //'&:nth-of-type(odd)': {
-    //  backgroundColor: "#343a3f",
-    //  color: "white", // useless
-    //},
-    // hide last border
-    //'&:last-child td, &:last-child th': {
-    //  border: 0,
-    //},
-});
-
-const StyledTableCell = styled(TableCell)({
-    [`&.${tableCellClasses.head}`]: {
-        backgroundColor: "#4F575D",
-        color: "white",
-    },
-    [`&.${tableCellClasses.body}`]: {
-        fontSize: 14,
-
-        backgroundColor: "#343a3f",
-        color: "white",
-    },
-
-    /*
-  backgroundColor: "#343a3f",
-  color: "white",
-*/
-});
-
-const StyledInnerTableCell = styled(TableCell)({
-    [`&.${tableCellClasses.head}`]: {
-        backgroundColor: "#4F575D",
-        color: "white",
-    },
-    [`&.${tableCellClasses.body}`]: {
-        fontSize: 14,
-
-        backgroundColor: "#4F575D",
-        color: "white",
-    },
-
-    /*
-  backgroundColor: "#343a3f",
-  color: "white",
-*/
-});
+const StyledTableRow = styled(TableRow)();
+const StyledTableCell = styled(TableCell)();
 
 export default function ListAvailableOffers(props) {
     const [data, setData] = useState([]);
@@ -82,9 +37,7 @@ export default function ListAvailableOffers(props) {
     // load options using API call
     async function getCollectionsDetails() {
         const connectedAddress = await GetWallet_NonMoralis();
-        const data = await fetch(
-            `./api/api-getDisputesToManage` + "?UserWallet=" + connectedAddress
-        )
+        const data = await fetch(`./api/api-getDisputesToManage` + "?UserWallet=" + connectedAddress)
             .then((res) => res.json())
             .then((json) => setData(json)); // uncomment this line to see the data in the console
 

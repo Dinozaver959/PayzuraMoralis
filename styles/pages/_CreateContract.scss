@@ -1,587 +1,592 @@
 .contractTemplateMain {
-    @include Flexbox;
-    @include FlexFlow(wrap);
-    @include JustifyContent(center);
+  @include Flexbox;
+  @include FlexFlow(wrap);
+  @include JustifyContent(center);
 
-    .contractCard {
-        width: 30%;
-        max-width: 420px;
-        background: $LightBlueBg;
-        @include BorderRadius($CardRounded);
-        margin: 15px;
-        border: 3px solid transparent;
-        @include Transition(0.2s);
+  .contractCard {
+    width: 30%;
+    max-width: 420px;
+    background: $LightBlueBg;
+    @include BorderRadius($CardRounded);
+    margin: 15px;
+    border: 3px solid transparent;
+    @include Transition(0.2s);
 
-        @media only screen and (max-width: 1000px) {
-            width: calc(50% - 36px);
-        }
-
-        @include RespondTo(MobileDevices) {
-            width: 100%;
-            margin-left: 0;
-            margin-right: 0;
-        }
-
-        &.selected {
-            border-color: $PrimaryColor;
-        }
-
-        &:hover {
-            @include BoxShadow(0px 0px 15px rgba($BlackColor, 0.2));
-            @include Transition(0.2s);
-        }
-
-        > input[type="radio"] {
-            display: none;
-        }
-
-        > label {
-            display: block;
-            @include Size(100%, 100%);
-            padding: 18px;
-            cursor: pointer;
-
-            @include RespondTo(MobileDevices) {
-                padding: 12px;
-            }
-        }
-
-        .contractCardHeader {
-            @include Font(null, 1.5rem, $FontColorDark, null, 500);
-            padding: 10px 0 20px 0;
-            text-align: center;
-
-            @include RespondTo(MobileDevices) {
-                font-size: 1.1rem;
-                padding: 5px 0 15px 0;
-            }
-        }
-
-        .contractCardBody {
-            min-height: 180px;
-
-            @include RespondTo(MobileDevices) {
-                min-height: 120px;
-            }
-
-            .blankCard {
-                @include Size(100%, auto);
-                @extend %FlexCol-CenterCenter;
-                padding: 50px 0;
-
-                i {
-                    @include Size(150px, 150px);
-                    @extend %FlexCol-CenterCenter;
-
-                    svg {
-                        @include Size(140px, 140px);
-
-                        path {
-                            fill: $FontColorLight;
-                        }
-                    }
-                }
-
-                .cardLabel {
-                    @include Font(null, 1rem, $FontColorLight, null, 500);
-                    margin-top: 0.5rem;
-                }
-            }
-
-            .contractBodyRow {
-                .labelData {
-                    color: $LightBlueColor;
-                }
-
-                .valueData {
-                    color: rgba($FontColorDark, 0.75);
-                    font-size: 1rem;
-                    font-weight: 400;
-                }
-            }
-        }
-
-        .contractCardFooter {
-            padding-top: 15px;
-            text-align: center;
-
-            .button {
-                width: 100%;
-            }
-        }
+    @media only screen and (max-width: 1000px) {
+      width: calc(50% - 36px);
     }
+
+    @include RespondTo(MobileDevices) {
+      width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    &.selected {
+      border-color: $PrimaryColor;
+    }
+
+    &:hover {
+      @include BoxShadow(0px 0px 15px rgba($BlackColor, 0.2));
+      @include Transition(0.2s);
+    }
+
+    > input[type="radio"] {
+      display: none;
+    }
+
+    > label {
+      display: block;
+      @include Size(100%, 100%);
+      padding: 18px;
+      cursor: pointer;
+
+      @include RespondTo(MobileDevices) {
+        padding: 12px;
+      }
+    }
+
+    .contractCardHeader {
+      @include Font(null, 1.5rem, $FontColorDark, null, 500);
+      padding: 10px 0 20px 0;
+      text-align: center;
+
+      @include RespondTo(MobileDevices) {
+        font-size: 1.1rem;
+        padding: 5px 0 15px 0;
+      }
+    }
+
+    .contractCardBody {
+      min-height: 180px;
+
+      @include RespondTo(MobileDevices) {
+        min-height: 120px;
+      }
+
+      .blankCard {
+        @include Size(100%, auto);
+        @extend %FlexCol-CenterCenter;
+        padding: 50px 0;
+
+        i {
+          @include Size(150px, 150px);
+          @extend %FlexCol-CenterCenter;
+
+          svg {
+            @include Size(140px, 140px);
+
+            path {
+              fill: $FontColorLight;
+            }
+          }
+        }
+
+        .cardLabel {
+          @include Font(null, 1rem, $FontColorLight, null, 500);
+          margin-top: 0.5rem;
+        }
+      }
+
+      .contractBodyRow {
+        .labelData {
+          color: $LightBlueColor;
+        }
+
+        .valueData {
+          color: rgba($FontColorDark, 0.75);
+          font-size: 1rem;
+          font-weight: 400;
+        }
+      }
+    }
+
+    .contractCardFooter {
+      padding-top: 15px;
+      text-align: center;
+
+      .button {
+        width: 100%;
+      }
+    }
+  }
 }
 
 .cardSidebar {
-    h2 {
-        @include Font(null, 1.5rem, $BlackColor, null, 600);
-        padding: 25px 20px;
-        margin-bottom: 15px;
-        border-bottom: 1px solid darken($BorderDark, 5%);
+  h2 {
+    @include Font(null, 1.5rem, $BlackColor, null, 600);
+    padding: 25px 20px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid darken($BorderDark, 5%);
 
-        @include RespondTo(MobileDevices) {
-            font-size: 1.1rem;
-            padding: 17px;
-        }
+    @include RespondTo(MobileDevices) {
+      font-size: 1.1rem;
+      padding: 17px;
     }
+  }
 
-    ul {
-        li {
-            padding-bottom: 5px;
+  ul {
+    li {
+      padding-bottom: 5px;
 
-            > input[type="radio"] {
-                display: none;
+      > input[type="radio"] {
+        display: none;
 
-                &:checked {
-                    + label.linkBlock {
-                        background: rgba($PrimaryColor, 0.05);
-                        color: $PrimaryColor;
+        &:checked {
+          + label.linkBlock {
+            background: rgba($PrimaryColor, 0.05);
+            color: $PrimaryColor;
 
-                        > span {
-                            + i {
-                                svg {
-                                    path {
-                                        fill: $PrimaryColor;
-                                    }
-                                }
-                            }
-                        }
-                    }
+            > span {
+              + i {
+                svg {
+                  path {
+                    fill: $PrimaryColor;
+                  }
                 }
+              }
             }
-
-            .linkBlock {
-                @extend %FlexRow-CenterBetween;
-                @include Font(null, 1rem, $FontColorDark, null, 500);
-                @include Transition(0.2s);
-                padding: 15px 20px;
-                cursor: pointer;
-
-                @include RespondTo(MobileDevices) {
-                    font-size: 0.8rem;
-                    padding: 12px 17px;
-                }
-
-                &:hover {
-                    box-shadow: none;
-                    background: rgba($PrimaryColor, 0.1);
-                    @include Transition(0.2s);
-                }
-
-                > span {
-                    flex: 2;
-
-                    + i {
-                        @include Size(18px, 18px);
-                        @extend %FlexCol-CenterCenter;
-
-                        @include RespondTo(MobileDevices) {
-                            @include Size(15px, 15px);
-                        }
-
-                        svg {
-                            @include Size(12px, 12px);
-
-                            @include RespondTo(MobileDevices) {
-                                @include Size(10px, 10px);
-                            }
-
-                            path {
-                                fill: $FontColorDark;
-                            }
-                        }
-                    }
-                }
-            }
+          }
         }
-    }
-}
+      }
 
-.buyerSelerSelection {
-    ul {
-        @extend %FlexRow-CenterCenter;
-        margin-bottom: 1rem;
-
-        @include RespondTo(MobileDevices) {
-            margin-bottom: 0.7rem;
-        }
-
-        li {
-            display: inline-block;
-
-            + li {
-                margin-left: 10px;
-            }
-
-            input[type="radio"] {
-                display: none;
-
-                + label {
-                    @include Size(150px, 92px);
-                    border: 2px solid $BorderDark;
-                    @include BorderRadius(10px);
-                    @extend %FlexCol-CenterCenter;
-                    cursor: pointer;
-
-                    @include RespondTo(MobileDevices) {
-                        width: 120px;
-                        height: 86px;
-                    }
-
-                    svg {
-                        @include Size(50px, 50px);
-                    }
-
-                    span {
-                        display: block;
-                        margin-top: 7px;
-                    }
-                }
-
-                &:checked {
-                    + label {
-                        border-color: $PrimaryColor;
-                        color: $PrimaryColor;
-                        background: lighten($PrimaryColor, 55%);
-                    }
-                }
-
-                &:disabled {
-                    + label {
-                        opacity: 0.5;
-                        background: rgba($BlackColor, 0.1);
-                        cursor: default;
-                    }
-                }
-            }
-        }
-    }
-}
-
-.customPriceField {
-    @include Size(100%, auto);
-    padding: 5px;
-    @include BorderRadius($FormControlRadius);
-    border: 1px solid $BorderDark;
-    background-color: transparent;
-    @extend %FlexRow-CenterBetween;
-
-    .formInput {
-        flex: 2;
-        height: auto;
-        padding: 0 7px;
-        border: none;
-    }
-
-    .button {
+      .linkBlock {
         @extend %FlexRow-CenterBetween;
-        border: 1px solid $BorderDark;
-        @include BorderRadius(2rem);
-        padding: 3px;
-        height: auto;
+        @include Font(null, 1rem, $FontColorDark, null, 500);
+        @include Transition(0.2s);
+        padding: 15px 20px;
+        cursor: pointer;
 
-        img {
-            background-color: rgba($BorderDark, 0.5);
-            @include BorderRadius(50%);
-            object-fit: contain;
+        @include RespondTo(MobileDevices) {
+          font-size: 0.8rem;
+          padding: 12px 17px;
+        }
+
+        &:hover {
+          box-shadow: none;
+          background: rgba($PrimaryColor, 0.1);
+          @include Transition(0.2s);
         }
 
         > span {
-            flex: 2;
-            margin-left: 5px;
+          flex: 2;
+
+          + i {
+            @include Size(18px, 18px);
+            @extend %FlexCol-CenterCenter;
+
+            @include RespondTo(MobileDevices) {
+              @include Size(15px, 15px);
+            }
+
+            svg {
+              @include Size(12px, 12px);
+
+              @include RespondTo(MobileDevices) {
+                @include Size(10px, 10px);
+              }
+
+              path {
+                fill: $FontColorDark;
+              }
+            }
+          }
         }
+      }
     }
+  }
+}
+
+.buyerSelerSelection {
+  ul {
+    @extend %FlexRow-CenterCenter;
+    margin-bottom: 1rem;
+
+    @include RespondTo(MobileDevices) {
+      margin-bottom: 0.7rem;
+    }
+
+    li {
+      display: inline-block;
+
+      + li {
+        margin-left: 10px;
+      }
+
+      input[type="radio"] {
+        display: none;
+
+        + label {
+          @include Size(150px, 92px);
+          border: 2px solid $BorderDark;
+          @include BorderRadius(10px);
+          @extend %FlexCol-CenterCenter;
+          cursor: pointer;
+
+          @include RespondTo(MobileDevices) {
+            width: 120px;
+            height: 86px;
+          }
+
+          svg {
+            @include Size(50px, 50px);
+          }
+
+          span {
+            display: block;
+            margin-top: 7px;
+          }
+        }
+
+        &:checked {
+          + label {
+            border-color: $PrimaryColor;
+            color: $PrimaryColor;
+            background: lighten($PrimaryColor, 55%);
+          }
+        }
+
+        &:disabled {
+          + label {
+            opacity: 0.5;
+            background: rgba($BlackColor, 0.1);
+            cursor: default;
+          }
+        }
+      }
+    }
+  }
+}
+
+.customPriceField {
+  @include Size(100%, auto);
+  padding: 5px;
+  @include BorderRadius($FormControlRadius);
+  border: 1px solid $BorderDark;
+  background-color: transparent;
+  @extend %FlexRow-CenterBetween;
+
+  .formInput {
+    flex: 2;
+    height: auto;
+    padding: 0 7px;
+    border: none;
+  }
+
+  .button {
+    @extend %FlexRow-CenterBetween;
+    border: 1px solid $BorderDark;
+    @include BorderRadius(2rem);
+    padding: 3px;
+    height: auto;
+
+    img {
+      background-color: rgba($BorderDark, 0.5);
+      @include BorderRadius(50%);
+      object-fit: contain;
+    }
+
+    > span {
+      flex: 2;
+      margin-left: 5px;
+    }
+  }
 }
 
 .contractCreationFormMain {
-    width: 100%;
-    max-width: 750px;
-    padding: 20px 0;
+  width: 100%;
+  max-width: 750px;
+  padding: 20px 0;
 
-    .formLabel {
-        i {
-            @include Size(24px, 24px);
-            @include BorderRadius(50%);
-            border: 1px solid $BorderDark;
-            @extend %FlexCol-CenterCenter;
-            display: inline-flex;
-            margin-left: 10px;
+  .formLabel {
+    i {
+      @include Size(24px, 24px);
+      @include BorderRadius(50%);
+      border: 1px solid $BorderDark;
+      @extend %FlexCol-CenterCenter;
+      display: inline-flex;
+      margin-left: 10px;
 
-            svg {
-                @include Size(12px, 12px);
+      svg {
+        @include Size(12px, 12px);
 
-                path {
-                    fill: $FontColorDark;
-                }
-            }
+        path {
+          fill: $FontColorDark;
         }
+      }
+    }
+  }
+
+  .formRow {
+    position: relative;
+
+    @media only screen and (max-width: 1190px) {
+      max-width: calc(100% - 40px);
     }
 
-    .formRow {
-        position: relative;
+    @include RespondTo(MobileDevices) {
+      max-width: 100%;
+    }
 
-        @media only screen and (max-width: 1190px) {
-            max-width: calc(100% - 40px);
+    .formField {
+      &.descriptionField {
+        @include RespondTo(MobileDevices) {
+          max-width: calc(100% - 40px);
         }
+
+        + .filedInfo {
+          @include RespondTo(MobileDevices) {
+            position: static;
+          }
+        }
+      }
+
+      .MuiToggleButtonGroup-root {
+        width: 100%;
 
         @include RespondTo(MobileDevices) {
-            max-width: 100%;
+          flex-flow: wrap;
         }
 
-        .formField {
-            &.descriptionField {
-                @include RespondTo(MobileDevices) {
-                    max-width: calc(100% - 40px);
-                }
+        .MuiButtonBase-root {
+          @include Font(null, 0.8rem, $FontColorDark, null, 500);
+          flex: 2;
+          white-space: nowrap;
+          padding-top: 9px;
+          padding-bottom: 9px;
+          border-color: $BorderDark;
 
-                + .filedInfo {
-                    @include RespondTo(MobileDevices) {
-                        position: static;
-                    }
-                }
-            }
+          @include RespondTo(MobileDevices) {
+            font-size: 0.7rem;
+          }
 
-            .MuiToggleButtonGroup-root {
-                width: 100%;
+          &:disabled {
+            background: rgba($BlackColor, 0.1);
+            color: rgba($FontColorDark, 0.5);
+          }
 
-                @include RespondTo(MobileDevices) {
-                    flex-flow: wrap;
-                }
-
-                .MuiButtonBase-root {
-                    @include Font(null, 0.8rem, $FontColorDark, null, 500);
-                    flex: 2;
-                    white-space: nowrap;
-                    padding-top: 9px;
-                    padding-bottom: 9px;
-                    border-color: $BorderDark;
-
-                    @include RespondTo(MobileDevices) {
-                        font-size: 0.7rem;
-                    }
-
-                    &.Mui-selected {
-                        background-color: $PrimaryColor;
-                        color: $WhiteColor;
-                    }
-                }
-            }
-
-            .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input {
-                height: 22px;
-                padding-top: 10px;
-                padding-bottom: 10px;
-            }
-
-            .css-1d3z3hw-MuiOutlinedInput-notchedOutline {
-                border-color: $BorderDark;
-                color: $FontColorDark;
-            }
+          &.Mui-selected {
+            background-color: $PrimaryColor;
+            color: $WhiteColor;
+          }
         }
+      }
 
-        .filedInfo {
-            @include Absolute($Right: -50px, $Top: 0px);
-            @include Size(40px, 40px);
-            @extend %FlexCol-CenterCenter;
+      .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input {
+        height: 22px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
 
-            @include RespondTo(SmallDesktop) {
-                top: 30px;
-            }
-
-            @include RespondTo(MobileDevices) {
-                @include Size(35px, 35px);
-                right: -40px;
-            }
-
-            i {
-                @include Size(32px, 32px);
-                @include BorderRadius(50%);
-                border: 1px solid $BorderDark;
-                @extend %FlexCol-CenterCenter;
-
-                svg {
-                    @include Size(16px, 16px);
-
-                    path {
-                        fill: $FontColorDark;
-                    }
-                }
-            }
-        }
-
-        &.contractValidity {
-            .formField {
-                .MuiToggleButtonGroup-root {
-                    @media only screen and (max-width: 860px) {
-                        flex-flow: wrap;
-                        flex-direction: unset;
-                    }
-                }
-            }
-        }
+      .css-1d3z3hw-MuiOutlinedInput-notchedOutline {
+        border-color: $BorderDark;
+        color: $FontColorDark;
+      }
     }
+
+    .filedInfo {
+      @include Absolute($Right: -50px, $Top: 0px);
+      @include Size(40px, 40px);
+      @extend %FlexCol-CenterCenter;
+
+      @include RespondTo(SmallDesktop) {
+        top: 30px;
+      }
+
+      @include RespondTo(MobileDevices) {
+        @include Size(35px, 35px);
+        right: -40px;
+      }
+
+      i {
+        @include Size(32px, 32px);
+        @include BorderRadius(50%);
+        border: 1px solid $BorderDark;
+        @extend %FlexCol-CenterCenter;
+
+        svg {
+          @include Size(16px, 16px);
+
+          path {
+            fill: $FontColorDark;
+          }
+        }
+      }
+    }
+
+    &.contractValidity {
+      .formField {
+        .MuiToggleButtonGroup-root {
+          @media only screen and (max-width: 860px) {
+            flex-flow: wrap;
+            flex-direction: unset;
+          }
+        }
+      }
+    }
+  }
 }
 
 .darkMode {
-    .contractTemplateMain {
-        .contractCard {
-            background: $BorderLight;
+  .contractTemplateMain {
+    .contractCard {
+      background: $BorderLight;
 
-            &.selected {
-                border-color: $LightBlueColor;
-            }
+      &.selected {
+        border-color: $LightBlueColor;
+      }
 
-            .contractCardHeader {
-                color: $WhiteColor;
-            }
+      .contractCardHeader {
+        color: $WhiteColor;
+      }
 
-            .contractCardBody {
-                .contractBodyRow {
-                    .valueData {
-                        color: rgba($FontColorLight, 1);
-                    }
-                }
-            }
+      .contractCardBody {
+        .contractBodyRow {
+          .valueData {
+            color: rgba($FontColorLight, 1);
+          }
         }
+      }
+    }
+  }
+
+  .cardSidebar {
+    h2 {
+      color: $WhiteColor;
+      border-bottom-color: lighten($BorderLight, 8%);
     }
 
-    .cardSidebar {
-        h2 {
-            color: $WhiteColor;
-            border-bottom-color: lighten($BorderLight, 8%);
-        }
+    ul {
+      li {
+        > input[type="radio"] {
+          &:checked {
+            + label.linkBlock {
+              background: rgba($LightBlueColor, 0.05);
+              color: $LightBlueColor;
 
-        ul {
-            li {
-                > input[type="radio"] {
-                    &:checked {
-                        + label.linkBlock {
-                            background: rgba($LightBlueColor, 0.05);
-                            color: $LightBlueColor;
-
-                            > span {
-                                + i {
-                                    svg {
-                                        path {
-                                            fill: $LightBlueColor;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                .linkBlock {
-                    color: $FontColorLight;
-
-                    &:hover {
-                        background: rgba($LightBlueColor, 0.1);
-                    }
-
-                    > span {
-                        + i {
-                            svg {
-                                path {
-                                    fill: $FontColorLight;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    .contractCreationFormMain {
-        .formLabel {
-            i {
-                border: 1px solid $BorderLight;
-
-                svg {
+              > span {
+                + i {
+                  svg {
                     path {
-                        fill: $FontColorLight;
+                      fill: $LightBlueColor;
                     }
+                  }
                 }
+              }
             }
+          }
         }
 
-        .formRow {
-            .formField {
-                .MuiToggleButtonGroup-root {
-                    .MuiButtonBase-root {
-                        color: $FontColorLight;
-                        border-color: $BorderLight;
+        .linkBlock {
+          color: $FontColorLight;
 
-                        &.Mui-selected {
-                            background-color: $LightBlueColor;
-                            color: $WhiteColor;
-                        }
-                    }
-                }
+          &:hover {
+            background: rgba($LightBlueColor, 0.1);
+          }
 
-                .MuiOutlinedInput-notchedOutline {
-                    border-color: $BorderLight;
-                }
-
-                .MuiOutlinedInput-input.MuiInputBase-input,
-                .MuiFormLabel-root.MuiInputLabel-outlined,
-                .MuiButtonBase-root.MuiIconButton-root {
-                    color: $FontColorLight;
-                }
-            }
-
-            .filedInfo {
-                i {
-                    border-color: $BorderLight;
-
-                    svg {
-                        path {
-                            fill: $FontColorLight;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    .buyerSelerSelection {
-        ul {
-            li {
-                input[type="radio"] {
-                    + label {
-                        border-color: $BorderLight;
-                    }
-
-                    &:checked {
-                        + label {
-                            border-color: $LightBlueColor;
-                            color: $LightBlueColor;
-                            background: lighten($DarkBlueBg, 1%);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    .customPriceField {
-        border-color: $BorderLight;
-
-        .button {
-            border-color: $LightBlueColor;
-            background: transparent;
-            color: $FontColorLight;
-
-            img {
-                background-color: rgba($BorderLight, 0.5);
-            }
-
-            svg {
+          > span {
+            + i {
+              svg {
                 path {
-                    fill: $FontColorLight;
+                  fill: $FontColorLight;
                 }
+              }
             }
+          }
         }
+      }
     }
+  }
+
+  .contractCreationFormMain {
+    .formLabel {
+      i {
+        border: 1px solid $BorderLight;
+
+        svg {
+          path {
+            fill: $FontColorLight;
+          }
+        }
+      }
+    }
+
+    .formRow {
+      .formField {
+        .MuiToggleButtonGroup-root {
+          .MuiButtonBase-root {
+            color: $FontColorLight;
+            border-color: $BorderLight;
+
+            &.Mui-selected {
+              background-color: $LightBlueColor;
+              color: $WhiteColor;
+            }
+          }
+        }
+
+        .MuiOutlinedInput-notchedOutline {
+          border-color: $BorderLight;
+        }
+
+        .MuiOutlinedInput-input.MuiInputBase-input,
+        .MuiFormLabel-root.MuiInputLabel-outlined,
+        .MuiButtonBase-root.MuiIconButton-root {
+          color: $FontColorLight;
+        }
+      }
+
+      .filedInfo {
+        i {
+          border-color: $BorderLight;
+
+          svg {
+            path {
+              fill: $FontColorLight;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .buyerSelerSelection {
+    ul {
+      li {
+        input[type="radio"] {
+          + label {
+            border-color: $BorderLight;
+          }
+
+          &:checked {
+            + label {
+              border-color: $LightBlueColor;
+              color: $LightBlueColor;
+              background: lighten($DarkBlueBg, 1%);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .customPriceField {
+    border-color: $BorderLight;
+
+    .button {
+      border-color: $LightBlueColor;
+      background: transparent;
+      color: $FontColorLight;
+
+      img {
+        background-color: rgba($BorderLight, 0.5);
+      }
+
+      svg {
+        path {
+          fill: $FontColorLight;
+        }
+      }
+    }
+  }
 }

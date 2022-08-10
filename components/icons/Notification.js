@@ -1,7 +1,7 @@
 function NotificationIc(props) {
     if (props.onClick) {
         return (
-            <button onClick={props.onClick} className="linkButton">
+            <button onClick={props.onClick} className="linkButton" type="button">
                 <svg
                     viewBox="0 0 24 24"
                     width={props.size}

@@ -57,7 +57,7 @@ export default function Description(props) {
   });
 
   const [personalizedOfferValue, setPersonalizedOfferValue] = React.useState([]);
-  const [arbitersValue, setArbitersValue] = React.useState([]);
+  const [arbitersValue, setArbitersValue] = React.useState(["0x80038953cE1CdFCe7561Abb73216dE83F8baAEf0"]);
   const [errorPersonalizedOfferValue, setErrorPersonalizedOfferValue] = React.useState(false);
   const [errorArbitersValue, setErrorArbitersValue] = React.useState(false);
 
@@ -85,87 +85,87 @@ export default function Description(props) {
       OfferValidUntil.getTime() / 1000,
       personalizedOfferValue.join(","), // document.getElementById("PersonalizedOffer").value,
       arbitersValue.join(",") // document.getElementById("Arbiters").value
-    ) 
-    .then(async (transactionHash) => {
-      // show the feedback text
-      setModelData({
-         show: true,
+    )
+      .then(async (transactionHash) => {
+        // show the feedback text
+        setModelData({
+          show: true,
           type: "alert",
           status: "Pending",
           message: "Creating offer...",
+        });
+
+        var form = document.querySelector("form");
+        var formData = new FormData(form);
+        var xhr = new XMLHttpRequest();
+
+        // read the current number of agreements to figure out what is the agreement index for this case
+        const index = (await clonedContractsIndex_Moralis()) - 1;
+        console.log("new index: " + index);
+        formData.append("index", index);
+        formData.append("hashDescription", sha256(document.getElementById("OfferDescription").value));
+        formData.append("transactionHash", transactionHash);
+        formData.append("OfferValidUntil", OfferValidUntil.getTime() / 1000);
+        formData.append("TimeToDeliver", TimeToDeliver);
+        formData.append("CurrencyTicker", selectCurrency); //CurrencyTicker
+        formData.append("ChainID", ConvertNetworkNameToChainID(contractOnNetwork));
+        formData.append("PersonalizedOffer", personalizedOfferValue.join(","));
+        formData.append("Arbiters", arbitersValue.join(","));
+
+        const connectedAddress = await GetWallet_NonMoralis();
+
+        if (selectContractType == "seller") {
+          formData.append("SellerWallet", connectedAddress);
+          xhr.open("POST", "/api/api-createOfferBySeller", false);
+        } else {
+          formData.append("BuyerWallet", connectedAddress);
+          xhr.open("POST", "/api/api-createOfferByBuyer", false);
+        }
+
+        xhr.onload = function () {
+          // do something to response
+          // console.log(this.responseText);
+
+          // update the feedback text
+          setModelData({
+            show: true,
+            type: "alert",
+            status: "Success",
+            message: "Offer created",
+            transactionHash: transactionHash,
+          });
+
+          // prevent the Submit button to be clickable and functionable
+          removeHover();
+          document.getElementById("SubmitButton").disabled = true;
+
+          // think about also removing the hover effect
+          // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+          console.log("offer created");
+        };
+        xhr.send(formData);
+      })
+      .catch((error) => {
+        console.error(error);
+        console.log("create offer error code: " + error.code);
+        console.log("create offer error message: " + error.message);
+        if (error.data && error.data.message) {
+          setModelData({
+            show: true,
+            type: "alert",
+            status: "Error",
+            message: error.data.message,
+          });
+        } else {
+          setModelData({
+            show: true,
+            type: "alert",
+            status: "Error",
+            message: error.message,
+          });
+        }
+        process.exitCode = 1;
       });
-
-      var form = document.querySelector("form");
-      var formData = new FormData(form);
-      var xhr = new XMLHttpRequest();
-
-      // read the current number of agreements to figure out what is the agreement index for this case
-      const index = (await clonedContractsIndex_Moralis()) - 1;
-      console.log("new index: " + index);
-      formData.append("index", index);
-      formData.append("hashDescription", sha256(document.getElementById("OfferDescription").value));
-      formData.append("transactionHash", transactionHash);
-      formData.append("OfferValidUntil", OfferValidUntil.getTime() / 1000);
-      formData.append("TimeToDeliver", TimeToDeliver);
-      formData.append("CurrencyTicker", selectCurrency); //CurrencyTicker
-      formData.append("ChainID", ConvertNetworkNameToChainID(contractOnNetwork));
-      formData.append("PersonalizedOffer", personalizedOfferValue.join(","));
-      formData.append("Arbiters", arbitersValue.join(","));
-
-      const connectedAddress = await GetWallet_NonMoralis();
-
-      if(selectContractType == "seller") {
-        formData.append("SellerWallet", connectedAddress);
-        xhr.open("POST", "/api/api-createOfferBySeller", false);
-      } else {
-        formData.append("BuyerWallet", connectedAddress);
-        xhr.open("POST", "/api/api-createOfferByBuyer", false);  
-      }
-
-      xhr.onload = function () {
-        // do something to response
-        // console.log(this.responseText);
-
-        // update the feedback text
-        setModelData({
-          show: true,
-          type: "alert",
-          status: "Success",
-          message: "Offer created",
-          transactionHash: transactionHash,
-        });
-
-        // prevent the Submit button to be clickable and functionable
-        removeHover();
-        document.getElementById("SubmitButton").disabled = true;
-
-        // think about also removing the hover effect
-        // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-        console.log("offer created");
-      };
-      xhr.send(formData);
-    })
-    .catch((error) => {
-      console.error(error);
-      console.log("create offer error code: " + error.code);
-      console.log("create offer error message: " + error.message);
-      if (error.data && error.data.message) {
-        setModelData({
-          show: true,
-          type: "alert",
-          status: "Error",
-          message: error.data.message,
-        });
-      } else {
-        setModelData({
-          show: true,
-          type: "alert",
-          status: "Error",
-          message: error.message,
-        });
-      }
-      process.exitCode = 1;
-    });
   }
 
   // update Submit button
@@ -175,7 +175,7 @@ export default function Description(props) {
     // b1.className = styles.submitButton_noHover; // overwrite the style with no hover
   }
 
-    /* Changed by FrontEnd Developer */
+  /* Changed by FrontEnd Developer */
   const TemplatesData = [
     {
       id: 1,
@@ -262,17 +262,18 @@ export default function Description(props) {
   const [showCustomDuration, setShowCustomDuration] = React.useState(false);
   const [selectCurrency, setSelectCurrency] = React.useState("ETH");
   const [selectContractType, setSelectContractType] = React.useState("seller");
+  const [arbitersValidate, setArbitersValidate] = React.useState('0x80038953cE1CdFCe7561Abb73216dE83F8baAEf0');
 
   function handleCurrencyChange(e) {
     setSelectCurrency(e.target.value);
-    setModelData({ show: false});
+    setModelData({ show: false });
   }
 
   const handleRadioChange = (e) => {
     const { value } = e.target;
 
     const selctDesc = [];
-    selctDesc = TemplatesData.filter( (curElem) => curElem.templateCode === value);
+    selctDesc = TemplatesData.filter((curElem) => curElem.templateCode === value);
     const selDecprop = selctDesc[0].templateDescription;
 
     setSelectedTemplate(value);
@@ -291,8 +292,6 @@ export default function Description(props) {
     setOfferValidUntil(date);
   }
 
-
-
   function updateOfferDurationVariable(days) {
     setTimeToDeliver(days);
   }
@@ -300,16 +299,16 @@ export default function Description(props) {
   const contractValidityHandler = (event, selectedValidity) => {
     setContractValidity(selectedValidity);
 
-  let days = 365;
-  if (selectedValidity === "1 Days") {
-    days = 1;
-  } else if (selectedValidity === "3 Days") {
-    days = 3;
-  } else if (selectedValidity === "7 Days") {
-    days = 7;
-  } else if (selectedValidity === "14 days") {
-    days = 14;
-  }
+    let days = 365;
+    if (selectedValidity === "1 Days") {
+      days = 1;
+    } else if (selectedValidity === "3 Days") {
+      days = 3;
+    } else if (selectedValidity === "7 Days") {
+      days = 7;
+    } else if (selectedValidity === "14 days") {
+      days = 14;
+    }
 
     if (days == 365) {
       setShowDatepicker(true);
@@ -343,6 +342,20 @@ export default function Description(props) {
       }
 
       updateOfferDurationVariable(days);
+    }
+  };
+
+  const arbitersValidityHandler = (event, selectedValidity) => {
+    setArbitersValidate(selectedValidity);
+
+    if(selectedValidity === 'Trusted 3rd')
+    {
+      //Address Custom
+      setArbitersValue([]);
+    }
+    else
+    {
+      setArbitersValue([selectedValidity]);
     }
   };
 
@@ -569,7 +582,7 @@ export default function Description(props) {
                           arrow
                         >
                           <i>
-                            <DownloadIc onClick={downloadDescriptionValue}/>
+                            <DownloadIc onClick={downloadDescriptionValue} />
                           </i>
                         </Tooltip>
                       </div>
@@ -586,8 +599,8 @@ export default function Description(props) {
                             id="Price"
                             type="number"
                             {...register("Price", {
-                                required: true,
-                                min: 0,
+                              required: true,
+                              min: 0,
                             })}
                             min="0"
                             step="0.001"
@@ -599,8 +612,8 @@ export default function Description(props) {
                             className="button"
                             id="CurrencyTicker"
                             value={selectCurrency}
-                            {...register("CurrencyTicker",{
-                                required: true,
+                            {...register("CurrencyTicker", {
+                              required: true,
                             })}
                             onClick={() =>
                               setModelData({
@@ -631,7 +644,7 @@ export default function Description(props) {
                                   <span>
                                     {selectedItem.shortName}
                                   </span>
-                                  <DownArrowIc size={20}/>
+                                  <DownArrowIc size={20} />
                                 </Fragment>
                               )
                             )}
@@ -782,7 +795,7 @@ export default function Description(props) {
                           </ToggleButton>
                           <ToggleButton
                             value={TimeToDeliver} /*Set Custom*/
-                            onChange={(newValue) => { setTimeToDeliver(newValue);}}
+                            onChange={(newValue) => { setTimeToDeliver(newValue); }}
                             aria-label="contractValidity"
                           >
                             Set Custom
@@ -792,7 +805,7 @@ export default function Description(props) {
                         {showDatepicker && (
                           <div className="mt-15">
                             <LocalizationProvider
-                              dateAdapter={ AdapterDateFns }
+                              dateAdapter={AdapterDateFns}
                             >
                               <DateTimePicker
                                 label="Contract Valid Until"
@@ -802,7 +815,7 @@ export default function Description(props) {
                                   />
                                 )}
                                 value={OfferValidUntil}
-                                onChange={(newValue) => {setOfferValidUntil(newValue)}}
+                                onChange={(newValue) => { setOfferValidUntil(newValue) }}
                               />
                             </LocalizationProvider>
                           </div>
@@ -855,16 +868,59 @@ export default function Description(props) {
                         </Tooltip>
                       </div>
                       <div className="formField">
-                        <WalletAddressField name="Arbiters"
-                          inputValue={arbitersValue}
-                          setInputValue={setArbitersValue}
-                          errorValue={errorArbitersValue}
-                          setErrorValue={setErrorArbitersValue}
-                        />
+                        <ToggleButtonGroup
+                          value={arbitersValidate}
+                          exclusive
+                          onChange={arbitersValidityHandler}
+                          aria-label="all arbitersValidate"
+                        >
+                          <ToggleButton
+                            value="0x80038953cE1CdFCe7561Abb73216dE83F8baAEf0"
+                            aria-label="arbitersValidate"
+                          >
+                            Centralized
+                          </ToggleButton>
+                          <ToggleButton
+                            value="Trusted 3rd" /*Set Custom*/
+                            onChange={arbitersValidityHandler}
+                            aria-label="arbitersValidate"
+                          >
+                            Trusted 3rd
+                          </ToggleButton>
+                          <ToggleButton
+                            value="Decentralized"
+                            aria-label="arbitersValidate"
+                            disabled={true}
+                          >
+                            Decentralized
+                          </ToggleButton>
+                        </ToggleButtonGroup>
+
+                        {arbitersValidate == 'Trusted 3rd' && (
+                          <div className="mt-10">
+                            <WalletAddressField name="Arbiters"
+                              inputValue={arbitersValue}
+                              setInputValue={setArbitersValue}
+                              errorValue={errorArbitersValue}
+                              setErrorValue={setErrorArbitersValue}
+                              isRequire={true}
+                              register={register}
+                              // {...register(
+                              //   "Arbiters",
+                              //   {
+                              //     required: true,
+                              //   }
+                              // )}
+                            />
+                          </div>
+                        )}
 
                         <div className='fieldError'>
                           {errorArbitersValue && (
                             <p>Invalid Wallet Address.</p>
+                          )}
+                          {errors.Arbiters && (
+                            <p>Please enter at least one wallet.</p>
                           )}
                         </div>
                       </div>

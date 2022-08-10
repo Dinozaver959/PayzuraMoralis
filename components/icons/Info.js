@@ -1,7 +1,7 @@
 function InfoIc(props) {
     if (props.onClick) {
         return (
-            <button onClick={props.onClick} className="linkButton">
+            <button onClick={props.onClick} className="linkButton" type="button">
                 <svg
                     viewBox="0 0 9 18"
                     width={props.size}
