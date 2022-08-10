@@ -7,7 +7,7 @@ import {constants} from "ethers";
 const FactoryContractAddress = "0x30E73f2f79e1b3a5DF33A9CF2C640eC2b757c574"; // "0xC580C23A982C11A3812920C51EDd104B2BB89B15"; // "0x6526447628924eea4F0578e812826f327F8d489B"; //"0x5Fc12E3eC96dd2F008DB5f32497cbAbefB049B60";   // 0x5D023afC16961d44E5fB3F29fe17fd54cE8D3487 - checked in
 export const contractOnNetwork = "polygon";
 const commission = 0.01;
-const PayzuraDafaultArbiter = "0x80038953cE1CdFCe7561Abb73216dE83F8baAEf0"; // Payzura Team/Platform address
+export const PayzuraCentealizedArbiter = "0x80038953cE1CdFCe7561Abb73216dE83F8baAEf0"; // Payzura Team/Platform address
 
 
 // for a test
@@ -225,7 +225,7 @@ export async function CreateEscrow_Moralis(isBuyer, userWallet, price, currencyT
     var arbiters_parts = arbiters.split(",");
 
     if(!arbiters){
-        arbiters_parts = [PayzuraDafaultArbiter];
+        arbiters_parts = [PayzuraCentealizedArbiter];
     }
 
     for (let i = 0; i < personalizedOffer_parts.length; i++){

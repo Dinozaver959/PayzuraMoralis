@@ -8,6 +8,7 @@ import {
   GetWallet_NonMoralis,
   clonedContractsIndex_Moralis,
   CreateEscrow_Moralis,
+  PayzuraCentealizedArbiter
 } from "../JS/local_web3_Moralis";
 import Navigation from "../components/Navigation.js";
 
@@ -57,7 +58,7 @@ export default function Description(props) {
   });
 
   const [personalizedOfferValue, setPersonalizedOfferValue] = React.useState([]);
-  const [arbitersValue, setArbitersValue] = React.useState(["0x80038953cE1CdFCe7561Abb73216dE83F8baAEf0"]);
+  const [arbitersValue, setArbitersValue] = React.useState([PayzuraCentealizedArbiter]);
   const [errorPersonalizedOfferValue, setErrorPersonalizedOfferValue] = React.useState(false);
   const [errorArbitersValue, setErrorArbitersValue] = React.useState(false);
 
@@ -262,7 +263,7 @@ export default function Description(props) {
   const [showCustomDuration, setShowCustomDuration] = React.useState(false);
   const [selectCurrency, setSelectCurrency] = React.useState("ETH");
   const [selectContractType, setSelectContractType] = React.useState("seller");
-  const [arbitersValidate, setArbitersValidate] = React.useState('0x80038953cE1CdFCe7561Abb73216dE83F8baAEf0');
+  const [arbitersValidate, setArbitersValidate] = React.useState(PayzuraCentealizedArbiter);
 
   function handleCurrencyChange(e) {
     setSelectCurrency(e.target.value);
@@ -875,7 +876,7 @@ export default function Description(props) {
                           aria-label="all arbitersValidate"
                         >
                           <ToggleButton
-                            value="0x80038953cE1CdFCe7561Abb73216dE83F8baAEf0"
+                            value={PayzuraCentealizedArbiter}
                             aria-label="arbitersValidate"
                           >
                             Centralized
