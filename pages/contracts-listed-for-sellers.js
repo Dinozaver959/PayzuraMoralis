@@ -16,7 +16,6 @@ import { MdKeyboardArrowUp } from "react-icons/md";
 import { MdKeyboardArrowDown } from "react-icons/md";
 
 import { styled } from "@mui/material/styles";
-import Moralis from "moralis";
 import {
     GetWallet_NonMoralis,
     AcceptOfferSeller_Moralis,

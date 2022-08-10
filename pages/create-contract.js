@@ -1,6 +1,5 @@
 import React, { Fragment, useRef } from "react";
 import { useForm } from "react-hook-form";
-import Moralis from "moralis";
 import { sha256 } from "js-sha256";
 import {
   contractOnNetwork,
