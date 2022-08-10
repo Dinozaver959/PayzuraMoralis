@@ -5,73 +5,134 @@ const DOMPurify = require("isomorphic-dompurify");
 
 function UserDetails(props) {
     const userDetails = props.userDetails;
-    /*
-    console.log("userAddress: ", userDetails.userAddress);
-    console.log("AgreementsMade: ", userDetails.AgreementsMade);
-    console.log("DisputesInvolved: ", userDetails.DisputesInvolved);
-
-    console.log("DisputesManaged: ", userDetails.DisputesManaged);
-    console.log("DisputesInFavorOfBuyer: ", userDetails.DisputesInFavorOfBuyer);
-    */
 
     return (
         <Fragment>
-            <Navigation
-                darkMode={props.darkMode}
-                changeDarkMode={props.changeDarkMode}
-                dropdownOpen={props.dropdownOpen}
-                setDropdownOpen={props.setDropdownOpen}
-                OpenDropdownFn={props.OpenDropdownFn}
-                hasMenuDrawer={props.hasMenuDrawer}
-                setMenuDrawer={props.setMenuDrawer}
-                mobileDrawerFn={props.mobileDrawerFn}
-            />
-
-            <div className="containerMain">
-                <div className="pageHeader">
-                    <h1>My Profile</h1>
+          <Navigation
+            darkMode={props.darkMode}
+            changeDarkMode={props.changeDarkMode}
+            dropdownOpen={props.dropdownOpen}
+            setDropdownOpen={props.setDropdownOpen}
+            OpenDropdownFn={props.OpenDropdownFn}
+            hasMenuDrawer={props.hasMenuDrawer}
+            setMenuDrawer={props.setMenuDrawer}
+            mobileDrawerFn={props.mobileDrawerFn}
+          />
+          <div className="containerMain">
+            <div className="sectionMain">
+              <h2 className="address">Address : {userDetails.userAddress}</h2>
+              <div className="card">
+                <div className="cardCategory">
+                  <div className="categoryBuyer">
+                    <h1>As Buyer</h1>
+                    <div className="cardHeader">
+                      <div className="cardTitle">
+                        <p>
+                          Contracts created :{" "}
+                          {userDetails.ContractsCreatedAsBuyer === undefined
+                            ? "0"
+                            : userDetails.ContractsCreatedAsBuyer}
+                        </p>
+                        <br />
+                        <p>
+                          Contracts involved :{" "}
+                          {userDetails.ContractsInvolvedAsBuyer === undefined
+                            ? "0"
+                            : userDetails.ContractsInvolvedAsBuyer}
+                        </p>
+                        <br />
+                        <p>
+                          Contracts accepted :{" "}
+                          {userDetails.ContractsAcceptedAsBuyer === undefined
+                            ? "0"
+                            : userDetails.ContractsAcceptedAsBuyer}
+                        </p>
+                        <br />
+                        <p>
+                          Confirm deliveries :{" "}
+                          {userDetails.ConfirmedDeliveryAsBuyer === undefined
+                            ? "0"
+                            : userDetails.ConfirmedDeliveryAsBuyer}
+                        </p>
+                        <br />
+                        <p>
+                          Personalized contracts involved :{" "}
+                          {userDetails.PersonalizedContractsInvolvedAsBuyer ===
+                          undefined
+                            ? "0"
+                            : userDetails.PersonalizedContractsInvolvedAsBuyer}
+                        </p>
+                        <br />
+                        <p>
+                          Personalized contracts accepted :{" "}
+                          {userDetails.PersonalizedContractsAcceptedAsBuyer ===
+                          undefined
+                            ? "0"
+                            : userDetails.PersonalizedContractsAcceptedAsBuyer}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="categorySeller">
+                    <h1>As Seller</h1>
+                    <div className="cardHeader">
+                      <div className="cardTitle">
+                        <p>
+                          Contracts created :{" "}
+                          {userDetails.ContractsCreatedAsSeller === undefined
+                            ? "0"
+                            : userDetails.ContractsCreatedAsSeller}
+                        </p>
+                        <br />
+                        <p>
+                          Contracts involved :{" "}
+                          {userDetails.ContractsInvolvedAsSeller === undefined
+                            ? "0"
+                            : userDetails.ContractsInvolvedAsSeller}
+                        </p>
+                        <br />
+                        <p>
+                          Disputes involved :{" "}
+                          {userDetails.DisputesInvolvedInAsSeller === undefined
+                            ? "0"
+                            : userDetails.DisputesInvolvedInAsSeller}
+                        </p>
+                        <br />
+                        <p>
+                          Disputes in favor of the buyer :{" "}
+                          {userDetails.DisputesInFavorOfBuyer === undefined
+                            ? "0"
+                            : userDetails.DisputesInFavorOfBuyer}
+                        </p>
+                        <br />
+                        <p>
+                          Personalized contracts involved :{" "}
+                          {userDetails.PersonalizedContractsInvolvedAsSeller ===
+                          undefined
+                            ? "0"
+                            : userDetails.PersonalizedContractsInvolvedAsSeller}
+                        </p>
+                        <br />
+                        <p>
+                          Personalized contracts created :{" "}
+                          {userDetails.PersonalizedContractsCreatedAsSeller ===
+                          undefined
+                            ? "0"
+                            : userDetails.PersonalizedContractsCreatedAsSeller}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-
-                <h2>userAddress: {userDetails.userAddress}</h2>
-
-                {/**
-                new possible values from DB:   userDetails.
-                    ContractsCreatedAsSeller
-                    ContractsInvolvedAsSeller
-                    ContractsAcceptedAsBuyer
-                    ContractsInvolvedAsBuyer
-                    ConfirmedDeliveryAsBuyer
-                    PersonalizedContractsCreatedAsSeller
-                    PersonalizedContractsInvolvedAsSeller
-                    PersonalizedContractsInvolvedAsBuyer
-                    PersonalizedContractsAcceptedAsBuyer
-                    ReceivedArbiterRole
-                    ReceivedPersonalizedOffer
-            
-             */}
-
-                <p>
-                    Involved in disputes as buyer/seller (yea, we need to
-                    distinguish between buyer and seller case when recording in
-                    DB):
-                    <br />
-                    AgreementsMade: {userDetails.AgreementsMade}
-                    <br />
-                    DisputesInvolved: {userDetails.DisputesInvolved}
-                </p>
-
-                <p className="mt-20">
-                    Disputes voted on as arbiter:
-                    <br />
-                    DisputesManaged: {userDetails.DisputesManaged}
-                    <br />
-                    DisputesInFavorOfBuyer: {userDetails.DisputesInFavorOfBuyer}
-                </p>
+              </div>
+    
+              <br />
+              <br />
             </div>
+          </div>
         </Fragment>
-    );
-}
-
+      );
+    }
 export default UserDetails;
 
 function validateInput(userAddress) {
