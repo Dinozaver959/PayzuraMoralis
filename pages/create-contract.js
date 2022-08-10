@@ -903,6 +903,14 @@ export default function Description(props) {
                               setInputValue={setArbitersValue}
                               errorValue={errorArbitersValue}
                               setErrorValue={setErrorArbitersValue}
+                              isRequire={true}
+                              register={register}
+                              // {...register(
+                              //   "Arbiters",
+                              //   {
+                              //     required: true,
+                              //   }
+                              // )}
                             />
                           </div>
                         )}
@@ -910,6 +918,9 @@ export default function Description(props) {
                         <div className='fieldError'>
                           {errorArbitersValue && (
                             <p>Invalid Wallet Address.</p>
+                          )}
+                          {errors.Arbiters && (
+                            <p>Please enter at least one wallet.</p>
                           )}
                         </div>
                       </div>

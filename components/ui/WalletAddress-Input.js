@@ -2,25 +2,32 @@ import React, { createRef, Fragment } from "react";
 import CloseIc from "../icons/Close";
 import PlusIc from "../icons/Plus";
 
+const Web3 = require("web3");
+
 function WalletAddressField(props) {
-  const { inputValue, setInputValue, errorValue, setErrorValue } = props;
+  const { name, inputValue, setInputValue, errorValue, setErrorValue, register } = props;
   let textInput = createRef();
 
   const handleAddWallet = (e) => {
-    let enteredValue = textInput.current.value;
+    let txtInput = e.target; // textInput.current
+    let enteredValue = txtInput.value;
     if (enteredValue.length !== 0) {
-      if (enteredValue.length !== 42 || enteredValue.match(/^0x/i) === null) {
+      if (
+        enteredValue.match(/^0x[a-fA-F0-9]{40}$/g) === null ||
+        Web3.utils.isAddress(enteredValue) === false
+      ) {
         setErrorValue(true);
+        txtInput.value = "";
       } else {
         setErrorValue(false);
         setInputValue([...inputValue, enteredValue]);
-        textInput.current.value = "";
+        txtInput.value = "";
       }
     } else {
       setErrorValue(false);
     }
   };
-  
+
   const handleRemoveWallet = (index) => {
     setInputValue([
       ...inputValue.slice(0, index),
@@ -31,7 +38,7 @@ function WalletAddressField(props) {
   return (
     <Fragment>
       <div className="walletInputParent">
-        <div className="interedValidatedWallets">
+        <div className="enteredValidatedWallets">
           {inputValue.map((chip, i) => (
             <div className="walletChip" key={i}>
               <span>{chip}</span>
@@ -42,13 +49,26 @@ function WalletAddressField(props) {
           ))}
         </div>
         <div className="fieldWithPlus">
-          <input
-            className="walletInputField"
-            type="text"
-            placeholder="Wallets..."
-            ref={textInput}
-            onBlur={handleAddWallet}
-          />
+          {props.isRequire ? (
+            <input
+              className="walletInputField"
+              type="text"
+              placeholder="Wallets..."
+              ref={textInput}
+              {...register(name, {
+                required: true,
+                onBlur: handleAddWallet,
+              })}
+            />
+          ) : (
+            <input
+              className="walletInputField"
+              type="text"
+              placeholder="Wallets..."
+              ref={textInput}
+              onBlur={handleAddWallet}
+            />
+          )}
           <PlusIc size={16} onClick={handleAddWallet} />
         </div>
       </div>
