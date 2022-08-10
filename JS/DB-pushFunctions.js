@@ -427,7 +427,7 @@ export async function UpdateContracts_EndDispute(objectId){
 
     if (results_.length > 0) {
         const agreement = results_[0];
-        agreement.set("State", "complete");
+        agreement.set("State", "disputeSolved");
 
         await agreement.save()
         .then((agreement) => {

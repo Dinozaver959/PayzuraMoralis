@@ -7,6 +7,28 @@ Moralis.start({ serverUrl, appId });
 
 
 //-----------------------------------------------------------------------------------------------
+//                             Functions for new /my-contracts page
+//-----------------------------------------------------------------------------------------------
+
+
+export async function GetUserContracts(UserWallet){
+  const params =  { UserWallet : UserWallet };
+  return Moralis.Cloud.run("GetUserContracts", params);
+}
+
+export async function GetContractsOffered(UserWallet){
+  const params =  { UserWallet : UserWallet };
+  return Moralis.Cloud.run("GetContractsOffered", params);
+}
+
+export async function GetContractsToValidate(UserWallet){
+  const params =  { UserWallet : UserWallet };
+  return Moralis.Cloud.run("GetContractsToValidate", params);
+}
+
+
+
+//-----------------------------------------------------------------------------------------------
 //                                  Contract created by Seller
 //-----------------------------------------------------------------------------------------------
 
