@@ -35,6 +35,20 @@ import ModalUi from "../ui/ModalUi";
 import Image from "next/image";
 import ETHIcon from "./../images/ETH.webp";
 import USDCIcon from "./../images/USDC.webp";
+import {
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  InputLabel,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
+  Slider,
+  TextField,
+  ToggleButton,
+  ToggleButtonGroup,
+} from "@mui/material";
 
 const StyledTableRow = styled(TableRow)();
 const StyledTableCell = styled(TableCell)();
@@ -63,18 +77,154 @@ function tickerToIcon(ticker) {
   }
 }
 
+function valuetext(value) {
+  return `${value}$`;
+}
+
+const minDistance = 10;
+
 function MyContractsContainer(props) {
   const { dataGetMyContracts, placeholder } = props;
 
+  const [filterSide, setFilterSide] = useState("");
+  const [filterStates, setFilterStates] = useState("");
+  const [filterPrice, setFilterPrice] = useState([20, 37]);
+  const [filterDelivery, setFilterDelivery] = useState("");
+
+  const handleChangeSide = (event) => {
+    setFilterSide(event.target.value);
+  };
+
+  const handleChangeStates = (event) => {
+    setFilterStates(event.target.value);
+  };
+
+  const handleChangePrice = (event, newValue, activeThumb) => {
+    if (!Array.isArray(newValue)) {
+      return;
+    }
+
+    if (activeThumb === 0) {
+      setFilterPrice([
+        Math.min(newValue[0], filterPrice[1] - minDistance),
+        filterPrice[1],
+      ]);
+    } else {
+      setFilterPrice([
+        filterPrice[0],
+        Math.max(newValue[1], filterPrice[0] + minDistance),
+      ]);
+    }
+  };
+
+  const handleChangeDelivery = (event, newDelivery) => {
+    setFilterDelivery(newDelivery);
+  };
+
   return (
-    <div>
+    <div className="containerWithSidebar">
       {/* <div className="cardHeader">
         <div className="cardTitle">
           <h2>My Contracts</h2>
         </div>
       </div> */}
 
-      <div className="cardBody">
+      <div className="filtersMain">
+        <h2>Filters</h2>
+        <div className="filterOption">
+          <div className="filterLabel">Wallet Address</div>
+          <TextField
+            id="outlined-basic"
+            label="Wallet Address"
+            variant="outlined"
+          />
+        </div>
+        <div className="filterOption">
+          <div className="filterLabel">Side</div>
+          <FormControl>
+            <FormLabel id="demo-radio-buttons-group-label">Sides</FormLabel>
+            <RadioGroup
+              aria-labelledby="demo-radio-buttons-group-label"
+              defaultValue="Buyer"
+              name="radio-buttons-group"
+            >
+              <FormControlLabel
+                value="Buyer"
+                control={<Radio />}
+                label="Buyer"
+              />
+              <FormControlLabel
+                value="Seller"
+                control={<Radio />}
+                label="Seller"
+              />
+            </RadioGroup>
+          </FormControl>
+        </div>
+        <div className="filterOption">
+          <div className="filterLabel">States</div>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">States</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={filterStates}
+              label="States"
+              onChange={handleChangeStates}
+            >
+              <MenuItem value="">All</MenuItem>
+              <MenuItem value="Available">Available</MenuItem>
+              <MenuItem value="Not Available">Not Available</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+        <div className="filterOption">
+          <div className="filterLabel">Price</div>
+          <Slider
+            getAriaLabel={() => "Minimum distance"}
+            value={filterPrice}
+            onChange={handleChangePrice}
+            valueLabelDisplay="auto"
+            getAriaValueText={valuetext}
+            disableSwap
+          />
+        </div>
+        <div className="filterOption">
+          <div className="filterLabel">Time to Deliver</div>
+          <ToggleButtonGroup
+            color="primary"
+            value={filterDelivery}
+            exclusive
+            onChange={handleChangeDelivery}
+          >
+            <ToggleButton value="web">&#60; 24 H</ToggleButton>
+            <ToggleButton value="android">&#60; 48 H</ToggleButton>
+            <ToggleButton value="ios">&#60; 72 H</ToggleButton>
+          </ToggleButtonGroup>
+        </div>
+      </div>
+
+      <div className="filtersContainer">
+        <div className="containerHeader">
+          <div className="totalData">() total contracts</div>
+          <div className="dataSorting">
+            <div>Sort with: </div>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">States</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={filterStates}
+                label="States"
+                onChange={handleChangeStates}
+              >
+                <MenuItem value="">All</MenuItem>
+                <MenuItem value="Available">Available</MenuItem>
+                <MenuItem value="Not Available">Not Available</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+        </div>
         {placeholder ? (
           <div className="blockLoading">
             <LoadingPlaceholder extraStyles={{ position: "absolute" }} />
@@ -104,7 +254,6 @@ function MyContractsContainer(props) {
     </div>
   );
 }
-
 
 function Table_normal(props) {
   const { data, isBuyer } = props;
@@ -693,194 +842,185 @@ function Row_normal(props) {
                   </div>
                 </div>
                 <div className="listDataItem">
-                  <div className="listItemLabel">BuyerDelegates</div>
-                  <div className="listItemValue">
-                    {wrapDelegates(item.BuyerDelegates)}
-                    {/*
+                  <div className="listItemLabel">Description</div>
+                  <div className="listItemValue">{item.OfferDescription}</div>
+                </div>
+                <div className="listDataItem">
+                  {wrapDelegates(item.BuyerDelegates)}
+                  {/*
                     Needs to be adjusted:  
                       1. Display addresses 1 per row - have the ability to click X to delete an array and add a new address with a plus
                       2. Create 2 arrays, 1 with addresses that were removed and 1 with addresses that were added
                       3. feed these 2 arrays for the function and for the push /api call
                   */}
-                    <input
-                      className="rounded button primary"
-                      type="submit"
-                      value="Update Buyer Delegates"
-                      onClick={() =>
-                        UpdateDelegates_Moralis(
-                          item.index,
-                          true,
-                          "__array_DelegatesToAdd__",
-                          "__array_DelegatesToRemove__"
-                        ) // UPDATE with real values
+                  <input
+                    className="rounded button primary"
+                    type="submit"
+                    value="Update Buyer Delegates"
+                    onClick={() =>
+                      UpdateDelegates_Moralis(
+                        item.index,
+                        true,
+                        "__array_DelegatesToAdd__",
+                        "__array_DelegatesToRemove__"
+                      ) // UPDATE with real values
                         // supply the arrays somehow
-                          .then(async (transactionHash) => {
-                            // show the feedback text
+                        .then(async (transactionHash) => {
+                          // show the feedback text
+                          setModelData({
+                            show: true,
+                            type: "alert",
+                            status: "Pending",
+                            message: "Updating Delegates...",
+                          });
+
+                          var formData = new FormData();
+
+                          const connectedAddress = await GetWallet_NonMoralis();
+                          formData.append("BuyerWallet", connectedAddress);
+                          formData.append("objectId", item.objectId);
+                          formData.append("areForBuyer", "true");
+                          formData.append(
+                            "DelegatesToAdd",
+                            "______________________"
+                          ); // array
+                          // UPDATE with real values
+                          formData.append(
+                            "DelegatesToRemove",
+                            "______________________"
+                          ); // array
+                          // UPDATE with real values
+
+                          var xhr = new XMLHttpRequest();
+                          xhr.open("POST", "/api/api-updateDelegates", false);
+                          xhr.onload = function () {
+                            // update the feedback text
                             setModelData({
                               show: true,
                               type: "alert",
-                              status: "Pending",
-                              message: "Updating Delegates...",
+                              status: "Success",
+                              message: "Delegates updated",
+                              transactionHash: transactionHash,
                             });
+                            console.log("Delegates updated");
+                          };
+                          xhr.send(formData);
+                        })
+                        .catch((error) => {
+                          console.error(error);
+                          console.log(
+                            "update Delegates error code: " + error.code
+                          );
+                          console.log(
+                            "update Delegates error message: " + error.message
+                          );
+                          if (error.data && error.data.message) {
+                            setModelData({
+                              show: true,
+                              type: "alert",
+                              status: "Error",
+                              message: error.data.message,
+                            });
+                          } else {
+                            setModelData({
+                              show: true,
+                              type: "alert",
+                              status: "Error",
+                              message: error.message,
+                            });
+                          }
+                          process.exitCode = 1;
+                        })
+                    }
+                  ></input>
 
-                            var formData = new FormData();
-
-                            const connectedAddress =
-                              await GetWallet_NonMoralis();
-                            formData.append("BuyerWallet", connectedAddress);
-                            formData.append("objectId", item.objectId);
-                            formData.append("areForBuyer", "true");
-                            formData.append(
-                              "DelegatesToAdd",
-                              "______________________"
-                            ); // array
-                            // UPDATE with real values
-                            formData.append(
-                              "DelegatesToRemove",
-                              "______________________"
-                            ); // array
-                            // UPDATE with real values
-
-                            var xhr = new XMLHttpRequest();
-                            xhr.open("POST", "/api/api-updateDelegates", false);
-                            xhr.onload = function () {
-                              // update the feedback text
-                              setModelData({
-                                show: true,
-                                type: "alert",
-                                status: "Success",
-                                message: "Delegates updated",
-                                transactionHash: transactionHash,
-                              });
-                              console.log("Delegates updated");
-                            };
-                            xhr.send(formData);
-                          })
-                          .catch((error) => {
-                            console.error(error);
-                            console.log(
-                              "update Delegates error code: " + error.code
-                            );
-                            console.log(
-                              "update Delegates error message: " + error.message
-                            );
-                            if (error.data && error.data.message) {
-                              setModelData({
-                                show: true,
-                                type: "alert",
-                                status: "Error",
-                                message: error.data.message,
-                              });
-                            } else {
-                              setModelData({
-                                show: true,
-                                type: "alert",
-                                status: "Error",
-                                message: error.message,
-                              });
-                            }
-                            process.exitCode = 1;
-                          })
-                      }
-                    ></input>
-                  </div>
-                </div>
-                <div className="listDataItem">
-                  <div className="listItemLabel">SellerDelegates</div>
-                  <div className="listItemValue">
-                    {wrapDelegates(item.SellerDelegates)}
-                    {/*
+                  {wrapDelegates(item.SellerDelegates)}
+                  {/*
                   Needs to be adjusted:  
                     1. Display addresses 1 per row - have the ability to click X to delete an array and add a new address with a plus
                     2. Create 2 arrays, 1 with addresses that were removed and 1 with addresses that were added
                     3. feed these 2 arrays for the function and for the push /api call
                 */}
-                    <input
-                      className="rounded button primary"
-                      type="submit"
-                      value="Update Seller Delegates"
-                      onClick={() =>
-                        UpdateDelegates_Moralis(
-                          item.index,
-                          false,
-                          "__array_DelegatesToAdd__",
-                          "__array_DelegatesToRemove__"
-                        ) // UPDATE with real values
+                  <input
+                    className="rounded button primary"
+                    type="submit"
+                    value="Update Seller Delegates"
+                    onClick={() =>
+                      UpdateDelegates_Moralis(
+                        item.index,
+                        false,
+                        "__array_DelegatesToAdd__",
+                        "__array_DelegatesToRemove__"
+                      ) // UPDATE with real values
                         // supply the arrays somehow
-                          .then(async (transactionHash) => {
-                            // show the feedback text
+                        .then(async (transactionHash) => {
+                          // show the feedback text
+                          setModelData({
+                            show: true,
+                            type: "alert",
+                            status: "Pending",
+                            message: "Updating Delegates...",
+                          });
+
+                          var formData = new FormData();
+
+                          const connectedAddress = await GetWallet_NonMoralis();
+                          formData.append("BuyerWallet", connectedAddress);
+                          formData.append("objectId", item.objectId);
+                          formData.append("areForBuyer", "false");
+                          formData.append(
+                            "DelegatesToAdd",
+                            "______________________"
+                          ); // array
+                          // UPDATE with real values
+                          formData.append(
+                            "DelegatesToRemove",
+                            "______________________"
+                          ); // array
+                          // UPDATE with real values
+
+                          var xhr = new XMLHttpRequest();
+                          xhr.open("POST", "/api/api-updateDelegates", false);
+                          xhr.onload = function () {
+                            // update the feedback text
                             setModelData({
                               show: true,
                               type: "alert",
-                              status: "Pending",
-                              message: "Updating Delegates...",
+                              status: "Success",
+                              message: "Delegates updated",
+                              transactionHash: transactionHash,
                             });
-
-                            var formData = new FormData();
-
-                            const connectedAddress =
-                              await GetWallet_NonMoralis();
-                            formData.append("BuyerWallet", connectedAddress);
-                            formData.append("objectId", item.objectId);
-                            formData.append("areForBuyer", "false");
-                            formData.append(
-                              "DelegatesToAdd",
-                              "______________________"
-                            ); // array
-                            // UPDATE with real values
-                            formData.append(
-                              "DelegatesToRemove",
-                              "______________________"
-                            ); // array
-                            // UPDATE with real values
-
-                            var xhr = new XMLHttpRequest();
-                            xhr.open("POST", "/api/api-updateDelegates", false);
-                            xhr.onload = function () {
-                              // update the feedback text
-                              setModelData({
-                                show: true,
-                                type: "alert",
-                                status: "Success",
-                                message: "Delegates updated",
-                                transactionHash: transactionHash,
-                              });
-                              console.log("Delegates updated");
-                            };
-                            xhr.send(formData);
-                          })
-                          .catch((error) => {
-                            console.error(error);
-                            console.log(
-                              "update Delegates error code: " + error.code
-                            );
-                            console.log(
-                              "update Delegates error message: " + error.message
-                            );
-                            if (error.data && error.data.message) {
-                              setModelData({
-                                show: true,
-                                type: "alert",
-                                status: "Error",
-                                message: error.data.message,
-                              });
-                            } else {
-                              setModelData({
-                                show: true,
-                                type: "alert",
-                                status: "Error",
-                                message: error.message,
-                              });
-                            }
-                            process.exitCode = 1;
-                          })
-                      }
-                    ></input>
-                  </div>
-                </div>
-                <div className="listDataItem">
-                  <div className="listItemLabel">Description</div>
-                  <div className="listItemValue">{item.OfferDescription}</div>
+                            console.log("Delegates updated");
+                          };
+                          xhr.send(formData);
+                        })
+                        .catch((error) => {
+                          console.error(error);
+                          console.log(
+                            "update Delegates error code: " + error.code
+                          );
+                          console.log(
+                            "update Delegates error message: " + error.message
+                          );
+                          if (error.data && error.data.message) {
+                            setModelData({
+                              show: true,
+                              type: "alert",
+                              status: "Error",
+                              message: error.data.message,
+                            });
+                          } else {
+                            setModelData({
+                              show: true,
+                              type: "alert",
+                              status: "Error",
+                              message: error.message,
+                            });
+                          }
+                          process.exitCode = 1;
+                        })
+                    }
+                  ></input>
                 </div>
               </div>
             </Box>

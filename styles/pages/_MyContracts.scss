@@ -1,0 +1,28 @@
+.containerWithSidebar {
+    @include Flexbox;
+    @include FlexFlow(nowrap);
+
+    .filtersMain {
+        width: 250px;
+    }
+
+    .filtersContainer {
+        flex: 2;
+        margin-left: 20px;
+
+        .containerHeader {
+            border-bottom: 1px solid $BorderDark;
+            padding-bottom: 10px;
+            @extend %FlexRow-CenterBetween;
+
+            .totalData {
+                flex: 2;
+            }
+
+            .dataSorting {
+                width: 250px;
+                @extend %FlexRow-CenterBetween;
+            }
+        }
+    }
+}
