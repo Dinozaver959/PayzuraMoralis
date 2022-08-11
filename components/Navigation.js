@@ -90,12 +90,6 @@ export default function Navigation(props) {
           >
             <Link href='/my-contracts'>My Contracts</Link>
           </li>
-          <li
-            className={router.pathname == "/messages"  ? "active" : ""}
-            onClick={props.mobileDrawerFn}
-          >
-            <Link href='/messages'>Inbox</Link>
-          </li>
           <li className='headerButton hideSmallerThanIpad'>
             <span></span>
             <ConnectWallet
@@ -157,6 +151,16 @@ export default function Navigation(props) {
                       <UserIc />
                     </i>
                     <span>My Profile</span>
+                  </Button>
+                </li>
+                <li
+                  onClick={props.mobileDrawerFn}
+                >
+                  <Button link='/messages'>
+                    <i>
+                      <DisputeIc />
+                    </i>
+                    <span>Inbox</span>
                   </Button>
                 </li>
                 <li onClick={() => setDropdownOpen(false)}>
