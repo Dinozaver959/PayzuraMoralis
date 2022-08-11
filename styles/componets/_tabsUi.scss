@@ -1,25 +1,23 @@
 .TabsUiMain {
   .headerTabs {
     @extend %FlexRow-CenterStart;
-    border-bottom: 1px solid $BorderDark;
 
     .tabItem {
-      border: 1px solid $BorderDark;
       border-bottom: none;
-      @include BorderRadius(10px 10px 0 0);
-      background: $WhiteColor;
+      @include BorderRadius($CardRounded $CardRounded 0 0);
+      // background: rgba($BlackColor, 0.03);
 
       + .tabItem {
         margin-left: 5px;
       }
 
       &.active {
+        background: $WhiteColor;
+
         button {
           color: $PrimaryColor;
           font-weight: 500;
-          margin-bottom: -1px;
           position: relative;
-          padding-bottom: 13px;
         }
       }
 
@@ -28,15 +26,26 @@
         border: none;
         cursor: pointer;
         @include Font(null, 1rem, $FontColorDark, null, 500);
-        padding: 12px 18px;
+        padding: 12px 25px;
       }
     }
   }
 
   .tabsContainerMain {
-    padding-top: 1rem;
+    @include Size(100%, auto);
+    background: $WhiteColor;
+    border: 1px solid $WhiteColor;
+    padding: 24px;
+    @include BorderRadius(0 $CardRounded $CardRounded $CardRounded);
+    @include BoxShadow(0px 0px $CardRounded rgba($PrimaryColor, 0.15));
+
+    @include RespondTo(MobileDevices) {
+      padding: 20px;
+      border-radius: 14px;
+    }
 
     .tabContent {
+      padding-top: 1rem;
     }
   }
 }

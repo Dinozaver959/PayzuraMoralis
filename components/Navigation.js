@@ -77,12 +77,12 @@ export default function Navigation(props) {
           >
             <Link href='/contracts-listed'>Contracts Listed</Link>
           </li> */}
-          <li
+          {/* <li
             className={router.pathname == "/contracts-seeked" ? "active" : ""}
             onClick={props.mobileDrawerFn}
           >
             <Link href='/contracts-seeked'>Contracts Seeked</Link>
-          </li>
+          </li> */}
           <li
             className={router.pathname == "/my-contracts" ? "active" : ""}
             onClick={props.mobileDrawerFn}
@@ -152,30 +152,30 @@ export default function Navigation(props) {
                     <span>My Profile</span>
                   </Button>
                 </li>
-                <li onClick={() => setDropdownOpen(false)}>
+                {/* <li onClick={() => setDropdownOpen(false)}>
                   <Button link='/contracts-listed'>
                     <i>
                       <ServicesListedIc />
                     </i>
                     <span>Contracts Listed</span>
                   </Button>
-                </li>
-                <li onClick={() => setDropdownOpen(false)}>
+                </li> */}
+                {/* <li onClick={() => setDropdownOpen(false)}>
                   <Button link='/handle-disputes'>
                     <i>
                       <DisputeIc />
                     </i>
                     <span>Handle Disputes</span>
                   </Button>
-                </li>
-                <li onClick={() => setDropdownOpen(false)}>
+                </li> */}
+                {/* <li onClick={() => setDropdownOpen(false)}>
                   <Button link='/personalized-contracts'>
                     <i>
                       <PersonlaizedContractsIc />
                     </i>
                     <span>Personalized Contracts</span>
                   </Button>
-                </li>
+                </li> */}
                 <li onClick={() => setDropdownOpen(false)}>
                   <Button link='/my-contracts'>
                     <i>

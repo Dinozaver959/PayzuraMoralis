@@ -68,11 +68,11 @@ function MyContractsContainer(props) {
 
   return (
     <div>
-      <div className="cardHeader">
+      {/* <div className="cardHeader">
         <div className="cardTitle">
           <h2>My Contracts</h2>
         </div>
-      </div>
+      </div> */}
 
       <div className="cardBody">
         {placeholder ? (

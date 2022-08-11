@@ -63,32 +63,30 @@ export default function MyAgreements(props) {
       />
 
       <div className="containerMain">
-        <div className="pageHeader">
+        {/* <div className="pageHeader">
           <h1>My Contracts</h1>
-        </div>
+        </div> */}
 
-        <div className="card mt-10">
-          <TabsUi
-            titles={["My Contracts", "Offers", "Validate"]}
-            details={[
-              <MyContractsContainer
-                key="0"
-                dataGetMyContracts={dataGetMyContracts}
-                placeholder={placeholder}
-              />,
-              <OffersContainer
-                key="1"
-                dataContractsOffered={dataContractsOffered}
-                placeholder={placeholder}
-              />,
-              <ValidatesContainer
-                key="2"
-                dataContractsToValidate={dataContractsToValidate}
-                placeholder={placeholder}
-              />,
-            ]}
-          />
-        </div>
+        <TabsUi
+          titles={["My Contracts", "Offers", "Validate"]}
+          details={[
+            <MyContractsContainer
+              key="0"
+              dataGetMyContracts={dataGetMyContracts}
+              placeholder={placeholder}
+            />,
+            <OffersContainer
+              key="1"
+              dataContractsOffered={dataContractsOffered}
+              placeholder={placeholder}
+            />,
+            <ValidatesContainer
+              key="2"
+              dataContractsToValidate={dataContractsToValidate}
+              placeholder={placeholder}
+            />,
+          ]}
+        />
       </div>
     </Fragment>
   );
