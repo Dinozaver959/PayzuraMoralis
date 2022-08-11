@@ -35,6 +35,7 @@ import Image from "next/image";
 import DownArrowIc from "../components/icons/DownArrow";
 import CurrencyList from "../components/contract-creation/currency-list";
 import WalletAddressField from "../components/ui/WalletAddress-Input";
+import RadioGroup from "../components/ui/RadioGroup";
 
 export default function Description(props) {
   // SUBMIT - validation
@@ -868,12 +869,40 @@ export default function Description(props) {
                         </Tooltip>
                       </div>
                       <div className="formField">
+                        <RadioGroup
+                          values={
+                            [
+                              {
+                                name: "arbitersValidate",
+                                value: "Decentralized",
+                                availability: false,
+                              },
+                              {
+                                name: "arbitersValidate",
+                                value: "Centralized",
+                                availability: true,
+                              },
+                              {
+                                name: "arbitersValidate",
+                                value: "Trusted 3rd",
+                                availability: true,
+                              }
+                            ]
+                          }
+                        />
                         <ToggleButtonGroup
                           value={arbitersValidate}
                           exclusive
                           onChange={arbitersValidityHandler}
                           aria-label="all arbitersValidate"
                         >
+                          <ToggleButton
+                            value="Decentralized"
+                            aria-label="arbitersValidate"
+                            disabled={true}
+                          >
+                            Decentralized
+                          </ToggleButton>
                           <ToggleButton
                             value={PayzuraCentealizedArbiter}
                             aria-label="arbitersValidate"
@@ -886,13 +915,6 @@ export default function Description(props) {
                             aria-label="arbitersValidate"
                           >
                             Trusted 3rd
-                          </ToggleButton>
-                          <ToggleButton
-                            value="Decentralized"
-                            aria-label="arbitersValidate"
-                            disabled={true}
-                          >
-                            Decentralized
                           </ToggleButton>
                         </ToggleButtonGroup>
 
