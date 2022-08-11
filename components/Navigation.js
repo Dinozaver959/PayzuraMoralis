@@ -29,6 +29,7 @@ export default function Navigation(props) {
     setDropdownOpen,
     hasMenuDrawer,
     setMenuDrawer,
+    currentAccount,
   } = props;
 
   const router = useRouter();
@@ -151,7 +152,7 @@ export default function Navigation(props) {
             <div className='dropdownMenu right withIc'>
               <ul>
                 <li onClick={() => setDropdownOpen(false)}>
-                  <Button link='/'>
+                  <Button link={`/user/${currentAccount}`}>
                     <i>
                       <UserIc />
                     </i>
