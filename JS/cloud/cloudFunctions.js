@@ -165,6 +165,33 @@ Moralis.Cloud.define("GetUsersDetails", async (request) => {
   return await querySeller.find();
 });
 
+//------------------------------------------------------------------------------------------------
+//                                    Get all Messages
+//------------------------------------------------------------------------------------------------
+
+
+Moralis.Cloud.define("getAllMessages", async (request) => {
+  
+  const query = new Moralis.Query("Messages");
+  const result = await query.find();
+
+  const userQuery = new Moralis.Query(Moralis.User);
+  const userResult = await userQuery.find({ userMasterKey : true });
+
+  const messages = result.map((data) => {
+    return userResult.map((res) => {
+      if (data.attributes.userId === res.id) {
+        return {
+          data,
+          userId: res.id,
+          userName: res.attributes.userName,
+          ethAddress: res.attributes.ethAddress,
+        };
+      }
+    }).filter(n => n);
+  });
+  
+});
 
 
 
