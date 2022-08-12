@@ -10,13 +10,17 @@
   .radioItem {
     flex: 2;
 
+    + .radioItem {
+      border-left: 1px solid $BorderDark;
+    }
+
     .radioInput {
       display: none;
 
       + .radioLabel {
         display: block;
         text-align: center;
-        padding: 12px 15px;
+        padding: 10px 15px;
         @include Font(null, 0.85rem, $FontColorDark, null, 600);
         cursor: pointer;
       }
@@ -35,6 +39,63 @@
           color: rgba($FontColorDark, 0.5);
           cursor: default;
         }
+      }
+    }
+  }
+}
+
+.radioListMain {
+  @include Flexbox;
+  @include FlexFlow(wrap);
+
+  .radioItem {
+    + .radioItem {
+      margin-left: 12px;
+    }
+
+    .radioInput {
+      display: none;
+
+      + .radioLabel {
+        @include Font(null, 0.85rem, $FontColorDark, null, 600);
+        cursor: pointer;
+        position: relative;
+        padding-left: 24px;
+
+        &::before,
+        &::after {
+          content: "";
+          @include Absolute($Left: 0px);
+        }
+
+        &::before {
+          @include Size(16px, 16px);
+          @include BorderRadius(50%);
+          border: 1px solid $BorderDark;
+        }
+
+        &::after {
+          @include Size(10px, 10px);
+          @include BorderRadius(50%);
+          left: 4px;
+          top: 4px;
+        }
+      }
+
+      &:checked {
+        + .radioLabel {
+          color: $PrimaryColor;
+          
+          &::before {
+            border-color: $PrimaryColor;
+          }
+          &::after {
+            background-color: $PrimaryColor;
+          }
+        }
+      }
+
+      &:disabled {
       }
     }
   }

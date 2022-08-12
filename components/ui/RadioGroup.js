@@ -9,7 +9,7 @@ function RadioGroup(props) {
   // }, [selectedRadio]);
 
   return (
-    <div className="radioGroupMain">
+    <div className={props.listItem === "radioList" ? "radioListMain" : "radioGroupMain"}>
       {values.map((item, index) => (
         <div key={index} className="radioItem">
           {item.availability ? (

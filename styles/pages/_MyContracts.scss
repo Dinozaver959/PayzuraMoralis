@@ -1,28 +1,43 @@
 .containerWithSidebar {
-    @include Flexbox;
-    @include FlexFlow(nowrap);
+  @include Flexbox;
+  @include FlexFlow(nowrap);
 
-    .filtersMain {
-        width: 250px;
+  .filtersMain {
+    width: 250px;
+
+    .sidebarHeader {
+      @include Font(null, 1.2rem, $FontColorDark, null, 600);
+      margin: 0;
+      border-bottom: 1px solid $BorderDark;
+      padding-bottom: 10px;
     }
 
-    .filtersContainer {
+    .filterOption {
+      padding-top: 15px;
+
+      .filterTitle {
+        @include Font(null, 0.9rem, $FontColorDark, null, 600);
+        margin-bottom: 5px;
+        background: rgba($BlackColor, 0.05);
+        padding: 5px 8px;
+        @include BorderRadius(3px);
+      }
+    }
+  }
+
+  .filtersContainer {
+    flex: 2;
+    margin-left: 20px;
+
+    .containerHeader {
+      border-bottom: 1px solid $BorderDark;
+      padding-bottom: 10px;
+      @extend %FlexRow-CenterBetween;
+
+      .totalData {
         flex: 2;
-        margin-left: 20px;
-
-        .containerHeader {
-            border-bottom: 1px solid $BorderDark;
-            padding-bottom: 10px;
-            @extend %FlexRow-CenterBetween;
-
-            .totalData {
-                flex: 2;
-            }
-
-            .dataSorting {
-                width: 250px;
-                @extend %FlexRow-CenterBetween;
-            }
-        }
+        @include Font(null, 1.2rem, $FontColorDark, null, 600);
+      }
     }
+  }
 }

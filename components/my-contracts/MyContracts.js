@@ -42,13 +42,13 @@ import {
   InputLabel,
   MenuItem,
   Radio,
-  RadioGroup,
   Select,
   Slider,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
+import RadioGroup from "./../ui/RadioGroup";
 
 const StyledTableRow = styled(TableRow)();
 const StyledTableCell = styled(TableCell)();
@@ -130,39 +130,39 @@ function MyContractsContainer(props) {
       </div> */}
 
       <div className="filtersMain">
-        <h2>Filters</h2>
+        <h2 className="sidebarHeader">Filters</h2>
         <div className="filterOption">
-          <div className="filterLabel">Wallet Address</div>
-          <TextField
-            id="outlined-basic"
-            label="Wallet Address"
-            variant="outlined"
+          <h4 className="filterTitle">Wallet Address</h4>
+          <input
+            className="formInput"
+            placeholder="Wallet Address"
+            type="text"
           />
         </div>
         <div className="filterOption">
-          <div className="filterLabel">Side</div>
-          <FormControl>
-            <FormLabel id="demo-radio-buttons-group-label">Sides</FormLabel>
-            <RadioGroup
-              aria-labelledby="demo-radio-buttons-group-label"
-              defaultValue="Buyer"
-              name="radio-buttons-group"
-            >
-              <FormControlLabel
-                value="Buyer"
-                control={<Radio />}
-                label="Buyer"
-              />
-              <FormControlLabel
-                value="Seller"
-                control={<Radio />}
-                label="Seller"
-              />
-            </RadioGroup>
-          </FormControl>
+          <h4 className="filterTitle">Side</h4>
+          <RadioGroup
+            listItem="radioList"
+            selectedRadio={filterSide}
+            setSelectedRadio={setFilterSide}
+            values={[
+              {
+                name: "filterSide",
+                label: "Buyer",
+                value: "Buyer",
+                availability: true,
+              },
+              {
+                name: "filterSide",
+                label: "Seller",
+                value: "Seller",
+                availability: true,
+              },
+            ]}
+          />
         </div>
         <div className="filterOption">
-          <div className="filterLabel">States</div>
+          <h4 className="filterTitle">States</h4>
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">States</InputLabel>
             <Select
@@ -179,7 +179,7 @@ function MyContractsContainer(props) {
           </FormControl>
         </div>
         <div className="filterOption">
-          <div className="filterLabel">Price</div>
+          <h4 className="filterTitle">Price</h4>
           <Slider
             getAriaLabel={() => "Minimum distance"}
             value={filterPrice}
@@ -190,8 +190,33 @@ function MyContractsContainer(props) {
           />
         </div>
         <div className="filterOption">
-          <div className="filterLabel">Time to Deliver</div>
-          <ToggleButtonGroup
+          <h4 className="filterTitle">Time to Deliver</h4>
+          <RadioGroup
+            selectedRadio={filterDelivery}
+            setSelectedRadio={setFilterDelivery}
+            values={[
+              {
+                name: "filterDelivery",
+                label: "< 24 H",
+                value: "Till 24H",
+                availability: true,
+              },
+              {
+                name: "filterDelivery",
+                label: "< 48 H",
+                value: "Till 48H",
+                availability: true,
+              },
+              {
+                name: "filterDelivery",
+                label: "< 72 H",
+                value: "Till 72H",
+                availability: true,
+              },
+            ]}
+          />
+
+          {/* <ToggleButtonGroup
             color="primary"
             value={filterDelivery}
             exclusive
@@ -200,30 +225,13 @@ function MyContractsContainer(props) {
             <ToggleButton value="web">&#60; 24 H</ToggleButton>
             <ToggleButton value="android">&#60; 48 H</ToggleButton>
             <ToggleButton value="ios">&#60; 72 H</ToggleButton>
-          </ToggleButtonGroup>
+          </ToggleButtonGroup> */}
         </div>
       </div>
 
       <div className="filtersContainer">
         <div className="containerHeader">
-          <div className="totalData">() total contracts</div>
-          <div className="dataSorting">
-            <div>Sort with: </div>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">States</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={filterStates}
-                label="States"
-                onChange={handleChangeStates}
-              >
-                <MenuItem value="">All</MenuItem>
-                <MenuItem value="Available">Available</MenuItem>
-                <MenuItem value="Not Available">Not Available</MenuItem>
-              </Select>
-            </FormControl>
-          </div>
+          <div className="totalData">{dataGetMyContracts.length} total contracts</div>
         </div>
         {placeholder ? (
           <div className="blockLoading">
