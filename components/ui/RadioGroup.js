@@ -2,7 +2,7 @@ import { Tooltip } from "@mui/material";
 // import { useEffect } from "react";
 
 function RadioGroup(props) {
-  const { values, selectedRadio, setSelectedRadio, radioChangehandler } = props;
+  const { values, selectedRadio, setSelectedRadio } = props;
 
   // useEffect(() => {
   //   radioChangehandler(selectedRadio);
