@@ -1,0 +1,41 @@
+.radioGroupMain {
+  @include Flexbox;
+  @include FlexFlow(nowrap);
+  border: 1px solid $BorderDark;
+
+  @include RespondTo(MobileDevices) {
+    @include FlexFlow(wrap);
+  }
+
+  .radioItem {
+    flex: 2;
+
+    .radioInput {
+      display: none;
+
+      + .radioLabel {
+        display: block;
+        text-align: center;
+        padding: 12px 15px;
+        @include Font(null, 0.85rem, $FontColorDark, null, 600);
+        cursor: pointer;
+      }
+
+      &:checked {
+        + .radioLabel {
+          background: $PrimaryColor;
+          color: $WhiteColor;
+          white-space: nowrap;
+        }
+      }
+
+      &:disabled {
+        + .radioLabel {
+          background: rgba($BlackColor, 0.1);
+          color: rgba($FontColorDark, 0.5);
+          cursor: default;
+        }
+      }
+    }
+  }
+}

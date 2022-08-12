@@ -58,7 +58,7 @@ export default function Description(props) {
   });
 
   const [personalizedOfferValue, setPersonalizedOfferValue] = React.useState([]);
-  const [arbitersValue, setArbitersValue] = React.useState([PayzuraCentealizedArbiter]);
+  const [arbitersValue, setArbitersValue] = React.useState();
   const [errorPersonalizedOfferValue, setErrorPersonalizedOfferValue] = React.useState(false);
   const [errorArbitersValue, setErrorArbitersValue] = React.useState(false);
 
@@ -343,20 +343,6 @@ export default function Description(props) {
       }
 
       updateOfferDurationVariable(days);
-    }
-  };
-
-  const arbitersValidityHandler = (event, selectedValidity) => {
-    setArbitersValidate(selectedValidity);
-
-    if(selectedValidity === 'Trusted 3rd')
-    {
-      //Address Custom
-      setArbitersValue([]);
-    }
-    else
-    {
-      setArbitersValue([selectedValidity]);
     }
   };
 
@@ -869,54 +855,33 @@ export default function Description(props) {
                         </Tooltip>
                       </div>
                       <div className="formField">
-                        <RadioGroup
+                      <RadioGroup
+                          selectedRadio={arbitersValidate}
+                          setSelectedRadio={setArbitersValidate}
                           values={
                             [
                               {
                                 name: "arbitersValidate",
+                                label: "Decentralized",
                                 value: "Decentralized",
                                 availability: false,
+                                tooltip: "Coming soon",
                               },
                               {
                                 name: "arbitersValidate",
-                                value: "Centralized",
+                                label: "Centralized",
+                                value: PayzuraCentealizedArbiter,
                                 availability: true,
                               },
                               {
                                 name: "arbitersValidate",
+                                label: "Trusted 3rd",
                                 value: "Trusted 3rd",
                                 availability: true,
                               }
                             ]
                           }
                         />
-                        <ToggleButtonGroup
-                          value={arbitersValidate}
-                          exclusive
-                          onChange={arbitersValidityHandler}
-                          aria-label="all arbitersValidate"
-                        >
-                          <ToggleButton
-                            value="Decentralized"
-                            aria-label="arbitersValidate"
-                            disabled={true}
-                          >
-                            Decentralized
-                          </ToggleButton>
-                          <ToggleButton
-                            value={PayzuraCentealizedArbiter}
-                            aria-label="arbitersValidate"
-                          >
-                            Centralized
-                          </ToggleButton>
-                          <ToggleButton
-                            value="Trusted 3rd" /*Set Custom*/
-                            onChange={arbitersValidityHandler}
-                            aria-label="arbitersValidate"
-                          >
-                            Trusted 3rd
-                          </ToggleButton>
-                        </ToggleButtonGroup>
 
                         {arbitersValidate == 'Trusted 3rd' && (
                           <div className="mt-10">
@@ -927,22 +892,16 @@ export default function Description(props) {
                               setErrorValue={setErrorArbitersValue}
                               isRequire={true}
                               register={register}
-                              // {...register(
-                              //   "Arbiters",
-                              //   {
-                              //     required: true,
-                              //   }
-                              // )}
                             />
                           </div>
                         )}
 
                         <div className='fieldError'>
-                          {errorArbitersValue && (
-                            <p>Invalid Wallet Address.</p>
-                          )}
-                          {errors.Arbiters && (
+                        {errors.Arbiters && errors.Arbiters.type === "required" && (
                             <p>Please enter at least one wallet.</p>
+                          )}
+                          {errors.Arbiters && errors.Arbiters.type === "pattern" && (
+                            <p>Invalid Wallet Address.</p>
                           )}
                         </div>
                       </div>

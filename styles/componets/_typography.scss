@@ -14,8 +14,8 @@ body {
 }
 
 body {
-  @include Font(null, $FontMedium, $FontColorDark, normal, 500);
-  letter-spacing: 0.5px;
+  @include Font(null, $FontMedium, $FontColorDark, normal, 400);
+  letter-spacing: 0.2px;
 
   @include RespondTo(MobileDevices) {
     letter-spacing: 0;

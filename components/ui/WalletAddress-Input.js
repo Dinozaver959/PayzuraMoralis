@@ -5,12 +5,19 @@ import PlusIc from "../icons/Plus";
 const Web3 = require("web3");
 
 function WalletAddressField(props) {
-  const { name, inputValue, setInputValue, errorValue, setErrorValue, register } = props;
+  const {
+    name,
+    inputValue,
+    setInputValue,
+    setErrorValue,
+    register,
+  } = props;
   let textInput = createRef();
 
   const handleAddWallet = (e) => {
-    let txtInput = e.target; // textInput.current
+    let txtInput = e.target;
     let enteredValue = txtInput.value;
+
     if (enteredValue.length !== 0) {
       if (
         enteredValue.match(/^0x[a-fA-F0-9]{40}$/g) === null ||
@@ -38,16 +45,18 @@ function WalletAddressField(props) {
   return (
     <Fragment>
       <div className="walletInputParent">
-        <div className="enteredValidatedWallets">
-          {inputValue.map((chip, i) => (
-            <div className="walletChip" key={i}>
-              <span>{chip}</span>
-              <i>
-                <CloseIc size={16} onClick={() => handleRemoveWallet(i)} />
-              </i>
-            </div>
-          ))}
-        </div>
+        {inputValue && (
+          <div className="enteredValidatedWallets">
+            {inputValue.map((chip, i) => (
+              <div className="walletChip" key={i}>
+                <span>{chip}</span>
+                <i>
+                  <CloseIc size={16} onClick={() => handleRemoveWallet(i)} />
+                </i>
+              </div>
+            ))}
+          </div>
+        )}
         <div className="fieldWithPlus">
           {props.isRequire ? (
             <input
@@ -57,6 +66,7 @@ function WalletAddressField(props) {
               ref={textInput}
               {...register(name, {
                 required: true,
+                pattern: /^0x[a-fA-F0-9]{40}$/g,
                 onBlur: handleAddWallet,
               })}
             />
