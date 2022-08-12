@@ -92,6 +92,7 @@
         text-decoration: none;
         padding: 15px;
         @include Transition(0.2s);
+        font-weight: 600;
 
         @include RespondTo(MobileDevices) {
           padding: 12px;
