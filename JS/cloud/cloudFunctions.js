@@ -1,5 +1,23 @@
 
 //-----------------------------------------------------------------------------------------------
+//             Functions for JobZura / job marketplace (separate project for now)
+//-----------------------------------------------------------------------------------------------
+
+Moralis.Cloud.define("GetUserGigs", async (request) => {
+  const query = new Moralis.Query("Gigs");
+  query.equalTo("BuyerWallet", request.params.UserWallet);
+  return await query.find();
+});
+
+Moralis.Cloud.define("GetAllGigs", async (request) => {
+  const query = new Moralis.Query("Gigs");
+  return await query.find();
+});
+
+
+
+
+//-----------------------------------------------------------------------------------------------
 //                             Functions for new /my-contracts page
 //-----------------------------------------------------------------------------------------------
 
