@@ -1,0 +1,40 @@
+.selectDropdown {
+  width: 100%;
+  position: relative;
+
+  .selectedOption {
+    border: 1px solid $BorderDark;
+    padding: 8px 10px;
+    @include Font(null, 0.9rem, $FontColorDark, null, 400);
+    @include BorderRadius(3px);
+    cursor: pointer;
+  }
+
+  .dropdownContainer {
+    width: 100%;
+    @include Absolute($Left: 0, $Top: 100%);
+    background: $WhiteColor;
+    border: 1px solid $BorderDark;
+    z-index: 99;
+    @include BorderRadius(0 0 3px 3px);
+    @include BoxShadow(1px 1px 10px rgba($PrimaryColor, 0.1));
+
+    .dropdownList {
+      .dropdownListItems {
+        padding: 8px 10px;
+        cursor: pointer;
+        border-bottom: 1px solid $BorderDark;
+        @include Transition(0.2s);
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &:hover {
+          background: rgba($BlackColor, 0.03);
+          @include Transition(0.2s);
+        }
+      }
+    }
+  }
+}

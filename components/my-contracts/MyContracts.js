@@ -49,6 +49,7 @@ import {
   ToggleButtonGroup,
 } from "@mui/material";
 import RadioGroup from "./../ui/RadioGroup";
+import SelectDropdown from "../ui/SelectDropdown";
 
 const StyledTableRow = styled(TableRow)();
 const StyledTableCell = styled(TableCell)();
@@ -163,20 +164,22 @@ function MyContractsContainer(props) {
         </div>
         <div className="filterOption">
           <h4 className="filterTitle">States</h4>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">States</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={filterStates}
-              label="States"
-              onChange={handleChangeStates}
-            >
-              <MenuItem value="">All</MenuItem>
-              <MenuItem value="Available">Available</MenuItem>
-              <MenuItem value="Not Available">Not Available</MenuItem>
-            </Select>
-          </FormControl>
+          <SelectDropdown
+            options={[
+              {
+                label: "All",
+                value: "",
+              },
+              {
+                label: "Available",
+                value: "Available",
+              },
+              {
+                label: "Not Available",
+                value: "Not Available",
+              },
+            ]}
+          />
         </div>
         <div className="filterOption">
           <h4 className="filterTitle">Price</h4>
