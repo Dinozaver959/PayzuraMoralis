@@ -36,17 +36,7 @@ import Image from "next/image";
 import ETHIcon from "./../images/ETH.webp";
 import USDCIcon from "./../images/USDC.webp";
 import {
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  InputLabel,
-  MenuItem,
-  Radio,
-  Select,
   Slider,
-  TextField,
-  ToggleButton,
-  ToggleButtonGroup,
 } from "@mui/material";
 import RadioGroup from "./../ui/RadioGroup";
 import SelectDropdown from "../ui/SelectDropdown";
