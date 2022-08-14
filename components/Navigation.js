@@ -78,12 +78,12 @@ export default function Navigation(props) {
           >
             <Link href='/contracts-listed'>Contracts Listed</Link>
           </li> */}
-          <li
+          {/* <li
             className={router.pathname == "/contracts-seeked" ? "active" : ""}
             onClick={props.mobileDrawerFn}
           >
             <Link href='/contracts-seeked'>Contracts Seeked</Link>
-          </li>
+          </li> */}
           <li
             className={router.pathname == "/my-contracts" ? "active" : ""}
             onClick={props.mobileDrawerFn}
