@@ -19,7 +19,7 @@ export default function Home(props) {
 
       <div className="containerMain">
         <div className="pageHeader">
-          <h1>State of the platform</h1>
+          <h1>Dashboard</h1>
         </div>
 
         <main className="main">Note: the contracts are still in constant development and with every new contract deployed we would need to redo the graphs on Dune Analytics. Hence these are just examples for now.</main>
