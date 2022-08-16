@@ -9,7 +9,7 @@ function RangeSlider(props) {
         value={value}
         onChange={changePrice}
         valueLabelDisplay="on"
-        min={0.001}
+        min={0}
         max={5}
         classes={{
           thumb: "priceSliderThumb",

@@ -1,17 +1,15 @@
 import React, { Fragment, useState } from "react";
 
 function SelectDropdown(props) {
-  const { options } = props;
+  const { options, selectedOption, setSelectedOption } = props;
 
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(null);
 
   const toggling = () => setIsOpen(!isOpen);
 
   const onOptionClicked = (value) => () => {
     setSelectedOption(value);
     setIsOpen(false);
-    console.log(selectedOption);
   };
 
   return (

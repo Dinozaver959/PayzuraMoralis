@@ -67,19 +67,18 @@ function tickerToIcon(ticker) {
   }
 }
 
-function valuetext(value) {
-  return `${value}$`;
-}
-
-const minDistance = 10;
-
 function MyContractsContainer(props) {
   const { dataGetMyContracts, placeholder } = props;
 
+  const [filteredList, setFilteredList] = useState(dataGetMyContracts);
+  const [filterPrice, setFilterPrice] = useState([0, 1]);
   const [filterSide, setFilterSide] = useState("");
   const [filterStates, setFilterStates] = useState("");
-  const [filterPrice, setFilterPrice] = useState([0.001, 1]);
   const [filterDelivery, setFilterDelivery] = useState("");
+
+  const handleChangePrice = (event, value) => {
+    setFilterPrice(value);
+  };
 
   const handleChangeSide = (event) => {
     setFilterSide(event.target.value);
@@ -89,76 +88,87 @@ function MyContractsContainer(props) {
     setFilterStates(event.target.value);
   };
 
-  const handleChangePrice = (event, value) => {
-    setFilterPrice(value);
-  };
-
   const handleChangeDelivery = (event, newDelivery) => {
     setFilterDelivery(newDelivery);
   };
 
-  // const applyFilters = () => {
-  //   let updatedList = dataGetMyContracts;
+  const applyFilters = () => {
+    let updatedList = dataGetMyContracts;
 
-  //   // Price Filter
-  //   const minPrice = selectedPrice[0];
-  //   const maxPrice = selectedPrice[1];
-  //   updatedList = updatedList.filter(
-  //     (item) =>
-  //       item.price.offerPrice >= minPrice && item.price.offerPrice <= maxPrice
-  //   );
+    // Price Filter
+    const minPrice = filterPrice[0];
+    const maxPrice = filterPrice[1];
+    updatedList = updatedList.filter(
+      (item) => item.name.Price >= minPrice && item.name.Price <= maxPrice
+    );
 
-  //   // Datacables Connector Filter
-  //   if (selectedConnector) {
-  //     const dataCablesProd = updatedList.filter(
-  //       (item) => item.category === "Datacable"
-  //     );
+    // Side Filter
+    if (filterSide === "Buyer") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.ContractStartedBy === "Buyer"
+      );
+    }
+    if (filterSide === "Seller") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.ContractStartedBy === "Seller"
+      );
+    }
 
-  //     updatedList = dataCablesProd.filter(
-  //       (curElem) => curElem.connectors.indexOf(selectedConnector) !== -1
-  //     );
-  //   }
+    // States Filter
+    if (filterStates === "Available") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.State === "Available"
+      );
+    }
+    if (filterStates === "Not Available") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.State === "Not Available"
+      );
+    }
 
-  //   // Colors Filter
-  //   const colorsChecked = filterColor
-  //     .filter((item) => item.checked)
-  //     .map((item) => item.label);
+    // Sort Type
+    // if (sortData === "priceAsc" || sortData === "priceDsc") {
+    //   if (sortData === "priceAsc") {
+    //     updatedList = updatedList.sort(
+    //       (a, b) => a.price.offerPrice - b.price.offerPrice
+    //     );
+    //   }
 
-  //   if (colorsChecked.length) {
-  //     updatedList = updatedList.filter((item) =>
-  //       item.colors.some((i) => colorsChecked.includes(i))
-  //     );
-  //   }
+    //   if (sortData === "priceDsc") {
+    //     updatedList = updatedList.sort(
+    //       (a, b) => b.price.offerPrice - a.price.offerPrice
+    //     );
+    //   }
+    // } else {
+    //   updatedList = updatedList.sort((a, b) => b[sortData] - a[sortData]);
+    // }
 
-  //   // Sort Type
-  //   if (sortData === "priceAsc" || sortData === "priceDsc") {
-  //     if (sortData === "priceAsc") {
-  //       updatedList = updatedList.sort(
-  //         (a, b) => a.price.offerPrice - b.price.offerPrice
-  //       );
-  //     }
+    setFilteredList(updatedList);
+  };
 
-  //     if (sortData === "priceDsc") {
-  //       updatedList = updatedList.sort(
-  //         (a, b) => b.price.offerPrice - a.price.offerPrice
-  //       );
-  //     }
-  //   } else {
-  //     updatedList = updatedList.sort((a, b) => b[sortData] - a[sortData]);
-  //   }
-
-  //   setFilterlist(updatedList);
-  // };
-
-  // useEffect(() => {
-  //   applyFilters();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [filterSide, filterStates, filterPrice, filterDelivery]);
+  useEffect(() => {
+    applyFilters();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    dataGetMyContracts,
+    filterSide,
+    filterStates,
+    filterPrice,
+    filterDelivery,
+  ]);
+  console.log(dataGetMyContracts);
 
   return (
     <div className="containerWithSidebar">
       <div className="filtersMain">
         <h2 className="sidebarHeader">Filters</h2>
+
+        {/* Filter with Price */}
+        <div className="filterOption">
+          <RangeSlider value={filterPrice} changePrice={handleChangePrice} />
+        </div>
+
+        {/* Filter with Wallet Address */}
         <div className="filterOption">
           <h4 className="filterTitle">Wallet Address</h4>
           <input
@@ -167,6 +177,8 @@ function MyContractsContainer(props) {
             type="text"
           />
         </div>
+
+        {/* Filter with Side */}
         <div className="filterOption">
           <h4 className="filterTitle">Side</h4>
           <RadioGroup
@@ -189,9 +201,14 @@ function MyContractsContainer(props) {
             ]}
           />
         </div>
+
+        {/* Filter with States */}
         <div className="filterOption">
           <h4 className="filterTitle">States</h4>
+
           <SelectDropdown
+            selectedOption={filterStates}
+            setSelectedOption={setFilterStates}
             options={[
               {
                 label: "All",
@@ -208,10 +225,8 @@ function MyContractsContainer(props) {
             ]}
           />
         </div>
-        <div className="filterOption">
-          <h4 className="filterTitle">Price</h4>
-          <RangeSlider value={filterPrice} changePrice={handleChangePrice} />
-        </div>
+
+        {/* Filter with Time to Deliver */}
         <div className="filterOption">
           <h4 className="filterTitle">Time to Deliver</h4>
           <RadioGroup
@@ -243,14 +258,14 @@ function MyContractsContainer(props) {
 
       <div className="filtersContainer">
         <div className="containerHeader">
-          <div className="totalData">{dataGetMyContracts.length} total contracts</div>
+          <div className="totalData">{filteredList.length} total contracts</div>
         </div>
         {placeholder ? (
           <div className="blockLoading">
             <LoadingPlaceholder extraStyles={{ position: "absolute" }} />
           </div>
-        ) : dataGetMyContracts[0] && dataGetMyContracts ? (
-          <Table_normal data={dataGetMyContracts} />
+        ) : filteredList[0] && filteredList ? (
+          <Table_normal data={filteredList} />
         ) : (
           <div className="noData">
             <i>
