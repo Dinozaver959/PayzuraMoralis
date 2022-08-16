@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
 
 import Table from "@mui/material/Table";
@@ -35,11 +35,10 @@ import ModalUi from "../ui/ModalUi";
 import Image from "next/image";
 import ETHIcon from "./../images/ETH.webp";
 import USDCIcon from "./../images/USDC.webp";
-import {
-  Slider,
-} from "@mui/material";
+
 import RadioGroup from "./../ui/RadioGroup";
 import SelectDropdown from "../ui/SelectDropdown";
+import RangeSlider from "../ui/RangeSlider";
 
 const StyledTableRow = styled(TableRow)();
 const StyledTableCell = styled(TableCell)();
@@ -79,7 +78,7 @@ function MyContractsContainer(props) {
 
   const [filterSide, setFilterSide] = useState("");
   const [filterStates, setFilterStates] = useState("");
-  const [filterPrice, setFilterPrice] = useState([20, 37]);
+  const [filterPrice, setFilterPrice] = useState([0.001, 1]);
   const [filterDelivery, setFilterDelivery] = useState("");
 
   const handleChangeSide = (event) => {
@@ -90,36 +89,74 @@ function MyContractsContainer(props) {
     setFilterStates(event.target.value);
   };
 
-  const handleChangePrice = (event, newValue, activeThumb) => {
-    if (!Array.isArray(newValue)) {
-      return;
-    }
-
-    if (activeThumb === 0) {
-      setFilterPrice([
-        Math.min(newValue[0], filterPrice[1] - minDistance),
-        filterPrice[1],
-      ]);
-    } else {
-      setFilterPrice([
-        filterPrice[0],
-        Math.max(newValue[1], filterPrice[0] + minDistance),
-      ]);
-    }
+  const handleChangePrice = (event, value) => {
+    setFilterPrice(value);
   };
 
   const handleChangeDelivery = (event, newDelivery) => {
     setFilterDelivery(newDelivery);
   };
 
+  // const applyFilters = () => {
+  //   let updatedList = dataGetMyContracts;
+
+  //   // Price Filter
+  //   const minPrice = selectedPrice[0];
+  //   const maxPrice = selectedPrice[1];
+  //   updatedList = updatedList.filter(
+  //     (item) =>
+  //       item.price.offerPrice >= minPrice && item.price.offerPrice <= maxPrice
+  //   );
+
+  //   // Datacables Connector Filter
+  //   if (selectedConnector) {
+  //     const dataCablesProd = updatedList.filter(
+  //       (item) => item.category === "Datacable"
+  //     );
+
+  //     updatedList = dataCablesProd.filter(
+  //       (curElem) => curElem.connectors.indexOf(selectedConnector) !== -1
+  //     );
+  //   }
+
+  //   // Colors Filter
+  //   const colorsChecked = filterColor
+  //     .filter((item) => item.checked)
+  //     .map((item) => item.label);
+
+  //   if (colorsChecked.length) {
+  //     updatedList = updatedList.filter((item) =>
+  //       item.colors.some((i) => colorsChecked.includes(i))
+  //     );
+  //   }
+
+  //   // Sort Type
+  //   if (sortData === "priceAsc" || sortData === "priceDsc") {
+  //     if (sortData === "priceAsc") {
+  //       updatedList = updatedList.sort(
+  //         (a, b) => a.price.offerPrice - b.price.offerPrice
+  //       );
+  //     }
+
+  //     if (sortData === "priceDsc") {
+  //       updatedList = updatedList.sort(
+  //         (a, b) => b.price.offerPrice - a.price.offerPrice
+  //       );
+  //     }
+  //   } else {
+  //     updatedList = updatedList.sort((a, b) => b[sortData] - a[sortData]);
+  //   }
+
+  //   setFilterlist(updatedList);
+  // };
+
+  // useEffect(() => {
+  //   applyFilters();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [filterSide, filterStates, filterPrice, filterDelivery]);
+
   return (
     <div className="containerWithSidebar">
-      {/* <div className="cardHeader">
-        <div className="cardTitle">
-          <h2>My Contracts</h2>
-        </div>
-      </div> */}
-
       <div className="filtersMain">
         <h2 className="sidebarHeader">Filters</h2>
         <div className="filterOption">
@@ -173,14 +210,7 @@ function MyContractsContainer(props) {
         </div>
         <div className="filterOption">
           <h4 className="filterTitle">Price</h4>
-          <Slider
-            getAriaLabel={() => "Minimum distance"}
-            value={filterPrice}
-            onChange={handleChangePrice}
-            valueLabelDisplay="auto"
-            getAriaValueText={valuetext}
-            disableSwap
-          />
+          <RangeSlider value={filterPrice} changePrice={handleChangePrice} />
         </div>
         <div className="filterOption">
           <h4 className="filterTitle">Time to Deliver</h4>
@@ -208,17 +238,6 @@ function MyContractsContainer(props) {
               },
             ]}
           />
-
-          {/* <ToggleButtonGroup
-            color="primary"
-            value={filterDelivery}
-            exclusive
-            onChange={handleChangeDelivery}
-          >
-            <ToggleButton value="web">&#60; 24 H</ToggleButton>
-            <ToggleButton value="android">&#60; 48 H</ToggleButton>
-            <ToggleButton value="ios">&#60; 72 H</ToggleButton>
-          </ToggleButtonGroup> */}
         </div>
       </div>
 
