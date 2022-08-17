@@ -119,10 +119,24 @@ function MyContractsContainer(props) {
       updatedList = updatedList.filter(
         (orders) => orders.name.State === "Available"
       );
-    }
-    if (filterStates === "Not Available") {
+    } else if (filterStates === "Not Available") {
       updatedList = updatedList.filter(
         (orders) => orders.name.State === "Not Available"
+      );
+    }
+
+    // States Filter
+    if (filterDelivery === "Till 24H") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.TimeToDeliver <= 24
+      );
+    } else if (filterDelivery === "Till 48H") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.TimeToDeliver <= 48
+      );
+    } else if (filterDelivery === "Till 72H") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.TimeToDeliver <= 72
       );
     }
 
@@ -156,7 +170,6 @@ function MyContractsContainer(props) {
     filterPrice,
     filterDelivery,
   ]);
-  console.log(dataGetMyContracts);
 
   return (
     <div className="containerWithSidebar">
