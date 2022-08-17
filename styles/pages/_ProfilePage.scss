@@ -1,0 +1,43 @@
+.sectionMain > .address {
+  padding-bottom: 2rem;
+}
+
+.cardCategory {
+  display: flex; 
+  justify-content: space-between;
+  width: 50%;
+  margin: 0 auto;
+}
+
+.cardCategory > .categoryBuyer > h1 {
+  margin-bottom: 1em;
+  display: flex;
+  justify-content: center;
+}
+
+.cardCategory > .categorySeller > h1 {
+  margin-bottom: 1em;
+  display: flex;
+  justify-content: center;
+}
+
+
+@media screen and (max-width: 500px) {
+  .sectionMain > .address {
+      word-wrap: break-word;
+  }
+}
+
+
+@media screen and (max-width: 768px) {
+  .cardCategory {
+      flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 1300px) {
+  .cardCategory {
+      width: 100%;
+      justify-content: space-around;
+  }
+}

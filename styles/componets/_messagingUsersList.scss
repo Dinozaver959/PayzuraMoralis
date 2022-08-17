@@ -1,0 +1,115 @@
+.inbox {
+  @include Size(100%, auto);
+  background: $WhiteColor;
+  border: 1px solid $WhiteColor;
+  padding: 4px;
+  @include BorderRadius($CardRounded);
+  @include BoxShadow(0px 0px $CardRounded rgba($PrimaryColor, 0.15));
+
+  @include RespondTo(MobileDevices) {
+    padding: 20px;
+    border-radius: 14px;
+  }
+
+  width: 80%;
+  margin: 0 auto;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  
+  .inbox__users__mobile {
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      padding: 1rem;
+      text-align: center;
+      border-bottom: 1px solid $BorderLight;
+    }
+    .inbox__users__list {
+      overflow-y: auto;
+      height: 75vh;
+
+      .inbox__users__list__item{
+        display: flex;
+        flex-direction: column;
+        border-bottom: 1px solid $BorderLight;
+        padding: 1rem;
+        font-size: 0.8rem;
+        cursor: pointer;
+  
+        .inbox__users__list__item__header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+  
+          .inbox__users__list__item__username {
+            font-weight: bold;
+            font-size: 0.9rem;
+          }
+        }
+        
+        .inbox__users__list__item__message {
+          font-size: 0.8rem;
+          margin-top: 0.2rem;
+          color: gray;
+        }
+      }
+      .inbox__users__list__item:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+  .inbox__message {
+    position: relative;
+  }
+  .inbox__chat {
+    display: none;
+  }
+  
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  width: fit-content;
+
+  span {
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+  }
+}
+
+.darkMode {
+  .inbox {
+    background: none;
+    border-color: $BorderLight;
+    box-shadow: none;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .inbox {
+    flex-direction: row;
+    .inbox__chat {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      width: auto;
+    }
+    .inbox__users__mobile {
+      width: 450px;
+      border-radius: 10px 0 0 10px;
+      border-right: 1px solid $BorderLight;
+      border-bottom: none;
+
+      .inbox__users__list__item {
+        padding: 1rem 2rem;
+      }
+    }
+  }
+}
