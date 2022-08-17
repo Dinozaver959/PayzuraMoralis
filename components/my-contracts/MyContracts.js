@@ -72,12 +72,18 @@ function MyContractsContainer(props) {
 
   const [filteredList, setFilteredList] = useState(dataGetMyContracts);
   const [filterPrice, setFilterPrice] = useState([0, 1]);
+  const [filterWalletAddress, setFilterWalletAddress] = useState("");
   const [filterSide, setFilterSide] = useState("");
   const [filterStates, setFilterStates] = useState("");
   const [filterDelivery, setFilterDelivery] = useState("");
+  
 
   const handleChangePrice = (event, value) => {
     setFilterPrice(value);
+  };
+
+  const handleChangeWalletAddress = (event) => {
+    setFilterWalletAddress(event.target.value);
   };
 
   const handleChangeSide = (event) => {
@@ -91,7 +97,7 @@ function MyContractsContainer(props) {
   const handleChangeDelivery = (event, newDelivery) => {
     setFilterDelivery(newDelivery);
   };
-
+  
   const applyFilters = () => {
     let updatedList = dataGetMyContracts;
 
@@ -111,6 +117,13 @@ function MyContractsContainer(props) {
     if (filterSide === "Seller") {
       updatedList = updatedList.filter(
         (orders) => orders.name.ContractStartedBy === "Seller"
+      );
+    }
+
+    if(filterWalletAddress !== '') {
+      updatedList = updatedList.filter(
+        (orders) => (orders.name.SellerWallet === filterWalletAddress || 
+          orders.name.BuyerWallet === filterWalletAddress)
       );
     }
 
@@ -165,6 +178,7 @@ function MyContractsContainer(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     dataGetMyContracts,
+    filterWalletAddress,
     filterSide,
     filterStates,
     filterPrice,
@@ -186,8 +200,10 @@ function MyContractsContainer(props) {
           <h4 className="filterTitle">Wallet Address</h4>
           <input
             className="formInput"
+            id="filterWalletAddress"
             placeholder="Wallet Address"
             type="text"
+            onBlur={handleChangeWalletAddress}
           />
         </div>
 
@@ -421,7 +437,7 @@ function Row_normal(props) {
                 <>
                   <StyledTableCell>
                     <input
-                      className="rounded button red small"
+                      className="rounded button orange small"
                       type="submit"
                       value="Cancel Contract"
                       onClick={() =>
@@ -651,7 +667,7 @@ function Row_normal(props) {
               <>
                 <StyledTableCell>
                   <input
-                    className="rounded button red small"
+                    className="rounded button orange small"
                     type="submit"
                     value="Cancel Contract"
                     onClick={() =>

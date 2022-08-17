@@ -2,7 +2,7 @@
   padding: 40px 20px 0 20px;
 
   .priceSliderThumb {
-    color: $BlackColor;
+    color: $OrangeColor;
   }
 
   .priceSliderRail {
@@ -23,7 +23,7 @@
   @extend %FlexCol-CenterCenter;
   transform: rotate(-45deg) !important;
   @include BorderRadius(50% 50% 50% 0);
-  background-color: $BlackColor;
+  background-color: $PrimaryColor;
   left: 3px;
   top: -60px;
 
