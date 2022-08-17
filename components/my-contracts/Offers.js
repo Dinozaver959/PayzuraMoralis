@@ -239,7 +239,7 @@ function Row_normal(props) {
 
         <StyledTableCell>
           <input
-            className="button primary rounded" // button primary rounded small
+            className="button primary rounded small" // button primary rounded small
             type="submit"
             value="Accept Offer"
             onClick={async () =>
@@ -370,11 +370,11 @@ function Row_normal(props) {
       */}
       </StyledTableRow>
 
-      <TableRow>
+      {/* <TableRow>
         <StyledInnerTableCell></StyledInnerTableCell>
         <StyledInnerTableCell>Seller Wallet</StyledInnerTableCell>
         <StyledInnerTableCell>{item.SellerWallet}</StyledInnerTableCell>
-      </TableRow>
+      </TableRow> */}
 
       <StyledTableRow>
         <StyledTableCell

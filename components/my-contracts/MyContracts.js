@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
 
 import Table from "@mui/material/Table";
@@ -35,20 +35,10 @@ import ModalUi from "../ui/ModalUi";
 import Image from "next/image";
 import ETHIcon from "./../images/ETH.webp";
 import USDCIcon from "./../images/USDC.webp";
-import {
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  InputLabel,
-  MenuItem,
-  Radio,
-  Select,
-  Slider,
-  TextField,
-  ToggleButton,
-  ToggleButtonGroup,
-} from "@mui/material";
+
 import RadioGroup from "./../ui/RadioGroup";
+import SelectDropdown from "../ui/SelectDropdown";
+import RangeSlider from "../ui/RangeSlider";
 
 const StyledTableRow = styled(TableRow)();
 const StyledTableCell = styled(TableCell)();
@@ -77,19 +67,24 @@ function tickerToIcon(ticker) {
   }
 }
 
-function valuetext(value) {
-  return `${value}$`;
-}
-
-const minDistance = 10;
-
 function MyContractsContainer(props) {
   const { dataGetMyContracts, placeholder } = props;
 
+  const [filteredList, setFilteredList] = useState(dataGetMyContracts);
+  const [filterPrice, setFilterPrice] = useState([0, 1]);
+  const [filterWalletAddress, setFilterWalletAddress] = useState("");
   const [filterSide, setFilterSide] = useState("");
   const [filterStates, setFilterStates] = useState("");
-  const [filterPrice, setFilterPrice] = useState([20, 37]);
   const [filterDelivery, setFilterDelivery] = useState("");
+  
+
+  const handleChangePrice = (event, value) => {
+    setFilterPrice(value);
+  };
+
+  const handleChangeWalletAddress = (event) => {
+    setFilterWalletAddress(event.target.value);
+  };
 
   const handleChangeSide = (event) => {
     setFilterSide(event.target.value);
@@ -99,46 +94,120 @@ function MyContractsContainer(props) {
     setFilterStates(event.target.value);
   };
 
-  const handleChangePrice = (event, newValue, activeThumb) => {
-    if (!Array.isArray(newValue)) {
-      return;
-    }
-
-    if (activeThumb === 0) {
-      setFilterPrice([
-        Math.min(newValue[0], filterPrice[1] - minDistance),
-        filterPrice[1],
-      ]);
-    } else {
-      setFilterPrice([
-        filterPrice[0],
-        Math.max(newValue[1], filterPrice[0] + minDistance),
-      ]);
-    }
-  };
-
   const handleChangeDelivery = (event, newDelivery) => {
     setFilterDelivery(newDelivery);
   };
+  
+  const applyFilters = () => {
+    let updatedList = dataGetMyContracts;
+
+    // Price Filter
+    const minPrice = filterPrice[0];
+    const maxPrice = filterPrice[1];
+    updatedList = updatedList.filter(
+      (item) => item.name.Price >= minPrice && item.name.Price <= maxPrice
+    );
+
+    // Side Filter
+    if (filterSide === "Buyer") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.ContractStartedBy === "Buyer"
+      );
+    }
+    if (filterSide === "Seller") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.ContractStartedBy === "Seller"
+      );
+    }
+
+    if(filterWalletAddress !== '') {
+      updatedList = updatedList.filter(
+        (orders) => (orders.name.SellerWallet === filterWalletAddress || 
+          orders.name.BuyerWallet === filterWalletAddress)
+      );
+    }
+
+    // States Filter
+    if (filterStates === "Available") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.State === "Available"
+      );
+    } else if (filterStates === "Not Available") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.State === "Not Available"
+      );
+    }
+
+    // States Filter
+    if (filterDelivery === "Till 24H") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.TimeToDeliver <= 24
+      );
+    } else if (filterDelivery === "Till 48H") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.TimeToDeliver <= 48
+      );
+    } else if (filterDelivery === "Till 72H") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.TimeToDeliver <= 72
+      );
+    }
+
+    // Sort Type
+    // if (sortData === "priceAsc" || sortData === "priceDsc") {
+    //   if (sortData === "priceAsc") {
+    //     updatedList = updatedList.sort(
+    //       (a, b) => a.price.offerPrice - b.price.offerPrice
+    //     );
+    //   }
+
+    //   if (sortData === "priceDsc") {
+    //     updatedList = updatedList.sort(
+    //       (a, b) => b.price.offerPrice - a.price.offerPrice
+    //     );
+    //   }
+    // } else {
+    //   updatedList = updatedList.sort((a, b) => b[sortData] - a[sortData]);
+    // }
+
+    setFilteredList(updatedList);
+  };
+
+  useEffect(() => {
+    applyFilters();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    dataGetMyContracts,
+    filterWalletAddress,
+    filterSide,
+    filterStates,
+    filterPrice,
+    filterDelivery,
+  ]);
 
   return (
     <div className="containerWithSidebar">
-      {/* <div className="cardHeader">
-        <div className="cardTitle">
-          <h2>My Contracts</h2>
-        </div>
-      </div> */}
-
       <div className="filtersMain">
         <h2 className="sidebarHeader">Filters</h2>
+
+        {/* Filter with Price */}
+        <div className="filterOption">
+          <RangeSlider value={filterPrice} changePrice={handleChangePrice} />
+        </div>
+
+        {/* Filter with Wallet Address */}
         <div className="filterOption">
           <h4 className="filterTitle">Wallet Address</h4>
           <input
             className="formInput"
+            id="filterWalletAddress"
             placeholder="Wallet Address"
             type="text"
+            onBlur={handleChangeWalletAddress}
           />
         </div>
+
+        {/* Filter with Side */}
         <div className="filterOption">
           <h4 className="filterTitle">Side</h4>
           <RadioGroup
@@ -161,34 +230,32 @@ function MyContractsContainer(props) {
             ]}
           />
         </div>
+
+        {/* Filter with States */}
         <div className="filterOption">
           <h4 className="filterTitle">States</h4>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">States</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={filterStates}
-              label="States"
-              onChange={handleChangeStates}
-            >
-              <MenuItem value="">All</MenuItem>
-              <MenuItem value="Available">Available</MenuItem>
-              <MenuItem value="Not Available">Not Available</MenuItem>
-            </Select>
-          </FormControl>
-        </div>
-        <div className="filterOption">
-          <h4 className="filterTitle">Price</h4>
-          <Slider
-            getAriaLabel={() => "Minimum distance"}
-            value={filterPrice}
-            onChange={handleChangePrice}
-            valueLabelDisplay="auto"
-            getAriaValueText={valuetext}
-            disableSwap
+
+          <SelectDropdown
+            selectedOption={filterStates}
+            setSelectedOption={setFilterStates}
+            options={[
+              {
+                label: "All",
+                value: "",
+              },
+              {
+                label: "Available",
+                value: "Available",
+              },
+              {
+                label: "Not Available",
+                value: "Not Available",
+              },
+            ]}
           />
         </div>
+
+        {/* Filter with Time to Deliver */}
         <div className="filterOption">
           <h4 className="filterTitle">Time to Deliver</h4>
           <RadioGroup
@@ -215,30 +282,19 @@ function MyContractsContainer(props) {
               },
             ]}
           />
-
-          {/* <ToggleButtonGroup
-            color="primary"
-            value={filterDelivery}
-            exclusive
-            onChange={handleChangeDelivery}
-          >
-            <ToggleButton value="web">&#60; 24 H</ToggleButton>
-            <ToggleButton value="android">&#60; 48 H</ToggleButton>
-            <ToggleButton value="ios">&#60; 72 H</ToggleButton>
-          </ToggleButtonGroup> */}
         </div>
       </div>
 
       <div className="filtersContainer">
         <div className="containerHeader">
-          <div className="totalData">{dataGetMyContracts.length} total contracts</div>
+          <div className="totalData">{filteredList.length} total contracts</div>
         </div>
         {placeholder ? (
           <div className="blockLoading">
             <LoadingPlaceholder extraStyles={{ position: "absolute" }} />
           </div>
-        ) : dataGetMyContracts[0] && dataGetMyContracts ? (
-          <Table_normal data={dataGetMyContracts} />
+        ) : filteredList[0] && filteredList ? (
+          <Table_normal data={filteredList} />
         ) : (
           <div className="noData">
             <i>
@@ -381,7 +437,7 @@ function Row_normal(props) {
                 <>
                   <StyledTableCell>
                     <input
-                      className="rounded button red small"
+                      className="rounded button orange small"
                       type="submit"
                       value="Cancel Contract"
                       onClick={() =>
@@ -611,7 +667,7 @@ function Row_normal(props) {
               <>
                 <StyledTableCell>
                   <input
-                    className="rounded button red small"
+                    className="rounded button orange small"
                     type="submit"
                     value="Cancel Contract"
                     onClick={() =>
