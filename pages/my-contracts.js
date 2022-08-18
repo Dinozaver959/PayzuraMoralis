@@ -278,7 +278,7 @@ function Table_normal(props) {
                             <StyledTableCell>State</StyledTableCell>
                             <StyledTableCell>Price</StyledTableCell>
                             <StyledTableCell>
-                                Time to Deliver (hours)
+                                Time to Deliver
                             </StyledTableCell>
 
                             {isBuyer ? (
@@ -356,10 +356,8 @@ function Row_normal(props) {
                     </div>
                 </StyledTableCell>
                 <StyledTableCell>
-                    <label className="mobileLabel">
-                        Time to Deliver (hours)
-                    </label>
-                    {item.TimeToDeliver}
+                    <label className="mobileLabel">Time to Deliver</label>
+                    {item.TimeToDeliver} Day(s)
                 </StyledTableCell>
 
                     
