@@ -419,7 +419,7 @@ function Row_normal(props) {
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Time to Deliver</label>
-          {item.TimeToDeliver} H
+          {item.TimeToDeliver} Day(s)
         </StyledTableCell>
 
         {item.State == "complete" ||

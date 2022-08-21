@@ -243,7 +243,7 @@ function Table_normal(props) {
                             <StyledTableCell>Title</StyledTableCell>
                             <StyledTableCell>Price (ETH)</StyledTableCell>
                             <StyledTableCell>
-                                Time to Deliver (hours)
+                                Time to Deliver
                             </StyledTableCell>
                             <StyledTableCell>Valid Until</StyledTableCell>
                             <StyledTableCell>Action</StyledTableCell>
@@ -333,10 +333,8 @@ function Row_normal(props) {
                     {item.CurrencyTicker}
                 </StyledTableCell>
                 <StyledTableCell>
-                    <label className="mobileLabel">
-                        Time to Deliver (hours)
-                    </label>
-                    {item.TimeToDeliver}
+                    <label className="mobileLabel">Time to Deliver</label>
+                    {item.TimeToDeliver} Day(s)
                 </StyledTableCell>
                 <StyledTableCell>
                     <label className="mobileLabel">Valid Until</label>
