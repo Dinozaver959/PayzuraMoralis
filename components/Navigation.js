@@ -179,7 +179,7 @@ export default function Navigation(props) {
                     <span>Inbox</span>
                   </Button>
                 </li>
-                <li onClick={() => setDropdownOpen(false)}>
+                {/* <li onClick={() => setDropdownOpen(false)}>
                   <Button link='/contracts-listed'>
                     <i>
                       <ServicesListedIc />

@@ -1,3 +1,14 @@
+.chartContainer {
+  @include Flexbox;
+  @include FlexFlow(wrap);
+  @include JustifyContent(space-between);
+
+  .card {
+    width: calc(50% - 10px);
+    margin-top: 20px;
+  }
+}
+
 .ContainerDashboard {
   display: flex;
   justify-content: space-around;

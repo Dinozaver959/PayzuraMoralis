@@ -239,10 +239,7 @@ export default function Home(props) {
           <h1>Dashboard</h1>
         </div>
 
-        <main className="main">Note: the contracts are still in constant development and with every new contract deployed we would need to redo the graphs on Dune Analytics. Hence these are just examples for now.</main>
-        <br></br>
-        <br></br>
-
+        <div className="noteText"><strong>Note:</strong> the contracts are still in constant development and with every new contract deployed we would need to redo the graphs on Dune Analytics. Hence these are just examples for now.</div>
 
         {/* 
           DUNE ANALYTICS GRAPHS
@@ -258,32 +255,42 @@ export default function Home(props) {
 
 
         {/* MORALIS EVENT SYNC GRAPHS */}
-        <div className="ContainerDashboard">
+        <div className="chartContainer">
 
-          <div className="Chart">
-            <BarChart 
-              chartData={ContractsMadeAndDisputedBarGraph} 
-              options={{            
-                maintainAspectRatio: false,
-                scales: {y: {beginAtZero: true}},
-                plugins:{
-                  title: {display: true, text: 'Contracts Made and Disputes solved'},
-                  legend: {position: 'bottom'},
-                }
-              }}/>
+          <div className="card">
+            <div className="cardHeader">
+              <div className="cardTitle">Contracts Made and Disputes solved</div>
+            </div>
+            <div className="cardBody">
+              <BarChart 
+                chartData={ContractsMadeAndDisputedBarGraph} 
+                options={{            
+                  maintainAspectRatio: false,
+                  scales: {y: {beginAtZero: true}},
+                  plugins:{
+                    title: {display: false, text: 'Contracts Made and Disputes solved'},
+                    legend: {position: 'top'},
+                  }
+                }}/>
+              </div>
           </div>
 
-          <div className="Chart">
-            <LineChart chartData={ContractsMadeAndDisputedLineGraph} 
-              options={{            
-                maintainAspectRatio: false,
-                scales: {y: {beginAtZero: true}},
-                plugins:{
-                  title: {display: true, text: 'Contracts Made and Disputes solved'},
-                  legend: {position: 'bottom'},
-                }
-              }}
-            />
+          <div className="card">
+            <div className="cardHeader">
+              <div className="cardTitle">Contracts Made and Disputes solved</div>
+            </div>
+            <div className="cardBody">
+              <LineChart chartData={ContractsMadeAndDisputedLineGraph} 
+                options={{            
+                  maintainAspectRatio: false,
+                  scales: {y: {beginAtZero: true}},
+                  plugins:{
+                    title: {display: false, text: 'Contracts Made and Disputes solved'},
+                    legend: {position: 'top'},
+                  }
+                }}
+              />
+              </div>
           </div>
         </div>
 

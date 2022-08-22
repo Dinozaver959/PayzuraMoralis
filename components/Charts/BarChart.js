@@ -3,7 +3,7 @@ import {Bar} from 'react-chartjs-2';
 import {Chart as ChartJS} from 'chart.js/auto';
 
 function BarChart({chartData, options}){
-  return <Bar data={chartData} options={options}/>;
+  return <Bar data={chartData} options={options} width="300" height="300" />;
 }
 
 export default BarChart;
