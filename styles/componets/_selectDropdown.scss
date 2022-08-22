@@ -27,6 +27,8 @@
     z-index: 99;
     @include BorderRadius(0 0 3px 3px);
     @include BoxShadow(1px 1px 10px rgba($PrimaryColor, 0.1));
+    max-height: 150px;
+    overflow: auto;
 
     .dropdownList {
       .dropdownListItems {

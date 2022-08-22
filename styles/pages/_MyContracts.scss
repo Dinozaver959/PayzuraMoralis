@@ -22,6 +22,10 @@
         padding: 5px 8px;
         @include BorderRadius(3px);
       }
+
+      .dropdownContainer {
+        height: 110px;
+      }
     }
   }
 
