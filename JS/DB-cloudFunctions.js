@@ -1,7 +1,12 @@
 var Moralis = require("moralis/node");
 
-const serverUrl = "https://rbfqybjb4vga.usemoralis.com:2053/server";
-const appId = "FltzNNp8ebZsRkVnPTd6RKWTF2XoTLmVDMHSicVd";
+// ETH Server
+//const serverUrl = "https://rbfqybjb4vga.usemoralis.com:2053/server";
+//const appId = "FltzNNp8ebZsRkVnPTd6RKWTF2XoTLmVDMHSicVd";
+
+// Matic Server 
+const serverUrl = "https://gbmvbywfzibe.usemoralis.com:2053/server";
+const appId = "6KNO1YxYUUp26EgElEHsfQ8ywPTJfs6D1C2H2yMR";
 Moralis.start({ serverUrl, appId });
 
 
@@ -99,4 +104,16 @@ export async function GetUsersAgreementsOnlySeller(UserWallet){
 export async function GetUsersDetails(UserWallet){
     const params =  { UserWallet : UserWallet };
     return Moralis.Cloud.run("GetUsersDetails", params);
+}
+
+
+// ------------------------------------------------------------------------------------------------
+//                        Event Sync and Aggregated Data for Graphs          
+// ------------------------------------------------------------------------------------------------
+export async function GetAllAggregateData(){ 
+    return Moralis.Cloud.run("getAllAggregateData"); 
+}
+
+export async function AggregateData(){ 
+  await Moralis.Cloud.run("aggregateData");
 }
