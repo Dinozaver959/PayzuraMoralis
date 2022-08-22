@@ -175,25 +175,9 @@ export default function Home(props) {
   function PrepareDays() {
 
     var array = [];
-
-    console.log(`1. PrepareDays array.length: ${array.length}`);
-
     for (let i = 0; i < data.length; i++) {
       array.push(data[i].block_day);
-
-
-      console.log(`data[${i}].block_day:`)
-      console.log(data[i].block_day)
-      console.log(`2. PrepareDays array.length: ${array.length}`);
     }
-
-    console.log(`data.length: ${data.length}`);
-    console.log(`3. PrepareDays array.length: ${array.length}`);
-
-    console.log("PrepareDays:");
-    console.log(array);
-
-    console.log(`array[3]: ${array[3]}`);
 
     setDataDays(array);
   };
@@ -215,9 +199,6 @@ export default function Home(props) {
       array.push((data[i].valueSeller_0x0000000000000000000000000000000000000000 + data[i].valueBuyer_0x0000000000000000000000000000000000000000) / (10**18));
     }
 
-    console.log("PrepareETHvalue:");
-    console.log(array);
-
     setETHValue(array);
   };
 
@@ -227,9 +208,6 @@ export default function Home(props) {
     for (let i = 0; i < data.length; i++) {
       array.push((data[i].valueSeller_0x2791bca1f2de4661ed88a30c99a7a9449aa84174 + data[i].valueBuyer_0x2791bca1f2de4661ed88a30c99a7a9449aa84174) / (10**6));
     }
-
-    console.log("PrepareUSDCvalue:");
-    console.log(array);
 
     setUSDCValue(array);
   };
