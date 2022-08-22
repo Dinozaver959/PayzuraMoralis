@@ -240,6 +240,7 @@ export default function Home(props) {
   // --------------------------------------------------------------------------------------------------------------------
 
 
+
   return (
     <Fragment>
       <Navigation
@@ -282,22 +283,58 @@ export default function Home(props) {
         <div className="ContainerDashboard">
 
           <div className="Chart">
-            <BarChart chartData={ContractsMadeAndDisputedBarGraph} />
+            <BarChart 
+              chartData={ContractsMadeAndDisputedBarGraph} 
+              options={{            
+                maintainAspectRatio: false,
+                scales: {y: {beginAtZero: true}},
+                plugins:{
+                  title: {display: true, text: 'Contracts Made and Disputes solved'},
+                  legend: {position: 'bottom'},
+                }
+              }}/>
           </div>
 
           <div className="Chart">
-            <LineChart chartData={ContractsMadeAndDisputedLineGraph} />
+            <LineChart chartData={ContractsMadeAndDisputedLineGraph} 
+              options={{            
+                maintainAspectRatio: false,
+                scales: {y: {beginAtZero: true}},
+                plugins:{
+                  title: {display: true, text: 'Contracts Made and Disputes solved'},
+                  legend: {position: 'bottom'},
+                }
+              }}
+            />
           </div>
         </div>
 
 
         <div className="ContainerDashboard">
           <div className="Chart">
-            <LineChart chartData={ETHValueLineGraph} />
+            <LineChart chartData={ETHValueLineGraph} 
+              options={{            
+                maintainAspectRatio: false,
+                scales: {y: {beginAtZero: true}},
+                plugins:{
+                  title: {display: true, text: 'ETH locked in contracts'},
+                  legend: {position: 'bottom'},
+                }
+              }}
+            />
           </div>
           
           <div className="Chart">
-            <LineChart chartData={USDCValueLineGraph} />
+            <LineChart chartData={USDCValueLineGraph} 
+              options={{            
+                maintainAspectRatio: false,
+                scales: {y: {beginAtZero: true}},
+                plugins:{
+                  title: {display: true, text: 'USDC locked in contracts'},
+                  legend: {position: 'bottom'},
+                }
+              }}
+            />
           </div>
         </div>
 
