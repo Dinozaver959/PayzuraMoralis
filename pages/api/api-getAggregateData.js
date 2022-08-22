@@ -2,12 +2,12 @@ import middleware from '../../middleware/middleware'
 import nextConnect from 'next-connect'
 
 const DOMPurify = require('isomorphic-dompurify');
-var Moralis = require("moralis/node");
+var Moralis_s2 = require("moralis/node");
 const _ = require("lodash");
 
 const serverUrl = "https://gbmvbywfzibe.usemoralis.com:2053/server";
 const appId = "6KNO1YxYUUp26EgElEHsfQ8ywPTJfs6D1C2H2yMR";
-Moralis.start({ serverUrl, appId });
+Moralis_s2.start({ serverUrl, appId });
 
 
 const apiRoute = nextConnect()
@@ -26,7 +26,7 @@ apiRoute.get(async (req, res) => {
 })
 
 async function GetAllAggregateData(){ 
-  return Moralis.Cloud.run("getAllAggregateData"); 
+  return Moralis_s2.Cloud.run("getAllAggregateData"); 
 }
 
 
