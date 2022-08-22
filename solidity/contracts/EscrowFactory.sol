@@ -17,23 +17,23 @@ contract EscrowFactory is ReentrancyGuard {
     uint256 public clonedContractsIndex = 0;
 
     // Agreement Creation
-    event OfferCreatedBuyer(uint256 indexed clonedContractsIndex, address indexed _buyer, uint256 indexed _price, address[] _personalizedOffer, address[] _arbiters);
-    event OfferCreatedSeller(uint256 indexed clonedContractsIndex, address indexed _seller, uint256 indexed _price, address[] _personalizedOffer, address[] _arbiters);
+    event OfferCreatedBuyer(uint256 indexed clonedContractsIndex, address indexed buyer, uint256 indexed price, address[] personalizedOffer, address[] arbiters);
+    event OfferCreatedSeller(uint256 indexed clonedContractsIndex, address indexed seller, uint256 indexed price, address[] personalizedOffer, address[] arbiters);
     // Agreement Acceptance
-    event OfferAcceptedBuyer(uint256 indexed clonedContractsIndex, address indexed _buyer);
-    event OfferAcceptedSeller(uint256 indexed clonedContractsIndex, address indexed _seller);
+    event OfferAcceptedBuyer(uint256 indexed clonedContractsIndex, address indexed buyer, uint256 price, address tokenCurrency);
+    event OfferAcceptedSeller(uint256 indexed clonedContractsIndex, address indexed seller, uint256 price, address tokenCurrency);
     // Buyer
-    event DisputeStarted(uint256 indexed clonedContractsIndex, address indexed _buyer);
-    event DeliveryConfirmed(uint256 indexed clonedContractsIndex, address indexed _buyer);  
-    event ContractFunded(uint256 indexed clonedContractsIndex, address indexed _buyer);  
+    event DisputeStarted(uint256 indexed clonedContractsIndex, address indexed buyer, uint256 price, address tokenCurrency);
+    event DeliveryConfirmed(uint256 indexed clonedContractsIndex, address indexed buyer, uint256 price, address tokenCurrency);
+    //event ContractFunded(uint256 indexed clonedContractsIndex, address indexed buyer);  
     // Seller
-    event FundsClaimed(uint256 indexed clonedContractsIndex, address indexed _seller);
-    event PaymentReturned(uint256 indexed clonedContractsIndex, address indexed _seller);
+    event FundsClaimed(uint256 indexed clonedContractsIndex, address indexed seller, uint256 price, address tokenCurrency);
+    event PaymentReturned(uint256 indexed clonedContractsIndex, address indexed seller, uint256 price, address tokenCurrency);
     // dispute handling
-    event DisputeVoted(uint256 indexed clonedContractsIndex, address indexed _arbiter, bool indexed _returnFundsToBuyer);
-    event DisputeClosed(uint256 indexed clonedContractsIndex, bool indexed _FundsReturnedToBuyer);
+    event DisputeVoted(uint256 indexed clonedContractsIndex, address indexed arbiter, bool indexed returnFundsToBuyer);
+    event DisputeClosed(uint256 indexed clonedContractsIndex, bool indexed FundsReturnedToBuyer, uint256 price, address tokenCurrency);
     // Contract Canceled
-    event ContractCanceled(uint256 indexed clonedContractsIndex, address indexed _contractOwner);
+    event ContractCanceled(uint256 indexed clonedContractsIndex, address indexed contractOwner);
 
 
 
@@ -264,18 +264,15 @@ contract EscrowFactory is ReentrancyGuard {
 
       // call the instance and finish the accept offer
       Escrow(clonedContracts[index]).acceptOfferBuyer{value: msg.value}(payable(msg.sender));
-      emit OfferAcceptedBuyer(clonedContractsIndex, msg.sender);
+      emit OfferAcceptedBuyer(clonedContractsIndex, msg.sender, price, tokenContractAddress);
     }
 
     function AcceptOfferSeller(uint256 index) external {
-        Escrow(clonedContracts[index]).acceptOfferSeller(payable(msg.sender));
-        emit OfferAcceptedSeller(clonedContractsIndex, msg.sender);
-    } 
+        address tokenContractAddress = Escrow(clonedContracts[index]).tokenContractAddress();
+        uint256 price = Escrow(clonedContracts[index]).price();
 
-    // not sure if needed
-    function AcceptOfferBuyer_ERC20(uint256 index) external {                                              // RENAME!!!!       AcceptOffer_ERC20   ->   AcceptOfferBuyer_ERC20
-        Escrow(clonedContracts[index]).acceptOfferBuyer_ERC20(payable(msg.sender));
-        emit OfferAcceptedBuyer(clonedContractsIndex, msg.sender);
+        Escrow(clonedContracts[index]).acceptOfferSeller(payable(msg.sender));
+        emit OfferAcceptedSeller(clonedContractsIndex, msg.sender, price, tokenContractAddress);
     } 
 
 
@@ -338,13 +335,19 @@ contract EscrowFactory is ReentrancyGuard {
 
     // ONLY SELLER
     function ReturnPayment(uint256 index) external payable {
+        address tokenContractAddress = Escrow(clonedContracts[index]).tokenContractAddress();
+        uint256 price = Escrow(clonedContracts[index]).price();
+
         Escrow(clonedContracts[index]).returnPayment(msg.sender);
-        emit PaymentReturned(clonedContractsIndex, msg.sender);
+        emit PaymentReturned(clonedContractsIndex, msg.sender, price, tokenContractAddress);
     } 
 
     function ClaimFunds(uint256 index) external payable {
+        address tokenContractAddress = Escrow(clonedContracts[index]).tokenContractAddress();
+        uint256 price = Escrow(clonedContracts[index]).price();
+
         Escrow(clonedContracts[index]).claimFunds(msg.sender);
-        emit FundsClaimed(clonedContractsIndex, msg.sender);
+        emit FundsClaimed(clonedContractsIndex, msg.sender, price, tokenContractAddress);
     } 
 
     function CancelSellerContract(uint256 index) external {
@@ -382,13 +385,19 @@ contract EscrowFactory is ReentrancyGuard {
 
     // ONLY BUYER
     function StartDispute(uint256 index) external {
+        address tokenContractAddress = Escrow(clonedContracts[index]).tokenContractAddress();
+        uint256 price = Escrow(clonedContracts[index]).price();
+
         Escrow(clonedContracts[index]).startDispute(msg.sender);
-        emit DisputeStarted(clonedContractsIndex, msg.sender);
+        emit DisputeStarted(clonedContractsIndex, msg.sender, price, tokenContractAddress);
     } 
 
     function ConfirmDelivery(uint256 index) external payable {
+        address tokenContractAddress = Escrow(clonedContracts[index]).tokenContractAddress();
+        uint256 price = Escrow(clonedContracts[index]).price();
+
         Escrow(clonedContracts[index]).confirmDelivery(msg.sender);
-        emit DeliveryConfirmed(clonedContractsIndex, msg.sender);
+        emit DeliveryConfirmed(clonedContractsIndex, msg.sender, price, tokenContractAddress);
     } 
 
     function CancelBuyerContract(uint256 index) external {
@@ -431,7 +440,10 @@ contract EscrowFactory is ReentrancyGuard {
 
         if(caseClosed){
             // emit event that case is closed and money was transferred
-            emit DisputeClosed(clonedContractsIndex, returnFundsToBuyer);
+            address tokenContractAddress = Escrow(clonedContracts[index]).tokenContractAddress();
+            uint256 price = Escrow(clonedContracts[index]).price();
+
+            emit DisputeClosed(clonedContractsIndex, returnFundsToBuyer, price, tokenContractAddress);
         }
     }
 
