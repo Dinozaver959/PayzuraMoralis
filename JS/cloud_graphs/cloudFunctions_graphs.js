@@ -1,4 +1,218 @@
-const logger = Moralis.Cloud.getLogger();
+
+//-----------------------------------------------------------------------------------------------
+//             Functions for JobZura / job marketplace (separate project for now)
+//-----------------------------------------------------------------------------------------------
+
+Moralis.Cloud.define("GetUserGigs", async (request) => {
+  const query = new Moralis.Query("Gigs");
+  query.equalTo("BuyerWallet", request.params.UserWallet);
+  return await query.find();
+});
+
+Moralis.Cloud.define("GetAllGigs", async (request) => {
+  const query = new Moralis.Query("Gigs");
+  return await query.find();
+});
+
+
+
+//------------------------------------------------------------------------------------------------
+//                                    Get all Messages
+//------------------------------------------------------------------------------------------------
+
+
+Moralis.Cloud.define("getAllMessages", async (request) => {
+  
+  const query = new Moralis.Query("Messages");
+  const result = await query.find();
+
+  const userQuery = new Moralis.Query(Moralis.User);
+  const userResult = await userQuery.find({ userMasterKey : true });
+
+  const messages = result.map((data) => {
+    return userResult.map((res) => {
+      if (data.attributes.userId === res.id) {
+        return {
+          data,
+          userId: res.id,
+          userName: res.attributes.userName,
+          ethAddress: res.attributes.ethAddress,
+        };
+      }
+    }).filter(n => n);
+  });
+  
+});
+
+
+
+
+//-----------------------------------------------------------------------------------------------
+//                             Functions for new /my-contracts page
+//-----------------------------------------------------------------------------------------------
+
+Moralis.Cloud.define("GetUserContracts", async (request) => {
+
+  const querySeller = new Moralis.Query("Agreements");
+  querySeller.equalTo("SellerWallet", request.params.UserWallet);
+
+  const queryBuyer = new Moralis.Query("Agreements");
+  queryBuyer.equalTo("BuyerWallet", request.params.UserWallet);
+
+  const mainQuery = Moralis.Query.or(querySeller, queryBuyer);
+
+  return await mainQuery.find();
+});
+
+
+Moralis.Cloud.define("GetContractsOffered", async (request) => {    
+ 
+  const query1 = new Moralis.Query("Agreements"); 
+  query1.equalTo("State", "Available");
+  query1.contains("PersonalizedOffer", request.params.UserWallet);
+  
+  const query2 = new Moralis.Query("Agreements");    
+  query2.equalTo("State", "buyer_initialized_and_paid"); 
+  query2.contains("PersonalizedOffer", request.params.UserWallet);
+  
+  const mainQuery = Moralis.Query.or(query1, query2);
+  return await mainQuery.find();  
+});
+
+
+Moralis.Cloud.define("GetContractsToValidate", async (request) => {    
+ 
+  const query1 = new Moralis.Query("Agreements"); 
+  query1.equalTo("State", "dispute"); 
+  
+  const query2 = new Moralis.Query("Agreements");    
+  query2.equalTo("State", "disputeSolved"); 
+  
+  const mainQuery = Moralis.Query.or(query1, query2);
+  mainQuery.contains("Arbiters", request.params.UserWallet);
+  return await mainQuery.find();  
+});
+
+
+
+
+//-----------------------------------------------------------------------------------------------
+//                                  Contract created by Seller
+//-----------------------------------------------------------------------------------------------
+
+Moralis.Cloud.define("GetPublicOffers", async (request) => {            //  need to differentiate between Contract created by Buyer and Contract created by Seller 
+  const query = new Moralis.Query("Agreements");    
+  query.equalTo("State", "Available");
+  query.equalTo("PersonalizedOffer", "");
+  return await query.find();                  
+});
+
+
+Moralis.Cloud.define("GetPersonalizedOffers", async (request) => {      //  need to differentiate between Contract created by Buyer and Contract created by Seller
+  const query = new Moralis.Query("Agreements");    
+  query.equalTo("State", "Available");
+  query.contains("PersonalizedOffer", request.params.UserWallet);
+  return await query.find();                  
+});
+
+
+
+
+//-----------------------------------------------------------------------------------------------
+//                                  Contract created by Buyer
+//-----------------------------------------------------------------------------------------------
+
+Moralis.Cloud.define("GetPublicOffers_CreatedByBuyer_await_seller_accepts_ALL", async (request) => {            
+  const query = new Moralis.Query("Agreements");    
+  query.equalTo("State", "await_seller_accepts");                       // possible states on smart contract level:
+                                                                        // buyer_initialized, buyer_initialized_and_paid, await_seller_accepts
+  //query.equalTo("PersonalizedOffer", "");   // ?
+  return await query.find();                  
+});
+
+Moralis.Cloud.define("GetPublicOffers_CreatedByBuyer_await_seller_accepts", async (request) => {            
+  const query = new Moralis.Query("Agreements");    
+  query.equalTo("State", "await_seller_accepts");
+  query.equalTo("BuyerWallet", request.params.UserWallet);
+  return await query.find();                  
+});
+
+Moralis.Cloud.define("GetPublicOffers_CreatedByBuyer_buyer_initialized", async (request) => {            
+  const query = new Moralis.Query("Agreements");    
+  query.equalTo("State", "buyer_initialized");
+  query.equalTo("BuyerWallet", request.params.UserWallet);
+  return await query.find();                  
+});
+
+Moralis.Cloud.define("GetPublicOffers_CreatedByBuyer_buyer_initialized_and_paid", async (request) => {            
+  const query = new Moralis.Query("Agreements");    
+  query.equalTo("State", "buyer_initialized_and_paid");
+  query.equalTo("BuyerWallet", request.params.UserWallet);
+  return await query.find();                  
+});
+
+
+
+
+//------------------------------------------------------------------------------------------------
+//                    Later Stage of Contracts - Common for both initiators
+//------------------------------------------------------------------------------------------------
+
+
+Moralis.Cloud.define("GetDisputesToManage", async (request) => {    
+ 
+  const query1 = new Moralis.Query("Agreements"); 
+  query1.equalTo("State", "dispute"); 
+  
+  const query2 = new Moralis.Query("Agreements");    
+  query2.equalTo("State", "disputeSolved"); 
+  
+  const mainQuery = Moralis.Query.or(query1, query2);
+  mainQuery.contains("Arbiters", request.params.UserWallet);
+  return await mainQuery.find();  
+});
+
+
+Moralis.Cloud.define("GetUsersAgreements", async (request) => {
+
+  const querySeller = new Moralis.Query("Agreements");
+  querySeller.equalTo("SellerWallet", request.params.UserWallet);
+
+  const queryBuyer = new Moralis.Query("Agreements");
+  queryBuyer.equalTo("BuyerWallet", request.params.UserWallet);
+
+  const mainQuery = Moralis.Query.or(querySeller, queryBuyer);
+
+  return await mainQuery.find();
+});
+
+
+Moralis.Cloud.define("GetUsersAgreementsOnlyBuyer", async (request) => {
+
+  const queryBuyer = new Moralis.Query("Agreements");
+  queryBuyer.equalTo("BuyerWallet", request.params.UserWallet);
+
+  return await queryBuyer.find();
+});
+
+
+Moralis.Cloud.define("GetUsersAgreementsOnlySeller", async (request) => {
+
+  const querySeller = new Moralis.Query("Agreements");
+  querySeller.equalTo("SellerWallet", request.params.UserWallet);
+
+  return await querySeller.find();
+});
+
+
+Moralis.Cloud.define("GetUsersDetails", async (request) => {
+
+  const querySeller = new Moralis.Query("UserParticipationData");
+  querySeller.equalTo("userAddress", request.params.UserWallet);
+
+  return await querySeller.find();
+});
+
 
 
 //-----------------------------------------------------------------------------------------------
@@ -232,7 +446,6 @@ Moralis.Cloud.beforeSave("OfferCreatedBuyer", async (request) => {
 
   const time = request.object.get("block_timestamp");
   const time_ = (time.toString()).split(" ");
-  //const day = time_[0] + ' ' + time_[1] + ' ' + time_[2] + ' ' + time_[3];    // time.toString()   ' at'
   const month = await (Moralis.Cloud.run("MonthToNum", { "month" : time_[1] }));
   const day = time_[2] + '.' + month + '.' + time_[3];    // time.toString()   ' at' 
   request.object.set("block_day", day);
@@ -255,7 +468,6 @@ Moralis.Cloud.beforeSave("OfferAcceptedBuyer", async (request) => {
 
   const time = request.object.get("block_timestamp");
   const time_ = (time.toString()).split(" ");
-  //const day = time_[0] + ' ' + time_[1] + ' ' + time_[2] + ' ' + time_[3];    // time.toString()   ' at'
   const month = await (Moralis.Cloud.run("MonthToNum", { "month" : time_[1] }));
   const day = time_[2] + '.' + month + '.' + time_[3];    // time.toString()   ' at' 
   request.object.set("block_day", day);
@@ -267,7 +479,6 @@ Moralis.Cloud.beforeSave("OfferAcceptedSeller", async (request) => {
 
   const time = request.object.get("block_timestamp");
   const time_ = (time.toString()).split(" ");
-  //const day = time_[0] + ' ' + time_[1] + ' ' + time_[2] + ' ' + time_[3];    // time.toString()   ' at'
   const month = await (Moralis.Cloud.run("MonthToNum", { "month" : time_[1] }));
   const day = time_[2] + '.' + month + '.' + time_[3];    // time.toString()   ' at' 
   request.object.set("block_day", day);
@@ -279,7 +490,6 @@ Moralis.Cloud.beforeSave("DisputeStarted", async (request) => {
 
   const time = request.object.get("block_timestamp");
   const time_ = (time.toString()).split(" ");
-  //const day = time_[0] + ' ' + time_[1] + ' ' + time_[2] + ' ' + time_[3];    // time.toString()   ' at'
   const month = await (Moralis.Cloud.run("MonthToNum", { "month" : time_[1] }));
   const day = time_[2] + '.' + month + '.' + time_[3];    // time.toString()   ' at' 
   request.object.set("block_day", day);
@@ -291,7 +501,6 @@ Moralis.Cloud.beforeSave("DeliveryConfirmed", async (request) => {
 
   const time = request.object.get("block_timestamp");
   const time_ = (time.toString()).split(" ");
-  //const day = time_[0] + ' ' + time_[1] + ' ' + time_[2] + ' ' + time_[3];    // time.toString()   ' at'
   const month = await (Moralis.Cloud.run("MonthToNum", { "month" : time_[1] }));
   const day = time_[2] + '.' + month + '.' + time_[3];    // time.toString()   ' at' 
   request.object.set("block_day", day);
@@ -303,7 +512,6 @@ Moralis.Cloud.beforeSave("FundsClaimed", async (request) => {
 
   const time = request.object.get("block_timestamp");
   const time_ = (time.toString()).split(" ");
-  //const day = time_[0] + ' ' + time_[1] + ' ' + time_[2] + ' ' + time_[3];    // time.toString()   ' at'
   const month = await (Moralis.Cloud.run("MonthToNum", { "month" : time_[1] }));
   const day = time_[2] + '.' + month + '.' + time_[3];    // time.toString()   ' at' 
   request.object.set("block_day", day);
@@ -315,7 +523,6 @@ Moralis.Cloud.beforeSave("PaymentReturned", async (request) => {
 
   const time = request.object.get("block_timestamp");
   const time_ = (time.toString()).split(" ");
-  //const day = time_[0] + ' ' + time_[1] + ' ' + time_[2] + ' ' + time_[3];    // time.toString()   ' at'
   const month = await (Moralis.Cloud.run("MonthToNum", { "month" : time_[1] }));
   const day = time_[2] + '.' + month + '.' + time_[3];    // time.toString()   ' at' 
   request.object.set("block_day", day);
@@ -327,7 +534,6 @@ Moralis.Cloud.beforeSave("DisputeVoted", async (request) => {
 
   const time = request.object.get("block_timestamp");
   const time_ = (time.toString()).split(" ");
-  //const day = time_[0] + ' ' + time_[1] + ' ' + time_[2] + ' ' + time_[3];    // time.toString()   ' at'
   const month = await (Moralis.Cloud.run("MonthToNum", { "month" : time_[1] }));
   const day = time_[2] + '.' + month + '.' + time_[3];    // time.toString()   ' at' 
   request.object.set("block_day", day);
@@ -339,7 +545,6 @@ Moralis.Cloud.beforeSave("DisputeClosed", async (request) => {
 
   const time = request.object.get("block_timestamp");
   const time_ = (time.toString()).split(" ");
-  //const day = time_[0] + ' ' + time_[1] + ' ' + time_[2] + ' ' + time_[3];    // time.toString()   ' at'
   const month = await (Moralis.Cloud.run("MonthToNum", { "month" : time_[1] }));
   const day = time_[2] + '.' + month + '.' + time_[3];    // time.toString()   ' at' 
   request.object.set("block_day", day);
@@ -351,7 +556,6 @@ Moralis.Cloud.beforeSave("ContractCanceled", async (request) => {
 
   const time = request.object.get("block_timestamp");
   const time_ = (time.toString()).split(" ");
-  //const day = time_[0] + ' ' + time_[1] + ' ' + time_[2] + ' ' + time_[3];    // time.toString()   ' at'
   const month = await (Moralis.Cloud.run("MonthToNum", { "month" : time_[1] }));
   const day = time_[2] + '.' + month + '.' + time_[3];    // time.toString()   ' at' 
   request.object.set("block_day", day);
@@ -399,11 +603,9 @@ Moralis.Cloud.beforeSave("AggregatedEvents", async (request) => {
 });
 
 
-
-
 //------------------------------------------------------------------------------------------------
-// basically we need:  create the event syncs for each new contract deployed - the beforeSave works only for events after the event sync is in place (same goes for afterSave)
-// so we should set up the event syncs before running contracts
+
+
 
 
 

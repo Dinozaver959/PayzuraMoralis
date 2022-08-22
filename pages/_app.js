@@ -29,8 +29,13 @@ function MyApp({ Component, pageProps }) {
     return (
         <div className={darkMode ? "layoutMain darkMode" : "layoutMain"}>
             <MoralisProvider
-                appId="FltzNNp8ebZsRkVnPTd6RKWTF2XoTLmVDMHSicVd"
-                serverUrl="https://rbfqybjb4vga.usemoralis.com:2053/server"
+                // ETH Server
+                //const serverUrl = "https://rbfqybjb4vga.usemoralis.com:2053/server"
+                //const appId = "FltzNNp8ebZsRkVnPTd6RKWTF2XoTLmVDMHSicVd"
+
+                // Matic Server 
+                serverUrl = "https://gbmvbywfzibe.usemoralis.com:2053/server"
+                appId = "6KNO1YxYUUp26EgElEHsfQ8ywPTJfs6D1C2H2yMR"
             >
                 <Head>
                     <title>Payzura</title>
