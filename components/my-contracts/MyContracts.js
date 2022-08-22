@@ -132,9 +132,29 @@ function MyContractsContainer(props) {
       updatedList = updatedList.filter(
         (orders) => orders.name.State === "Available"
       );
-    } else if (filterStates === "Not Available") {
+    } else if (filterStates === "buyer_initialized") {
       updatedList = updatedList.filter(
-        (orders) => orders.name.State === "Not Available"
+        (orders) => orders.name.State === "buyer_initialized"
+      );
+    } else if (filterStates === "buyer_initialized_and_paid") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.State === "buyer_initialized_and_paid"
+      );
+    } else if (filterStates === "await_seller_accepts") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.State === "await_seller_accepts"
+      );
+    } else if (filterStates === "paid") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.State === "paid"
+      );
+    } else if (filterStates === "complete") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.State === "complete"
+      );
+    } else if (filterStates === "dispute") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.State === "dispute"
       );
     }
 
@@ -248,8 +268,28 @@ function MyContractsContainer(props) {
                 value: "Available",
               },
               {
-                label: "Not Available",
-                value: "Not Available",
+                label: "Buyer Initialized",
+                value: "buyer_initialized",
+              },
+              {
+                label: "Buyer Initialized and Paid",
+                value: "buyer_initialized_and_paid",
+              },
+              {
+                label: "Await Seller Accepts",
+                value: "await_seller_accepts",
+              },
+              {
+                label: "Paid",
+                value: "paid",
+              },
+              {
+                label: "Complete",
+                value: "complete",
+              },
+              {
+                label: "Dispute",
+                value: "dispute",
               },
             ]}
           />
