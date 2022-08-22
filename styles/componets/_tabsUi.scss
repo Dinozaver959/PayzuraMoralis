@@ -6,6 +6,8 @@
       border-bottom: none;
       @include BorderRadius($CardRounded $CardRounded 0 0);
       // background: rgba($BlackColor, 0.03);
+      border: 1px solid transparent;
+      border-bottom: none;
 
       + .tabItem {
         margin-left: 5px;
@@ -13,6 +15,7 @@
 
       &.active {
         background: $WhiteColor;
+        border-color: $WhiteColor;
 
         button {
           color: $PrimaryColor;
@@ -46,6 +49,32 @@
 
     .tabContent {
       padding-top: 1rem;
+    }
+  }
+}
+
+.darkMode {
+  .TabsUiMain {
+    .headerTabs {
+      .tabItem {
+        &.active {
+          background: transparent;
+          border-color: $FontColorDark;
+
+          button {
+            color: $LightBlueColor;
+          }
+        }
+
+        > button {
+          color: $FontColorLight;
+        }
+      }
+    }
+
+    .tabsContainerMain {
+      background: transparent;
+      border-color: $FontColorDark;
     }
   }
 }

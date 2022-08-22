@@ -198,9 +198,19 @@
 }
 
 .buyerSelerSelection {
+  padding-left: 270px;
+
+  @include RespondTo(SmallDesktop) {
+    padding-left: 0;
+  }
+
   ul {
-    @extend %FlexRow-CenterCenter;
+    @extend %FlexRow-CenterStart;
     margin-bottom: 1rem;
+
+    @include RespondTo(SmallDesktop) {
+      justify-content: center;
+    }
 
     @include RespondTo(MobileDevices) {
       margin-bottom: 0.7rem;
@@ -295,7 +305,7 @@
 
 .contractCreationFormMain {
   width: 100%;
-  max-width: 750px;
+  max-width: 780px;
   padding: 20px 0;
 
   .formLabel {

@@ -4,6 +4,8 @@ import BarChart from '../components/Charts/BarChart.js'
 import LineChart from '../components/Charts/LineChart.js'
 import PieChart from '../components/Charts/PieChart.js'
 import { UserData } from "../components/Charts/Chart_Data.js";
+import ETHIc from "../components/icons/eth.js";
+import USDCIc from "../components/icons/usdc.js";
 
 export default function Home(props) {
 
@@ -255,6 +257,45 @@ export default function Home(props) {
 
 
         {/* MORALIS EVENT SYNC GRAPHS */}
+        <div className="dashboardBlocks">
+          <div className="blockMain">
+            <div className="blockIcon">
+              <ETHIc size="52" color="white" />
+            </div>
+            <div className="blockValue">
+              <h3>{cumulativeETHTotal?.toFixed(3)}</h3>
+              <div className="blockItemLabel">Total available ETH</div>
+            </div>
+          </div>
+          <div className="blockMain">
+            <div className="blockIcon">
+              <USDCIc size="52" color="white" />
+            </div>
+            <div className="blockValue">
+              <h3>{cumulativeUSDCTotal?.toFixed(3)}</h3>
+              <div className="blockItemLabel">Total available USDC</div>
+            </div>
+          </div>
+          <div className="blockMain">
+            <div className="blockIcon">
+              <ETHIc size="52" color="white" />
+            </div>
+            <div className="blockValue">
+              <h3>{cumulativeETHTotal?.toFixed(3)}</h3>
+              <div className="blockItemLabel">Total available ETH</div>
+            </div>
+          </div>
+          <div className="blockMain">
+            <div className="blockIcon">
+              <USDCIc size="52" color="white" />
+            </div>
+            <div className="blockValue">
+              <h3>{cumulativeUSDCTotal?.toFixed(3)}</h3>
+              <div className="blockItemLabel">Total available USDC</div>
+            </div>
+          </div>
+        </div>
+
         <div className="chartContainer">
 
           <div className="card">
@@ -269,7 +310,13 @@ export default function Home(props) {
                   scales: {y: {beginAtZero: true}},
                   plugins:{
                     title: {display: false, text: 'Contracts Made and Disputes solved'},
-                    legend: {position: 'top'},
+                    legend: {position: 'top', align: 'end',
+                      labels: {boxWidth: 10, boxHeight: 10,
+                        font: {
+                          weight: 100
+                        }
+                      },
+                    },
                   }
                 }}/>
               </div>
@@ -286,51 +333,67 @@ export default function Home(props) {
                   scales: {y: {beginAtZero: true}},
                   plugins:{
                     title: {display: false, text: 'Contracts Made and Disputes solved'},
-                    legend: {position: 'top'},
-                  }
+                    legend: {position: 'top', align: 'end',
+                      labels: {boxWidth: 10, boxHeight: 10,
+                        font: {
+                          weight: 100
+                        }
+                      },
+                    },
+                  },
                 }}
               />
               </div>
           </div>
-        </div>
 
+          <div className="card">
+            <div className="cardHeader">
+              <div className="cardTitle">ETH locked in contracts</div>
+            </div>
+            <div className="cardBody">
+              <LineChart chartData={ETHValueLineGraph} 
+                options={{            
+                  maintainAspectRatio: false,
+                  scales: {y: {beginAtZero: true}},
+                  plugins:{
+                    title: {display: false, text: 'ETH locked in contracts'},
+                    legend: {position: 'top', align: 'end',
+                      labels: {boxWidth: 10, boxHeight: 10,
+                        font: {
+                          weight: 100
+                        }
+                      },
+                    },
+                  }
+                }}
+              />
+            </div>
+          </div>
 
-        <div className="ContainerDashboard">
-          <div className="Chart">
-            <LineChart chartData={ETHValueLineGraph} 
-              options={{            
-                maintainAspectRatio: false,
-                scales: {y: {beginAtZero: true}},
-                plugins:{
-                  title: {display: true, text: 'ETH locked in contracts'},
-                  legend: {position: 'bottom'},
-                }
-              }}
-            />
+          <div className="card">
+            <div className="cardHeader">
+              <div className="cardTitle">USDC locked in contracts</div>
+            </div>
+            <div className="cardBody">
+              <LineChart chartData={USDCValueLineGraph} 
+                options={{            
+                  maintainAspectRatio: false,
+                  scales: {y: {beginAtZero: true}},
+                  plugins:{
+                    title: {display: false, text: 'USDC locked in contracts'},
+                    legend: {position: 'top', align: 'end',
+                      labels: {boxWidth: 10, boxHeight: 10,
+                        font: {
+                          weight: 100
+                        }
+                      },
+                    },
+                  }
+                }}
+              />
+            </div>
           </div>
-          
-          <div className="Chart">
-            <LineChart chartData={USDCValueLineGraph} 
-              options={{            
-                maintainAspectRatio: false,
-                scales: {y: {beginAtZero: true}},
-                plugins:{
-                  title: {display: true, text: 'USDC locked in contracts'},
-                  legend: {position: 'bottom'},
-                }
-              }}
-            />
-          </div>
-        </div>
 
-        <div className="ContainerDashboard">  
-          <div>
-            Total amount transacted:   (Format this part in a nice way)
-            <br></br>
-            ETH: {cumulativeETHTotal?.toFixed(3)} 
-            <br></br>
-            USDC: {cumulativeUSDCTotal?.toFixed(3)}
-          </div>
         </div>
 
       </div>

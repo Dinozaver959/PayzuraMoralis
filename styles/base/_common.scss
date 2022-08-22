@@ -139,6 +139,14 @@
   .currencyIc {
     border-color: lighten($BorderLight, 5%);
   }
+
+  .noteText {
+    color: rgba($FontColorLight, 0.75);
+  
+    strong {
+      color: $FontColorLight;
+    }
+  }
 }
 
 .hideSmallerThanIpad {

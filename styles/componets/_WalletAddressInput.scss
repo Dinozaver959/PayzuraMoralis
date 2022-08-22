@@ -35,10 +35,43 @@
 
   .fieldWithPlus {
     @extend %FlexRow-CenterBetween;
-    
+
     .walletInputField {
-        @include Size(100%, 32px);
-        border: none;
+      @include Size(100%, 32px);
+      border: none;
+      background: none;
+
+      + .linkButton {
+        @extend %FlexCol-CenterCenter;
       }
+    }
+  }
+}
+
+.darkMode {
+  .walletInputParent {
+    border-color: $BorderLight;
+
+    .enteredValidatedWallets {
+      .walletChip {
+        background: rgba($BorderLight, 0.7);
+
+        &:hover {
+          background: rgba($BorderLight, 1);
+        }
+      }
+    }
+
+    .fieldWithPlus {
+      .walletInputField {
+        + .linkButton {
+          svg {
+            path {
+              fill: $WhiteColor;
+            }
+          }
+        }
+      }
+    }
   }
 }

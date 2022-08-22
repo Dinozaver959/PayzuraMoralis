@@ -13,7 +13,7 @@
     color: $SecondaryColor;
   }
 
-  .priceSliderThumb  {
+  .priceSliderThumb {
     @include Size(16px, 16px);
   }
 }
@@ -34,5 +34,40 @@
   .MuiSlider-valueLabelCircle {
     transform: rotate(45deg);
     @include Font(null, 0.7rem, $WhiteColor, null, 600);
+  }
+}
+
+.darkMode {
+  .priceSliderRoot {
+    .priceSliderRail {
+      color: rgba($WhiteColor, 0.25);
+    }
+
+    .priceSliderTrack {
+      color: $SecondaryColor;
+    }
+
+    .priceSliderThumb {
+      @include Size(16px, 16px);
+    }
+  }
+
+  .MuiSlider-valueLabelOpen {
+    @include Size(36px, 36px);
+    @extend %FlexCol-CenterCenter;
+    transform: rotate(-45deg) !important;
+    @include BorderRadius(50% 50% 50% 0);
+    background-color: $PrimaryColor;
+    left: 3px;
+    top: -60px;
+
+    &::before {
+      display: none;
+    }
+
+    .MuiSlider-valueLabelCircle {
+      transform: rotate(45deg);
+      @include Font(null, 0.7rem, $WhiteColor, null, 600);
+    }
   }
 }

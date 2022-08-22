@@ -49,3 +49,31 @@
     }
   }
 }
+
+.darkMode {
+  .selectDropdown {
+    .selectedOption {
+      border-color: $BorderLight;
+      color: $FontColorLight;
+
+      &::after {
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' %3E%3Cpath fill='%23FFFFFF' d='M12 13.172l4.95-4.95 1.414 1.414L12 16 5.636 9.636 7.05 8.222z' /%3E%3C/svg%3E");
+      }
+    }
+
+    .dropdownContainer {
+      background: $DarkBg;
+      border-color: $BorderLight;
+
+      .dropdownList {
+        .dropdownListItems {
+          border-bottom-color: $BorderLight;
+
+          &:hover {
+            background: rgba($BlackColor, 0.2);
+          }
+        }
+      }
+    }
+  }
+}

@@ -45,3 +45,31 @@
     }
   }
 }
+
+.darkMode {
+  .containerWithSidebar {
+    .filtersMain {
+      .sidebarHeader {
+        color: $FontColorLight;
+        border-bottom-color: $BorderLight;
+      }
+
+      .filterOption {
+        .filterTitle {
+          color: $FontColorLight;
+          background: rgba($BlackColor, 0.05);
+        }
+      }
+    }
+
+    .filtersContainer {
+      .containerHeader {
+        border-bottom-color: $BorderLight;
+
+        .totalData {
+          color: $FontColorLight;
+        }
+      }
+    }
+  }
+}

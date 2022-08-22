@@ -23,7 +23,7 @@
 
     .cardTitle {
       flex: 2;
-      @include Font(null, 1rem, $FontColorDark, null, 600);
+      @include Font(null, 1.1rem, $FontColorDark, null, 600);
 
       h2 {
         margin: 0;
@@ -94,8 +94,11 @@
     box-shadow: none;
 
     .cardHeader {
+      border-bottom-color: $BorderLight;
+
       .cardTitle {
         flex: 2;
+        color: $WhiteColor;
       }
     }
 

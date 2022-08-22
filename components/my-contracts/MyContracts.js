@@ -336,7 +336,7 @@ function MyContractsContainer(props) {
         ) : filteredList[0] && filteredList ? (
           <Table_normal data={filteredList} />
         ) : (
-          <div className="noData">
+          <div className="noData mt-20">
             <i>
               <PlaceholderIc />
             </i>
