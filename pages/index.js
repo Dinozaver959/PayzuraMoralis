@@ -3,6 +3,7 @@ import Navigation from "../components/Navigation.js";
 import BarChart from '../components/Charts/BarChart.js'
 import LineChart from '../components/Charts/LineChart.js'
 import PieChart from '../components/Charts/PieChart.js'
+import DoughnutChart from '../components/Charts/DoughnutChart.js'
 import { UserData } from "../components/Charts/Chart_Data.js";
 import ETHIc from "../components/icons/eth.js";
 import USDCIc from "../components/icons/usdc.js";
@@ -16,28 +17,42 @@ export default function Home(props) {
   const [dataDays, setDataDays] = useState([]);               // set of days
   const [contractsMade, setContractsMade] = useState([]);     // OfferAcceptedBuyer + OfferAcceptedSeller    for each day
   const [disputesClosed, setDisputesClosed] = useState([]);   // Disputes closed for each day
-  const [ETHValue, setETHValue] = useState([]);               // ETH Value for each day
-  const [USDCValue, setUSDCValue] = useState([]);             // USDC Value for each day
+  const [ETHValueTransacted, setETHValueTransacted] = useState([]);               // ETH Value for each day
+  const [USDCValueTransacted, setUSDCValueTransacted] = useState([]);             // USDC Value for each day
 
   const [cumulativeETHTotal, setCumulativeETHTotal] = useState();
   const [cumulativeUSDCTotal, setCumulativeUSDCTotal] = useState();
 
 
-  // Graph Set Data
-  const [ContractsMadeAndDisputedBarGraph, setContractsMadeAndDisputedBarGraph] = useState({
+  const [ETHValueLocked, setETHValueLocked] = useState([]);               // ETH Value Locked for each day
+  const [USDCValueLocked, setUSDCValueLocked] = useState([]);             // USDC Value Locked for each day
+
+  const [totalNumberOfUsers, setTotalNumberOfUsers] = useState();         // TotalNumberOfUsers
+  const [totalNumberOfDisputesStarted, setTotalNumberOfDisputesStarted] = useState(); // TotalNumberOfDisputesStarted
+  const [totalNumberOfContracts, setTotalNumberOfContracts] = useState(); // TotalNumberOfContract
+
+
+
+
+  // Chart Set Data
+  const [ContractsMadeAndDisputedBarChart, setContractsMadeAndDisputedBarChart] = useState({
     labels: "", 
     datasets: [{}]
   });   
-  const [ContractsMadeAndDisputedLineGraph, setContractsMadeAndDisputedLineGraph] = useState({
+  const [ContractsMadeAndDisputedLineChart, setContractsMadeAndDisputedLineChart] = useState({
     labels: "", 
     datasets: [{}]
   });  
 
-  const [ETHValueLineGraph, setETHValueLineGraph] = useState({
+  const [ETHValueTransactedLineChart, setETHValueTransactedLineChart] = useState({
     labels: "", 
     datasets: [{}]
   });  
-  const [USDCValueLineGraph, setUSDCValueLineGraph] = useState({
+  const [USDCValueTransactedLineChart, setUSDCValueTransactedLineChart] = useState({
+    labels: "", 
+    datasets: [{}]
+  });  
+  const [FrequencyOfDisputesDoughnutChart, setFrequencyOfDisputesDoughnutChart] = useState({
     labels: "", 
     datasets: [{}]
   });  
@@ -50,28 +65,44 @@ export default function Home(props) {
       .then((json) => setData(json));
     }
 
+    const GetTotalNumberOfUsers = async () => {
+      const data = await fetch(`./api/api-getTotalNumberOfUsers`)
+      .then((res) => res.json())
+      .then((json) => setTotalNumberOfUsers(json));
+    }
+
+    const GetTotalNumberOfContracts = async () => {
+      const data = await fetch(`./api/api-getTotalNumberOfContracts`)
+      .then((res) => res.json())
+      .then((json) => setTotalNumberOfContracts(json));
+    }
+
     getCollectionsDetails().catch(console.error);
+    GetTotalNumberOfUsers().catch(console.error);
+    GetTotalNumberOfContracts().catch(console.error);
   },[]);
 
   useEffect(() => {
     PrepareContractsMade();
     PrepareDisputesClosed();
-    PrepareETHvalue();
-    PrepareUSDCvalue();
+    PrepareETHvalueTransacted();
+    PrepareUSDCvalueTransacted();
+    PrepareETHvalueLocked();
+    PrepareUSDCvalueLocked();
+    PrepareTotalNumberOfDisputes();
     PrepareDays();
   }, [data]);
-
 
   useEffect(() => {
     const cumulativeContractsMade = accumulate(contractsMade);
     const cumulativeDisputesClosed = accumulate(disputesClosed);
-    const cumulativeETHValue = accumulate(ETHValue);
-    const cumulativeUSDCValue = accumulate(USDCValue);
+    const cumulativeETHValueTransacted = accumulate(ETHValueTransacted);
+    const cumulativeUSDCValueTransacted = accumulate(USDCValueTransacted);
 
-    setCumulativeETHTotal(cumulativeETHValue[cumulativeETHValue.length - 1]);
-    setCumulativeUSDCTotal(cumulativeUSDCValue[cumulativeETHValue.length - 1]);
+    setCumulativeETHTotal(cumulativeETHValueTransacted[cumulativeETHValueTransacted.length - 1]);
+    setCumulativeUSDCTotal(cumulativeUSDCValueTransacted[cumulativeUSDCValueTransacted.length - 1]);
 
-    setContractsMadeAndDisputedBarGraph({
+    setContractsMadeAndDisputedBarChart({
       labels: dataDays,
       datasets: [{
         label: "New Contracts Made",
@@ -93,20 +124,20 @@ export default function Home(props) {
       }]
     });
 
-    setContractsMadeAndDisputedLineGraph({
+    setContractsMadeAndDisputedLineChart({
       labels: dataDays,
       datasets: [{
         label: "New Contracts Made",
         data: contractsMade,
-        backgroundColor: ["#1ad797"],
-        borderColor: "#1ad797",
+        backgroundColor: ["#99CC33"],
+        borderColor: "#99CC33",
         borderWidth: "3",
       },
       {
         label: "Disputes Solved",
         data: disputesClosed,
-        backgroundColor: ["#f99700"],
-        borderColor: "#f99700",
+        backgroundColor: ["#FF6633"],
+        borderColor: "#FF6633",
         borderWidth: "3",
       },
       {
@@ -125,45 +156,73 @@ export default function Home(props) {
       }]
     });
  
-    setETHValueLineGraph({
+    setETHValueTransactedLineChart({
       labels: dataDays,
       datasets: [{
-        label: "New ETH Value Locked",
-        data: ETHValue,
+        label: "ETH Value Transacted",
+        data: ETHValueTransacted,
         backgroundColor: ["#FDD061"],
         borderColor: "#FDD061",
         borderWidth: "3",
       },
       {
-        label: "Cumulative ETH Value Locked",
-        data: cumulativeETHValue,
+        label: "Cumulative ETH Value Transacted",
+        data: cumulativeETHValueTransacted,
         backgroundColor: ["#2F499D"],
         borderColor: "#2F499D",
+        borderWidth: "3",
+      },
+      {
+        label: "ETH Value Locked",
+        data: ETHValueLocked,
+        backgroundColor: ["#99CC33"],
+        borderColor: "#99CC33",
         borderWidth: "3",
       }]
     });
 
-    setUSDCValueLineGraph({
+    setUSDCValueTransactedLineChart({
       labels: dataDays,
       datasets: [{
-        label: "New USDC Value Locked",
-        data: USDCValue,
+        label: "USDC Value Transacted",
+        data: USDCValueTransacted,
         backgroundColor: ["#FDD061"],
         borderColor: "#FDD061",
         borderWidth: "3",
       },
       {
-        label: "Cumulative USDC Value Locked",
-        data: cumulativeUSDCValue,
+        label: "Cumulative USDC Value Transacted",
+        data: cumulativeUSDCValueTransacted,
         backgroundColor: ["#2F499D"],
         borderColor: "#2F499D",
         borderWidth: "3",
+      },
+      {
+        label: "USDC Value Locked",
+        data: USDCValueLocked,
+        backgroundColor: ["#99CC33"],
+        borderColor: "#99CC33",
+        borderWidth: "3",
+      }]
+    });
+
+    setFrequencyOfDisputesDoughnutChart({
+      labels: ["all contracts", "disputes"],
+      datasets: [{
+        label: "Frequency of Disputes...",
+        data: [ totalNumberOfContracts, totalNumberOfDisputesStarted ],
+        borderWidth: "1",
+        backgroundColor: [
+          '#2F499D', //'rgb(54, 162, 235)',
+          '#FF6633', //'rgb(255, 99, 132)',
+        ],
+        hoverOffset: 4,
       }]
     });
   }, [dataDays]);
 
 
-  // prepare data for graphs
+  // prepare data for Charts
   function PrepareContractsMade() {
 
     var array = [];
@@ -194,27 +253,74 @@ export default function Home(props) {
     setDisputesClosed(array);
   };
 
-  function PrepareETHvalue() {
+  function PrepareTotalNumberOfDisputes(){
+    
+    var sum = 0;
+    for (let i = 0; i < data.length; i++) {
+      sum += data[i].DisputeStarted;
+    }
+
+    setTotalNumberOfDisputesStarted(sum);
+  }
+
+  function PrepareETHvalueTransacted() {
 
     var array = [];
     for (let i = 0; i < data.length; i++) {
-      array.push((data[i].valueSeller_0x0000000000000000000000000000000000000000 + data[i].valueBuyer_0x0000000000000000000000000000000000000000) / (10**18));
+      array.push((data[i].valueSellerAccepted_0x0000000000000000000000000000000000000000 + data[i].valueBuyerAccepted_0x0000000000000000000000000000000000000000) / (10**18));
     }
 
-    setETHValue(array);
+    setETHValueTransacted(array);
   };
 
-  function PrepareUSDCvalue() {
+  function PrepareUSDCvalueTransacted() {
 
     var array = [];
     for (let i = 0; i < data.length; i++) {
       array.push((data[i].valueSeller_0x2791bca1f2de4661ed88a30c99a7a9449aa84174 + data[i].valueBuyer_0x2791bca1f2de4661ed88a30c99a7a9449aa84174) / (10**6));
     }
 
-    setUSDCValue(array);
+    setUSDCValueTransacted(array);
+  };
+
+
+
+  function PrepareETHvalueLocked() {
+
+    var array = [];
+    for (let i = 0; i < data.length; i++) {
+      array.push((
+        data[i].valueSellerAccepted_0x0000000000000000000000000000000000000000 
+        + data[i].valueBuyerAccepted_0x0000000000000000000000000000000000000000
+        - data[i].valueFundsClaimed_0x0000000000000000000000000000000000000000 
+        - data[i].valuePaymentReturned_0x0000000000000000000000000000000000000000  
+        - data[i].valueDeliveryConfirmed_0x0000000000000000000000000000000000000000 
+        - data[i].valueDisputeClosed_0x0000000000000000000000000000000000000000 
+      ) / (10**18));
+    }
+
+    setETHValueLocked(array);
+  };
+
+  function PrepareUSDCvalueLocked() {
+
+    var array = [];
+    for (let i = 0; i < data.length; i++) {
+      array.push((
+        data[i].valueSellerAccepted_0x2791bca1f2de4661ed88a30c99a7a9449aa84174         
+        + data[i].valueBuyerAccepted_0x2791bca1f2de4661ed88a30c99a7a9449aa84174  
+        - data[i].valueFundsClaimed_0x2791bca1f2de4661ed88a30c99a7a9449aa84174
+        - data[i].valuePaymentReturned_0x2791bca1f2de4661ed88a30c99a7a9449aa84174
+        - data[i].valueDeliveryConfirmed_0x2791bca1f2de4661ed88a30c99a7a9449aa84174
+        - data[i].valueDisputeClosed_0x2791bca1f2de4661ed88a30c99a7a9449aa84174
+      ) / (10**6));
+    }
+
+    setUSDCValueLocked(array);
   };
 
   
+
   // cumulative function
   const accumulate = array_ => array_.map((sum => value => sum += value)(0));
   // --------------------------------------------------------------------------------------------------------------------
@@ -241,10 +347,10 @@ export default function Home(props) {
           <h1>Dashboard</h1>
         </div>
 
-        <div className="noteText"><strong>Note:</strong> the contracts are still in constant development and with every new contract deployed we would need to redo the graphs on Dune Analytics. Hence these are just examples for now.</div>
+        <div className="noteText"><strong>Note:</strong>Note: the contracts are still in constant development and with every new contract deployed we would need to redo the graphs on Dune Analytics. Hence these are just examples for now.</div>
 
         {/* 
-          DUNE ANALYTICS GRAPHS
+          DUNE ANALYTICS ChartS
 
           <div className="ContainerDashboard">
             <iframe src="https://dune.com/embeds/984240/1705287/3684dc7f-f06b-4579-ba59-d3d498b81c10" height="500" width="500" title="chart 1"></iframe>
@@ -256,144 +362,133 @@ export default function Home(props) {
         */}
 
 
-        {/* MORALIS EVENT SYNC GRAPHS */}
-        <div className="dashboardBlocks">
-          <div className="blockMain">
-            <div className="blockIcon">
-              <ETHIc size="52" color="white" />
-            </div>
-            <div className="blockValue">
-              <h3>{cumulativeETHTotal?.toFixed(3)}</h3>
-              <div className="blockItemLabel">Total available ETH</div>
-            </div>
+        {/* MORALIS EVENT SYNC ChartS */}
+
+        <div className="ContainerDashboard">
+
+          <div className="Chart">
+            <BarChart 
+              chartData={ContractsMadeAndDisputedBarChart} 
+              options={{            
+                maintainAspectRatio: false,
+                scales: {y: {beginAtZero: true}},
+                plugins:{
+                  title: {display: false, text: 'Contracts Made and Disputes solved'},
+                  legend: {position: 'top', align: 'end',
+                    labels: {boxWidth: 10, boxHeight: 10,
+                      font: {
+                        weight: 100
+                      }
+                    },
+                  },
+                }
+              }}/>
           </div>
-          <div className="blockMain">
-            <div className="blockIcon">
-              <USDCIc size="52" color="white" />
-            </div>
-            <div className="blockValue">
-              <h3>{cumulativeUSDCTotal?.toFixed(3)}</h3>
-              <div className="blockItemLabel">Total available USDC</div>
-            </div>
-          </div>
-          <div className="blockMain">
-            <div className="blockIcon">
-              <ETHIc size="52" color="white" />
-            </div>
-            <div className="blockValue">
-              <h3>{cumulativeETHTotal?.toFixed(3)}</h3>
-              <div className="blockItemLabel">Total available ETH</div>
-            </div>
-          </div>
-          <div className="blockMain">
-            <div className="blockIcon">
-              <USDCIc size="52" color="white" />
-            </div>
-            <div className="blockValue">
-              <h3>{cumulativeUSDCTotal?.toFixed(3)}</h3>
-              <div className="blockItemLabel">Total available USDC</div>
-            </div>
+
+          <div className="Chart">
+            <LineChart chartData={ContractsMadeAndDisputedLineChart} 
+              options={{            
+                maintainAspectRatio: false,
+                scales: {y: {beginAtZero: true}},
+                plugins:{
+                  title: {display: false, text: 'Contracts Made and Disputes solved'},
+                  legend: {position: 'top', align: 'end',
+                    labels: {boxWidth: 10, boxHeight: 10,
+                      font: {
+                        weight: 100
+                      }
+                    },
+                  },
+                },
+              }}
+            />
           </div>
         </div>
 
-        <div className="chartContainer">
 
-          <div className="card">
-            <div className="cardHeader">
-              <div className="cardTitle">Contracts Made and Disputes solved</div>
-            </div>
-            <div className="cardBody">
-              <BarChart 
-                chartData={ContractsMadeAndDisputedBarGraph} 
-                options={{            
-                  maintainAspectRatio: false,
-                  scales: {y: {beginAtZero: true}},
-                  plugins:{
-                    title: {display: false, text: 'Contracts Made and Disputes solved'},
-                    legend: {position: 'top', align: 'end',
-                      labels: {boxWidth: 10, boxHeight: 10,
-                        font: {
-                          weight: 100
-                        }
-                      },
-                    },
-                  }
-                }}/>
-              </div>
-          </div>
-
-          <div className="card">
-            <div className="cardHeader">
-              <div className="cardTitle">Contracts Made and Disputes solved</div>
-            </div>
-            <div className="cardBody">
-              <LineChart chartData={ContractsMadeAndDisputedLineGraph} 
-                options={{            
-                  maintainAspectRatio: false,
-                  scales: {y: {beginAtZero: true}},
-                  plugins:{
-                    title: {display: false, text: 'Contracts Made and Disputes solved'},
-                    legend: {position: 'top', align: 'end',
-                      labels: {boxWidth: 10, boxHeight: 10,
-                        font: {
-                          weight: 100
-                        }
-                      },
+        <div className="ContainerDashboard">
+          <div className="Chart">
+            <LineChart chartData={ETHValueTransactedLineChart} 
+              options={{            
+                maintainAspectRatio: false,
+                scales: {y: {beginAtZero: true}},
+                plugins:{
+                  title: {display: false, text: 'ETH locked in contracts'},
+                  legend: {position: 'top', align: 'end',
+                    labels: {boxWidth: 10, boxHeight: 10,
+                      font: {
+                        weight: 100
+                      }
                     },
                   },
-                }}
-              />
-              </div>
+                }
+              }}
+            />
           </div>
-
-          <div className="card">
-            <div className="cardHeader">
-              <div className="cardTitle">ETH locked in contracts</div>
-            </div>
-            <div className="cardBody">
-              <LineChart chartData={ETHValueLineGraph} 
-                options={{            
-                  maintainAspectRatio: false,
-                  scales: {y: {beginAtZero: true}},
-                  plugins:{
-                    title: {display: false, text: 'ETH locked in contracts'},
-                    legend: {position: 'top', align: 'end',
-                      labels: {boxWidth: 10, boxHeight: 10,
-                        font: {
-                          weight: 100
-                        }
-                      },
+          
+          <div className="Chart">
+            <LineChart chartData={USDCValueTransactedLineChart} 
+              options={{            
+                maintainAspectRatio: false,
+                scales: {y: {beginAtZero: true}},
+                plugins:{
+                  title: {display: false, text: 'USDC locked in contracts'},
+                  legend: {position: 'top', align: 'end',
+                    labels: {boxWidth: 10, boxHeight: 10,
+                      font: {
+                        weight: 100
+                      }
                     },
-                  }
-                }}
-              />
-            </div>
+                  },
+                }
+              }}
+            />
           </div>
 
-          <div className="card">
-            <div className="cardHeader">
-              <div className="cardTitle">USDC locked in contracts</div>
-            </div>
-            <div className="cardBody">
-              <LineChart chartData={USDCValueLineGraph} 
-                options={{            
-                  maintainAspectRatio: false,
-                  scales: {y: {beginAtZero: true}},
-                  plugins:{
-                    title: {display: false, text: 'USDC locked in contracts'},
-                    legend: {position: 'top', align: 'end',
-                      labels: {boxWidth: 10, boxHeight: 10,
-                        font: {
-                          weight: 100
-                        }
-                      },
-                    },
-                  }
-                }}
-              />
-            </div>
+          <div className="Chart">
+          <DoughnutChart chartData={FrequencyOfDisputesDoughnutChart} 
+              options = {{            
+                maintainAspectRatio: false,
+                scales: {
+                  y: {grid: {display:false, drawBorder: false}, ticks: {display: false}}, 
+                  x: {grid: {display:false, drawBorder: false}, ticks: {display: false}}
+                },
+                plugins:{
+                  title: {display: true, text: 'Frequency of disputes'},
+                  legend: {position: 'bottom'},
+                },
+                cutout: 90,
+              }}
+            />
           </div>
+        </div>
 
+        <div className="ContainerDashboard">  
+        <div>
+            Total amount transacted:   (Format this part in a nice way)
+            <br></br>
+            ETH: {cumulativeETHTotal?.toFixed(3)} 
+            <br></br>
+            USDC: {cumulativeUSDCTotal?.toFixed(3)}
+
+            <br></br>
+            <br></br>
+
+            Total amount locked:
+            <br></br>
+            ETH: {(ETHValueLocked[ETHValueLocked.length - 1])?.toFixed(3)}
+            <br></br>
+            USDC: {(USDCValueLocked[USDCValueLocked.length - 1])?.toFixed(3)}
+
+            <br></br>
+            <br></br>
+
+            Total number of Users:  {totalNumberOfUsers}
+            <br></br>
+            total number of disputes: {totalNumberOfDisputesStarted}
+            <br></br>
+
+          </div>
         </div>
 
       </div>

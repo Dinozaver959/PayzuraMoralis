@@ -107,6 +107,15 @@ export async function GetUsersDetails(UserWallet){
 }
 
 
+export async function GetTotalNumberOfUsers(){ 
+  return Moralis.Cloud.run("GetTotalNumberOfUsers"); 
+}
+
+export async function GetTotalNumberOfContracts(){ 
+  return Moralis.Cloud.run("GetTotalNumberOfContracts"); 
+}
+
+
 // ------------------------------------------------------------------------------------------------
 //                        Event Sync and Aggregated Data for Graphs          
 // ------------------------------------------------------------------------------------------------
