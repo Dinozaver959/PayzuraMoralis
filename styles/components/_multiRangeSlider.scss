@@ -1,5 +1,6 @@
 .multiRangeContainer {
   position: relative;
+  margin-top: 15px;
 
   /* Removing the default appearance */
   .thumb {
@@ -53,7 +54,7 @@
   .slider {
     position: relative;
     width: 100%;
-    padding-bottom: 20px;
+    padding-bottom: 40px;
 
     .sliderTrack,
     .sliderRange,
@@ -81,9 +82,14 @@
 
     .sliderLeftValue,
     .sliderRightValue {
+      width: 70px;
       color: $OrangeColor;
       font-size: 12px;
       margin-top: 20px;
+
+      input {
+        width: 100%;
+      }
     }
 
     .sliderLeftValue {

@@ -71,31 +71,14 @@ function MyContractsContainer(props) {
   const { dataGetMyContracts, placeholder } = props;
 
   const [filteredList, setFilteredList] = useState(dataGetMyContracts);
-  const [filterPrice, setFilterPrice] = useState([0, 1]);
+  const [filterPrice, setFilterPrice] = useState([0, 10]);
   const [filterWalletAddress, setFilterWalletAddress] = useState("");
   const [filterSide, setFilterSide] = useState("");
   const [filterStates, setFilterStates] = useState("");
   const [filterDelivery, setFilterDelivery] = useState("");
   
-
-  const handleChangePrice = (event, value) => {
-    setFilterPrice(value);
-  };
-
   const handleChangeWalletAddress = (event) => {
     setFilterWalletAddress(event.target.value);
-  };
-
-  const handleChangeSide = (event) => {
-    setFilterSide(event.target.value);
-  };
-
-  const handleChangeStates = (event) => {
-    setFilterStates(event.target.value);
-  };
-
-  const handleChangeDelivery = (event, newDelivery) => {
-    setFilterDelivery(newDelivery);
   };
   
   const applyFilters = () => {
@@ -212,9 +195,13 @@ function MyContractsContainer(props) {
 
         {/* Filter with Price */}
         <div className="filterOption">
+          <h4 className="filterTitle">
+            <span>Price</span>
+            <span className="priceRight">{filterPrice[0]}-{filterPrice[1]}</span>
+          </h4>
           <MultiRangeSlider
-            min={0}
-            max={10}
+            min={filterPrice[0]}
+            max={filterPrice[1]}
             onChange={({ min, max }) =>
               console.log(`min = ${min}, max = ${max}`)
             }
