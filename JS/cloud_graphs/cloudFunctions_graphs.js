@@ -207,12 +207,23 @@ Moralis.Cloud.define("GetUsersAgreementsOnlySeller", async (request) => {
 
 Moralis.Cloud.define("GetUsersDetails", async (request) => {
 
-  const querySeller = new Moralis.Query("UserParticipationData");
-  querySeller.equalTo("userAddress", request.params.UserWallet);
+  const query = new Moralis.Query("UserParticipationData");
+  query.equalTo("userAddress", request.params.UserWallet);
 
-  return await querySeller.find();
+  return await query.find();
 });
 
+Moralis.Cloud.define("GetTotalNumberOfUsers", async (request) => {
+  const query = new Moralis.Query("UserParticipationData");
+  return (await query.find()).length;
+});
+
+Moralis.Cloud.define("GetTotalNumberOfContracts", async (request) => {
+  const query1 = new Moralis.Query("OfferAcceptedBuyer");
+  const query2 = new Moralis.Query("OfferAcceptedSeller");
+
+  return ((await query1.find()).length + (await query2.find()).length);
+});
 
 
 //-----------------------------------------------------------------------------------------------
@@ -255,6 +266,10 @@ Moralis.Cloud.define("aggregateData", async (request) => {
 
   const pipeline_1a = JSON.parse(JSON.stringify(pipeline1));
   const pipeline_1b = JSON.parse(JSON.stringify(pipeline1));
+  const pipeline_1c = JSON.parse(JSON.stringify(pipeline1));
+  const pipeline_1d = JSON.parse(JSON.stringify(pipeline1));
+  const pipeline_1e = JSON.parse(JSON.stringify(pipeline1));
+  const pipeline_1f = JSON.parse(JSON.stringify(pipeline1));
   const pipeline_2a = JSON.parse(JSON.stringify(pipeline2));
   const pipeline_2b = JSON.parse(JSON.stringify(pipeline2));
   const pipeline_2c = JSON.parse(JSON.stringify(pipeline2));
@@ -262,18 +277,51 @@ Moralis.Cloud.define("aggregateData", async (request) => {
   const pipeline_2e = JSON.parse(JSON.stringify(pipeline2));
 
 
+  // PIPELINE1 - calculating the value ETH/USDC of events
+
   // for the value in contracts.... need to sum together the values from Buyer and Seller side
   const query_OfferAcceptedBuyerValue = new Moralis.Query("OfferAcceptedBuyer");
   const pipeline_OfferAcceptedBuyerValue = await query_OfferAcceptedBuyerValue.aggregate(pipeline_1a);
-  const params_OfferAcceptedBuyerValue =  { "data" : pipeline_OfferAcceptedBuyerValue, "column": "valueBuyer"};
+  const params_OfferAcceptedBuyerValue =  { "data" : pipeline_OfferAcceptedBuyerValue, "column": "valueBuyerAccepted"};           //  valueBuyer -> valueBuyerAccepted
   await Moralis.Cloud.run("UpdateAggregateDataTableValue", params_OfferAcceptedBuyerValue);
 
   // for the value in contracts.... need to sum together the values from Buyer and Seller side
   const query_OfferAcceptedSellerValue = new Moralis.Query("OfferAcceptedSeller");
   const pipeline_OfferAcceptedSellerValue = await query_OfferAcceptedSellerValue.aggregate(pipeline_1b);
-  const params_OfferAcceptedSellerValue =  { "data" : pipeline_OfferAcceptedSellerValue, "column": "valueSeller"};
+  const params_OfferAcceptedSellerValue =  { "data" : pipeline_OfferAcceptedSellerValue, "column": "valueSellerAccepted"};        //  valueSeller -> valueSellerAccepted
   await Moralis.Cloud.run("UpdateAggregateDataTableValue", params_OfferAcceptedSellerValue);
-  
+
+
+  // DeliveryConfirmed
+  const query_DeliveryConfirmedValue = new Moralis.Query("DeliveryConfirmed");
+  const pipeline_DeliveryConfirmedValue = await query_DeliveryConfirmedValue.aggregate(pipeline_1c);
+  const params_DeliveryConfirmedValue =  { "data" : pipeline_DeliveryConfirmedValue, "column": "valueDeliveryConfirmed"};
+  await Moralis.Cloud.run("UpdateAggregateDataTableValue", params_DeliveryConfirmedValue);
+
+  // FundsClaimed
+  const query_FundsClaimedValue = new Moralis.Query("FundsClaimed");
+  const pipeline_FundsClaimedValue = await query_FundsClaimedValue.aggregate(pipeline_1d);
+  const params_FundsClaimedValue =  { "data" : pipeline_FundsClaimedValue, "column": "valueFundsClaimed"};
+  await Moralis.Cloud.run("UpdateAggregateDataTableValue", params_FundsClaimedValue);
+
+  // PaymentReturned
+  const query_PaymentReturnedValue = new Moralis.Query("PaymentReturned");
+  const pipeline_PaymentReturnedValue = await query_PaymentReturnedValue.aggregate(pipeline_1e);
+  const params_PaymentReturnedValue =  { "data" : pipeline_PaymentReturnedValue, "column": "valuePaymentReturned"};
+  await Moralis.Cloud.run("UpdateAggregateDataTableValue", params_PaymentReturnedValue);
+
+  // DisputeClosed
+  const query_DisputeClosedValue = new Moralis.Query("DisputeClosed");
+  const pipeline_DisputeClosedValue = await query_DisputeClosedValue.aggregate(pipeline_1f);
+  const params_DisputeClosedValue =  { "data" : pipeline_DisputeClosedValue, "column": "valueDisputeClosed"};
+  await Moralis.Cloud.run("UpdateAggregateDataTableValue", params_DisputeClosedValue);
+
+
+
+
+
+  // PIPELINE2 - just counting the number of events
+
   // OfferAcceptedBuyer
   const query_OfferAcceptedBuyer = new Moralis.Query("OfferAcceptedBuyer");
   const pipeline_OfferAcceptedBuyer = await query_OfferAcceptedBuyer.aggregate(pipeline_2a);
@@ -567,38 +615,31 @@ Moralis.Cloud.beforeSave("ContractCanceled", async (request) => {
 // can run before save on each column to check if the value is not null/undefined, otherwise set it to 0 (as default value)
 Moralis.Cloud.beforeSave("AggregatedEvents", async (request) => {
 
-  if(request.object.get("OfferAcceptedBuyer") == undefined){
-    request.object.set("OfferAcceptedBuyer", 0)
-  }
+  const arrayOfColumnsToSetDefaultValues = [
+    "OfferAcceptedBuyer", 
+    "OfferAcceptedSeller", 
+    "DisputeStarted", 
+    "DisputeClosed", 
+    "valueSellerAccepted_0x0000000000000000000000000000000000000000",
+    "valueSellerAccepted_0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+    "valueBuyerAccepted_0x0000000000000000000000000000000000000000",
+    "valueBuyerAccepted_0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+    "valueDeliveryConfirmed_0x0000000000000000000000000000000000000000",
+    "valueDeliveryConfirmed_0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+    "valueFundsClaimed_0x0000000000000000000000000000000000000000",
+    "valueFundsClaimed_0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+    "valuePaymentReturned_0x0000000000000000000000000000000000000000",
+    "valuePaymentReturned_0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+    "valueDisputeClosed_0x0000000000000000000000000000000000000000",
+    "valueDisputeClosed_0x2791bca1f2de4661ed88a30c99a7a9449aa84174"
+  ];
 
-  if(request.object.get("OfferAcceptedSeller") == undefined){
-    request.object.set("OfferAcceptedSeller", 0)
+  for (let i = 0; i < arrayOfColumnsToSetDefaultValues.length; i++){
+    if(request.object.get(arrayOfColumnsToSetDefaultValues[i]) == undefined){
+      request.object.set(arrayOfColumnsToSetDefaultValues[i], 0)
+    }
   }
-
-  if(request.object.get("valueSeller_0x0000000000000000000000000000000000000000") == undefined){
-    request.object.set("valueSeller_0x0000000000000000000000000000000000000000", 0)
-  }
-
-  if(request.object.get("valueBuyer_0x0000000000000000000000000000000000000000") == undefined){
-    request.object.set("valueBuyer_0x0000000000000000000000000000000000000000", 0)
-  }
-
-  if(request.object.get("valueSeller_0x2791bca1f2de4661ed88a30c99a7a9449aa84174") == undefined){
-    request.object.set("valueSeller_0x2791bca1f2de4661ed88a30c99a7a9449aa84174", 0)
-  }
-
-  if(request.object.get("valueBuyer_0x2791bca1f2de4661ed88a30c99a7a9449aa84174") == undefined){
-    request.object.set("valueBuyer_0x2791bca1f2de4661ed88a30c99a7a9449aa84174", 0)
-  }
-
-  if(request.object.get("DisputeStarted") == undefined){
-    request.object.set("DisputeStarted", 0)
-  }
-
-  if(request.object.get("DisputeClosed") == undefined){
-    request.object.set("DisputeClosed", 0)
-  }
-
+  
   return request.object
 });
 
