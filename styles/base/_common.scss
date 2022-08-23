@@ -1,139 +1,156 @@
 .pageHeader {
-    width: 100%;
-    @extend %FlexRow-CenterBetween;
-    padding-bottom: 1rem;
+  width: 100%;
+  @extend %FlexRow-CenterBetween;
+  padding-bottom: 1rem;
+
+  @include RespondTo(IpadDevices) {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-bottom: 0.8rem;
+  }
+
+  h1 {
+    flex: 2;
+  }
+
+  .headerAction {
+    margin-left: 1rem;
+    @extend %FlexRow-CenterCenter;
 
     @include RespondTo(IpadDevices) {
-        flex-direction: column;
-        align-items: flex-start;
-        padding-bottom: 0.8rem;
+      margin-left: 0;
+      margin-top: 0.7rem;
     }
 
-    h1 {
-        flex: 2;
+    @include RespondTo(MobileDevices) {
+      flex-direction: column;
+      width: 100%;
+      font-size: 0.8rem;
     }
 
-    .headerAction {
-        margin-left: 1rem;
-        @extend %FlexRow-CenterCenter;
+    .button {
+      @include RespondTo(MobileDevices) {
+        width: 100%;
+      }
 
-        @include RespondTo(IpadDevices) {
-            margin-left: 0;
-            margin-top: 0.7rem;
-        }
+      + .button {
+        margin-left: 10px;
 
         @include RespondTo(MobileDevices) {
-            flex-direction: column;
-            width: 100%;
-            font-size: 0.8rem;
+          margin-left: 0;
+          margin-top: 10px;
         }
-
-        .button {
-            @include RespondTo(MobileDevices) {
-                width: 100%;
-            }
-
-            + .button {
-                margin-left: 10px;
-
-                @include RespondTo(MobileDevices) {
-                    margin-left: 0;
-                    margin-top: 10px;
-                }
-            }
-        }
+      }
     }
+  }
 }
 
 .error {
-    margin: 5px;
-    text-align: center;
+  margin: 5px;
+  text-align: center;
 }
 
 .noData {
-    background: $LightBlueBg;
-    padding: 2rem;
-    @include BorderRadius(1rem);
+  background: $LightBlueBg;
+  padding: 2rem;
+  @include BorderRadius(1rem);
+  @extend %FlexCol-CenterCenter;
+
+  > i {
+    @include Size(150px, 150px);
     @extend %FlexCol-CenterCenter;
 
-    > i {
-        @include Size(150px, 150px);
-        @extend %FlexCol-CenterCenter;
+    svg {
+      @include Size(120px, 120px);
 
-        svg {
-            @include Size(120px, 120px);
-
-            path {
-                fill: rgba($FontColorDark, 0.5);
-            }
-        }
+      path {
+        fill: rgba($FontColorDark, 0.5);
+      }
     }
+  }
 
-    h2 {
-        margin: 0;
-    }
+  h2 {
+    margin: 0;
+  }
 }
 
 .hide {
-    display: none;
+  display: none;
+}
+
+.noteText {
+  @include Font(null, 0.9rem, rgba($FontColorDark, 0.75), null, null);
+
+  strong {
+    font-weight: 700;
+    color: $FontColorDark;
+  }
 }
 
 .MuiFormControl-root.MuiTextField-root {
-    width: 100%;
+  width: 100%;
 }
 
 .css-dhopo2 {
-    min-height: 210px !important;
+  min-height: 210px !important;
 }
 
 .submitButtonOuter {
-    @extend %FlexCol-CenterCenter;
-    margin-top: 20px;
+  @extend %FlexCol-CenterCenter;
+  margin-top: 20px;
 }
 
 .blockLoading {
-    @include Size(100%, 295px);
-    position: relative;
-    margin-top: 10px;
+  @include Size(100%, 295px);
+  position: relative;
+  margin-top: 10px;
 }
 
 .flex-center {
-    @extend %FlexRow-CenterCenter;
+  @extend %FlexRow-CenterCenter;
 }
 
 .currencyIc {
-    @include Size(24px, 24px);
-    @extend %FlexCol-CenterCenter;
-    border: 1px solid $BorderDark;
-    @include BorderRadius(40px);
+  @include Size(24px, 24px);
+  @extend %FlexCol-CenterCenter;
+  border: 1px solid $BorderDark;
+  @include BorderRadius(40px);
 }
 
 .darkMode {
-    .pageHeader {
-        h1 {
-            flex: 2;
+  .pageHeader {
+    h1 {
+      flex: 2;
+    }
+  }
+
+  .noData {
+    background: $DarkBlueBg;
+
+    > i {
+      svg {
+        path {
+          fill: rgba($FontColorLight, 0.25);
         }
+      }
     }
+  }
 
-    .noData {
-        background: $DarkBlueBg;
+  .currencyIc {
+    border-color: lighten($BorderLight, 5%);
+  }
 
-        > i {
-            svg {
-                path {
-                    fill: rgba($FontColorLight, 0.25);
-                }
-            }
-        }
+  .noteText {
+    color: rgba($FontColorLight, 0.75);
+  
+    strong {
+      color: $FontColorLight;
     }
-
-    .currencyIc {
-        border-color: lighten($BorderLight, 5%);
-    }
+  }
 }
 
 .hideSmallerThanIpad {
-    @include RespondTo(IpadDevices) {
-        display: none !important;
-    }
+  @include RespondTo(IpadDevices) {
+    display: none !important;
+  }
 }

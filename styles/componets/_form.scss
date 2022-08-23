@@ -58,9 +58,10 @@
       }
 
       .formLabel {
-        width: 210px;
-        margin-right: 15px;
+        width: 260px;
+        margin-right: 10px;
         padding-top: 10px;
+        font-size: 0.9rem;
 
         @include RespondTo(SmallDesktop) {
           width: 100%;
@@ -80,7 +81,7 @@
     }
 
     .formAction {
-      margin-left: 225px;
+      margin-left: 270px;
 
       @include RespondTo(SmallDesktop) {
         margin-left: 0px;

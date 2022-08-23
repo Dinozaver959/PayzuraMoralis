@@ -33,6 +33,7 @@
     "react-icons": "^4.4.0",
     "react-moralis": "^1.4.0",
     "sass": "^1.52.2",
+    "sharp": "^0.30.7",
     "solc": "^0.8.14-fixed",
     "web3": "^1.7.4"
   },

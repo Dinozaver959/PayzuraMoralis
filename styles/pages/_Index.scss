@@ -1,9 +1,167 @@
-.ContainerDashboard {
-  display: flex;
-  justify-content: space-around;
+.dashboardBlocks {
+  @include Flexbox;
+  @include FlexFlow(wrap);
+  @include JustifyContent(space-between);
+  margin-top: 20px;
+
+  .blockMain {
+    width: calc(25% - 10px);
+    background: $WhiteColor;
+    @include Flexbox;
+    @include FlexFlow(wrap);
+    @include JustifyContent(space-between);
+    @include BorderRadius($CardRounded);
+    @include BoxShadow(0px 0px $CardRounded rgba($PrimaryColor, 0.15));
+
+    @include RespondTo(IpadDevices) {
+      width: calc(50% - 10px);
+      margin-bottom: 15px;
+    }
+
+    @include RespondTo(MobileDevices) {
+      width: 100%;
+    }
+
+    &:first-child {
+      .blockIcon {
+        background: $PrimaryColor;
+      }
+    }
+
+    &:nth-child(2) {
+      .blockIcon {
+        background: $SecondaryColor;
+      }
+    }
+
+    &:nth-child(3) {
+      .blockIcon {
+        background: $OrangeColor;
+      }
+    }
+
+    &:nth-child(4) {
+      .blockIcon {
+        background: $GreenColor;
+      }
+    }
+
+    .blockIcon {
+      width: 80px;
+      background: rgba($BlackColor, 0.1);
+      @include BorderRadius($CardRounded 0 0 $CardRounded);
+      @extend %FlexCol-CenterCenter;
+
+      @include RespondTo(SmallDesktop) {
+        width: 60px;
+      }
+
+      @include RespondTo(MobileDevices) {
+        width: 80px;
+      }
+
+      svg {
+        @include RespondTo(SmallDesktop) {
+          @include Size(40px, 40px);
+        }
+
+        @include RespondTo(MobileDevices) {
+          @include Size(52px, 52px);
+        }
+      }
+    }
+
+    .blockValue {
+      flex: 2;
+      padding: 15px;
+      border: 1px solid $WhiteColor;
+      border-left: none;
+      @include BorderRadius(0 $CardRounded $CardRounded 0);
+
+      @include RespondTo(SmallDesktop) {
+        padding: 12px;
+      }
+
+      @include RespondTo(MobileDevices) {
+        padding: 15px;
+      }
+
+      h3 {
+        @include Font(null, 2rem, $FontColorDark, null, 300);
+        margin: 0;
+
+        @include RespondTo(SmallDesktop) {
+          font-size: 1.5rem;
+        }
+
+        @include RespondTo(MobileDevices) {
+          font-size: 1.7rem;
+        }
+      }
+
+      .blockItemLabel {
+        @include Font(null, 0.9rem, $FontColorDark, null, 400);
+        margin: 0;
+
+        @include RespondTo(SmallDesktop) {
+          font-size: 0.8rem;
+        }
+
+        @include RespondTo(MobileDevices) {
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
 }
 
-.Chart {
-  height: 300px;
-  width: 600px;
+.chartContainer {
+  @include Flexbox;
+  @include FlexFlow(wrap);
+  @include JustifyContent(space-between);
+
+  .card {
+    width: calc(50% - 10px);
+    margin-top: 20px;
+
+    @include RespondTo(MobileDevices) {
+      width: 100%;
+    }
+  }
+}
+
+.darkMode {
+  .dashboardBlocks {
+    .blockMain {
+      background: transparent;
+      @include BoxShadow(0px 0px $CardRounded rgba($DarkBg, 0.15));
+
+      .blockValue {
+        border-color: $BorderLight;
+
+        h3 {
+          color: $WhiteColor;
+        }
+
+        .blockItemLabel {
+          color: $FontColorLight;
+        }
+      }
+    }
+  }
+
+  .chartContainer {
+    @include Flexbox;
+    @include FlexFlow(wrap);
+    @include JustifyContent(space-between);
+
+    .card {
+      width: calc(50% - 10px);
+      margin-top: 20px;
+
+      @include RespondTo(MobileDevices) {
+        width: 100%;
+      }
+    }
+  }
 }

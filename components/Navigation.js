@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Tooltip from "@mui/material/Tooltip";
 
 import Button from "./ui/Button";
 import NotificationIc from "./icons/Notification";
@@ -90,6 +91,21 @@ export default function Navigation(props) {
           >
             <Link href='/my-contracts'>My Contracts</Link>
           </li>
+
+          <Tooltip
+            title="Comming Soon..."
+            placement="top"
+            enterTouchDelay={0}
+            arrow
+          >
+            <li>
+              <Link href=''>
+                Earn
+              </Link>
+            </li>
+
+          </Tooltip>        
+
           <li className='headerButton hideSmallerThanIpad'>
             <span></span>
             <ConnectWallet
@@ -163,7 +179,7 @@ export default function Navigation(props) {
                     <span>Inbox</span>
                   </Button>
                 </li>
-                <li onClick={() => setDropdownOpen(false)}>
+                {/* <li onClick={() => setDropdownOpen(false)}>
                   <Button link='/contracts-listed'>
                     <i>
                       <ServicesListedIc />

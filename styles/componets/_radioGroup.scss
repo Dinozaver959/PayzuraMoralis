@@ -18,6 +18,7 @@
       display: none;
 
       + .radioLabel {
+        white-space: nowrap;
         display: block;
         text-align: center;
         padding: 10px 15px;
@@ -85,7 +86,7 @@
       &:checked {
         + .radioLabel {
           color: $PrimaryColor;
-          
+
           &::before {
             border-color: $PrimaryColor;
           }
@@ -96,6 +97,65 @@
       }
 
       &:disabled {
+      }
+    }
+  }
+}
+
+.darkMode {
+  .radioGroupMain {
+    border-color: $BorderLight;
+
+    .radioItem {
+      + .radioItem {
+        border-left-color: $BorderLight;
+      }
+
+      .radioInput {
+        + .radioLabel {
+          color: $FontColorLight;
+        }
+
+        &:checked {
+          + .radioLabel {
+            background: $LightBlueColor;
+            color: $WhiteColor;
+          }
+        }
+
+        &:disabled {
+          + .radioLabel {
+            background: rgba($WhiteColor, 0.1);
+            color: rgba($FontColorLight, 0.5);
+          }
+        }
+      }
+    }
+  }
+
+  .radioListMain {
+    .radioItem {
+      .radioInput {
+        + .radioLabel {
+          color: $FontColorLight;
+
+          &::before {
+            border-color: $BorderLight;
+          }
+        }
+
+        &:checked {
+          + .radioLabel {
+            color: $LightBlueColor;
+
+            &::before {
+              border-color: $LightBlueColor;
+            }
+            &::after {
+              background-color: $LightBlueColor;
+            }
+          }
+        }
       }
     }
   }
