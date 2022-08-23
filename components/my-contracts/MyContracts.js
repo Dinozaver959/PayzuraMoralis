@@ -38,7 +38,7 @@ import USDCIcon from "./../images/USDC.webp";
 
 import RadioGroup from "./../ui/RadioGroup";
 import SelectDropdown from "../ui/SelectDropdown";
-import RangeSlider from "../ui/RangeSlider";
+import MultiRangeSlider from "../ui/MultiRangeSlider";
 
 const StyledTableRow = styled(TableRow)();
 const StyledTableCell = styled(TableCell)();
@@ -212,7 +212,13 @@ function MyContractsContainer(props) {
 
         {/* Filter with Price */}
         <div className="filterOption">
-          <RangeSlider value={filterPrice} changePrice={handleChangePrice} />
+          <MultiRangeSlider
+            min={0}
+            max={10}
+            onChange={({ min, max }) =>
+              console.log(`min = ${min}, max = ${max}`)
+            }
+          />
         </div>
 
         {/* Filter with Wallet Address */}

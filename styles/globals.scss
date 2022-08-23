@@ -20,26 +20,26 @@ http://www.payzura.com
 @import "base/svg-background";
 
 /* Componets */
-@import "componets/buttons";
-@import "componets/form";
-@import "componets/RadioCheckbox";
-@import "componets/keyframes";
-@import "componets/dropDown";
-@import "componets/cardUi";
-@import "componets/gridUi";
-@import "componets/tooltip";
-@import "componets/typography";
-@import "componets/modalUi";
-@import "componets/loadingPlaceholder";
-@import "componets/cssLoader";
-@import "componets/WalletAddressInput";
-@import "componets/accountModel";
-@import "componets/messagingUsersList";
-@import "componets/chatInput";
-@import "componets/tabsUi";
-@import "componets/radioGroup";
-@import "componets/selectDropdown";
-@import "componets/rangeSlider";
+@import "components/buttons";
+@import "components/form";
+@import "components/RadioCheckbox";
+@import "components/keyframes";
+@import "components/dropDown";
+@import "components/cardUi";
+@import "components/gridUi";
+@import "components/tooltip";
+@import "components/typography";
+@import "components/modalUi";
+@import "components/loadingPlaceholder";
+@import "components/cssLoader";
+@import "components/WalletAddressInput";
+@import "components/accountModel";
+@import "components/messagingUsersList";
+@import "components/chatInput";
+@import "components/tabsUi";
+@import "components/radioGroup";
+@import "components/selectDropdown";
+@import "components/multiRangeSlider";
 
 /* Layout */
 @import "layout/header";
