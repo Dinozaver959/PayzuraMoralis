@@ -40,6 +40,7 @@ import RadioGroup from "../components/ui/RadioGroup";
 export default function Description(props) {
   // SUBMIT - validation
   const {
+    resetField,
     register,
     handleSubmit,
     formState: { errors },
@@ -831,6 +832,8 @@ export default function Description(props) {
                           setInputValue={setPersonalizedOfferValue}
                           errorValue={errorPersonalizedOfferValue}
                           setErrorValue={setErrorPersonalizedOfferValue}
+                          register={register}
+                          resetField={resetField}
                         />
 
                         <div className='fieldError'>
@@ -893,6 +896,7 @@ export default function Description(props) {
                               setErrorValue={setErrorArbitersValue}
                               isRequire={true}
                               register={register}
+                              resetField={resetField}
                             />
                           </div>
                         )}

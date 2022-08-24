@@ -6,15 +6,8 @@ const MultiRangeSlider = (props) => {
 
   const [minVal, setMinVal] = useState(min);
   const [maxVal, setMaxVal] = useState(max);
-  const minValRef = useRef(min);
-  const maxValRef = useRef(max);
-  const sliderMinRef = useRef(min);
-  const sliderMaxRef = useRef(max);
   const range = useRef(null);
 
-//   const sliderMinVal = sliderMinRef.current.value;
-//   const sliderMaxVal = sliderMaxRef.current.value;
-  // Convert to percentage
   const getPercent = useCallback(
     (value) => Math.round(((value - min) / (max - min)) * 100),
     [min, max]
@@ -37,7 +30,7 @@ const MultiRangeSlider = (props) => {
   // Set width of the range to decrease from the left side
   useEffect(() => {
     const minPercent = getPercent(minVal);
-    const maxPercent = getPercent(maxValRef.current);
+    const maxPercent = getPercent(maxVal);
 
     if (range.current) {
       range.current.style.left = `${minPercent}%`;
@@ -47,7 +40,7 @@ const MultiRangeSlider = (props) => {
 
   // Set width of the range to decrease from the right side
   useEffect(() => {
-    const minPercent = getPercent(minValRef.current);
+    const minPercent = getPercent(minVal);
     const maxPercent = getPercent(maxVal);
 
     if (range.current) {
@@ -68,9 +61,9 @@ const MultiRangeSlider = (props) => {
         max={max}
         value={minVal}
         onChange={(event) => {
-          const value = Math.min(Number(event.target.value), maxVal - 1);
+          const value = Math.min(Number(event.target.value), maxVal - 0.5);
           setMinVal(value);
-          minValRef.current = value;
+          // minValRef.current = value;
         }}
         className="thumb thumbLeft"
         style={{ zIndex: minVal > max - 100 && "5" }}
@@ -82,9 +75,9 @@ const MultiRangeSlider = (props) => {
         max={max}
         value={maxVal}
         onChange={(event) => {
-          const value = Math.max(Number(event.target.value), minVal + 1);
+          const value = Math.max(Number(event.target.value), minVal + 0.5);
           setMaxVal(value);
-          maxValRef.current = value;
+          // maxValRef.current.value = value;
         }}
         className="thumb thumbRight"
         step="0.001"
@@ -93,8 +86,8 @@ const MultiRangeSlider = (props) => {
       <div className="slider">
         <div className="sliderTrack" />
         <div ref={range} className="sliderRange" />
-        <div className="sliderLeftValue"><input type="number" defaultValue={minVal} ref={sliderMinRef} onChange={changeSliderMin} step="0.001" /></div>
-        <div className="sliderRightValue"><input type="number" defaultValue={maxVal} ref={sliderMaxRef} onChange={changeSliderMax} step="0.001" /></div>
+        <div className="sliderLeftValue"><input type="number" value={minVal} onChange={changeSliderMin} step="0.001" /></div> {/* ref={sliderMinRef}  ref={sliderMaxRef} */}
+        <div className="sliderRightValue"><input type="number" value={maxVal} onChange={changeSliderMax} step="0.001" /></div>
       </div>
     </div>
   );

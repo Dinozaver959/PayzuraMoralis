@@ -10,12 +10,14 @@ function WalletAddressField(props) {
     inputValue,
     setInputValue,
     setErrorValue,
+    resetField,
     register,
   } = props;
-  let textInput = createRef();
+  const [addrText, setAddrText] = React.useState('');
+
 
   const handleAddWallet = (e) => {
-    let txtInput = e.target;
+    let txtInput = document.getElementById(name+"inputText"); // e.target;
     let enteredValue = txtInput.value;
 
     if (enteredValue.length !== 0) {
@@ -24,12 +26,12 @@ function WalletAddressField(props) {
         Web3.utils.isAddress(enteredValue) === false
       ) {
         setErrorValue(true);
-        txtInput.value = "";
       } else {
         setErrorValue(false);
         setInputValue([...inputValue, enteredValue]);
-        txtInput.value = "";
       }
+      setAddrText('');
+      resetField(name);
     } else {
       setErrorValue(false);
     }
@@ -63,11 +65,13 @@ function WalletAddressField(props) {
               className="walletInputField"
               type="text"
               placeholder="Wallets..."
-              ref={textInput}
+              id={name+"inputText"}
+              value={addrText}
               {...register(name, {
-                required: true,
+                required: inputValue.length<=0,
                 pattern: /^0x[a-fA-F0-9]{40}$/g,
                 onBlur: handleAddWallet,
+                onChange: (e) => setAddrText(e.target.value),
               })}
             />
           ) : (
@@ -75,8 +79,10 @@ function WalletAddressField(props) {
               className="walletInputField"
               type="text"
               placeholder="Wallets..."
-              ref={textInput}
+              id={name+"inputText"}
               onBlur={handleAddWallet}
+              value={addrText}
+              onChange= { (e) => setAddrText(e.target.value) }
             />
           )}
           <PlusIc size={16} onClick={handleAddWallet} />
