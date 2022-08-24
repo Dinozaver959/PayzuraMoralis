@@ -93,7 +93,7 @@ export default function Navigation(props) {
           </li>
 
           <Tooltip
-            title="Comming Soon..."
+            title="Coming Soon"
             placement="top"
             enterTouchDelay={0}
             arrow
