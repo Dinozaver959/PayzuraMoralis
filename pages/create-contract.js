@@ -58,7 +58,7 @@ export default function Description(props) {
   });
 
   const [personalizedOfferValue, setPersonalizedOfferValue] = React.useState([]);
-  const [arbitersValue, setArbitersValue] = React.useState();
+  const [arbitersValue, setArbitersValue] = React.useState([]);
   const [errorPersonalizedOfferValue, setErrorPersonalizedOfferValue] = React.useState(false);
   const [errorArbitersValue, setErrorArbitersValue] = React.useState(false);
 
@@ -76,6 +76,7 @@ export default function Description(props) {
   }
 
   async function SubmitForm() {
+    let arbiters = (arbitersValidate === 'Trusted 3rd') ? arbitersValue.join(",") : PayzuraCentealizedArbiter; // document.getElementById("Arbiters").value
     CreateEscrow_Moralis(
       (selectContractType == "buyer") ? true : false,
       (await GetWallet_NonMoralis())[0],
@@ -85,7 +86,7 @@ export default function Description(props) {
       sha256(document.getElementById("OfferDescription").value),
       OfferValidUntil.getTime() / 1000,
       personalizedOfferValue.join(","), // document.getElementById("PersonalizedOffer").value,
-      arbitersValue.join(",") // document.getElementById("Arbiters").value
+      arbiters
     )
       .then(async (transactionHash) => {
         // show the feedback text
@@ -263,7 +264,7 @@ export default function Description(props) {
   const [showCustomDuration, setShowCustomDuration] = React.useState(false);
   const [selectCurrency, setSelectCurrency] = React.useState("ETH");
   const [selectContractType, setSelectContractType] = React.useState("seller");
-  const [arbitersValidate, setArbitersValidate] = React.useState(PayzuraCentealizedArbiter);
+  const [arbitersValidate, setArbitersValidate] = React.useState();
 
   function handleCurrencyChange(e) {
     setSelectCurrency(e.target.value);
@@ -870,7 +871,7 @@ export default function Description(props) {
                               {
                                 name: "arbitersValidate",
                                 label: "Centralized",
-                                value: PayzuraCentealizedArbiter,
+                                value: "Centralized",
                                 availability: true,
                               },
                               {
