@@ -38,7 +38,7 @@ import USDCIcon from "./../images/USDC.webp";
 
 import RadioGroup from "./../ui/RadioGroup";
 import SelectDropdown from "../ui/SelectDropdown";
-import RangeSlider from "../ui/RangeSlider";
+import MultiRangeSlider from "../ui/MultiRangeSlider";
 
 const StyledTableRow = styled(TableRow)();
 const StyledTableCell = styled(TableCell)();
@@ -71,39 +71,23 @@ function MyContractsContainer(props) {
   const { dataGetMyContracts, placeholder } = props;
 
   const [filteredList, setFilteredList] = useState(dataGetMyContracts);
-  const [filterPrice, setFilterPrice] = useState([0, 1]);
+  const [filterMinPrice, setFilterMinPrice] = useState(0);
+  const [filterMaxPrice, setFilterMaxPrice] = useState(10);
   const [filterWalletAddress, setFilterWalletAddress] = useState("");
   const [filterSide, setFilterSide] = useState("");
   const [filterStates, setFilterStates] = useState("");
   const [filterDelivery, setFilterDelivery] = useState("");
   
-
-  const handleChangePrice = (event, value) => {
-    setFilterPrice(value);
-  };
-
   const handleChangeWalletAddress = (event) => {
     setFilterWalletAddress(event.target.value);
-  };
-
-  const handleChangeSide = (event) => {
-    setFilterSide(event.target.value);
-  };
-
-  const handleChangeStates = (event) => {
-    setFilterStates(event.target.value);
-  };
-
-  const handleChangeDelivery = (event, newDelivery) => {
-    setFilterDelivery(newDelivery);
   };
   
   const applyFilters = () => {
     let updatedList = dataGetMyContracts;
 
     // Price Filter
-    const minPrice = filterPrice[0];
-    const maxPrice = filterPrice[1];
+    const minPrice = filterMinPrice;
+    const maxPrice = filterMaxPrice;
     updatedList = updatedList.filter(
       (item) => item.name.Price >= minPrice && item.name.Price <= maxPrice
     );
@@ -161,34 +145,17 @@ function MyContractsContainer(props) {
     // States Filter
     if (filterDelivery === "Till 24H") {
       updatedList = updatedList.filter(
-        (orders) => orders.name.TimeToDeliver <= 24
+        (orders) => orders.name.TimeToDeliver <= 1
       );
     } else if (filterDelivery === "Till 48H") {
       updatedList = updatedList.filter(
-        (orders) => orders.name.TimeToDeliver <= 48
+        (orders) => orders.name.TimeToDeliver <= 2
       );
     } else if (filterDelivery === "Till 72H") {
       updatedList = updatedList.filter(
-        (orders) => orders.name.TimeToDeliver <= 72
+        (orders) => orders.name.TimeToDeliver <= 3
       );
     }
-
-    // Sort Type
-    // if (sortData === "priceAsc" || sortData === "priceDsc") {
-    //   if (sortData === "priceAsc") {
-    //     updatedList = updatedList.sort(
-    //       (a, b) => a.price.offerPrice - b.price.offerPrice
-    //     );
-    //   }
-
-    //   if (sortData === "priceDsc") {
-    //     updatedList = updatedList.sort(
-    //       (a, b) => b.price.offerPrice - a.price.offerPrice
-    //     );
-    //   }
-    // } else {
-    //   updatedList = updatedList.sort((a, b) => b[sortData] - a[sortData]);
-    // }
 
     setFilteredList(updatedList);
   };
@@ -201,7 +168,8 @@ function MyContractsContainer(props) {
     filterWalletAddress,
     filterSide,
     filterStates,
-    filterPrice,
+    filterMinPrice,
+    filterMaxPrice,
     filterDelivery,
   ]);
 
@@ -212,7 +180,21 @@ function MyContractsContainer(props) {
 
         {/* Filter with Price */}
         <div className="filterOption">
-          <RangeSlider value={filterPrice} changePrice={handleChangePrice} />
+          <h4 className="filterTitle">
+            <span>Price</span>
+            <span className="priceRight">{filterMinPrice}-{filterMaxPrice}</span>
+          </h4>
+          <MultiRangeSlider
+            min={0}
+            max={10}
+            onChange={({ min, max }) =>
+              {
+                setFilterMaxPrice(`${max}`),
+                setFilterMinPrice(`${min}`)
+              }
+              // console.log(`min = ${min}, max = ${max}`)
+            }
+          />
         </div>
 
         {/* Filter with Wallet Address */}

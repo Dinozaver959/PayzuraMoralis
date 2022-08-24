@@ -26,6 +26,11 @@
       .blockIcon {
         background: $PrimaryColor;
       }
+      .blockValue {
+        h3 {
+          color: $PrimaryColor;
+        }
+      }
     }
 
     &:nth-child(2) {
@@ -87,15 +92,23 @@
       }
 
       h3 {
-        @include Font(null, 2rem, $FontColorDark, null, 300);
+        @extend %FlexCol-StartCenter;
+        @include Font(null, 1.2rem, $FontColorDark, 1.2rem, 600);
         margin: 0;
+        min-height: 46px;
 
         @include RespondTo(SmallDesktop) {
-          font-size: 1.5rem;
+          font-size: 1.1rem;
+          line-height: 1.1rem;
         }
 
         @include RespondTo(MobileDevices) {
-          font-size: 1.7rem;
+          font-size: 1rem;
+          line-height: 1rem;
+        }
+
+        span {
+          font-size: 0.75rem;
         }
       }
 
@@ -125,6 +138,10 @@
     margin-top: 20px;
 
     @include RespondTo(MobileDevices) {
+      width: 100%;
+    }
+
+    &.fullWidth {
       width: 100%;
     }
   }

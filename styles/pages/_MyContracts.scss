@@ -6,7 +6,7 @@
     width: 250px;
 
     .sidebarHeader {
-      @include Font(null, 1.2rem, $FontColorDark, null, 600);
+      @include Font(null, 1.2rem, $FontColorDark, null, 400);
       margin: 0;
       border-bottom: 1px solid $BorderDark;
       padding-bottom: 10px;
@@ -21,6 +21,11 @@
         background: rgba($BlackColor, 0.05);
         padding: 5px 8px;
         @include BorderRadius(3px);
+        @extend %FlexRow-CenterBetween;
+
+        span.priceRight {
+          color: rgba($FontColorDark, 0.75);
+        }
       }
 
       .dropdownContainer {
@@ -40,7 +45,7 @@
 
       .totalData {
         flex: 2;
-        @include Font(null, 1.2rem, $FontColorDark, null, 600);
+        @include Font(null, 1.2rem, $FontColorDark, null, 400);
       }
     }
   }

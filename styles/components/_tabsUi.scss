@@ -58,8 +58,16 @@
     .headerTabs {
       .tabItem {
         &.active {
-          background: transparent;
+          background: $DarkBg;
           border-color: $FontColorDark;
+          position: relative;
+
+          &::after {
+            content: '';
+            height: 1px;
+            @include Absolute($Left: 0, $Right: 0, $Bottom: -1px);
+            background: $DarkBg;
+          }
 
           button {
             color: $LightBlueColor;

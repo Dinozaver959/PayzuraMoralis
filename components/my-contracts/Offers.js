@@ -31,6 +31,9 @@ import ModalUi from "../ui/ModalUi";
 import Image from "next/image";
 import ETHIcon from "./../images/ETH.webp";
 import USDCIcon from "./../images/USDC.webp";
+import RadioGroup from "../ui/RadioGroup";
+import SelectDropdown from "../ui/SelectDropdown";
+import MultiRangeSlider from "../ui/MultiRangeSlider";
 
 const StyledTableRow = styled(TableRow)();
 const StyledTableCell = styled(TableCell)();
@@ -39,15 +42,248 @@ const StyledInnerTableCell = styled(TableCell)();
 function OffersContainer(props) {
   const { dataContractsOffered, placeholder } = props;
 
+  const [filteredList, setFilteredList] = useState(dataContractsOffered);
+  const [filterMinPrice, setFilterMinPrice] = useState(0);
+  const [filterMaxPrice, setFilterMaxPrice] = useState(10);
+  const [filterWalletAddress, setFilterWalletAddress] = useState("");
+  const [filterSide, setFilterSide] = useState("");
+  const [filterStates, setFilterStates] = useState("");
+  const [filterDelivery, setFilterDelivery] = useState("");
+  
+  const handleChangeWalletAddress = (event) => {
+    setFilterWalletAddress(event.target.value);
+  };
+  
+  const applyFilters = () => {
+    let updatedList = dataContractsOffered;
+
+    // Price Filter
+    const minPrice = filterMinPrice;
+    const maxPrice = filterMaxPrice;
+    updatedList = updatedList.filter(
+      (item) => item.name.Price >= minPrice && item.name.Price <= maxPrice
+    );
+
+    // Side Filter
+    if (filterSide === "Buyer") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.ContractStartedBy === "Buyer"
+      );
+    }
+    if (filterSide === "Seller") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.ContractStartedBy === "Seller"
+      );
+    }
+
+    if(filterWalletAddress !== '') {
+      updatedList = updatedList.filter(
+        (orders) => (orders.name.SellerWallet === filterWalletAddress || 
+          orders.name.BuyerWallet === filterWalletAddress)
+      );
+    }
+
+    // States Filter
+    if (filterStates === "Available") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.State === "Available"
+      );
+    } else if (filterStates === "buyer_initialized") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.State === "buyer_initialized"
+      );
+    } else if (filterStates === "buyer_initialized_and_paid") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.State === "buyer_initialized_and_paid"
+      );
+    } else if (filterStates === "await_seller_accepts") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.State === "await_seller_accepts"
+      );
+    } else if (filterStates === "paid") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.State === "paid"
+      );
+    } else if (filterStates === "complete") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.State === "complete"
+      );
+    } else if (filterStates === "dispute") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.State === "dispute"
+      );
+    }
+
+    // States Filter
+    if (filterDelivery === "Till 24H") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.TimeToDeliver <= 1
+      );
+    } else if (filterDelivery === "Till 48H") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.TimeToDeliver <= 2
+      );
+    } else if (filterDelivery === "Till 72H") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.TimeToDeliver <= 3
+      );
+    }
+
+    setFilteredList(updatedList);
+  };
+
+  useEffect(() => {
+    applyFilters();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    dataContractsOffered,
+    filterWalletAddress,
+    filterSide,
+    filterStates,
+    filterMinPrice,
+    filterMaxPrice,
+    filterDelivery,
+  ]);
+
   return (
-    <div>
-      <div className="cardHeader">
-        <div className="cardTitle">
-          <h2>Offers</h2>
+    <div className="containerWithSidebar">
+      <div className="filtersMain">
+        <h2 className="sidebarHeader">Filters</h2>
+
+        {/* Filter with Price */}
+        <div className="filterOption">
+          <h4 className="filterTitle">
+            <span>Price</span>
+            <span className="priceRight">{filterMinPrice}-{filterMaxPrice}</span>
+          </h4>
+          <MultiRangeSlider
+            min={0}
+            max={10}
+            onChange={({ min, max }) =>
+              {
+                setFilterMaxPrice(`${max}`),
+                setFilterMinPrice(`${min}`)
+              }
+              // console.log(`min = ${min}, max = ${max}`)
+            }
+          />
+        </div>
+
+        {/* Filter with Wallet Address */}
+        <div className="filterOption">
+          <h4 className="filterTitle">Wallet Address</h4>
+          <input
+            className="formInput"
+            id="filterWalletAddress"
+            placeholder="Wallet Address"
+            type="text"
+            onBlur={handleChangeWalletAddress}
+          />
+        </div>
+
+        {/* Filter with Side */}
+        <div className="filterOption">
+          <h4 className="filterTitle">Side</h4>
+          <RadioGroup
+            listItem="radioList"
+            selectedRadio={filterSide}
+            setSelectedRadio={setFilterSide}
+            values={[
+              {
+                name: "filterSide",
+                label: "Buyer",
+                value: "Buyer",
+                availability: true,
+              },
+              {
+                name: "filterSide",
+                label: "Seller",
+                value: "Seller",
+                availability: true,
+              },
+            ]}
+          />
+        </div>
+
+        {/* Filter with States */}
+        <div className="filterOption">
+          <h4 className="filterTitle">States</h4>
+
+          <SelectDropdown
+            selectedOption={filterStates}
+            setSelectedOption={setFilterStates}
+            options={[
+              {
+                label: "All",
+                value: "",
+              },
+              {
+                label: "Available",
+                value: "Available",
+              },
+              {
+                label: "Buyer Initialized",
+                value: "buyer_initialized",
+              },
+              {
+                label: "Buyer Initialized and Paid",
+                value: "buyer_initialized_and_paid",
+              },
+              {
+                label: "Await Seller Accepts",
+                value: "await_seller_accepts",
+              },
+              {
+                label: "Paid",
+                value: "paid",
+              },
+              {
+                label: "Complete",
+                value: "complete",
+              },
+              {
+                label: "Dispute",
+                value: "dispute",
+              },
+            ]}
+          />
+        </div>
+
+        {/* Filter with Time to Deliver */}
+        <div className="filterOption">
+          <h4 className="filterTitle">Time to Deliver</h4>
+          <RadioGroup
+            selectedRadio={filterDelivery}
+            setSelectedRadio={setFilterDelivery}
+            values={[
+              {
+                name: "filterDelivery",
+                label: "< 24 H",
+                value: "Till 24H",
+                availability: true,
+              },
+              {
+                name: "filterDelivery",
+                label: "< 48 H",
+                value: "Till 48H",
+                availability: true,
+              },
+              {
+                name: "filterDelivery",
+                label: "< 72 H",
+                value: "Till 72H",
+                availability: true,
+              },
+            ]}
+          />
         </div>
       </div>
 
-      <div className="cardBody">
+      <div className="filtersContainer">
+        <div className="containerHeader">
+          <div className="totalData">{filteredList.length} total Offers</div>
+        </div>
+
         {placeholder ? (
           <div className="blockLoading">
             <LoadingPlaceholder extraStyles={{ position: "absolute" }} />
