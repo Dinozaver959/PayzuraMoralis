@@ -99,7 +99,7 @@ export default function Navigation(props) {
             arrow
           >
             <li>
-              <Link href=''>
+              <Link href="/">
                 Earn
               </Link>
             </li>
