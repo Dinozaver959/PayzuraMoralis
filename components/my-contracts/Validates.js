@@ -39,6 +39,27 @@ const StyledTableCell = styled(TableCell)({
 function ValidatesContainer(props) {
   const { dataContractsToValidate, placeholder } = props;
 
+  const currencyOptionsValues = [
+    {
+      name: "currencyOptionsValidates",
+      label: "ETH",
+      value: "eth",
+      availability: true,
+    },
+    {
+      name: "currencyOptionsValidates",
+      label: "USDC",
+      value: "usdc",
+      availability: true,
+    },
+    {
+      name: "currencyOptionsValidates",
+      label: "All",
+      value: "All",
+      availability: true,
+    },
+  ];
+
   const filterSideValues = [
     {
       name: "filterSideValidates",
@@ -98,25 +119,38 @@ function ValidatesContainer(props) {
   const deliveryValues = [
     {
       name: "filterDeliveryValidates",
-      label: "< 24 H",
-      value: "Till 24H",
+      label: "1 Day",
+      value: "1 Day",
       availability: true,
     },
     {
       name: "filterDeliveryValidates",
-      label: "< 48 H",
-      value: "Till 48H",
+      label: "3 Days",
+      value: "3 Days",
       availability: true,
     },
     {
       name: "filterDeliveryValidates",
-      label: "< 72 H",
-      value: "Till 72H",
+      label: "7 Days",
+      value: "7 Days",
       availability: true,
     },
-  ];
+    {
+      name: "filterDeliveryValidates",
+      label: "14 Days",
+      value: "14 Days",
+      availability: true,
+    },
+    {
+      name: "filterDeliveryValidates",
+      label: "All",
+      value: "All",
+      availability: true,
+    },
+  ]
 
   const [filteredList, setFilteredList] = useState(dataContractsToValidate);
+  const [selectCurrency, setSelectCurrency] = useState();
   const [filterMinPrice, setFilterMinPrice] = useState(0);
   const [filterMaxPrice, setFilterMaxPrice] = useState(10);
   const [filterWalletAddress, setFilterWalletAddress] = useState("");
@@ -131,6 +165,21 @@ function ValidatesContainer(props) {
   const applyFilters = () => {
     let updatedList = dataContractsToValidate;
 
+    // Currency Selection Filter
+    if (selectCurrency === "eth") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.CurrencyTicker === "ETH"
+      );
+    } else if (selectCurrency === "usdc") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.CurrencyTicker === "USDC"
+      );
+    } else if (selectCurrency === "All") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.CurrencyTicker === "ETH" || orders.name.CurrencyTicker === "USDC"
+      );
+    }
+
     // Price Filter
     const minPrice = filterMinPrice;
     const maxPrice = filterMaxPrice;
@@ -143,10 +192,13 @@ function ValidatesContainer(props) {
       updatedList = updatedList.filter(
         (orders) => orders.name.ContractStartedBy === "Buyer"
       );
-    }
-    if (filterSide === "Seller") {
+    } else if (filterSide === "Seller") {
       updatedList = updatedList.filter(
         (orders) => orders.name.ContractStartedBy === "Seller"
+      );
+    } else if (filterSide === "All") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.ContractStartedBy === "Buyer" || orders.name.ContractStartedBy === "Seller"
       );
     }
 
@@ -190,17 +242,25 @@ function ValidatesContainer(props) {
     }
 
     // States Filter
-    if (filterDelivery === "Till 24H") {
+    if (filterDelivery === "1 Day") {
       updatedList = updatedList.filter(
         (orders) => orders.name.TimeToDeliver <= 1
       );
-    } else if (filterDelivery === "Till 48H") {
-      updatedList = updatedList.filter(
-        (orders) => orders.name.TimeToDeliver <= 2
-      );
-    } else if (filterDelivery === "Till 72H") {
+    } else if (filterDelivery === "3 Days") {
       updatedList = updatedList.filter(
         (orders) => orders.name.TimeToDeliver <= 3
+      );
+    } else if (filterDelivery === "7 Days") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.TimeToDeliver <= 7
+      );
+    } else if (filterDelivery === "14 Days") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.TimeToDeliver <= 14
+      );
+    } else if (filterDelivery === "All") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.TimeToDeliver
       );
     }
 
@@ -218,6 +278,7 @@ function ValidatesContainer(props) {
     filterMinPrice,
     filterMaxPrice,
     filterDelivery,
+    selectCurrency,
   ]);
 
   return (
@@ -235,6 +296,9 @@ function ValidatesContainer(props) {
         filterSideValues={filterSideValues}
         dropDownOptions={dropDownOptions}
         deliveryValues={deliveryValues}
+        selectCurrency={selectCurrency}
+        setSelectCurrency={setSelectCurrency}
+        currencyOptionsValues={currencyOptionsValues}
       />
 
       <div className="filtersContainer">
@@ -247,7 +311,7 @@ function ValidatesContainer(props) {
             <LoadingPlaceholder extraStyles={{ position: "absolute" }} />
           </div>
         ) : filteredList[0] && filteredList ? (
-          <Table_normal data={dataContractsToValidate} />
+          <Table_normal data={filteredList} />
         ) : (
           <div className="noData mt-20">
             <i>

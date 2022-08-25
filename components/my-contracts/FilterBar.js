@@ -16,6 +16,9 @@ function FilterBar(props) {
     filterSideValues,
     dropDownOptions,
     deliveryValues,
+    selectCurrency,
+    setSelectCurrency,
+    currencyOptionsValues,
   } = props;
 
   return (
@@ -25,6 +28,11 @@ function FilterBar(props) {
       {/* Filter with Price */}
       <div className="filterOption">
         <h4 className="filterTitle">Price</h4>
+        <RadioGroup
+          selectedRadio={selectCurrency}
+          setSelectedRadio={setSelectCurrency}
+          values={currencyOptionsValues}
+        />
         <MultiRangeSlider
           min={0}
           max={10}
@@ -53,7 +61,7 @@ function FilterBar(props) {
       <div className="filterOption">
         <h4 className="filterTitle">Side</h4>
         <RadioGroup
-          listItem="radioList"
+          // listItem="radioList"
           selectedRadio={filterSide}
           setSelectedRadio={setFilterSide}
           values={filterSideValues}
@@ -73,7 +81,7 @@ function FilterBar(props) {
 
       {/* Filter with Time to Deliver */}
       <div className="filterOption">
-        <h4 className="filterTitle">Time to Deliver</h4>
+        <h4 className="filterTitle">Contract Duration</h4>
         <RadioGroup
           selectedRadio={filterDelivery}
           setSelectedRadio={setFilterDelivery}
