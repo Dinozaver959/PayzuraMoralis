@@ -1,10 +1,38 @@
 import React, { Fragment } from "react";
 import Navigation from "../../components/Navigation";
-import ChatInput from "../../components/messaging/ChatInput";
 import { BsChevronLeft } from "react-icons/bs";
 import Link from "next/link";
+import { useMoralis } from "react-moralis";
 
 const index = (props) => {
+  const { Moralis } = useMoralis();
+  const [message, setMessage] = React.useState("");
+  const currentAccount = props.currentAccount;
+
+  const newMessage = new Moralis.Object("Messages");
+
+  const sendMessage = () => {
+    newMessage.set('userId', currentAccount);
+    newMessage.set('message', message);
+    newMessage.save();
+  }
+
+  const getAllMessages = async () => {
+    const result = await Moralis.Cloud.run("getAllMessages");
+    setMessages(result)
+  }
+
+  const subscribeToMessages = async () => {
+    let query = new Moralis.Query('Messages');
+    let subscription = await query.subscribe();
+    subscription.on('create', notifyOnCreate);
+  }
+
+  const onChangeText = (message) => {
+    setMessage(message);
+  }
+
+
   return (
     <Fragment>
     <Navigation
@@ -49,7 +77,10 @@ const index = (props) => {
             {/* Conversation */}
           </div>
           <div className="inbox__message__footer">
-            <ChatInput />
+          <div className='inbox__message__input'>
+            <input type="text" placeholder="Type a message" onChange={onChangeText} />
+            <button type='button' onClick={sendMessage}>Send</button>
+          </div>
           </div>
         </div>
       </div>

@@ -29,6 +29,10 @@
     padding: 1rem;
     border-bottom: 1px solid $BorderLight;
 
+    .inbox__message__back__button {
+      cursor: pointer;
+    }
+
     h2 {
       text-decoration: underline;
       cursor: pointer;
