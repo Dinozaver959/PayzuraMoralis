@@ -35,9 +35,15 @@ import RadioGroup from "../ui/RadioGroup";
 import SelectDropdown from "../ui/SelectDropdown";
 import MultiRangeSlider from "../ui/MultiRangeSlider";
 
-const StyledTableRow = styled(TableRow)();
-const StyledTableCell = styled(TableCell)();
-const StyledInnerTableCell = styled(TableCell)();
+const StyledTableRow = styled(TableRow)({
+  fontFamily: 'inherit',
+});
+const StyledTableCell = styled(TableCell)({
+  fontFamily: 'inherit',
+});
+const StyledInnerTableCell = styled(TableCell)({
+  fontFamily: 'inherit',
+});
 
 function OffersContainer(props) {
   const { dataContractsOffered, placeholder } = props;
