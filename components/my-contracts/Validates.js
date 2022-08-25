@@ -26,19 +26,95 @@ import PlusIc from "../icons/Plus";
 import Button from "../ui/Button";
 import LoadingPlaceholder from "../ui/LoadingPlaceholder";
 import ModalUi from "../ui/ModalUi";
-import RadioGroup from "../ui/RadioGroup";
-import SelectDropdown from "../ui/SelectDropdown";
-import MultiRangeSlider from "../ui/MultiRangeSlider";
+
+import FilterBar from "./FilterBar";
 
 const StyledTableRow = styled(TableRow)({
-  fontFamily: 'inherit',
+  fontFamily: "inherit",
 });
 const StyledTableCell = styled(TableCell)({
-  fontFamily: 'inherit',
+  fontFamily: "inherit",
 });
 
 function ValidatesContainer(props) {
   const { dataContractsToValidate, placeholder } = props;
+
+  const filterSideValues = [
+    {
+      name: "filterSideValidates",
+      label: "Buyer",
+      value: "Buyer",
+      availability: true,
+    },
+    {
+      name: "filterSideValidates",
+      label: "Seller",
+      value: "Seller",
+      availability: true,
+    },
+    {
+      name: "filterSideValidates",
+      label: "All",
+      value: "All",
+      availability: true,
+    },
+  ];
+
+  const dropDownOptions = [
+    {
+      label: "All",
+      value: "",
+    },
+    {
+      label: "Available",
+      value: "Available",
+    },
+    {
+      label: "Buyer Initialized",
+      value: "buyer_initialized",
+    },
+    {
+      label: "Buyer Initialized and Paid",
+      value: "buyer_initialized_and_paid",
+    },
+    {
+      label: "Await Seller Accepts",
+      value: "await_seller_accepts",
+    },
+    {
+      label: "Paid",
+      value: "paid",
+    },
+    {
+      label: "Complete",
+      value: "complete",
+    },
+    {
+      label: "Dispute",
+      value: "dispute",
+    },
+  ];
+
+  const deliveryValues = [
+    {
+      name: "filterDeliveryValidates",
+      label: "< 24 H",
+      value: "Till 24H",
+      availability: true,
+    },
+    {
+      name: "filterDeliveryValidates",
+      label: "< 48 H",
+      value: "Till 48H",
+      availability: true,
+    },
+    {
+      name: "filterDeliveryValidates",
+      label: "< 72 H",
+      value: "Till 72H",
+      availability: true,
+    },
+  ];
 
   const [filteredList, setFilteredList] = useState(dataContractsToValidate);
   const [filterMinPrice, setFilterMinPrice] = useState(0);
@@ -47,11 +123,11 @@ function ValidatesContainer(props) {
   const [filterSide, setFilterSide] = useState("");
   const [filterStates, setFilterStates] = useState("");
   const [filterDelivery, setFilterDelivery] = useState("");
-  
+
   const handleChangeWalletAddress = (event) => {
     setFilterWalletAddress(event.target.value);
   };
-  
+
   const applyFilters = () => {
     let updatedList = dataContractsToValidate;
 
@@ -74,10 +150,11 @@ function ValidatesContainer(props) {
       );
     }
 
-    if(filterWalletAddress !== '') {
+    if (filterWalletAddress !== "") {
       updatedList = updatedList.filter(
-        (orders) => (orders.name.SellerWallet === filterWalletAddress || 
-          orders.name.BuyerWallet === filterWalletAddress)
+        (orders) =>
+          orders.name.SellerWallet === filterWalletAddress ||
+          orders.name.BuyerWallet === filterWalletAddress
       );
     }
 
@@ -145,137 +222,20 @@ function ValidatesContainer(props) {
 
   return (
     <div className="containerWithSidebar">
-      <div className="filtersMain">
-        <h2 className="sidebarHeader">Filters</h2>
-
-        {/* Filter with Price */}
-        <div className="filterOption">
-          <h4 className="filterTitle">
-            <span>Price</span>
-            <span className="priceRight">{filterMinPrice}-{filterMaxPrice}</span>
-          </h4>
-          <MultiRangeSlider
-            min={0}
-            max={10}
-            onChange={({ min, max }) =>
-              {
-                setFilterMaxPrice(`${max}`),
-                setFilterMinPrice(`${min}`)
-              }
-              // console.log(`min = ${min}, max = ${max}`)
-            }
-          />
-        </div>
-
-        {/* Filter with Wallet Address */}
-        <div className="filterOption">
-          <h4 className="filterTitle">Wallet Address</h4>
-          <input
-            className="formInput"
-            id="filterWalletAddress"
-            placeholder="Wallet Address"
-            type="text"
-            onBlur={handleChangeWalletAddress}
-          />
-        </div>
-
-        {/* Filter with Side */}
-        <div className="filterOption">
-          <h4 className="filterTitle">Side</h4>
-          <RadioGroup
-            listItem="radioList"
-            selectedRadio={filterSide}
-            setSelectedRadio={setFilterSide}
-            values={[
-              {
-                name: "filterSide",
-                label: "Buyer",
-                value: "Buyer",
-                availability: true,
-              },
-              {
-                name: "filterSide",
-                label: "Seller",
-                value: "Seller",
-                availability: true,
-              },
-            ]}
-          />
-        </div>
-
-        {/* Filter with States */}
-        <div className="filterOption">
-          <h4 className="filterTitle">States</h4>
-
-          <SelectDropdown
-            selectedOption={filterStates}
-            setSelectedOption={setFilterStates}
-            options={[
-              {
-                label: "All",
-                value: "",
-              },
-              {
-                label: "Available",
-                value: "Available",
-              },
-              {
-                label: "Buyer Initialized",
-                value: "buyer_initialized",
-              },
-              {
-                label: "Buyer Initialized and Paid",
-                value: "buyer_initialized_and_paid",
-              },
-              {
-                label: "Await Seller Accepts",
-                value: "await_seller_accepts",
-              },
-              {
-                label: "Paid",
-                value: "paid",
-              },
-              {
-                label: "Complete",
-                value: "complete",
-              },
-              {
-                label: "Dispute",
-                value: "dispute",
-              },
-            ]}
-          />
-        </div>
-
-        {/* Filter with Time to Deliver */}
-        <div className="filterOption">
-          <h4 className="filterTitle">Time to Deliver</h4>
-          <RadioGroup
-            selectedRadio={filterDelivery}
-            setSelectedRadio={setFilterDelivery}
-            values={[
-              {
-                name: "filterDelivery",
-                label: "< 24 H",
-                value: "Till 24H",
-                availability: true,
-              },
-              {
-                name: "filterDelivery",
-                label: "< 48 H",
-                value: "Till 48H",
-                availability: true,
-              },
-              {
-                name: "filterDelivery",
-                label: "< 72 H",
-                value: "Till 72H",
-                availability: true,
-              },
-            ]}
-          />
-        </div>
-      </div>
+      <FilterBar
+        walletAddressFn={handleChangeWalletAddress}
+        filterSide={filterSide}
+        setFilterSide={setFilterSide}
+        filterStates={filterStates}
+        setFilterStates={setFilterStates}
+        filterDelivery={filterDelivery}
+        setFilterDelivery={setFilterDelivery}
+        setFilterMaxPrice={setFilterMaxPrice}
+        setFilterMinPrice={setFilterMinPrice}
+        filterSideValues={filterSideValues}
+        dropDownOptions={dropDownOptions}
+        deliveryValues={deliveryValues}
+      />
 
       <div className="filtersContainer">
         <div className="containerHeader">
@@ -286,10 +246,10 @@ function ValidatesContainer(props) {
           <div className="blockLoading">
             <LoadingPlaceholder extraStyles={{ position: "absolute" }} />
           </div>
-        ) : dataContractsToValidate[0] && dataContractsToValidate ? (
+        ) : filteredList[0] && filteredList ? (
           <Table_normal data={dataContractsToValidate} />
         ) : (
-          <div className="noData">
+          <div className="noData mt-20">
             <i>
               <PlaceholderIc />
             </i>
