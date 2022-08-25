@@ -36,12 +36,14 @@ import Image from "next/image";
 import ETHIcon from "./../images/ETH.webp";
 import USDCIcon from "./../images/USDC.webp";
 
-import RadioGroup from "./../ui/RadioGroup";
-import SelectDropdown from "../ui/SelectDropdown";
-import MultiRangeSlider from "../ui/MultiRangeSlider";
+import FilterBar from "./FilterBar";
 
-const StyledTableRow = styled(TableRow)();
-const StyledTableCell = styled(TableCell)();
+const StyledTableRow = styled(TableRow)({
+  fontFamily: "inherit",
+});
+const StyledTableCell = styled(TableCell)({
+  fontFamily: "inherit",
+});
 
 function wrapArbiters(wallets) {
   if (!wallets) {
@@ -70,20 +72,151 @@ function tickerToIcon(ticker) {
 function MyContractsContainer(props) {
   const { dataGetMyContracts, placeholder } = props;
 
+  const currencyOptionsValues = [
+    {
+      name: "currencyOptions",
+      label: "ETH",
+      value: "eth",
+      availability: true,
+    },
+    {
+      name: "currencyOptions",
+      label: "USDC",
+      value: "usdc",
+      availability: true,
+    },
+    {
+      name: "currencyOptions",
+      label: "All",
+      value: "All",
+      availability: true,
+    },
+  ];
+
+  const filterSideValues = [
+    {
+      name: "filterSideAll",
+      label: "Buyer",
+      value: "Buyer",
+      availability: true,
+    },
+    {
+      name: "filterSideAll",
+      label: "Seller",
+      value: "Seller",
+      availability: true,
+    },
+    {
+      name: "filterSideAll",
+      label: "All",
+      value: "All",
+      availability: true,
+    },
+  ];
+
+  const dropDownOptions =[
+    {
+      label: "All",
+      value: "",
+    },
+    {
+      label: "Available",
+      value: "Available",
+    },
+    {
+      label: "Buyer Initialized",
+      value: "buyer_initialized",
+    },
+    {
+      label: "Buyer Initialized and Paid",
+      value: "buyer_initialized_and_paid",
+    },
+    {
+      label: "Await Seller Accepts",
+      value: "await_seller_accepts",
+    },
+    {
+      label: "Paid",
+      value: "paid",
+    },
+    {
+      label: "Complete",
+      value: "complete",
+    },
+    {
+      label: "Dispute",
+      value: "dispute",
+    },
+  ]
+
+  const deliveryValues = [
+    {
+      name: "filterDeliveryAll",
+      label: "1 Day",
+      value: "1 Day",
+      availability: true,
+    },
+    {
+      name: "filterDeliveryAll",
+      label: "3 Days",
+      value: "3 Days",
+      availability: true,
+    },
+    {
+      name: "filterDeliveryAll",
+      label: "7 Days",
+      value: "7 Days",
+      availability: true,
+    },
+    {
+      name: "filterDeliveryAll",
+      label: "14 Days",
+      value: "14 Days",
+      availability: true,
+    },
+    {
+      name: "filterDeliveryAll",
+      label: "All",
+      value: "All",
+      availability: true,
+    },
+  ]
+
+  const allDataPrice = dataGetMyContracts.map(data=>data.name.Price);
+  const uniqueDataPrice = [...new Set(allDataPrice)];
+  const priceFilterMinValue = uniqueDataPrice[0]-0.001;
+  const priceFilterMaxValue = uniqueDataPrice[1]+0.001;
+
   const [filteredList, setFilteredList] = useState(dataGetMyContracts);
+  const [selectCurrency, setSelectCurrency] = useState();
   const [filterMinPrice, setFilterMinPrice] = useState(0);
   const [filterMaxPrice, setFilterMaxPrice] = useState(10);
   const [filterWalletAddress, setFilterWalletAddress] = useState("");
   const [filterSide, setFilterSide] = useState("");
   const [filterStates, setFilterStates] = useState("");
   const [filterDelivery, setFilterDelivery] = useState("");
-  
+
   const handleChangeWalletAddress = (event) => {
     setFilterWalletAddress(event.target.value);
   };
-  
+
   const applyFilters = () => {
     let updatedList = dataGetMyContracts;
+
+    // Currency Selection Filter
+    if (selectCurrency === "eth") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.CurrencyTicker === "ETH"
+      );
+    } else if (selectCurrency === "usdc") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.CurrencyTicker === "USDC"
+      );
+    } else if (selectCurrency === "All") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.CurrencyTicker === "ETH" || orders.name.CurrencyTicker === "USDC"
+      );
+    }
 
     // Price Filter
     const minPrice = filterMinPrice;
@@ -95,20 +228,36 @@ function MyContractsContainer(props) {
     // Side Filter
     if (filterSide === "Buyer") {
       updatedList = updatedList.filter(
-        (orders) => orders.name.ContractStartedBy === "Buyer"
+        (orders) => orders.name.ContractStartedBy === "Buyer", console.log("1 Buyer updatedList", updatedList)
       );
-    }
-    if (filterSide === "Seller") {
+    } else if (filterSide === "Seller") {
       updatedList = updatedList.filter(
-        (orders) => orders.name.ContractStartedBy === "Seller"
+        (orders) => orders.name.ContractStartedBy === "Seller", console.log("1 Seller updatedList", updatedList)
+      );
+    } else if (filterSide === "All") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.ContractStartedBy === "Buyer" || orders.name.ContractStartedBy === "Seller"
       );
     }
 
-    if(filterWalletAddress !== '') {
-      updatedList = updatedList.filter(
-        (orders) => (orders.name.SellerWallet === filterWalletAddress || 
-          orders.name.BuyerWallet === filterWalletAddress)
-      );
+    if (filterWalletAddress !== "") {
+      if (filterSide === "All") {
+        updatedList = updatedList.filter(
+          (orders) =>
+            orders.name.SellerWallet === filterWalletAddress ||
+            orders.name.BuyerWallet === filterWalletAddress
+        );
+      }
+      if (filterSide === "Buyer") {
+        updatedList = updatedList.filter(
+          (orders) => orders.name.BuyerWallet === filterWalletAddress
+        );
+      }
+      if (filterSide === "Seller") {
+        updatedList = updatedList.filter(
+          (orders) => orders.name.SellerWallet === filterWalletAddress
+        );
+      }
     }
 
     // States Filter
@@ -143,17 +292,25 @@ function MyContractsContainer(props) {
     }
 
     // States Filter
-    if (filterDelivery === "Till 24H") {
+    if (filterDelivery === "1 Day") {
       updatedList = updatedList.filter(
         (orders) => orders.name.TimeToDeliver <= 1
       );
-    } else if (filterDelivery === "Till 48H") {
-      updatedList = updatedList.filter(
-        (orders) => orders.name.TimeToDeliver <= 2
-      );
-    } else if (filterDelivery === "Till 72H") {
+    } else if (filterDelivery === "3 Days") {
       updatedList = updatedList.filter(
         (orders) => orders.name.TimeToDeliver <= 3
+      );
+    } else if (filterDelivery === "7 Days") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.TimeToDeliver <= 7
+      );
+    } else if (filterDelivery === "14 Days") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.TimeToDeliver <= 14
+      );
+    } else if (filterDelivery === "All") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.TimeToDeliver
       );
     }
 
@@ -171,141 +328,28 @@ function MyContractsContainer(props) {
     filterMinPrice,
     filterMaxPrice,
     filterDelivery,
+    selectCurrency,
   ]);
 
   return (
     <div className="containerWithSidebar">
-      <div className="filtersMain">
-        <h2 className="sidebarHeader">Filters</h2>
-
-        {/* Filter with Price */}
-        <div className="filterOption">
-          <h4 className="filterTitle">
-            <span>Price</span>
-            <span className="priceRight">{filterMinPrice}-{filterMaxPrice}</span>
-          </h4>
-          <MultiRangeSlider
-            min={0}
-            max={10}
-            onChange={({ min, max }) =>
-              {
-                setFilterMaxPrice(`${max}`),
-                setFilterMinPrice(`${min}`)
-              }
-              // console.log(`min = ${min}, max = ${max}`)
-            }
-          />
-        </div>
-
-        {/* Filter with Wallet Address */}
-        <div className="filterOption">
-          <h4 className="filterTitle">Wallet Address</h4>
-          <input
-            className="formInput"
-            id="filterWalletAddress"
-            placeholder="Wallet Address"
-            type="text"
-            onBlur={handleChangeWalletAddress}
-          />
-        </div>
-
-        {/* Filter with Side */}
-        <div className="filterOption">
-          <h4 className="filterTitle">Side</h4>
-          <RadioGroup
-            listItem="radioList"
-            selectedRadio={filterSide}
-            setSelectedRadio={setFilterSide}
-            values={[
-              {
-                name: "filterSide",
-                label: "Buyer",
-                value: "Buyer",
-                availability: true,
-              },
-              {
-                name: "filterSide",
-                label: "Seller",
-                value: "Seller",
-                availability: true,
-              },
-            ]}
-          />
-        </div>
-
-        {/* Filter with States */}
-        <div className="filterOption">
-          <h4 className="filterTitle">States</h4>
-
-          <SelectDropdown
-            selectedOption={filterStates}
-            setSelectedOption={setFilterStates}
-            options={[
-              {
-                label: "All",
-                value: "",
-              },
-              {
-                label: "Available",
-                value: "Available",
-              },
-              {
-                label: "Buyer Initialized",
-                value: "buyer_initialized",
-              },
-              {
-                label: "Buyer Initialized and Paid",
-                value: "buyer_initialized_and_paid",
-              },
-              {
-                label: "Await Seller Accepts",
-                value: "await_seller_accepts",
-              },
-              {
-                label: "Paid",
-                value: "paid",
-              },
-              {
-                label: "Complete",
-                value: "complete",
-              },
-              {
-                label: "Dispute",
-                value: "dispute",
-              },
-            ]}
-          />
-        </div>
-
-        {/* Filter with Time to Deliver */}
-        <div className="filterOption">
-          <h4 className="filterTitle">Time to Deliver</h4>
-          <RadioGroup
-            selectedRadio={filterDelivery}
-            setSelectedRadio={setFilterDelivery}
-            values={[
-              {
-                name: "filterDelivery",
-                label: "< 24 H",
-                value: "Till 24H",
-                availability: true,
-              },
-              {
-                name: "filterDelivery",
-                label: "< 48 H",
-                value: "Till 48H",
-                availability: true,
-              },
-              {
-                name: "filterDelivery",
-                label: "< 72 H",
-                value: "Till 72H",
-                availability: true,
-              },
-            ]}
-          />
-        </div>
-      </div>
+      <FilterBar
+        walletAddressFn={handleChangeWalletAddress}
+        filterSide={filterSide}
+        setFilterSide={setFilterSide}
+        filterStates={filterStates}
+        setFilterStates={setFilterStates}
+        filterDelivery={filterDelivery}
+        setFilterDelivery={setFilterDelivery}
+        setFilterMaxPrice={setFilterMaxPrice}
+        setFilterMinPrice={setFilterMinPrice}
+        filterSideValues={filterSideValues}
+        dropDownOptions={dropDownOptions}
+        deliveryValues={deliveryValues}
+        selectCurrency={selectCurrency}
+        setSelectCurrency={setSelectCurrency}
+        currencyOptionsValues={currencyOptionsValues}
+      />
 
       <div className="filtersContainer">
         <div className="containerHeader">

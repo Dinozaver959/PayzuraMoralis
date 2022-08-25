@@ -63,9 +63,6 @@ export default function MyAgreements(props) {
       />
 
       <div className="containerMain">
-        {/* <div className="pageHeader">
-          <h1>My Contracts</h1>
-        </div> */}
 
         <TabsUi
           titles={["My Contracts", "Offers", "Validate"]}

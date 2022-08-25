@@ -265,7 +265,7 @@ export default function Description(props) {
   const [showCustomDuration, setShowCustomDuration] = React.useState(false);
   const [selectCurrency, setSelectCurrency] = React.useState("ETH");
   const [selectContractType, setSelectContractType] = React.useState("seller");
-  const [arbitersValidate, setArbitersValidate] = React.useState();
+  const [arbitersValidate, setArbitersValidate] = React.useState("Centralized");
 
   function handleCurrencyChange(e) {
     setSelectCurrency(e.target.value);

@@ -28,6 +28,16 @@
         }
       }
 
+      .radioGroupMain {
+        .radioItem {
+          .radioInput {
+            + .radioLabel {
+              padding: 7px 10px;
+            }
+          }
+        }
+      }
+
       .dropdownContainer {
         height: 110px;
       }
@@ -37,6 +47,7 @@
   .filtersContainer {
     flex: 2;
     margin-left: 20px;
+    overflow: auto;
 
     .containerHeader {
       border-bottom: 1px solid $BorderDark;
