@@ -27,6 +27,10 @@ import Button from "../ui/Button";
 import LoadingPlaceholder from "../ui/LoadingPlaceholder";
 import ModalUi from "../ui/ModalUi";
 
+import Image from "next/image";
+import ETHIcon from "./../images/ETH.webp";
+import USDCIcon from "./../images/USDC.webp";
+
 import FilterBar from "./FilterBar";
 
 const StyledTableRow = styled(TableRow)({
@@ -359,6 +363,14 @@ function wrapArbiters(wallets) {
   }
 }
 
+function tickerToIcon(ticker) {
+  if (ticker == "USDC") {
+    return USDCIcon;
+  } else if (ticker == "ETH") {
+    return ETHIcon;
+  }
+}
+
 function wrapEpochToDate(epoch) {
   var d = new Date(epoch * 1000);
   return d.toString(); // d.toDateString();
@@ -388,9 +400,9 @@ function Table_normal(props) {
             <StyledTableRow>
               <StyledTableCell />
               <StyledTableCell>Title</StyledTableCell>
-              <StyledTableCell>Price (ETH)</StyledTableCell>
+              <StyledTableCell>State</StyledTableCell>
+              <StyledTableCell>Price</StyledTableCell>
               <StyledTableCell>Time to Deliver</StyledTableCell>
-              <StyledTableCell>Valid Until</StyledTableCell>
               <StyledTableCell>Action</StyledTableCell>
             </StyledTableRow>
           </TableHead>
@@ -434,19 +446,30 @@ function Row_normal(props) {
           {item.ContractTitle}
         </StyledTableCell>
         <StyledTableCell>
-          <label className="mobileLabel">Price (ETH)</label>
-          {item.Price}
+          <label className="mobileLabel">State</label>
+          {item.State}
+        </StyledTableCell>
+        <StyledTableCell>
+          <label className="mobileLabel">Price</label>
+          <div className="flex-center">
+            {item.Price}
+            <i className="currencyIc ml-10 mr-5">
+              <Image
+                src={tickerToIcon(item.CurrencyTicker)}
+                width={22}
+                height={22}
+                alt={item.CurrencyTicker}
+              />
+            </i>
+            {item.CurrencyTicker}
+          </div>
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Time to Deliver</label>
           {item.TimeToDeliver} Day(s)
         </StyledTableCell>
-        <StyledTableCell>
-          <label className="mobileLabel">Valid Until</label>
-          {wrapEpochToDate(item.OfferValidUntil)}
-        </StyledTableCell>
 
-        <StyledTableCell>
+        <StyledTableCell className="actionCol">
           <input
             className="button primary rounded small"
             type="submit"
@@ -606,23 +629,23 @@ function Row_normal(props) {
             <Box sx={{ margin: 1 }}>
               <div className="listData">
                 <div className="listDataItem">
-                  <div className="listItemLabel">Buyer Wallet</div>
-                  <div className="listItemValue">{item.BuyerWallet}</div>
-                </div>
-                <div className="listDataItem">
                   <div className="listItemLabel">Seller Wallet</div>
                   <div className="listItemValue">{item.SellerWallet}</div>
                 </div>
                 <div className="listDataItem">
-                  <div className="listItemLabel">Wallets Allowed to Accept</div>
-                  <div className="listItemValue">
-                    {wrapPersonalized(item.PersonalizedOffer)}
-                  </div>
+                  <div className="listItemLabel">Buyer Wallet</div>
+                  <div className="listItemValue">{item.BuyerWallet}</div>
                 </div>
                 <div className="listDataItem">
                   <div className="listItemLabel">Arbiters</div>
                   <div className="listItemValue">
                     {wrapArbiters(item.Arbiters)}
+                  </div>
+                </div>
+                <div className="listDataItem">
+                  <div className="listItemLabel">Wallets Allowed to Accept</div>
+                  <div className="listItemValue">
+                    {wrapPersonalized(item.PersonalizedOffer)}
                   </div>
                 </div>
                 <div className="listDataItem">

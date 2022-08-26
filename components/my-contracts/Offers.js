@@ -414,9 +414,9 @@ function Table_normal(props) {
             <StyledTableRow>
               <StyledTableCell />
               <StyledTableCell>Title</StyledTableCell>
-              <StyledTableCell>Price (ETH)</StyledTableCell>
+              <StyledTableCell>State</StyledTableCell>
+              <StyledTableCell>Price</StyledTableCell>
               <StyledTableCell>Time to Deliver</StyledTableCell>
-              <StyledTableCell>Valid Until</StyledTableCell>
               <StyledTableCell>Action</StyledTableCell>
             </StyledTableRow>
           </TableHead>
@@ -489,26 +489,29 @@ function Row_normal(props) {
           {item.ContractTitle}
         </StyledTableCell>
         <StyledTableCell>
+          <label className="mobileLabel">State</label>
+          {item.State}
+        </StyledTableCell>
+        <StyledTableCell>
           <label className="mobileLabel">Price (ETH)</label>
-          {item.Price}
-          <Image
-            src={tickerToIcon(item.CurrencyTicker)}
-            width={20}
-            height={20}
-            alt={item.CurrencyTicker}
-          />
-          {item.CurrencyTicker}
+          <div className="flex-center">
+            {item.Price}
+            <i className="currencyIc ml-10 mr-5">
+              <Image
+                src={tickerToIcon(item.CurrencyTicker)}
+                width={20}
+                height={20}
+                alt={item.CurrencyTicker}
+              />
+            </i>
+            {item.CurrencyTicker}
+          </div>
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Time to Deliver</label>
           {item.TimeToDeliver} Day(s)
         </StyledTableCell>
-        <StyledTableCell>
-          <label className="mobileLabel">Valid Until</label>
-          {wrapEpochToDate(item.OfferValidUntil)}
-        </StyledTableCell>
-
-        <StyledTableCell>
+        <StyledTableCell className="actionCol">
           <input
             className="button primary rounded small" // button primary rounded small
             type="submit"
@@ -577,75 +580,7 @@ function Row_normal(props) {
             }
           ></input>
         </StyledTableCell>
-
-        {/* OLD - org 
-        <StyledTableCell>
-          <input
-            className="button primary rounded"
-            type="submit"
-            value="Accept Offer (buyer)"
-            onClick={() =>
-              AcceptOfferBuyer_Moralis(item.index)
-                .then(async (transactionHash) => {
-                  // show the feedback text
-                  document.getElementById("submitFeedback").style.display =
-                    "inline";
-                  document.getElementById("submitFeedback").innerText =
-                    "Creating offer...";
-
-                  var formData = new FormData();
-                  formData.append("SellerWallet", item.SellerWallet);   
-
-                  const connectedAddress = await GetWallet_NonMoralis();
-                  formData.append("BuyerWallet", connectedAddress);
-                  formData.append("transactionHash", transactionHash);
-                  formData.append("objectId", item.objectId);
-
-                  var xhr = new XMLHttpRequest();
-                  xhr.open("POST", "/api/api-acceptedOfferByBuyer", false);
-                  xhr.onload = function () {
-                    // update the feedback text
-                    document.getElementById("submitFeedback").style.display =
-                      "inline";
-                    document.getElementById("submitFeedback").innerText =
-                      "offer accepted";
-
-                    // prevent the Submit button to be clickable and functionable
-                    // removeHover()
-                    // document.getElementById('SubmitButton').disabled = true
-
-                    // think about also removing the hover effect
-                    // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-                    console.log("offer created");
-                  };
-                  xhr.send(formData);
-                })
-                .catch((error) => {
-                  console.error(error);
-                  console.log("accept offer error code: " + error.code);
-                  console.log("accept offer error message: " + error.message);
-                  if (error.data && error.data.message) {
-                    document.getElementById("submitFeedback").innerText =
-                      error.data.message;
-                  } else {
-                    document.getElementById("submitFeedback").innerText =
-                      error.message;
-                  }
-                  document.getElementById("submitFeedback").style.visibility =
-                    "visible";
-                  process.exitCode = 1;
-                })
-            }
-          ></input>
-        </StyledTableCell>
-      */}
       </StyledTableRow>
-
-      {/* <TableRow>
-        <StyledInnerTableCell></StyledInnerTableCell>
-        <StyledInnerTableCell>Seller Wallet</StyledInnerTableCell>
-        <StyledInnerTableCell>{item.SellerWallet}</StyledInnerTableCell>
-      </TableRow> */}
 
       <StyledTableRow>
         <StyledTableCell
@@ -660,15 +595,19 @@ function Row_normal(props) {
                   <div className="listItemValue">{item.SellerWallet}</div>
                 </div>
                 <div className="listDataItem">
-                  <div className="listItemLabel">Wallets Allowed to Accept</div>
-                  <div className="listItemValue">
-                    {wrapPersonalized(item.PersonalizedOffer)}
-                  </div>
+                  <div className="listItemLabel">Buyer Wallet</div>
+                  <div className="listItemValue">{item.BuyerWallet}</div>
                 </div>
                 <div className="listDataItem">
                   <div className="listItemLabel">Arbiters</div>
                   <div className="listItemValue">
                     {wrapArbiters(item.Arbiters)}
+                  </div>
+                </div>
+                <div className="listDataItem">
+                  <div className="listItemLabel">Wallets Allowed to Accept</div>
+                  <div className="listItemValue">
+                    {wrapPersonalized(item.PersonalizedOffer)}
                   </div>
                 </div>
                 <div className="listDataItem">

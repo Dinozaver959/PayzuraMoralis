@@ -94,6 +94,10 @@
       }
     }
 
+    &.actionCol {
+      width: 50px;
+    }
+
     .MuiButtonBase-root.MuiIconButton-root {
       background: $LightBlueBg !important;
       border-radius: 4px;

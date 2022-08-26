@@ -413,7 +413,6 @@ function Table_normal(props) {
               <StyledTableCell>State</StyledTableCell>
               <StyledTableCell>Price</StyledTableCell>
               <StyledTableCell>Time to Deliver</StyledTableCell>
-
               {isBuyer ? (
                 <>
                   <StyledTableCell>Actions</StyledTableCell>
@@ -502,7 +501,7 @@ function Row_normal(props) {
               item.State == "Available" ? (
                 // show a cancel button (RED COLOR)
                 <>
-                  <StyledTableCell>
+                  <StyledTableCell className="actionCol">
                     <input
                       className="rounded button orange small"
                       type="submit"
@@ -578,7 +577,7 @@ function Row_normal(props) {
                 </>
               ) : (
                 <>
-                  <StyledTableCell>
+                  <StyledTableCell className="actionCol">
                     <input
                       className="rounded button green small"
                       type="submit"
@@ -732,7 +731,7 @@ function Row_normal(props) {
               item.State == "Available" ? (
               // show a cancel button (RED COLOR)
               <>
-                <StyledTableCell>
+                <StyledTableCell className="actionCol">
                   <input
                     className="rounded button orange small"
                     type="submit"
@@ -805,7 +804,7 @@ function Row_normal(props) {
               </>
             ) : (
               <>
-                <StyledTableCell>
+                <StyledTableCell className="actionCol">
                   <input
                     className="button primary rounded small"
                     type="submit"
@@ -957,6 +956,7 @@ function Row_normal(props) {
         >
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
+              {console.log(item)}
               <div className="listData">
                 <div className="listDataItem">
                   <div className="listItemLabel">Seller Wallet</div>
@@ -970,6 +970,12 @@ function Row_normal(props) {
                   <div className="listItemLabel">Arbiters</div>
                   <div className="listItemValue">
                     {wrapArbiters(item.Arbiters)}
+                  </div>
+                </div>
+                <div className="listDataItem">
+                  <div className="listItemLabel">Wallets Allowed to Accept</div>
+                  <div className="listItemValue">
+                    {wrapArbiters(item.PersonalizedOffer)}
                   </div>
                 </div>
                 <div className="listDataItem">
