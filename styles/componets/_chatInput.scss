@@ -1,18 +1,19 @@
 .inbox__message__input {
-  z-index: 2;
+  z-index: 10;
   width: 90%;
   display: flex;
   justify-content: space-between;
+  margin-right: 7em;
 
   input {
-    width: 85%;
+    width: 80%;
     padding: 1rem;
     outline: none;
     font-size: 0.8rem;      
   }
 
   button {
-    width: 10%;
+    width: 13%;
     padding: 0.5rem;
     outline: none;
     font-size: 0.8rem;
@@ -44,6 +45,11 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
+    margin-right: 3em;
+
+    input {
+      width: 100%;
+    }
 
     button {
       width: 100px;
