@@ -4,6 +4,7 @@ import SelectDropdown from "../ui/SelectDropdown";
 
 function FilterBar(props) {
   const {
+    params,
     walletAddressFn,
     filterSide,
     setFilterSide,
@@ -42,7 +43,7 @@ function FilterBar(props) {
             }
             // console.log(`min = ${min}, max = ${max}`)
           }
-        />
+        />{/* params.priceFilterMinValue */}
       </div>
 
       {/* Filter with Wallet Address */}
@@ -58,15 +59,17 @@ function FilterBar(props) {
       </div>
 
       {/* Filter with Side */}
-      <div className="filterOption">
-        <h4 className="filterTitle">Side</h4>
-        <RadioGroup
-          // listItem="radioList"
-          selectedRadio={filterSide}
-          setSelectedRadio={setFilterSide}
-          values={filterSideValues}
-        />
-      </div>
+      {params.filterSideAvailability !== false && (
+        <div className="filterOption">
+          <h4 className="filterTitle">Side</h4>
+          <RadioGroup
+            // listItem="radioList"
+            selectedRadio={filterSide}
+            setSelectedRadio={setFilterSide}
+            values={filterSideValues}
+          />
+        </div>
+      )}
 
       {/* Filter with States */}
       <div className="filterOption">
@@ -80,14 +83,16 @@ function FilterBar(props) {
       </div>
 
       {/* Filter with Time to Deliver */}
-      <div className="filterOption">
-        <h4 className="filterTitle">Contract Duration</h4>
-        <RadioGroup
-          selectedRadio={filterDelivery}
-          setSelectedRadio={setFilterDelivery}
-          values={deliveryValues}
-        />
-      </div>
+      {params.filterDurationAvailability !== false && (
+        <div className="filterOption">
+          <h4 className="filterTitle">Contract Duration</h4>
+          <RadioGroup
+            selectedRadio={filterDelivery}
+            setSelectedRadio={setFilterDelivery}
+            values={deliveryValues}
+          />
+        </div>
+      )}
     </div>
   );
 }

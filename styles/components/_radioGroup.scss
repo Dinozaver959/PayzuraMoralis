@@ -103,9 +103,13 @@
 
 .darkMode {
   .radioGroupMain {
-    border-color: $BorderLight;
+    border-top-color: $BorderLight;
+    border-left-color: $BorderLight;
 
     .radioItem {
+      border-right-color: $BorderLight;
+      border-bottom-color: $BorderLight;
+
       + .radioItem {
         border-left-color: $BorderLight;
       }

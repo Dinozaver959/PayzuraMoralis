@@ -86,8 +86,8 @@ const MultiRangeSlider = (props) => {
       <div className="slider">
         <div className="sliderTrack" />
         <div ref={range} className="sliderRange" />
-        <div className="sliderLeftValue"><input type="number" value={minVal} onChange={changeSliderMin} step="0.001" /></div> {/* ref={sliderMinRef}  ref={sliderMaxRef} */}
-        <div className="sliderRightValue"><input type="number" value={maxVal} onChange={changeSliderMax} step="0.001" /></div>
+        <div className="sliderLeftValue"><input type="number" value={minVal} onChange={changeSliderMin} step="0.001" className="formInput" /></div> {/* ref={sliderMinRef}  ref={sliderMaxRef} */}
+        <div className="sliderRightValue"><input type="number" value={maxVal} onChange={changeSliderMax} step="0.001" className="formInput" /></div>
       </div>
     </div>
   );

@@ -54,7 +54,7 @@
   .slider {
     position: relative;
     width: 100%;
-    padding-bottom: 40px;
+    padding-bottom: 45px;
 
     .sliderTrack,
     .sliderRange,
@@ -89,6 +89,8 @@
 
       input {
         width: 100%;
+        padding: 5px 10px;
+        height: 33px;
       }
     }
 

@@ -95,23 +95,19 @@ function OffersContainer(props) {
       value: "",
     },
     {
-      label: "Available",
+      label: "Available To Buyers",
       value: "Available",
     },
     {
-      label: "Buyer Initialized",
-      value: "buyer_initialized",
-    },
-    {
-      label: "Buyer Initialized and Paid",
+      label: "Specifying Qualified Sellers",
       value: "buyer_initialized_and_paid",
     },
     {
-      label: "Await Seller Accepts",
+      label: "Available To Sellers",
       value: "await_seller_accepts",
     },
     {
-      label: "Paid",
+      label: "In Progress",
       value: "paid",
     },
     {
@@ -155,7 +151,14 @@ function OffersContainer(props) {
       value: "All",
       availability: true,
     },
-  ]
+  ];
+
+  const allDataPrice = dataContractsOffered.map((data) => data.name.Price);
+  const uniqueDataPrice = [...new Set(allDataPrice)];
+  const numberArray = uniqueDataPrice.map(Number);
+
+  const priceFilterMinValue = Math.min(...numberArray);
+  const priceFilterMaxValue = Math.max(...numberArray);
 
   const [filteredList, setFilteredList] = useState(dataContractsOffered);
   const [selectCurrency, setSelectCurrency] = useState();
@@ -184,7 +187,9 @@ function OffersContainer(props) {
       );
     } else if (selectCurrency === "All") {
       updatedList = updatedList.filter(
-        (orders) => orders.name.CurrencyTicker === "ETH" || orders.name.CurrencyTicker === "USDC"
+        (orders) =>
+          orders.name.CurrencyTicker === "ETH" ||
+          orders.name.CurrencyTicker === "USDC"
       );
     }
 
@@ -206,7 +211,9 @@ function OffersContainer(props) {
       );
     } else if (filterSide === "All") {
       updatedList = updatedList.filter(
-        (orders) => orders.name.ContractStartedBy === "Buyer" || orders.name.ContractStartedBy === "Seller"
+        (orders) =>
+          orders.name.ContractStartedBy === "Buyer" ||
+          orders.name.ContractStartedBy === "Seller"
       );
     }
 
@@ -219,37 +226,33 @@ function OffersContainer(props) {
     }
 
     // States Filter
-    if (filterStates === "Available") {
+    if (filterStates === "Available To Buyers") {
       updatedList = updatedList.filter(
         (orders) => orders.name.State === "Available"
       );
-    } else if (filterStates === "buyer_initialized") {
-      updatedList = updatedList.filter(
-        (orders) => orders.name.State === "buyer_initialized"
-      );
-    } else if (filterStates === "buyer_initialized_and_paid") {
+    } else if (filterStates === "Specifying Qualified Sellers") {
       updatedList = updatedList.filter(
         (orders) => orders.name.State === "buyer_initialized_and_paid"
       );
-    } else if (filterStates === "await_seller_accepts") {
+    } else if (filterStates === "Available To Sellers") {
       updatedList = updatedList.filter(
         (orders) => orders.name.State === "await_seller_accepts"
       );
-    } else if (filterStates === "paid") {
+    } else if (filterStates === "In Progress") {
       updatedList = updatedList.filter(
         (orders) => orders.name.State === "paid"
       );
-    } else if (filterStates === "complete") {
+    } else if (filterStates === "Complete") {
       updatedList = updatedList.filter(
         (orders) => orders.name.State === "complete"
       );
-    } else if (filterStates === "dispute") {
+    } else if (filterStates === "Dispute") {
       updatedList = updatedList.filter(
         (orders) => orders.name.State === "dispute"
       );
     }
 
-    // States Filter
+    // Duration Filter
     if (filterDelivery === "1 Day") {
       updatedList = updatedList.filter(
         (orders) => orders.name.TimeToDeliver <= 1
@@ -267,9 +270,7 @@ function OffersContainer(props) {
         (orders) => orders.name.TimeToDeliver <= 14
       );
     } else if (filterDelivery === "All") {
-      updatedList = updatedList.filter(
-        (orders) => orders.name.TimeToDeliver
-      );
+      updatedList = updatedList.filter((orders) => orders.name.TimeToDeliver);
     }
 
     setFilteredList(updatedList);
@@ -293,17 +294,21 @@ function OffersContainer(props) {
     <div className="containerWithSidebar">
       <FilterBar
         walletAddressFn={handleChangeWalletAddress}
+        params={{
+          priceFilterMinValue: priceFilterMinValue,
+          priceFilterMaxValue: priceFilterMaxValue,
+        }}
         filterSide={filterSide}
         setFilterSide={setFilterSide}
+        filterSideValues={filterSideValues}
         filterStates={filterStates}
         setFilterStates={setFilterStates}
+        dropDownOptions={dropDownOptions}
         filterDelivery={filterDelivery}
         setFilterDelivery={setFilterDelivery}
+        deliveryValues={deliveryValues}
         setFilterMaxPrice={setFilterMaxPrice}
         setFilterMinPrice={setFilterMinPrice}
-        filterSideValues={filterSideValues}
-        dropDownOptions={dropDownOptions}
-        deliveryValues={deliveryValues}
         selectCurrency={selectCurrency}
         setSelectCurrency={setSelectCurrency}
         currencyOptionsValues={currencyOptionsValues}
