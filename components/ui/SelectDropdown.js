@@ -23,7 +23,7 @@ function SelectDropdown(props) {
             <div className="dropdownList">
               {options.map((option) => (
                 <div
-                  className="dropdownListItems"
+                  className={selectedOption === option.label ? "dropdownListItems selected" : "dropdownListItems"}
                   onClick={onOptionClicked(option)}
                   key={Math.random()}
                 >

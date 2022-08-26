@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { IconContext } from "react-icons";
 
 import Table from "@mui/material/Table";
@@ -64,27 +64,6 @@ function ValidatesContainer(props) {
     },
   ];
 
-  const filterSideValues = [
-    {
-      name: "filterSideValidates",
-      label: "Buyer",
-      value: "Buyer",
-      availability: true,
-    },
-    {
-      name: "filterSideValidates",
-      label: "Seller",
-      value: "Seller",
-      availability: true,
-    },
-    {
-      name: "filterSideValidates",
-      label: "All",
-      value: "All",
-      availability: true,
-    },
-  ];
-
   const dropDownOptions = [
     {
       label: "All",
@@ -116,39 +95,6 @@ function ValidatesContainer(props) {
     },
   ];
 
-  const deliveryValues = [
-    {
-      name: "filterDeliveryValidates",
-      label: "1 Day",
-      value: "1 Day",
-      availability: true,
-    },
-    {
-      name: "filterDeliveryValidates",
-      label: "3 Days",
-      value: "3 Days",
-      availability: true,
-    },
-    {
-      name: "filterDeliveryValidates",
-      label: "7 Days",
-      value: "7 Days",
-      availability: true,
-    },
-    {
-      name: "filterDeliveryValidates",
-      label: "14 Days",
-      value: "14 Days",
-      availability: true,
-    },
-    {
-      name: "filterDeliveryValidates",
-      label: "All",
-      value: "All",
-      availability: true,
-    },
-  ];
-
   const allDataPrice = dataContractsToValidate.map((data) => data.name.Price);
   const uniqueDataPrice = [...new Set(allDataPrice)];
   const numberArray = uniqueDataPrice.map(Number);
@@ -157,13 +103,11 @@ function ValidatesContainer(props) {
   const priceFilterMaxValue = Math.max(...numberArray);
 
   const [filteredList, setFilteredList] = useState(dataContractsToValidate);
-  const [selectCurrency, setSelectCurrency] = useState();
+  const [selectCurrency, setSelectCurrency] = useState("All");
   const [filterMinPrice, setFilterMinPrice] = useState(0);
   const [filterMaxPrice, setFilterMaxPrice] = useState(10);
   const [filterWalletAddress, setFilterWalletAddress] = useState("");
-  const [filterSide, setFilterSide] = useState("");
-  const [filterStates, setFilterStates] = useState("");
-  const [filterDelivery, setFilterDelivery] = useState("");
+  const [filterStates, setFilterStates] = useState("All");
 
   const handleChangeWalletAddress = (event) => {
     setFilterWalletAddress(event.target.value);
@@ -195,23 +139,6 @@ function ValidatesContainer(props) {
     updatedList = updatedList.filter(
       (item) => item.name.Price >= minPrice && item.name.Price <= maxPrice
     );
-
-    // Side Filter
-    if (filterSide === "Buyer") {
-      updatedList = updatedList.filter(
-        (orders) => orders.name.ContractStartedBy === "Buyer"
-      );
-    } else if (filterSide === "Seller") {
-      updatedList = updatedList.filter(
-        (orders) => orders.name.ContractStartedBy === "Seller"
-      );
-    } else if (filterSide === "All") {
-      updatedList = updatedList.filter(
-        (orders) =>
-          orders.name.ContractStartedBy === "Buyer" ||
-          orders.name.ContractStartedBy === "Seller"
-      );
-    }
 
     if (filterWalletAddress !== "") {
       updatedList = updatedList.filter(
@@ -248,27 +175,6 @@ function ValidatesContainer(props) {
       );
     }
 
-    // Duration Filter
-    if (filterDelivery === "1 Day") {
-      updatedList = updatedList.filter(
-        (orders) => orders.name.TimeToDeliver <= 1
-      );
-    } else if (filterDelivery === "3 Days") {
-      updatedList = updatedList.filter(
-        (orders) => orders.name.TimeToDeliver <= 3
-      );
-    } else if (filterDelivery === "7 Days") {
-      updatedList = updatedList.filter(
-        (orders) => orders.name.TimeToDeliver <= 7
-      );
-    } else if (filterDelivery === "14 Days") {
-      updatedList = updatedList.filter(
-        (orders) => orders.name.TimeToDeliver <= 14
-      );
-    } else if (filterDelivery === "All") {
-      updatedList = updatedList.filter((orders) => orders.name.TimeToDeliver);
-    }
-
     setFilteredList(updatedList);
   };
 
@@ -278,11 +184,9 @@ function ValidatesContainer(props) {
   }, [
     dataContractsToValidate,
     filterWalletAddress,
-    filterSide,
     filterStates,
     filterMinPrice,
     filterMaxPrice,
-    filterDelivery,
     selectCurrency,
   ]);
 
@@ -296,15 +200,9 @@ function ValidatesContainer(props) {
           priceFilterMinValue: priceFilterMinValue,
           priceFilterMaxValue: priceFilterMaxValue,
         }}
-        filterSide={filterSide}
-        setFilterSide={setFilterSide}
-        filterSideValues={filterSideValues}
         filterStates={filterStates}
         setFilterStates={setFilterStates}
         dropDownOptions={dropDownOptions}
-        filterDelivery={filterDelivery}
-        setFilterDelivery={setFilterDelivery}
-        deliveryValues={deliveryValues}
         setFilterMaxPrice={setFilterMaxPrice}
         setFilterMinPrice={setFilterMinPrice}
         selectCurrency={selectCurrency}
@@ -470,153 +368,161 @@ function Row_normal(props) {
         </StyledTableCell>
 
         <StyledTableCell className="actionCol">
-          <input
-            className="button primary rounded small"
-            type="submit"
-            value="Vote for buyer"
-            onClick={() =>
-              HandleDispute_Moralis(item.index, true)
-                .then(async (ArbitersVoteConcluded) => {
-                  // {transactionHash, ArbitersVoteConcluded}      /// NOT FORWARDING THE value correctly, no idea why
+          {item.State === "dispute" && (
+            <Fragment>
+              <input
+                className="button primary rounded small"
+                type="submit"
+                value="Vote for buyer"
+                onClick={() =>
+                  HandleDispute_Moralis(item.index, true)
+                    .then(async (ArbitersVoteConcluded) => {
+                      // {transactionHash, ArbitersVoteConcluded}      /// NOT FORWARDING THE value correctly, no idea why
 
-                  // show the feedback text
-                  setModelData({
-                    show: true,
-                    type: "alert",
-                    status: "Pending",
-                    message: "sending vote...",
-                  });
+                      // show the feedback text
+                      setModelData({
+                        show: true,
+                        type: "alert",
+                        status: "Pending",
+                        message: "sending vote...",
+                      });
 
-                  var formData = new FormData();
-                  const connectedAddress = await GetWallet_NonMoralis();
-                  formData.append("ArbiterWallet", connectedAddress);
-                  formData.append("BuyerWallet", item.BuyerWallet);
-                  formData.append("SellerWallet", item.SellerWallet);
-                  formData.append("votedForBuyer", "true");
-                  formData.append(
-                    "ArbitersVoteConcluded",
-                    ArbitersVoteConcluded
-                  ); /// maybe turn it into a string
-                  //formData.append('transactionHash', transactionHash);
-                  formData.append("objectId", item.objectId);
+                      var formData = new FormData();
+                      const connectedAddress = await GetWallet_NonMoralis();
+                      formData.append("ArbiterWallet", connectedAddress);
+                      formData.append("BuyerWallet", item.BuyerWallet);
+                      formData.append("SellerWallet", item.SellerWallet);
+                      formData.append("votedForBuyer", "true");
+                      formData.append(
+                        "ArbitersVoteConcluded",
+                        ArbitersVoteConcluded
+                      ); /// maybe turn it into a string
+                      //formData.append('transactionHash', transactionHash);
+                      formData.append("objectId", item.objectId);
 
-                  var xhr = new XMLHttpRequest();
-                  xhr.open("POST", "/api/api-votedOnDispute", false);
-                  xhr.onload = function () {
-                    // update the feedback text
-                    setModelData({
-                      show: true,
-                      type: "alert",
-                      status: "Success",
-                      message: "vote registered",
-                    });
+                      var xhr = new XMLHttpRequest();
+                      xhr.open("POST", "/api/api-votedOnDispute", false);
+                      xhr.onload = function () {
+                        // update the feedback text
+                        setModelData({
+                          show: true,
+                          type: "alert",
+                          status: "Success",
+                          message: "vote registered",
+                        });
 
-                    // prevent the Submit button to be clickable and functionable
-                    // removeHover()
-                    // document.getElementById('SubmitButton').disabled = true
+                        // prevent the Submit button to be clickable and functionable
+                        // removeHover()
+                        // document.getElementById('SubmitButton').disabled = true
 
-                    // think about also removing the hover effect
-                    // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-                    console.log("vote registered");
-                  };
-                  xhr.send(formData);
-                })
-                .catch((error) => {
-                  console.error(error);
-                  console.log("accept offer error code: " + error.code);
-                  console.log("accept offer error message: " + error.message);
-                  if (error.data && error.data.message) {
-                    setModelData({
-                      show: true,
-                      type: "alert",
-                      status: "Error",
-                      message: error.data.message,
-                    });
-                  } else {
-                    setModelData({
-                      show: true,
-                      type: "alert",
-                      status: "Error",
-                      message: error.message,
-                    });
-                  }
-                  process.exitCode = 1;
-                })
-            }
-          ></input>
+                        // think about also removing the hover effect
+                        // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+                        console.log("vote registered");
+                      };
+                      xhr.send(formData);
+                    })
+                    .catch((error) => {
+                      console.error(error);
+                      console.log("accept offer error code: " + error.code);
+                      console.log(
+                        "accept offer error message: " + error.message
+                      );
+                      if (error.data && error.data.message) {
+                        setModelData({
+                          show: true,
+                          type: "alert",
+                          status: "Error",
+                          message: error.data.message,
+                        });
+                      } else {
+                        setModelData({
+                          show: true,
+                          type: "alert",
+                          status: "Error",
+                          message: error.message,
+                        });
+                      }
+                      process.exitCode = 1;
+                    })
+                }
+              ></input>
 
-          <input
-            className="button secondary rounded small"
-            type="submit"
-            value="Vote for seller"
-            onClick={() =>
-              HandleDispute_Moralis(item.index, false)
-                .then(async (ArbitersVoteConcluded) => {
-                  // show the feedback text
-                  setModelData({
-                    show: true,
-                    type: "alert",
-                    status: "Pending",
-                    message: "sending vote...",
-                  });
+              <input
+                className="button secondary rounded small"
+                type="submit"
+                value="Vote for seller"
+                onClick={() =>
+                  HandleDispute_Moralis(item.index, false)
+                    .then(async (ArbitersVoteConcluded) => {
+                      // show the feedback text
+                      setModelData({
+                        show: true,
+                        type: "alert",
+                        status: "Pending",
+                        message: "sending vote...",
+                      });
 
-                  var formData = new FormData();
-                  const connectedAddress = await GetWallet_NonMoralis();
-                  formData.append("ArbiterWallet", connectedAddress);
-                  formData.append("BuyerWallet", item.BuyerWallet);
-                  formData.append("SellerWallet", item.SellerWallet);
-                  formData.append("votedForBuyer", "false");
-                  formData.append(
-                    "ArbitersVoteConcluded",
-                    ArbitersVoteConcluded
-                  ); /// maybe turn it into a string
-                  //formData.append('transactionHash', transactionHash);
-                  formData.append("objectId", item.objectId);
+                      var formData = new FormData();
+                      const connectedAddress = await GetWallet_NonMoralis();
+                      formData.append("ArbiterWallet", connectedAddress);
+                      formData.append("BuyerWallet", item.BuyerWallet);
+                      formData.append("SellerWallet", item.SellerWallet);
+                      formData.append("votedForBuyer", "false");
+                      formData.append(
+                        "ArbitersVoteConcluded",
+                        ArbitersVoteConcluded
+                      ); /// maybe turn it into a string
+                      //formData.append('transactionHash', transactionHash);
+                      formData.append("objectId", item.objectId);
 
-                  var xhr = new XMLHttpRequest();
-                  xhr.open("POST", "/api/api-votedOnDispute", false);
-                  xhr.onload = function () {
-                    // update the feedback text
-                    setModelData({
-                      show: true,
-                      type: "alert",
-                      status: "Success",
-                      message: "vote registered",
-                    });
+                      var xhr = new XMLHttpRequest();
+                      xhr.open("POST", "/api/api-votedOnDispute", false);
+                      xhr.onload = function () {
+                        // update the feedback text
+                        setModelData({
+                          show: true,
+                          type: "alert",
+                          status: "Success",
+                          message: "vote registered",
+                        });
 
-                    // prevent the Submit button to be clickable and functionable
-                    // removeHover()
-                    // document.getElementById('SubmitButton').disabled = true
+                        // prevent the Submit button to be clickable and functionable
+                        // removeHover()
+                        // document.getElementById('SubmitButton').disabled = true
 
-                    // think about also removing the hover effect
-                    // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-                    console.log("vote registered");
-                  };
-                  xhr.send(formData);
-                })
-                .catch((error) => {
-                  console.error(error);
-                  console.log("accept offer error code: " + error.code);
-                  console.log("accept offer error message: " + error.message);
-                  if (error.data && error.data.message) {
-                    setModelData({
-                      show: true,
-                      type: "alert",
-                      status: "Error",
-                      message: error.data.message,
-                    });
-                  } else {
-                    setModelData({
-                      show: true,
-                      type: "alert",
-                      status: "Error",
-                      message: error.message,
-                    });
-                  }
-                  process.exitCode = 1;
-                })
-            }
-          ></input>
+                        // think about also removing the hover effect
+                        // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
+                        console.log("vote registered");
+                      };
+                      xhr.send(formData);
+                    })
+                    .catch((error) => {
+                      console.error(error);
+                      console.log("accept offer error code: " + error.code);
+                      console.log(
+                        "accept offer error message: " + error.message
+                      );
+                      if (error.data && error.data.message) {
+                        setModelData({
+                          show: true,
+                          type: "alert",
+                          status: "Error",
+                          message: error.data.message,
+                        });
+                      } else {
+                        setModelData({
+                          show: true,
+                          type: "alert",
+                          status: "Error",
+                          message: error.message,
+                        });
+                      }
+                      process.exitCode = 1;
+                    })
+                }
+              ></input>
+            </Fragment>
+          )}
         </StyledTableCell>
       </StyledTableRow>
 
@@ -628,14 +534,18 @@ function Row_normal(props) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <div className="listData">
-                <div className="listDataItem">
-                  <div className="listItemLabel">Seller Wallet</div>
-                  <div className="listItemValue">{item.SellerWallet}</div>
-                </div>
-                <div className="listDataItem">
-                  <div className="listItemLabel">Buyer Wallet</div>
-                  <div className="listItemValue">{item.BuyerWallet}</div>
-                </div>
+                {item.SellerWallet && (
+                  <div className="listDataItem">
+                    <div className="listItemLabel">Seller Wallet</div>
+                    <div className="listItemValue">{item.SellerWallet}</div>
+                  </div>
+                )}
+                {item.BuyerWallet && (
+                  <div className="listDataItem">
+                    <div className="listItemLabel">Buyer Wallet</div>
+                    <div className="listItemValue">{item.BuyerWallet}</div>
+                  </div>
+                )}
                 <div className="listDataItem">
                   <div className="listItemLabel">Arbiters</div>
                   <div className="listItemValue">

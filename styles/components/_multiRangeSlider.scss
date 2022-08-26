@@ -4,25 +4,22 @@
 
   /* Removing the default appearance */
   .thumb {
+    @include Size(100%, 0px);
+    @include Absolute;
     -webkit-appearance: none;
     -webkit-tap-highlight-color: transparent;
     pointer-events: none;
-    position: absolute;
-    height: 0;
-    width: 100%;
     outline: none;
 
     /* For Chrome browsers */
     &::-webkit-slider-thumb {
+      @include Size(18px, 18px);
+      @include BorderRadius(50%);
       -webkit-appearance: none;
       -webkit-tap-highlight-color: transparent;
       background-color: $OrangeColor;
-      border: none;
-      border-radius: 50%;
-      box-shadow: 0 0 1px 1px #ced4da;
+      border: 2px solid $WhiteColor;
       cursor: pointer;
-      height: 18px;
-      width: 18px;
       margin-top: 4px;
       pointer-events: all;
       position: relative;
@@ -30,13 +27,11 @@
 
     /* For Firefox browsers */
     &::-moz-range-thumb {
+      @include Size(18px, 18px);
+      @include BorderRadius(50%);
       background-color: $OrangeColor;
-      border: none;
-      border-radius: 50%;
-      box-shadow: 0 0 1px 1px #ced4da;
+      border: 2px solid $WhiteColor;
       cursor: pointer;
-      height: 18px;
-      width: 18px;
       margin-top: 4px;
       pointer-events: all;
       position: relative;
@@ -54,7 +49,7 @@
   .slider {
     position: relative;
     width: 100%;
-    padding-bottom: 45px;
+    padding-bottom: 50px;
 
     .sliderTrack,
     .sliderRange,
@@ -66,7 +61,7 @@
     .sliderTrack,
     .sliderRange {
       border-radius: 3px;
-      height: 5px;
+      height: 3px;
     }
 
     .sliderTrack {
@@ -85,21 +80,41 @@
       width: 70px;
       color: $OrangeColor;
       font-size: 12px;
-      margin-top: 20px;
+      margin-top: 18px;
 
       input {
         width: 100%;
-        padding: 5px 10px;
+        padding: 5px 8px;
         height: 33px;
       }
     }
 
     .sliderLeftValue {
-      left: 6px;
+      left: 0px;
     }
 
     .sliderRightValue {
-      right: -4px;
+      right: 0px;
+    }
+  }
+}
+
+.darkMode {
+  .multiRangeContainer {
+    .thumb {
+      &::-webkit-slider-thumb {
+        border-color: $DarkBg;
+      }
+
+      &::-moz-range-thumb {
+        border-color: $DarkBg;
+      }
+    }
+
+    .slider {
+      .sliderTrack {
+        background-color: rgba($WhiteColor, 0.25);
+      }
     }
   }
 }

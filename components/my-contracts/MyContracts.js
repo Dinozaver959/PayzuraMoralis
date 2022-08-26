@@ -186,13 +186,13 @@ function MyContractsContainer(props) {
   const priceFilterMaxValue = Math.max(...numberArray);
 
   const [filteredList, setFilteredList] = useState(dataGetMyContracts);
-  const [selectCurrency, setSelectCurrency] = useState();
+  const [selectCurrency, setSelectCurrency] = useState("All");
   const [filterMinPrice, setFilterMinPrice] = useState(0);
   const [filterMaxPrice, setFilterMaxPrice] = useState(10);
   const [filterWalletAddress, setFilterWalletAddress] = useState("");
-  const [filterSide, setFilterSide] = useState("");
-  const [filterStates, setFilterStates] = useState("");
-  const [filterDelivery, setFilterDelivery] = useState("");
+  const [filterSide, setFilterSide] = useState("All");
+  const [filterStates, setFilterStates] = useState("All");
+  const [filterDelivery, setFilterDelivery] = useState("All");
 
   const handleChangeWalletAddress = (event) => {
     setFilterWalletAddress(event.target.value);
@@ -958,14 +958,18 @@ function Row_normal(props) {
             <Box sx={{ margin: 1 }}>
               {console.log(item)}
               <div className="listData">
-                <div className="listDataItem">
-                  <div className="listItemLabel">Seller Wallet</div>
-                  <div className="listItemValue">{item.SellerWallet}</div>
-                </div>
-                <div className="listDataItem">
-                  <div className="listItemLabel">Buyer Wallet</div>
-                  <div className="listItemValue">{item.BuyerWallet}</div>
-                </div>
+                {item.SellerWallet && (
+                  <div className="listDataItem">
+                    <div className="listItemLabel">Seller Wallet</div>
+                    <div className="listItemValue">{item.SellerWallet}</div>
+                  </div>
+                )}
+                {item.BuyerWallet && (
+                  <div className="listDataItem">
+                    <div className="listItemLabel">Buyer Wallet</div>
+                    <div className="listItemValue">{item.BuyerWallet}</div>
+                  </div>
+                )}
                 <div className="listDataItem">
                   <div className="listItemLabel">Arbiters</div>
                   <div className="listItemValue">

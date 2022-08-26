@@ -65,3 +65,39 @@
     }
   }
 }
+
+.darkMode {
+  .connectedAccount {
+    .accountBlock {
+      border-color: lighten($DarkBlueBg, 10%);
+
+      .blockTop {
+        .connectedWith {
+          color: rgba($WhiteColor, 0.6);
+        }
+      }
+
+      .walletAddress {
+        .walletPic {
+          i {
+            background: rgba($WhiteColor, 0.2);
+          }
+        }
+
+        .walletID {
+          color: $WhiteColor;
+        }
+      }
+
+      .walletActions {
+        .withIcon.linkButton {
+          color: rgba($WhiteColor, 0.6);
+
+          &:hover {
+            color: $LightBlueColor;
+          }
+        }
+      }
+    }
+  }
+}

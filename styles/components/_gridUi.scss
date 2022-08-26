@@ -78,6 +78,7 @@
     background-color: transparent !important;
     border-bottom: none !important;
     white-space: nowrap;
+    width: 20%;
 
     @include RespondTo(MobileDevices) {
       padding: 5px 0;
