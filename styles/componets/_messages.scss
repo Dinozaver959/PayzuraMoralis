@@ -1,0 +1,10 @@
+.chatbox {
+  height: 600px;
+  overflow: auto;
+}
+
+@media screen and (max-width: 768px) {
+  .chatbox {
+    height: 550px;
+  }
+}

@@ -1,0 +1,29 @@
+.chatbox__message {
+  display: flex;
+  align-items: flex-end;
+
+  .chatbox__message__innerdiv {
+    padding: 1rem;
+    margin: 1rem;
+    color: $WhiteColor;
+    display: flex;
+    background-color: $LightBlueColor;
+    border-radius: 8px;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 550px;
+  }
+}
+
+.chatbox__message, .chatbox__message__outerdiv {
+  display: flex;
+  justify-content: flex-end;
+
+  .chatbox__message__innerdiv, .chatbox__message__receiver {
+    // border-top-left-radius: 0;
+  }
+
+  .chatbox__message__innerdiv, .chatbox__message__sender {
+    border-top-right-radius: 0;
+  }
+}

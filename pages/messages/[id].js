@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment } from "react";
 import Navigation from "../../components/Navigation";
 import { BsChevronLeft } from "react-icons/bs";
 import Link from "next/link";
@@ -48,12 +48,11 @@ const index = (props) => {
             <h2>test (0xd...04e)</h2>
           </div>
           <div className="inbox__message__content">
-            <Messages currentAccount={currentAccount} />
+            <Messages currentAccount={currentAccount}/>
           </div>
         </div>
       </div>
     </div>
-    
   </Fragment>
   )
 }

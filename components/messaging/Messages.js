@@ -3,26 +3,12 @@ import { useMoralis, useMoralisQuery } from "react-moralis";
 import Message from './Message';
 
 const Messages = (props) => {
-  const { data } = useMoralisQuery(
-    "Messages", 
-    (query) => {
-      query
-        .ascending("createdAt"),
-    [],
-    {
-      live: true,
-    };
-  });
-
   const { Moralis } = useMoralis();
-  const [message, setMessage] = useState("");
   const currentAccount = props.currentAccount;
-  
+  const [message, setMessage] = useState("");
   const truncateAccountAddress = currentAccount ? currentAccount.slice(0, 5) + "..." + currentAccount.slice(-4) : "";
-  
-  const sendMessage = (e) => {
-    if(!message) return;
-    
+
+  const sendMessage = () => {
     const Messages = Moralis.Object.extend("Messages");
     const newMessage = new Messages();
     
@@ -37,22 +23,18 @@ const Messages = (props) => {
     });
     
     setMessage("");
-    console.log("Sending message", message);
-  }
-  
-  const onChangeText = (e) => {
-    setMessage(e.target.value)
   }
 
-  const handleKeypress = e => {
-  // it triggers by pressing the Enter key
-    if (e.keyCode === 13) {
-      sendMessage();
-    }
-  };
+  const { data } = useMoralisQuery(
+    "Messages",
+    (query) =>
+      query.ascending("createdAt"),
+    [],
+    { live: true }
+  );
 
   return (
-    <div>
+    <div className="chatbox">
       {data.map((message) => (
         <Message
           key={message.id}
@@ -61,12 +43,13 @@ const Messages = (props) => {
         />
       ))}
 
-       <div className="inbox__message__footer">
-          <div className='inbox__message__input'>
-            <input type="text" value={message} placeholder={`Type a message ${truncateAccountAddress}`} onChange={onChangeText} onKeyDown={handleKeypress} />
-            <button type='submit' onClick={sendMessage} disabled={!message.trim()}>Send</button>
-          </div>
-        </div>
+      {/* <SendMessage truncateAccountAddress={currentAccount} /> */}
+      <div className="inbox__message__footer">
+        <form className='inbox__message__input'>
+          <input type="text" value={message} placeholder={`Type a message ${truncateAccountAddress} `} onChange={e => setMessage(e.target.value)} />
+          <button type='submit' onClick={sendMessage} disabled={!message.trim()}>Send</button>
+        </form>
+      </div>
     </div>
   )
 }
