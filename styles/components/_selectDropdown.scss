@@ -26,7 +26,7 @@
     border: 1px solid $BorderDark;
     z-index: 99;
     @include BorderRadius(0 0 3px 3px);
-    @include BoxShadow(1px 1px 10px rgba($PrimaryColor, 0.1));
+    @include BoxShadow(1px 1px 10px rgba($BlackColor, 0.15));
     max-height: 150px;
     overflow: auto;
 
@@ -44,6 +44,11 @@
         &:hover {
           background: rgba($BlackColor, 0.03);
           @include Transition(0.2s);
+        }
+
+        &.selected {
+          background: rgba($BlackColor, 0.1);
+          color: $BlackColor;
         }
       }
     }

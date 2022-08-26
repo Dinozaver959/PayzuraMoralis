@@ -3,6 +3,8 @@
   @include FlexFlow(wrap);
   border-top: 1px solid $BorderDark;
   border-left: 1px solid $BorderDark;
+  @include BorderRadius(4px);
+  overflow: hidden;
 
   @include RespondTo(MobileDevices) {
     @include FlexFlow(wrap);
@@ -103,9 +105,13 @@
 
 .darkMode {
   .radioGroupMain {
-    border-color: $BorderLight;
+    border-top-color: $BorderLight;
+    border-left-color: $BorderLight;
 
     .radioItem {
+      border-right-color: $BorderLight;
+      border-bottom-color: $BorderLight;
+
       + .radioItem {
         border-left-color: $BorderLight;
       }

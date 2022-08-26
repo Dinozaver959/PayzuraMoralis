@@ -247,6 +247,7 @@
     &.primary {
       background: $LightBlueColor;
       border-color: $LightBlueColor;
+      color: $WhiteColor;
 
       &:hover {
         background: darken($LightBlueColor, 7%);

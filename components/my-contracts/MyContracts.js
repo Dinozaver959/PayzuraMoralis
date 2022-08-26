@@ -114,29 +114,25 @@ function MyContractsContainer(props) {
     },
   ];
 
-  const dropDownOptions =[
+  const dropDownOptions = [
     {
       label: "All",
       value: "",
     },
     {
-      label: "Available",
+      label: "Available To Buyers",
       value: "Available",
     },
     {
-      label: "Buyer Initialized",
-      value: "buyer_initialized",
-    },
-    {
-      label: "Buyer Initialized and Paid",
+      label: "Specifying Qualified Sellers",
       value: "buyer_initialized_and_paid",
     },
     {
-      label: "Await Seller Accepts",
+      label: "Available To Sellers",
       value: "await_seller_accepts",
     },
     {
-      label: "Paid",
+      label: "In Progress",
       value: "paid",
     },
     {
@@ -147,7 +143,7 @@ function MyContractsContainer(props) {
       label: "Dispute",
       value: "dispute",
     },
-  ]
+  ];
 
   const deliveryValues = [
     {
@@ -180,21 +176,23 @@ function MyContractsContainer(props) {
       value: "All",
       availability: true,
     },
-  ]
+  ];
 
-  const allDataPrice = dataGetMyContracts.map(data=>data.name.Price);
+  const allDataPrice = dataGetMyContracts.map((data) => data.name.Price);
   const uniqueDataPrice = [...new Set(allDataPrice)];
-  const priceFilterMinValue = uniqueDataPrice[0]-0.001;
-  const priceFilterMaxValue = uniqueDataPrice[1]+0.001;
+  const numberArray = uniqueDataPrice.map(Number);
+
+  const priceFilterMinValue = Math.min(...numberArray);
+  const priceFilterMaxValue = Math.max(...numberArray);
 
   const [filteredList, setFilteredList] = useState(dataGetMyContracts);
-  const [selectCurrency, setSelectCurrency] = useState();
+  const [selectCurrency, setSelectCurrency] = useState("All");
   const [filterMinPrice, setFilterMinPrice] = useState(0);
   const [filterMaxPrice, setFilterMaxPrice] = useState(10);
   const [filterWalletAddress, setFilterWalletAddress] = useState("");
-  const [filterSide, setFilterSide] = useState("");
-  const [filterStates, setFilterStates] = useState("");
-  const [filterDelivery, setFilterDelivery] = useState("");
+  const [filterSide, setFilterSide] = useState("All");
+  const [filterStates, setFilterStates] = useState("All");
+  const [filterDelivery, setFilterDelivery] = useState("All");
 
   const handleChangeWalletAddress = (event) => {
     setFilterWalletAddress(event.target.value);
@@ -214,7 +212,9 @@ function MyContractsContainer(props) {
       );
     } else if (selectCurrency === "All") {
       updatedList = updatedList.filter(
-        (orders) => orders.name.CurrencyTicker === "ETH" || orders.name.CurrencyTicker === "USDC"
+        (orders) =>
+          orders.name.CurrencyTicker === "ETH" ||
+          orders.name.CurrencyTicker === "USDC"
       );
     }
 
@@ -228,15 +228,17 @@ function MyContractsContainer(props) {
     // Side Filter
     if (filterSide === "Buyer") {
       updatedList = updatedList.filter(
-        (orders) => orders.name.ContractStartedBy === "Buyer", console.log("1 Buyer updatedList", updatedList)
+        (orders) => orders.name.ContractStartedBy === "Buyer"
       );
     } else if (filterSide === "Seller") {
       updatedList = updatedList.filter(
-        (orders) => orders.name.ContractStartedBy === "Seller", console.log("1 Seller updatedList", updatedList)
+        (orders) => orders.name.ContractStartedBy === "Seller"
       );
     } else if (filterSide === "All") {
       updatedList = updatedList.filter(
-        (orders) => orders.name.ContractStartedBy === "Buyer" || orders.name.ContractStartedBy === "Seller"
+        (orders) =>
+          orders.name.ContractStartedBy === "Buyer" ||
+          orders.name.ContractStartedBy === "Seller"
       );
     }
 
@@ -261,37 +263,33 @@ function MyContractsContainer(props) {
     }
 
     // States Filter
-    if (filterStates === "Available") {
+    if (filterStates === "Available To Buyers") {
       updatedList = updatedList.filter(
         (orders) => orders.name.State === "Available"
       );
-    } else if (filterStates === "buyer_initialized") {
-      updatedList = updatedList.filter(
-        (orders) => orders.name.State === "buyer_initialized"
-      );
-    } else if (filterStates === "buyer_initialized_and_paid") {
+    } else if (filterStates === "Specifying Qualified Sellers") {
       updatedList = updatedList.filter(
         (orders) => orders.name.State === "buyer_initialized_and_paid"
       );
-    } else if (filterStates === "await_seller_accepts") {
+    } else if (filterStates === "Available To Sellers") {
       updatedList = updatedList.filter(
         (orders) => orders.name.State === "await_seller_accepts"
       );
-    } else if (filterStates === "paid") {
+    } else if (filterStates === "In Progress") {
       updatedList = updatedList.filter(
         (orders) => orders.name.State === "paid"
       );
-    } else if (filterStates === "complete") {
+    } else if (filterStates === "Complete") {
       updatedList = updatedList.filter(
         (orders) => orders.name.State === "complete"
       );
-    } else if (filterStates === "dispute") {
+    } else if (filterStates === "Dispute") {
       updatedList = updatedList.filter(
         (orders) => orders.name.State === "dispute"
       );
     }
 
-    // States Filter
+    // Duration Filter
     if (filterDelivery === "1 Day") {
       updatedList = updatedList.filter(
         (orders) => orders.name.TimeToDeliver <= 1
@@ -309,9 +307,7 @@ function MyContractsContainer(props) {
         (orders) => orders.name.TimeToDeliver <= 14
       );
     } else if (filterDelivery === "All") {
-      updatedList = updatedList.filter(
-        (orders) => orders.name.TimeToDeliver
-      );
+      updatedList = updatedList.filter((orders) => orders.name.TimeToDeliver);
     }
 
     setFilteredList(updatedList);
@@ -335,17 +331,22 @@ function MyContractsContainer(props) {
     <div className="containerWithSidebar">
       <FilterBar
         walletAddressFn={handleChangeWalletAddress}
+        params={{
+          priceFilterMinValue: priceFilterMinValue,
+          priceFilterMaxValue: priceFilterMaxValue,
+        }}
         filterSide={filterSide}
         setFilterSide={setFilterSide}
+        filterSideValues={filterSideValues}
         filterStates={filterStates}
         setFilterStates={setFilterStates}
+        dropDownOptions={dropDownOptions}
         filterDelivery={filterDelivery}
         setFilterDelivery={setFilterDelivery}
-        setFilterMaxPrice={setFilterMaxPrice}
-        setFilterMinPrice={setFilterMinPrice}
-        filterSideValues={filterSideValues}
-        dropDownOptions={dropDownOptions}
         deliveryValues={deliveryValues}
+        setFilterMaxPrice={setFilterMaxPrice}
+        filterMinPrice={filterMinPrice}
+        setFilterMinPrice={setFilterMinPrice}
         selectCurrency={selectCurrency}
         setSelectCurrency={setSelectCurrency}
         currencyOptionsValues={currencyOptionsValues}
@@ -412,7 +413,6 @@ function Table_normal(props) {
               <StyledTableCell>State</StyledTableCell>
               <StyledTableCell>Price</StyledTableCell>
               <StyledTableCell>Time to Deliver</StyledTableCell>
-
               {isBuyer ? (
                 <>
                   <StyledTableCell>Actions</StyledTableCell>
@@ -501,7 +501,7 @@ function Row_normal(props) {
               item.State == "Available" ? (
                 // show a cancel button (RED COLOR)
                 <>
-                  <StyledTableCell>
+                  <StyledTableCell className="actionCol">
                     <input
                       className="rounded button orange small"
                       type="submit"
@@ -577,7 +577,7 @@ function Row_normal(props) {
                 </>
               ) : (
                 <>
-                  <StyledTableCell>
+                  <StyledTableCell className="actionCol">
                     <input
                       className="rounded button green small"
                       type="submit"
@@ -731,7 +731,7 @@ function Row_normal(props) {
               item.State == "Available" ? (
               // show a cancel button (RED COLOR)
               <>
-                <StyledTableCell>
+                <StyledTableCell className="actionCol">
                   <input
                     className="rounded button orange small"
                     type="submit"
@@ -804,7 +804,7 @@ function Row_normal(props) {
               </>
             ) : (
               <>
-                <StyledTableCell>
+                <StyledTableCell className="actionCol">
                   <input
                     className="button primary rounded small"
                     type="submit"
@@ -956,19 +956,30 @@ function Row_normal(props) {
         >
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
+              {console.log(item)}
               <div className="listData">
-                <div className="listDataItem">
-                  <div className="listItemLabel">Seller Wallet</div>
-                  <div className="listItemValue">{item.SellerWallet}</div>
-                </div>
-                <div className="listDataItem">
-                  <div className="listItemLabel">Buyer Wallet</div>
-                  <div className="listItemValue">{item.BuyerWallet}</div>
-                </div>
+                {item.SellerWallet && (
+                  <div className="listDataItem">
+                    <div className="listItemLabel">Seller Wallet</div>
+                    <div className="listItemValue">{item.SellerWallet}</div>
+                  </div>
+                )}
+                {item.BuyerWallet && (
+                  <div className="listDataItem">
+                    <div className="listItemLabel">Buyer Wallet</div>
+                    <div className="listItemValue">{item.BuyerWallet}</div>
+                  </div>
+                )}
                 <div className="listDataItem">
                   <div className="listItemLabel">Arbiters</div>
                   <div className="listItemValue">
                     {wrapArbiters(item.Arbiters)}
+                  </div>
+                </div>
+                <div className="listDataItem">
+                  <div className="listItemLabel">Wallets Allowed to Accept</div>
+                  <div className="listItemValue">
+                    {wrapArbiters(item.PersonalizedOffer)}
                   </div>
                 </div>
                 <div className="listDataItem">

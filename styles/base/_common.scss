@@ -107,7 +107,7 @@
 }
 
 .flex-center {
-  @extend %FlexRow-CenterCenter;
+  @extend %FlexRow-CenterStart;
 }
 
 .currencyIc {

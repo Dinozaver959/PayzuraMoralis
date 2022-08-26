@@ -7,8 +7,8 @@ function SelectDropdown(props) {
 
   const toggling = () => setIsOpen(!isOpen);
 
-  const onOptionClicked = (value) => () => {
-    setSelectedOption(value);
+  const onOptionClicked = (option) => () => {
+    setSelectedOption(option.label);
     setIsOpen(false);
   };
 
@@ -23,8 +23,8 @@ function SelectDropdown(props) {
             <div className="dropdownList">
               {options.map((option) => (
                 <div
-                  className="dropdownListItems"
-                  onClick={onOptionClicked(option.value)}
+                  className={selectedOption === option.label ? "dropdownListItems selected" : "dropdownListItems"}
+                  onClick={onOptionClicked(option)}
                   key={Math.random()}
                 >
                   {option.label}

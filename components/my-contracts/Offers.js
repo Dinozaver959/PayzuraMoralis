@@ -95,23 +95,19 @@ function OffersContainer(props) {
       value: "",
     },
     {
-      label: "Available",
+      label: "Available To Buyers",
       value: "Available",
     },
     {
-      label: "Buyer Initialized",
-      value: "buyer_initialized",
-    },
-    {
-      label: "Buyer Initialized and Paid",
+      label: "Specifying Qualified Sellers",
       value: "buyer_initialized_and_paid",
     },
     {
-      label: "Await Seller Accepts",
+      label: "Available To Sellers",
       value: "await_seller_accepts",
     },
     {
-      label: "Paid",
+      label: "In Progress",
       value: "paid",
     },
     {
@@ -155,16 +151,23 @@ function OffersContainer(props) {
       value: "All",
       availability: true,
     },
-  ]
+  ];
+
+  const allDataPrice = dataContractsOffered.map((data) => data.name.Price);
+  const uniqueDataPrice = [...new Set(allDataPrice)];
+  const numberArray = uniqueDataPrice.map(Number);
+
+  const priceFilterMinValue = Math.min(...numberArray);
+  const priceFilterMaxValue = Math.max(...numberArray);
 
   const [filteredList, setFilteredList] = useState(dataContractsOffered);
-  const [selectCurrency, setSelectCurrency] = useState();
+  const [selectCurrency, setSelectCurrency] = useState("All");
   const [filterMinPrice, setFilterMinPrice] = useState(0);
   const [filterMaxPrice, setFilterMaxPrice] = useState(10);
   const [filterWalletAddress, setFilterWalletAddress] = useState("");
-  const [filterSide, setFilterSide] = useState("");
-  const [filterStates, setFilterStates] = useState("");
-  const [filterDelivery, setFilterDelivery] = useState("");
+  const [filterSide, setFilterSide] = useState("All");
+  const [filterStates, setFilterStates] = useState("All");
+  const [filterDelivery, setFilterDelivery] = useState("All");
 
   const handleChangeWalletAddress = (event) => {
     setFilterWalletAddress(event.target.value);
@@ -184,7 +187,9 @@ function OffersContainer(props) {
       );
     } else if (selectCurrency === "All") {
       updatedList = updatedList.filter(
-        (orders) => orders.name.CurrencyTicker === "ETH" || orders.name.CurrencyTicker === "USDC"
+        (orders) =>
+          orders.name.CurrencyTicker === "ETH" ||
+          orders.name.CurrencyTicker === "USDC"
       );
     }
 
@@ -206,7 +211,9 @@ function OffersContainer(props) {
       );
     } else if (filterSide === "All") {
       updatedList = updatedList.filter(
-        (orders) => orders.name.ContractStartedBy === "Buyer" || orders.name.ContractStartedBy === "Seller"
+        (orders) =>
+          orders.name.ContractStartedBy === "Buyer" ||
+          orders.name.ContractStartedBy === "Seller"
       );
     }
 
@@ -219,37 +226,33 @@ function OffersContainer(props) {
     }
 
     // States Filter
-    if (filterStates === "Available") {
+    if (filterStates === "Available To Buyers") {
       updatedList = updatedList.filter(
         (orders) => orders.name.State === "Available"
       );
-    } else if (filterStates === "buyer_initialized") {
-      updatedList = updatedList.filter(
-        (orders) => orders.name.State === "buyer_initialized"
-      );
-    } else if (filterStates === "buyer_initialized_and_paid") {
+    } else if (filterStates === "Specifying Qualified Sellers") {
       updatedList = updatedList.filter(
         (orders) => orders.name.State === "buyer_initialized_and_paid"
       );
-    } else if (filterStates === "await_seller_accepts") {
+    } else if (filterStates === "Available To Sellers") {
       updatedList = updatedList.filter(
         (orders) => orders.name.State === "await_seller_accepts"
       );
-    } else if (filterStates === "paid") {
+    } else if (filterStates === "In Progress") {
       updatedList = updatedList.filter(
         (orders) => orders.name.State === "paid"
       );
-    } else if (filterStates === "complete") {
+    } else if (filterStates === "Complete") {
       updatedList = updatedList.filter(
         (orders) => orders.name.State === "complete"
       );
-    } else if (filterStates === "dispute") {
+    } else if (filterStates === "Dispute") {
       updatedList = updatedList.filter(
         (orders) => orders.name.State === "dispute"
       );
     }
 
-    // States Filter
+    // Duration Filter
     if (filterDelivery === "1 Day") {
       updatedList = updatedList.filter(
         (orders) => orders.name.TimeToDeliver <= 1
@@ -267,9 +270,7 @@ function OffersContainer(props) {
         (orders) => orders.name.TimeToDeliver <= 14
       );
     } else if (filterDelivery === "All") {
-      updatedList = updatedList.filter(
-        (orders) => orders.name.TimeToDeliver
-      );
+      updatedList = updatedList.filter((orders) => orders.name.TimeToDeliver);
     }
 
     setFilteredList(updatedList);
@@ -293,17 +294,21 @@ function OffersContainer(props) {
     <div className="containerWithSidebar">
       <FilterBar
         walletAddressFn={handleChangeWalletAddress}
+        params={{
+          priceFilterMinValue: priceFilterMinValue,
+          priceFilterMaxValue: priceFilterMaxValue,
+        }}
         filterSide={filterSide}
         setFilterSide={setFilterSide}
+        filterSideValues={filterSideValues}
         filterStates={filterStates}
         setFilterStates={setFilterStates}
+        dropDownOptions={dropDownOptions}
         filterDelivery={filterDelivery}
         setFilterDelivery={setFilterDelivery}
+        deliveryValues={deliveryValues}
         setFilterMaxPrice={setFilterMaxPrice}
         setFilterMinPrice={setFilterMinPrice}
-        filterSideValues={filterSideValues}
-        dropDownOptions={dropDownOptions}
-        deliveryValues={deliveryValues}
         selectCurrency={selectCurrency}
         setSelectCurrency={setSelectCurrency}
         currencyOptionsValues={currencyOptionsValues}
@@ -409,9 +414,9 @@ function Table_normal(props) {
             <StyledTableRow>
               <StyledTableCell />
               <StyledTableCell>Title</StyledTableCell>
-              <StyledTableCell>Price (ETH)</StyledTableCell>
+              <StyledTableCell>State</StyledTableCell>
+              <StyledTableCell>Price</StyledTableCell>
               <StyledTableCell>Time to Deliver</StyledTableCell>
-              <StyledTableCell>Valid Until</StyledTableCell>
               <StyledTableCell>Action</StyledTableCell>
             </StyledTableRow>
           </TableHead>
@@ -484,26 +489,29 @@ function Row_normal(props) {
           {item.ContractTitle}
         </StyledTableCell>
         <StyledTableCell>
+          <label className="mobileLabel">State</label>
+          {item.State}
+        </StyledTableCell>
+        <StyledTableCell>
           <label className="mobileLabel">Price (ETH)</label>
-          {item.Price}
-          <Image
-            src={tickerToIcon(item.CurrencyTicker)}
-            width={20}
-            height={20}
-            alt={item.CurrencyTicker}
-          />
-          {item.CurrencyTicker}
+          <div className="flex-center">
+            {item.Price}
+            <i className="currencyIc ml-10 mr-5">
+              <Image
+                src={tickerToIcon(item.CurrencyTicker)}
+                width={20}
+                height={20}
+                alt={item.CurrencyTicker}
+              />
+            </i>
+            {item.CurrencyTicker}
+          </div>
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Time to Deliver</label>
           {item.TimeToDeliver} Day(s)
         </StyledTableCell>
-        <StyledTableCell>
-          <label className="mobileLabel">Valid Until</label>
-          {wrapEpochToDate(item.OfferValidUntil)}
-        </StyledTableCell>
-
-        <StyledTableCell>
+        <StyledTableCell className="actionCol">
           <input
             className="button primary rounded small" // button primary rounded small
             type="submit"
@@ -572,75 +580,7 @@ function Row_normal(props) {
             }
           ></input>
         </StyledTableCell>
-
-        {/* OLD - org 
-        <StyledTableCell>
-          <input
-            className="button primary rounded"
-            type="submit"
-            value="Accept Offer (buyer)"
-            onClick={() =>
-              AcceptOfferBuyer_Moralis(item.index)
-                .then(async (transactionHash) => {
-                  // show the feedback text
-                  document.getElementById("submitFeedback").style.display =
-                    "inline";
-                  document.getElementById("submitFeedback").innerText =
-                    "Creating offer...";
-
-                  var formData = new FormData();
-                  formData.append("SellerWallet", item.SellerWallet);   
-
-                  const connectedAddress = await GetWallet_NonMoralis();
-                  formData.append("BuyerWallet", connectedAddress);
-                  formData.append("transactionHash", transactionHash);
-                  formData.append("objectId", item.objectId);
-
-                  var xhr = new XMLHttpRequest();
-                  xhr.open("POST", "/api/api-acceptedOfferByBuyer", false);
-                  xhr.onload = function () {
-                    // update the feedback text
-                    document.getElementById("submitFeedback").style.display =
-                      "inline";
-                    document.getElementById("submitFeedback").innerText =
-                      "offer accepted";
-
-                    // prevent the Submit button to be clickable and functionable
-                    // removeHover()
-                    // document.getElementById('SubmitButton').disabled = true
-
-                    // think about also removing the hover effect
-                    // you can create a seperate class for the hover (can be reused on other elements as well) and just remove the hover class from this element
-                    console.log("offer created");
-                  };
-                  xhr.send(formData);
-                })
-                .catch((error) => {
-                  console.error(error);
-                  console.log("accept offer error code: " + error.code);
-                  console.log("accept offer error message: " + error.message);
-                  if (error.data && error.data.message) {
-                    document.getElementById("submitFeedback").innerText =
-                      error.data.message;
-                  } else {
-                    document.getElementById("submitFeedback").innerText =
-                      error.message;
-                  }
-                  document.getElementById("submitFeedback").style.visibility =
-                    "visible";
-                  process.exitCode = 1;
-                })
-            }
-          ></input>
-        </StyledTableCell>
-      */}
       </StyledTableRow>
-
-      {/* <TableRow>
-        <StyledInnerTableCell></StyledInnerTableCell>
-        <StyledInnerTableCell>Seller Wallet</StyledInnerTableCell>
-        <StyledInnerTableCell>{item.SellerWallet}</StyledInnerTableCell>
-      </TableRow> */}
 
       <StyledTableRow>
         <StyledTableCell
@@ -650,20 +590,28 @@ function Row_normal(props) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <div className="listData">
+                {item.SellerWallet && (
+                  <div className="listDataItem">
+                    <div className="listItemLabel">Seller Wallet</div>
+                    <div className="listItemValue">{item.SellerWallet}</div>
+                  </div>
+                )}
+                {item.BuyerWallet && (
+                  <div className="listDataItem">
+                    <div className="listItemLabel">Buyer Wallet</div>
+                    <div className="listItemValue">{item.BuyerWallet}</div>
+                  </div>
+                )}
                 <div className="listDataItem">
-                  <div className="listItemLabel">Seller Wallet</div>
-                  <div className="listItemValue">{item.SellerWallet}</div>
+                  <div className="listItemLabel">Arbiters</div>
+                  <div className="listItemValue">
+                    {wrapArbiters(item.Arbiters)}
+                  </div>
                 </div>
                 <div className="listDataItem">
                   <div className="listItemLabel">Wallets Allowed to Accept</div>
                   <div className="listItemValue">
                     {wrapPersonalized(item.PersonalizedOffer)}
-                  </div>
-                </div>
-                <div className="listDataItem">
-                  <div className="listItemLabel">Arbiters</div>
-                  <div className="listItemValue">
-                    {wrapArbiters(item.Arbiters)}
                   </div>
                 </div>
                 <div className="listDataItem">
