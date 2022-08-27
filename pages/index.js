@@ -270,6 +270,10 @@ export default function Home(props) {
       array.push((data[i].valueSellerAccepted_0x0000000000000000000000000000000000000000 + data[i].valueBuyerAccepted_0x0000000000000000000000000000000000000000) / (10**18));
     }
 
+    
+    console.log("PrepareETHvalueTransacted:");
+    console.log(array);
+
     setETHValueTransacted(array);
   };
 
@@ -277,8 +281,12 @@ export default function Home(props) {
 
     var array = [];
     for (let i = 0; i < data.length; i++) {
-      array.push((data[i].valueSeller_0x2791bca1f2de4661ed88a30c99a7a9449aa84174 + data[i].valueBuyer_0x2791bca1f2de4661ed88a30c99a7a9449aa84174) / (10**6));
+      array.push((data[i].valueSellerAccepted_0x2791bca1f2de4661ed88a30c99a7a9449aa84174 + data[i].valueBuyerAccepted_0x2791bca1f2de4661ed88a30c99a7a9449aa84174) / (10**6));
     }
+
+    console.log("PrepareUSDCvalueTransacted:");
+    console.log(array);
+
 
     setUSDCValueTransacted(array);
   };
@@ -364,29 +372,14 @@ export default function Home(props) {
 
         {/* MORALIS EVENT SYNC ChartS */}
         <div className="dashboardBlocks">
-          <div className="blockMain">
-            <div className="blockIcon">
-              <ETHIc size="52" color="white" />
-            </div>
-            <div className="blockValue">
-              <h3>
-                {cumulativeETHTotal?.toFixed(3)} ETH <br />
-                {cumulativeUSDCTotal?.toFixed(3)} USDC
-              </h3>
-              <div className="blockItemLabel">Total amount transacted</div>
-            </div>
-          </div>
 
           <div className="blockMain">
             <div className="blockIcon">
               <ETHIc size="52" color="white" />
             </div>
             <div className="blockValue">
-              <h3>
-                {(ETHValueLocked[ETHValueLocked.length - 1])?.toFixed(3)} ETH<br />
-                {(USDCValueLocked[USDCValueLocked.length - 1])?.toFixed(3)} USDC
-              </h3>
-              <div className="blockItemLabel">Total amount locked</div>
+              <h3>{totalNumberOfContracts}</h3>
+              <div className="blockItemLabel">Total number of Contracts</div>
             </div>
           </div>
 
@@ -405,22 +398,65 @@ export default function Home(props) {
               <ETHIc size="52" color="white" />
             </div>
             <div className="blockValue">
-              <h3>{totalNumberOfDisputesStarted}</h3>
-              <div className="blockItemLabel">Total number of disputes</div>
+              <h3>
+                {cumulativeETHTotal?.toFixed(3)} ETH <br />
+                {cumulativeUSDCTotal?.toFixed(3)} USDC
+              </h3>
+              <div className="blockItemLabel">Total amount Transacted</div>
             </div>
           </div>
+
+          <div className="blockMain">
+            <div className="blockIcon">
+              <ETHIc size="52" color="white" />
+            </div>
+            <div className="blockValue">
+              <h3>
+                {(ETHValueLocked[ETHValueLocked.length - 1])?.toFixed(3)} ETH<br />
+                {(USDCValueLocked[USDCValueLocked.length - 1])?.toFixed(3)} USDC
+              </h3>
+              <div className="blockItemLabel">Total amount Locked</div>
+            </div>
+          </div>
+
         </div>
 
         <div className="chartContainer">
 
-          <div className="card">
+          {/*
+            <div className="card">
+              <div className="cardHeader">
+                <div className="cardTitle">Contracts Made and Disputes solved</div>
+              </div>
+              <div className="cardBody">
+                <BarChart 
+                  chartData={ContractsMadeAndDisputedBarChart}
+                  options={{
+                    maintainAspectRatio: false,
+                    scales: {y: {beginAtZero: true}},
+                    plugins:{
+                      title: {display: false, text: 'Contracts Made and Disputes solved'},
+                      legend: {position: 'top', align: 'end',
+                        labels: {boxWidth: 10, boxHeight: 10,
+                          font: {
+                            weight: 100
+                          }
+                        },
+                      },
+                    }
+                  }}
+                  />
+              </div>
+            </div>
+           */}
+
+          <div className="card" /* fullWidth */>
             <div className="cardHeader">
               <div className="cardTitle">Contracts Made and Disputes solved</div>
             </div>
             <div className="cardBody">
-              <BarChart 
-                chartData={ContractsMadeAndDisputedBarChart}
-                options={{
+              <LineChart chartData={ContractsMadeAndDisputedLineChart} 
+                options={{            
                   maintainAspectRatio: false,
                   scales: {y: {beginAtZero: true}},
                   plugins:{
@@ -432,11 +468,12 @@ export default function Home(props) {
                         }
                       },
                     },
-                  }
+                  },
                 }}
-                />
+              />
             </div>
           </div>
+
 
           <div className="card">
             <div className="cardHeader">
@@ -514,29 +551,6 @@ export default function Home(props) {
             </div>
           </div>
 
-          <div className="card fullWidth">
-            <div className="cardHeader">
-              <div className="cardTitle">Contracts Made and Disputes solved</div>
-            </div>
-            <div className="cardBody">
-              <LineChart chartData={ContractsMadeAndDisputedLineChart} 
-                options={{            
-                  maintainAspectRatio: false,
-                  scales: {y: {beginAtZero: true}},
-                  plugins:{
-                    title: {display: false, text: 'Contracts Made and Disputes solved'},
-                    legend: {position: 'top', align: 'end',
-                      labels: {boxWidth: 10, boxHeight: 10,
-                        font: {
-                          weight: 100
-                        }
-                      },
-                    },
-                  },
-                }}
-              />
-            </div>
-          </div>
 
         </div>
 
