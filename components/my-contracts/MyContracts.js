@@ -70,7 +70,7 @@ function tickerToIcon(ticker) {
 }
 
 function MyContractsContainer(props) {
-  const { dataGetMyContracts, placeholder } = props;
+  const { dataGetMyContracts, placeholder, currentAccount } = props;
 
   const currencyOptionsValues = [
     {
@@ -189,7 +189,7 @@ function MyContractsContainer(props) {
   const [selectCurrency, setSelectCurrency] = useState("All");
   const [filterMinPrice, setFilterMinPrice] = useState(0);
   const [filterMaxPrice, setFilterMaxPrice] = useState(10);
-  const [filterWalletAddress, setFilterWalletAddress] = useState("");
+  const [filterWalletAddress, setFilterWalletAddress] = useState();
   const [filterSide, setFilterSide] = useState("All");
   const [filterStates, setFilterStates] = useState("All");
   const [filterDelivery, setFilterDelivery] = useState("All");
@@ -225,41 +225,25 @@ function MyContractsContainer(props) {
       (item) => item.name.Price >= minPrice && item.name.Price <= maxPrice
     );
 
-    // Side Filter
-    if (filterSide === "Buyer") {
+    // Wallet Address Filter
+    let checkAddress = currentAccount.toLowerCase();
+    if (filterWalletAddress !== "" && filterWalletAddress !== undefined) {
+      checkAddress = filterWalletAddress.toLowerCase();
+    }
+    if (filterSide === "All") {
       updatedList = updatedList.filter(
-        (orders) => orders.name.ContractStartedBy === "Buyer"
+        (orders) =>
+          orders.name.SellerWallet === checkAddress ||
+          orders.name.BuyerWallet === checkAddress
+      );
+    } else if (filterSide === "Buyer") {
+      updatedList = updatedList.filter(
+        (orders) => orders.name.BuyerWallet === checkAddress
       );
     } else if (filterSide === "Seller") {
       updatedList = updatedList.filter(
-        (orders) => orders.name.ContractStartedBy === "Seller"
+        (orders) => orders.name.SellerWallet === checkAddress
       );
-    } else if (filterSide === "All") {
-      updatedList = updatedList.filter(
-        (orders) =>
-          orders.name.ContractStartedBy === "Buyer" ||
-          orders.name.ContractStartedBy === "Seller"
-      );
-    }
-
-    if (filterWalletAddress !== "") {
-      if (filterSide === "All") {
-        updatedList = updatedList.filter(
-          (orders) =>
-            orders.name.SellerWallet === filterWalletAddress ||
-            orders.name.BuyerWallet === filterWalletAddress
-        );
-      }
-      if (filterSide === "Buyer") {
-        updatedList = updatedList.filter(
-          (orders) => orders.name.BuyerWallet === filterWalletAddress
-        );
-      }
-      if (filterSide === "Seller") {
-        updatedList = updatedList.filter(
-          (orders) => orders.name.SellerWallet === filterWalletAddress
-        );
-      }
     }
 
     // States Filter
@@ -467,12 +451,30 @@ function Row_normal(props) {
         <StyledTableCell>
           <label className="mobileLabel">State</label>
           {/* {item.State} */}
-          {item.State === "Available" && <div className="statusChip statusAvailableBuyers">Available To Buyers</div>}
-          {item.State === "buyer_initialized_and_paid" && <div className="statusChip statusQualifiedSellers">Specifying Qualified Sellers</div>}
-          {item.State === "await_seller_accepts" && <div className="statusChip statusAvailableSellers">Available To Sellers</div>}
-          {item.State === "paid" && <div className="statusChip statusInProgress">In Progress</div>}
-          {item.State === "complete" && <div className="statusChip statusComplete">Complete</div>}
-          {item.State === "dispute" && <div className="statusChip statusDispute">Dispute</div>}
+          {item.State === "Available" && (
+            <div className="statusChip statusAvailableBuyers">
+              Available To Buyers
+            </div>
+          )}
+          {item.State === "buyer_initialized_and_paid" && (
+            <div className="statusChip statusQualifiedSellers">
+              Specifying Qualified Sellers
+            </div>
+          )}
+          {item.State === "await_seller_accepts" && (
+            <div className="statusChip statusAvailableSellers">
+              Available To Sellers
+            </div>
+          )}
+          {item.State === "paid" && (
+            <div className="statusChip statusInProgress">In Progress</div>
+          )}
+          {item.State === "complete" && (
+            <div className="statusChip statusComplete">Complete</div>
+          )}
+          {item.State === "dispute" && (
+            <div className="statusChip statusDispute">Dispute</div>
+          )}
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Price</label>
@@ -962,7 +964,6 @@ function Row_normal(props) {
         >
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              {console.log(item)}
               <div className="listData">
                 {item.SellerWallet && (
                   <div className="listDataItem">
@@ -992,14 +993,8 @@ function Row_normal(props) {
                   <div className="listItemLabel">Description</div>
                   <div className="listItemValue">{item.OfferDescription}</div>
                 </div>
-                <div className="listDataItem">
+                {/* <div className="listDataItem">
                   {wrapDelegates(item.BuyerDelegates)}
-                  {/*
-                    Needs to be adjusted:  
-                      1. Display addresses 1 per row - have the ability to click X to delete an array and add a new address with a plus
-                      2. Create 2 arrays, 1 with addresses that were removed and 1 with addresses that were added
-                      3. feed these 2 arrays for the function and for the push /api call
-                  */}
                   <input
                     className="rounded button primary"
                     type="submit"
@@ -1010,10 +1005,8 @@ function Row_normal(props) {
                         true,
                         "__array_DelegatesToAdd__",
                         "__array_DelegatesToRemove__"
-                      ) // UPDATE with real values
-                        // supply the arrays somehow
+                      )
                         .then(async (transactionHash) => {
-                          // show the feedback text
                           setModelData({
                             show: true,
                             type: "alert",
@@ -1030,18 +1023,15 @@ function Row_normal(props) {
                           formData.append(
                             "DelegatesToAdd",
                             "______________________"
-                          ); // array
-                          // UPDATE with real values
+                          );
                           formData.append(
                             "DelegatesToRemove",
                             "______________________"
-                          ); // array
-                          // UPDATE with real values
+                          );
 
                           var xhr = new XMLHttpRequest();
                           xhr.open("POST", "/api/api-updateDelegates", false);
                           xhr.onload = function () {
-                            // update the feedback text
                             setModelData({
                               show: true,
                               type: "alert",
@@ -1082,12 +1072,6 @@ function Row_normal(props) {
                   ></input>
 
                   {wrapDelegates(item.SellerDelegates)}
-                  {/*
-                  Needs to be adjusted:  
-                    1. Display addresses 1 per row - have the ability to click X to delete an array and add a new address with a plus
-                    2. Create 2 arrays, 1 with addresses that were removed and 1 with addresses that were added
-                    3. feed these 2 arrays for the function and for the push /api call
-                */}
                   <input
                     className="rounded button primary"
                     type="submit"
@@ -1098,10 +1082,8 @@ function Row_normal(props) {
                         false,
                         "__array_DelegatesToAdd__",
                         "__array_DelegatesToRemove__"
-                      ) // UPDATE with real values
-                        // supply the arrays somehow
+                      )
                         .then(async (transactionHash) => {
-                          // show the feedback text
                           setModelData({
                             show: true,
                             type: "alert",
@@ -1118,18 +1100,15 @@ function Row_normal(props) {
                           formData.append(
                             "DelegatesToAdd",
                             "______________________"
-                          ); // array
-                          // UPDATE with real values
+                          );
                           formData.append(
                             "DelegatesToRemove",
                             "______________________"
-                          ); // array
-                          // UPDATE with real values
+                          );
 
                           var xhr = new XMLHttpRequest();
                           xhr.open("POST", "/api/api-updateDelegates", false);
                           xhr.onload = function () {
-                            // update the feedback text
                             setModelData({
                               show: true,
                               type: "alert",
@@ -1168,7 +1147,7 @@ function Row_normal(props) {
                         })
                     }
                   ></input>
-                </div>
+                </div> */}
               </div>
             </Box>
           </Collapse>

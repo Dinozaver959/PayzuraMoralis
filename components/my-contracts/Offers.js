@@ -45,7 +45,7 @@ const StyledInnerTableCell = styled(TableCell)({
 });
 
 function OffersContainer(props) {
-  const { dataContractsOffered, placeholder } = props;
+  const { dataContractsOffered, placeholder, currentAccount } = props;
 
   const currencyOptionsValues = [
     {
@@ -200,28 +200,19 @@ function OffersContainer(props) {
       (item) => item.name.Price >= minPrice && item.name.Price <= maxPrice
     );
 
-    // Side Filter
-    if (filterSide === "Buyer") {
-      updatedList = updatedList.filter(
-        (orders) => orders.name.ContractStartedBy === "Buyer"
-      );
-    } else if (filterSide === "Seller") {
-      updatedList = updatedList.filter(
-        (orders) => orders.name.ContractStartedBy === "Seller"
-      );
-    } else if (filterSide === "All") {
-      updatedList = updatedList.filter(
-        (orders) =>
-          orders.name.ContractStartedBy === "Buyer" ||
-          orders.name.ContractStartedBy === "Seller"
-      );
-    }
+    // Wallet Address Filter
+    let checkAddress = currentAccount.toLowerCase();
+    updatedList = updatedList.filter(
+      (orders) => orders.name.PersonalizedOffer === checkAddress //|| orders.name.SellerWallet === checkAddress
+    );
+    if (filterWalletAddress !== "" && filterWalletAddress !== undefined) {
+      checkAddress = filterWalletAddress.toLowerCase();
 
-    if (filterWalletAddress !== "") {
       updatedList = updatedList.filter(
         (orders) =>
-          orders.name.SellerWallet === filterWalletAddress ||
-          orders.name.BuyerWallet === filterWalletAddress
+          orders.name.SellerWallet === checkAddress ||
+          orders.name.BuyerWallet === checkAddress ||
+          orders.name.Arbiters === checkAddress
       );
     }
 
@@ -295,6 +286,7 @@ function OffersContainer(props) {
       <FilterBar
         walletAddressFn={handleChangeWalletAddress}
         params={{
+          filterSideAvailability: false,
           priceFilterMinValue: priceFilterMinValue,
           priceFilterMaxValue: priceFilterMaxValue,
         }}
@@ -491,12 +483,30 @@ function Row_normal(props) {
         <StyledTableCell>
           <label className="mobileLabel">State</label>
           {/* {item.State} */}
-          {item.State === "Available" && <div className="statusChip statusAvailableBuyers">Available To Buyers</div>}
-          {item.State === "buyer_initialized_and_paid" && <div className="statusChip statusQualifiedSellers">Specifying Qualified Sellers</div>}
-          {item.State === "await_seller_accepts" && <div className="statusChip statusAvailableSellers">Available To Sellers</div>}
-          {item.State === "paid" && <div className="statusChip statusInProgress">In Progress</div>}
-          {item.State === "complete" && <div className="statusChip statusComplete">Complete</div>}
-          {item.State === "dispute" && <div className="statusChip statusDispute">Dispute</div>}
+          {item.State === "Available" && (
+            <div className="statusChip statusAvailableBuyers">
+              Available To Buyers
+            </div>
+          )}
+          {item.State === "buyer_initialized_and_paid" && (
+            <div className="statusChip statusQualifiedSellers">
+              Specifying Qualified Sellers
+            </div>
+          )}
+          {item.State === "await_seller_accepts" && (
+            <div className="statusChip statusAvailableSellers">
+              Available To Sellers
+            </div>
+          )}
+          {item.State === "paid" && (
+            <div className="statusChip statusInProgress">In Progress</div>
+          )}
+          {item.State === "complete" && (
+            <div className="statusChip statusComplete">Complete</div>
+          )}
+          {item.State === "dispute" && (
+            <div className="statusChip statusDispute">Dispute</div>
+          )}
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Price (ETH)</label>
