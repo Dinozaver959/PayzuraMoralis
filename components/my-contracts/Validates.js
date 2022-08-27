@@ -41,7 +41,7 @@ const StyledTableCell = styled(TableCell)({
 });
 
 function ValidatesContainer(props) {
-  const { dataContractsToValidate, placeholder } = props;
+  const { dataContractsToValidate, placeholder, currentAccount } = props;
 
   const currencyOptionsValues = [
     {
@@ -140,13 +140,14 @@ function ValidatesContainer(props) {
       (item) => item.name.Price >= minPrice && item.name.Price <= maxPrice
     );
 
-    if (filterWalletAddress !== "") {
-      updatedList = updatedList.filter(
-        (orders) =>
-          orders.name.SellerWallet === filterWalletAddress ||
-          orders.name.BuyerWallet === filterWalletAddress
-      );
+    // Wallet Address Filter
+    let checkAddress = currentAccount.toLowerCase();
+    if (filterWalletAddress !== "" && filterWalletAddress !== undefined) {
+      checkAddress = filterWalletAddress.toLowerCase();
     }
+    updatedList = updatedList.filter(
+      (orders) => orders.name.SellerWallet === checkAddress
+    );
 
     // States Filter
     if (filterStates === "Available To Buyers") {
@@ -346,12 +347,30 @@ function Row_normal(props) {
         <StyledTableCell>
           <label className="mobileLabel">State</label>
           {/* {item.State} */}
-          {item.State === "Available" && <div className="statusChip statusAvailableBuyers">Available To Buyers</div>}
-          {item.State === "buyer_initialized_and_paid" && <div className="statusChip statusQualifiedSellers">Specifying Qualified Sellers</div>}
-          {item.State === "await_seller_accepts" && <div className="statusChip statusAvailableSellers">Available To Sellers</div>}
-          {item.State === "paid" && <div className="statusChip statusInProgress">In Progress</div>}
-          {item.State === "complete" && <div className="statusChip statusComplete">Complete</div>}
-          {item.State === "dispute" && <div className="statusChip statusDispute">Dispute</div>}
+          {item.State === "Available" && (
+            <div className="statusChip statusAvailableBuyers">
+              Available To Buyers
+            </div>
+          )}
+          {item.State === "buyer_initialized_and_paid" && (
+            <div className="statusChip statusQualifiedSellers">
+              Specifying Qualified Sellers
+            </div>
+          )}
+          {item.State === "await_seller_accepts" && (
+            <div className="statusChip statusAvailableSellers">
+              Available To Sellers
+            </div>
+          )}
+          {item.State === "paid" && (
+            <div className="statusChip statusInProgress">In Progress</div>
+          )}
+          {item.State === "complete" && (
+            <div className="statusChip statusComplete">Complete</div>
+          )}
+          {item.State === "dispute" && (
+            <div className="statusChip statusDispute">Dispute</div>
+          )}
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Price</label>
