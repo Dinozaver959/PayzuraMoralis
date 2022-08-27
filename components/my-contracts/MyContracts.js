@@ -466,7 +466,13 @@ function Row_normal(props) {
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">State</label>
-          {item.State}
+          {/* {item.State} */}
+          {item.State === "Available" && <div className="statusChip statusAvailableBuyers">Available To Buyers</div>}
+          {item.State === "buyer_initialized_and_paid" && <div className="statusChip statusQualifiedSellers">Specifying Qualified Sellers</div>}
+          {item.State === "await_seller_accepts" && <div className="statusChip statusAvailableSellers">Available To Sellers</div>}
+          {item.State === "paid" && <div className="statusChip statusAvailable statusInProgress">In Progress</div>}
+          {item.State === "complete" && <div className="statusChip statusComplete">Complete</div>}
+          {item.State === "dispute" && <div className="statusChip statusDispute">Dispute</div>}
         </StyledTableCell>
         <StyledTableCell>
           <label className="mobileLabel">Price</label>
