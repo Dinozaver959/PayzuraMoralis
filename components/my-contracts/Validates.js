@@ -146,7 +146,7 @@ function ValidatesContainer(props) {
       checkAddress = filterWalletAddress.toLowerCase();
     }
     updatedList = updatedList.filter(
-      (orders) => orders.name.SellerWallet === checkAddress
+      (orders) => orders.name.Arbiters === checkAddress || orders.name.SellerWallet === checkAddress || orders.name.BuyerWallet === checkAddress
     );
 
     // States Filter

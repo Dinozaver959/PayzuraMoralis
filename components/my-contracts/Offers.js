@@ -200,31 +200,21 @@ function OffersContainer(props) {
       (item) => item.name.Price >= minPrice && item.name.Price <= maxPrice
     );
 
-    // Side Filter
-    // if (filterSide === "Buyer") {
-    //   updatedList = updatedList.filter(
-    //     (orders) => orders.name.ContractStartedBy === "Buyer"
-    //   );
-    // } else if (filterSide === "Seller") {
-    //   updatedList = updatedList.filter(
-    //     (orders) => orders.name.ContractStartedBy === "Seller"
-    //   );
-    // } else if (filterSide === "All") {
-    //   updatedList = updatedList.filter(
-    //     (orders) =>
-    //       orders.name.ContractStartedBy === "Buyer" ||
-    //       orders.name.ContractStartedBy === "Seller"
-    //   );
-    // }
-
     // Wallet Address Filter
     let checkAddress = currentAccount.toLowerCase();
+    updatedList = updatedList.filter(
+      (orders) => orders.name.PersonalizedOffer === checkAddress //|| orders.name.SellerWallet === checkAddress
+    );
     if (filterWalletAddress !== "" && filterWalletAddress !== undefined) {
       checkAddress = filterWalletAddress.toLowerCase();
+
+      updatedList = updatedList.filter(
+        (orders) =>
+          orders.name.SellerWallet === checkAddress ||
+          orders.name.BuyerWallet === checkAddress ||
+          orders.name.Arbiters === checkAddress
+      );
     }
-    updatedList = updatedList.filter(
-      (orders) => orders.name.SellerWallet === checkAddress
-    );
 
     // States Filter
     if (filterStates === "Available To Buyers") {

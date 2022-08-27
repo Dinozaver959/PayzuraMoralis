@@ -225,23 +225,6 @@ function MyContractsContainer(props) {
       (item) => item.name.Price >= minPrice && item.name.Price <= maxPrice
     );
 
-    // Side Filter
-    // if (filterSide === "Buyer") {
-    //   updatedList = updatedList.filter(
-    //     (orders) => orders.name.ContractStartedBy === "Buyer"
-    //   );
-    // } else if (filterSide === "Seller") {
-    //   updatedList = updatedList.filter(
-    //     (orders) => orders.name.ContractStartedBy === "Seller"
-    //   );
-    // } else if (filterSide === "All") {
-    //   updatedList = updatedList.filter(
-    //     (orders) =>
-    //       orders.name.ContractStartedBy === "Buyer" ||
-    //       orders.name.ContractStartedBy === "Seller"
-    //   );
-    // }
-
     // Wallet Address Filter
     let checkAddress = currentAccount.toLowerCase();
     if (filterWalletAddress !== "" && filterWalletAddress !== undefined) {
