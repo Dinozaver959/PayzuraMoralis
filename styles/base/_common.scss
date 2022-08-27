@@ -117,6 +117,50 @@
   @include BorderRadius(40px);
 }
 
+.hideSmallerThanIpad {
+  @include RespondTo(IpadDevices) {
+    display: none !important;
+  }
+}
+
+.statusChip {
+  display: inline-block;
+  @include BorderRadius(5px);
+  @include Font(null, 0.8rem, null, null, 600);
+  padding: 3px 8px 1px 8px;
+  white-space: nowrap;
+
+  &.statusAvailableBuyers {
+    color: $PrimaryColor;
+    background-color: rgba($PrimaryColor, 0.1);
+  }
+
+  &.statusQualifiedSellers {
+    color: $OrangeColor;
+    background-color: rgba($OrangeColor, 0.1);
+  }
+
+  &.statusAvailableSellers {
+    color: darken($SecondaryColor, 20%);
+    background-color: rgba($SecondaryColor, 0.2);
+  }
+
+  &.statusInProgress {
+    color: $ErrorColor;
+    background-color: rgba($ErrorColor, 0.1);
+  }
+
+  &.statusComplete {
+    color: darken($GreenColor, 10%);
+    background-color: rgba($GreenColor, 0.1);
+  }
+
+  &.statusDispute {
+    color: $ErrorColor;
+    background-color: rgba($ErrorColor, 0.1);
+  }
+}
+
 .darkMode {
   .pageHeader {
     h1 {
@@ -142,15 +186,16 @@
 
   .noteText {
     color: rgba($FontColorLight, 0.75);
-  
+
     strong {
       color: $FontColorLight;
     }
   }
-}
 
-.hideSmallerThanIpad {
-  @include RespondTo(IpadDevices) {
-    display: none !important;
+  .statusChip {
+    &.statusAvailableBuyers {
+      color: $LightBlueColor;
+      background-color: rgba($LightBlueColor, 0.1);
+    }
   }
 }
