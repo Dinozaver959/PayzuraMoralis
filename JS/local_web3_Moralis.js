@@ -484,13 +484,31 @@ async function MoralisWrite__(method, params, value) {
       params: params,
       msgValue: value
     };
-  
-    const transaction = await Moralis.executeFunction(writeOptions);
+
+    var transaction = await Moralis.executeFunction(writeOptions);
 
     // need to check if Tx was rejected or if something else went wrong (on success we can return the Tx hash -> which we could store in DB)
     console.log("transaction hash: " + transaction.hash);
-  
-    const tx = await transaction.wait();
+
+    var tx;
+
+  try {
+    tx = await transaction.wait();
+    // myProcessMinedTransaction(transaction, receipt);
+  } catch(error) {
+    if (error.code === Logger.errors.TRANSACTION_REPLACED) {
+      if (error.cancelled) {
+        // The transaction was replaced  :'(
+        //myProcessCancelledTransaction(transaction, error.replacement);
+      } else {
+        // The user used "speed up" or something similar
+        // in their client, but we now have the updated info
+        // myProcessMinedTransaction(error.replacement, error.receipt);
+        transaction = error.replacement;
+      }
+    }
+  }
+
     console.log("transaction is confirmed");
 
     if(method == "HandleDispute"){
