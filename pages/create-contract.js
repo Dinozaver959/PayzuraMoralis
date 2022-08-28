@@ -78,12 +78,7 @@ export default function Description(props) {
 
   async function SubmitForm() {
     let arbiters = (arbitersValidate === 'Trusted 3rd') ? arbitersValue.join(",") : PayzuraCentealizedArbiter; // document.getElementById("Arbiters").value
-
-    let APIdata = {"test" : "testData", "user" : (await GetWallet_NonMoralis())[0]};
-
     CreateEscrow_Moralis(
-      APIdata,
-
       (selectContractType == "buyer") ? true : false,
       (await GetWallet_NonMoralis())[0],
       document.getElementById("Price").value,
@@ -102,10 +97,6 @@ export default function Description(props) {
           status: "Pending",
           message: "Creating offer...",
         });
-
-
-        console.log("not sending api data from frontend this time...")
-        /*
 
         var form = document.querySelector("form");
         var formData = new FormData(form);
@@ -156,10 +147,6 @@ export default function Description(props) {
           console.log("offer created");
         };
         xhr.send(formData);
-
-
-        */
-
       })
       .catch((error) => {
         console.error(error);

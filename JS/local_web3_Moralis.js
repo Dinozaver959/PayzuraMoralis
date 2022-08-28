@@ -1,4 +1,4 @@
-import Moralis from "moralis-v1"
+import Moralis from "moralis"
 import {ABI, ABI_ERC20} from "./ABI.js"
 import {constants} from "ethers";
 
@@ -214,7 +214,7 @@ async function MoralisRead(method, params) {
 
 // WRITE Functions
 
-export async function CreateEscrow_Moralis(APIdata, isBuyer, userWallet, price, currencyTicker, timeToDeliver, hashOfDescription, offerValidUntil, personalizedOffer, arbiters) {
+export async function CreateEscrow_Moralis(isBuyer, userWallet, price, currencyTicker, timeToDeliver, hashOfDescription, offerValidUntil, personalizedOffer, arbiters) {
 
     var personalizedOffer_parts = personalizedOffer.split(",");
 
@@ -265,16 +265,16 @@ export async function CreateEscrow_Moralis(APIdata, isBuyer, userWallet, price, 
     console.log("isBuyer ", isBuyer);
 
     if(isBuyer && currencyTicker == "ETH") {
-        return await MoralisWrite__(APIdata, "CreateEscrowBuyer", params, price_.toString());
+        return await MoralisWrite__("CreateEscrowBuyer", params, price_.toString());
     } else if(isBuyer){
 
         // check if seller has given the EscrowFactory approval for ERC20 transfer
         await ApproveERC20_UNLIMITED_Moralis(price_.toString(), userWallet);  // USDC on Matic hardcoded at the moment
         
-        return await MoralisWrite_(APIdata, "CreateEscrowBuyer", params);
+        return await MoralisWrite_("CreateEscrowBuyer", params);
     }
     else {
-        return await MoralisWrite_(APIdata, "CreateEscrowSeller", params);
+        return await MoralisWrite_("CreateEscrowSeller", params);
     }
 }
 
@@ -459,11 +459,11 @@ async function MoralisWrite(method) {
     return await MoralisWrite_(method, {});
 }
   
-async function MoralisWrite_(APIdata, method, params) {
-    return await MoralisWrite__(APIdata, method, params, 0);
+async function MoralisWrite_(method, params) {
+    return await MoralisWrite__(method, params, 0);
 }
   
-async function MoralisWrite__(APIdata, method, params, value) {
+async function MoralisWrite__(method, params, value) {
 
     await HandleNetworkSwitch(contractOnNetwork); 
 
@@ -489,11 +489,6 @@ async function MoralisWrite__(APIdata, method, params, value) {
 
     // need to check if Tx was rejected or if something else went wrong (on success we can return the Tx hash -> which we could store in DB)
     console.log("transaction hash: " + transaction.hash);
-
-
-    // send APIdata
-    APIdata.transactionHash = transaction.hash;
-    SendAPIdata(APIdata);
 
     var tx;
 
@@ -534,25 +529,6 @@ async function MoralisWrite__(APIdata, method, params, value) {
 
     return transaction.hash;
 }
-
-
-async function SendAPIdata(APIdata){
-
-  var formData = new FormData();
-  var xhr = new XMLHttpRequest();
-
-  for (var key in APIdata){
-    formData.append(key, APIdata[key]);
-  }
-  
-  xhr.open("POST", "/api/api-checkAPIdata", false);
-  xhr.send(formData);
-}
-
-
-
-
-
 
 // approve the escrow contract instance
 export async function ApproveERC20_Moralis(index){

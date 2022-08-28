@@ -1,4 +1,4 @@
-var Moralis = require("moralis-v1/node");
+var Moralis = require("moralis/node");
 
 
 // ETH Server
