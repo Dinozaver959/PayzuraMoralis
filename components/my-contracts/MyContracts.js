@@ -345,7 +345,7 @@ function MyContractsContainer(props) {
             <LoadingPlaceholder extraStyles={{ position: "absolute" }} />
           </div>
         ) : filteredList[0] && filteredList ? (
-          <Table_normal data={filteredList} />
+          <Table_normal data={filteredList} currentAccount={currentAccount} />
         ) : (
           <div className="noData mt-20">
             <i>
@@ -371,7 +371,7 @@ function MyContractsContainer(props) {
 }
 
 function Table_normal(props) {
-  const { data, isBuyer } = props;
+  const { data, currentAccount } = props;
 
   const [modelData, setModelData] = useState({
     show: false,
@@ -397,15 +397,7 @@ function Table_normal(props) {
               <StyledTableCell>State</StyledTableCell>
               <StyledTableCell>Price</StyledTableCell>
               <StyledTableCell>Time to Deliver</StyledTableCell>
-              {isBuyer ? (
-                <>
-                  <StyledTableCell>Actions</StyledTableCell>
-                </>
-              ) : (
-                <>
-                  <StyledTableCell>Actions</StyledTableCell>
-                </>
-              )}
+              <StyledTableCell>Actions</StyledTableCell>
             </StyledTableRow>
           </TableHead>
           <TableBody>
@@ -413,7 +405,12 @@ function Table_normal(props) {
               <Row_normal
                 key={item.id}
                 item={item.name}
-                isBuyer={isBuyer}
+                isBuyer={
+                  (item.name.ContractStartedBy === "Buyer" &&
+                    item.name.BuyerWallet === currentAccount.toLowerCase()) ||
+                  (item.name.ContractStartedBy === "Seller" &&
+                    item.name.SellerWallet !== currentAccount.toLowerCase())
+                }
                 setModelData={setModelData}
               />
             ))}
@@ -468,6 +465,9 @@ function Row_normal(props) {
           )}
           {item.State === "paid" && (
             <div className="statusChip statusInProgress">In Progress</div>
+          )}
+          {item.State === "canceled" && (
+            <div className="statusChip statusCanceled">Canceled</div>
           )}
           {item.State === "complete" && (
             <div className="statusChip statusComplete">Complete</div>
@@ -883,9 +883,9 @@ function Row_normal(props) {
                   ></input>
 
                   <input
-                    className="button rounded orange small"
+                    className="button rounded green small"
                     type="submit"
-                    value="Claim funds"
+                    value="Claim Funds"
                     onClick={() =>
                       ClaimFunds_Moralis(item.index)
                         .then(async (transactionHash) => {

@@ -150,6 +150,11 @@
     background-color: rgba($ErrorColor, 0.1);
   }
 
+  &.statusCanceled {
+    color: rgba($FontColorDark, 0.7);
+    background-color: rgba($FontColorDark, 0.1);
+  }
+
   &.statusComplete {
     color: darken($GreenColor, 10%);
     background-color: rgba($GreenColor, 0.1);
