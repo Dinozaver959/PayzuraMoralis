@@ -33,7 +33,7 @@ export default function MyAgreements(props) {
     setPlaceholder(false);
 
     const dataContractsToValidate = await fetch(
-      `./api/api-getContractsOffered` + "?UserWallet=" + connectedAddress
+      `./api/api-getContractsToValidate` + "?UserWallet=" + connectedAddress
     )
       .then((res) => res.json())
       .then((json) => setDataContractsToValidate(json));
