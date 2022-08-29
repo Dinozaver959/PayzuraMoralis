@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { IconContext } from "react-icons";
+import { useForm } from "react-hook-form";
 
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
@@ -29,6 +30,7 @@ import LoadingPlaceholder from "../components/ui/LoadingPlaceholder";
 import Image from "next/image";
 import ETHIcon from "../components/images/ETH.webp";
 import USDCIcon from "../components/images/USDC.webp";
+import WalletAddressField from "../components/ui/WalletAddress-Input";
 
 const StyledTableRow = styled(TableRow)({
   //'&:nth-of-type(odd)': {
@@ -282,6 +284,10 @@ function Row_normal(props) {
   const [open, setOpen] = React.useState(false);
   const [approvedERC20, setApprovedERC20] = useState(false); // need to force update on   A) wallet change
 
+  const { resetField } = useForm();
+  const [personalizedOfferValue, setPersonalizedOfferValue] = React.useState(item.PersonalizedOffer.split(','));//item.PersonalizedOffer.split(',')
+  const [errorPersonalizedOfferValue, setErrorPersonalizedOfferValue] = React.useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       const approved = await hasTheConnectedWalletAlreadyApprovedERC20(
@@ -382,9 +388,27 @@ function Row_normal(props) {
                   {/* have a submit button to update the list */}
 
                   <div className="listDataItem">
-                    <div className="listItemLabel">Wallets Allowed to Accept</div>
-                    Current list:
-                    <div className="listItemValue">{item.PersonalizedOffer}</div>
+                    <div>
+                      <div className="listItemLabel">Wallets Allowed to Accept</div>
+                      <div className="listItemValue">{item.PersonalizedOffer}</div>
+                    </div>
+                    <div>Edit</div>
+
+                    <div>
+                      <WalletAddressField name="PersonalizedOffer"
+                        inputValue={personalizedOfferValue}
+                        setInputValue={setPersonalizedOfferValue}
+                        errorValue={errorPersonalizedOfferValue}
+                        setErrorValue={setErrorPersonalizedOfferValue}
+                        resetField={resetField}
+                      />
+
+                      <div className='fieldError'>
+                        {errorPersonalizedOfferValue && (
+                          <p>Invalid Wallet Address.</p>
+                        )}
+                      </div>
+                    </div>
 
                     ADD: <input
                       className="formInput"
