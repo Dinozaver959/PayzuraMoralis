@@ -166,19 +166,4 @@
       }
     }
   }
-
-  .chartContainer {
-    @include Flexbox;
-    @include FlexFlow(wrap);
-    @include JustifyContent(space-between);
-
-    .card {
-      width: calc(50% - 10px);
-      margin-top: 20px;
-
-      @include RespondTo(MobileDevices) {
-        width: 100%;
-      }
-    }
-  }
 }

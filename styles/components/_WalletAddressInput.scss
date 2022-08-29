@@ -27,8 +27,11 @@
       }
 
       > i {
-        @extend %FlexRow-CenterCenter;
         cursor: pointer;
+
+        .linkButton {
+          @extend %FlexRow-CenterCenter;
+        }
       }
     }
   }
@@ -56,6 +59,14 @@
       .walletChip {
         background: rgba($BorderLight, 0.7);
 
+        .linkButton {
+          svg {
+            path {
+              fill: $WhiteColor;
+            }
+          }
+        }
+
         &:hover {
           background: rgba($BorderLight, 1);
         }
@@ -64,6 +75,8 @@
 
     .fieldWithPlus {
       .walletInputField {
+        color: $FontColorLight;
+
         + .linkButton {
           svg {
             path {

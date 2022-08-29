@@ -33,7 +33,7 @@ export default function MyAgreements(props) {
     setPlaceholder(false);
 
     const dataContractsToValidate = await fetch(
-      `./api/api-getContractsOffered` + "?UserWallet=" + connectedAddress
+      `./api/api-getContractsToValidate` + "?UserWallet=" + connectedAddress
     )
       .then((res) => res.json())
       .then((json) => setDataContractsToValidate(json));
@@ -71,16 +71,19 @@ export default function MyAgreements(props) {
               key="0"
               dataGetMyContracts={dataGetMyContracts}
               placeholder={placeholder}
+              currentAccount={props.currentAccount}
             />,
             <OffersContainer
               key="1"
               dataContractsOffered={dataContractsOffered}
               placeholder={placeholder}
+              currentAccount={props.currentAccount}
             />,
             <ValidatesContainer
               key="2"
               dataContractsToValidate={dataContractsToValidate}
               placeholder={placeholder}
+              currentAccount={props.currentAccount}
             />,
           ]}
         />
