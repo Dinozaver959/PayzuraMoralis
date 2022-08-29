@@ -42,6 +42,7 @@
     .listItemValue {
       width: 100%;
       @include Font(null, 1rem, $FontColorDark, null, 400);
+      white-space: normal;
 
       @include RespondTo(MobileDevices) {
         font-size: 0.9rem;

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { IconContext } from "react-icons";
+import { useForm } from "react-hook-form";
 
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
@@ -29,6 +30,7 @@ import LoadingPlaceholder from "../components/ui/LoadingPlaceholder";
 import Image from "next/image";
 import ETHIcon from "../components/images/ETH.webp";
 import USDCIcon from "../components/images/USDC.webp";
+import WalletAddressField from "../components/ui/WalletAddress-Input";
 
 const StyledTableRow = styled(TableRow)({
   //'&:nth-of-type(odd)': {
@@ -282,6 +284,13 @@ function Row_normal(props) {
   const [open, setOpen] = React.useState(false);
   const [approvedERC20, setApprovedERC20] = useState(false); // need to force update on   A) wallet change
 
+  const { resetField } = useForm();
+  const arPersonalizedOffer=item.PersonalizedOffer.split(',');
+  const [personalizedToAdd,setPersonalizedToAdd] = React.useState('');
+  const [personalizedToRemove,setPersonalizedToRemove] = React.useState('');
+  const [personalizedOfferValue, setPersonalizedOfferValue] = React.useState(arPersonalizedOffer);
+  const [errorPersonalizedOfferValue, setErrorPersonalizedOfferValue] = React.useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       const approved = await hasTheConnectedWalletAlreadyApprovedERC20(
@@ -308,6 +317,15 @@ function Row_normal(props) {
       })
     */
   }, []);
+
+  
+  useEffect(() => {
+    let personalizedOld = arPersonalizedOffer;
+    let personalizedNew = personalizedOfferValue;
+    setPersonalizedToAdd(personalizedNew.filter(x => !personalizedOld.includes(x)).join(","));
+    setPersonalizedToRemove(personalizedOld.filter(x => !personalizedNew.includes(x)).join(","));
+  }, [personalizedOfferValue]);
+  
 
   return (
     <React.Fragment>
@@ -386,6 +404,21 @@ function Row_normal(props) {
                     Current list:
                     <div className="listItemValue">{item.PersonalizedOffer}</div>
 
+                    <WalletAddressField name="PersonalizedOffer"
+                      inputValue={personalizedOfferValue}
+                      setInputValue={setPersonalizedOfferValue}
+                      errorValue={errorPersonalizedOfferValue}
+                      setErrorValue={setErrorPersonalizedOfferValue}
+                      // register={register}
+                      resetField={resetField}
+                    />
+
+                    <div className='fieldError'>
+                      {errorPersonalizedOfferValue && (
+                        <p>Invalid Wallet Address.</p>
+                      )}
+                    </div>
+
                     ADD: <input
                       className="formInput"
                       id="personalizedToAdd"
@@ -409,9 +442,9 @@ function Row_normal(props) {
                       onClick={() =>
                         UpdatePersonalizedOffer_Moralis(
                           item.index, 
-                          true, 
-                          document.getElementById("personalizedToAdd").value,
-                          document.getElementById("personalizedToRemove").value
+                          true,
+                          personalizedToAdd, // document.getElementById("personalizedToAdd").value,
+                          personalizedToRemove // document.getElementById("personalizedToRemove").value
                           )
                           .then(async (transactionHash) => {
                             // show the feedback text
