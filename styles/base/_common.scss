@@ -166,6 +166,38 @@
   }
 }
 
+.walletListEditable {
+  width: 100%;
+  @extend %FlexRow-StartBetween;
+
+  .listOfWallets {
+    flex: 2;
+    @include Flexbox;
+    @include FlexFlow(wrap);
+
+    > span {
+      font-size: 0.85rem;
+      @extend %FlexRow-CenterStart;
+      display: inline-flex;
+      @include BorderRadius(50px);
+      background: rgba($BorderDark, 0.7);
+      padding: 6px 12px;
+      margin-bottom: 5px;
+      @include Transition(0.1s);
+      margin-right: 5px;
+    }
+  }
+
+  .listAction {
+    margin-left: 10px;
+  }
+}
+
+.editWalletsContainer {
+  padding-top: 7px;
+  font-size: 0.9rem;
+}
+
 .darkMode {
   .pageHeader {
     h1 {

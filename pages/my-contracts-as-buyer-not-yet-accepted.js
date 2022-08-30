@@ -20,7 +20,7 @@ import {
   GetWallet_NonMoralis,
   FundContract_Moralis,
   ApproveERC20_Moralis,
-  UpdatePersonalizedOffer_Moralis
+  UpdatePersonalizedOffer_Moralis,
 } from "../JS/local_web3_Moralis";
 import Navigation from "../components/Navigation.js";
 import Button from "../components/ui/Button";
@@ -31,6 +31,7 @@ import Image from "next/image";
 import ETHIcon from "../components/images/ETH.webp";
 import USDCIcon from "../components/images/USDC.webp";
 import WalletAddressField from "../components/ui/WalletAddress-Input";
+import EditIc from "../components/icons/Edit";
 
 const StyledTableRow = styled(TableRow)({
   //'&:nth-of-type(odd)': {
@@ -79,7 +80,8 @@ const StyledInnerTableCell = styled(TableCell)({
 */
 });
 
-export default function ContractsCreatedByBuyer(props) {    // maybe just call all 'Contracts' and that's it
+export default function ContractsCreatedByBuyer(props) {
+  // maybe just call all 'Contracts' and that's it
   const [dataInitializedandPaid, setDataInitializedandPaid] = useState([]);
   const [dataAwaitSellerAccepts, setDataAwaitSellerAccepts] = useState([]);
   const [placeholder, setPlaceholder] = useState(true);
@@ -87,11 +89,19 @@ export default function ContractsCreatedByBuyer(props) {    // maybe just call a
   // load options using API call
   async function getCollectionsDetails() {
     const connectedAddress = await GetWallet_NonMoralis();
-    const dataInitializedandPaid = await fetch(`./api/api-getPublicOffers_CreatedByBuyer_buyer_initialized_and_paid` + "?UserWallet=" + connectedAddress)
+    const dataInitializedandPaid = await fetch(
+      `./api/api-getPublicOffers_CreatedByBuyer_buyer_initialized_and_paid` +
+        "?UserWallet=" +
+        connectedAddress
+    )
       .then((res) => res.json())
       .then((json) => setDataInitializedandPaid(json));
 
-    const dataAwaitSellerAccepts = await fetch(`./api/api-getPublicOffers_CreatedByBuyer_await_seller_accepts` + "?UserWallet=" + connectedAddress)
+    const dataAwaitSellerAccepts = await fetch(
+      `./api/api-getPublicOffers_CreatedByBuyer_await_seller_accepts` +
+        "?UserWallet=" +
+        connectedAddress
+    )
       .then((res) => res.json())
       .then((json) => setDataAwaitSellerAccepts(json));
 
@@ -130,14 +140,11 @@ export default function ContractsCreatedByBuyer(props) {    // maybe just call a
           <h1>Contracts Created as Buyer (not yet accepted by Seller)</h1>
         </div>
 
-
         <div className="card mt-10">
           <div className="cardHeader">
             <div className="cardTitle">
               <h2>Contracts that have been funded already</h2>
-              <p>
-                Need to have the personalized Sellers set
-              </p>
+              <p>Need to have the personalized Sellers set</p>
             </div>
           </div>
           <div className="cardBody">
@@ -146,7 +153,7 @@ export default function ContractsCreatedByBuyer(props) {    // maybe just call a
                 <LoadingPlaceholder extraStyles={{ position: "absolute" }} />
               </div>
             ) : dataInitializedandPaid[0] && dataInitializedandPaid ? (
-              <Table_normal data={dataInitializedandPaid}/>
+              <Table_normal data={dataInitializedandPaid} />
             ) : (
               <div className="noData">
                 <i>
@@ -166,13 +173,16 @@ export default function ContractsCreatedByBuyer(props) {    // maybe just call a
           </div>
         </div>
 
-
         <div className="card mt-10">
           <div className="cardHeader">
             <div className="cardTitle">
-              <h2>Contracts that have been funded already and Set personalized Sellers</h2>
+              <h2>
+                Contracts that have been funded already and Set personalized
+                Sellers
+              </h2>
               <p>
-                can still update the personalized Sellers set or cancel (to be implemented)
+                can still update the personalized Sellers set or cancel (to be
+                implemented)
               </p>
             </div>
           </div>
@@ -182,7 +192,7 @@ export default function ContractsCreatedByBuyer(props) {    // maybe just call a
                 <LoadingPlaceholder extraStyles={{ position: "absolute" }} />
               </div>
             ) : dataAwaitSellerAccepts[0] && dataAwaitSellerAccepts ? (
-              <Table_normal data={dataAwaitSellerAccepts}/>
+              <Table_normal data={dataAwaitSellerAccepts} />
             ) : (
               <div className="noData">
                 <i>
@@ -201,9 +211,6 @@ export default function ContractsCreatedByBuyer(props) {    // maybe just call a
             )}
           </div>
         </div>
-
-
-
       </div>
     </Fragment>
   );
@@ -263,12 +270,12 @@ function Table_normal(props) {
               <StyledTableCell>Title</StyledTableCell>
               <StyledTableCell>Price (ETH)</StyledTableCell>
               <StyledTableCell>Time to Deliver</StyledTableCell>
-              <StyledTableCell>Valid Until</StyledTableCell>      
+              <StyledTableCell>Valid Until</StyledTableCell>
             </StyledTableRow>
           </TableHead>
           <TableBody>
             {data.map((item) => (
-              <Row_normal key={item.id} item={item.name}/>
+              <Row_normal key={item.id} item={item.name} />
             ))}
           </TableBody>
         </Table>
@@ -285,8 +292,19 @@ function Row_normal(props) {
   const [approvedERC20, setApprovedERC20] = useState(false); // need to force update on   A) wallet change
 
   const { resetField } = useForm();
-  const [personalizedOfferValue, setPersonalizedOfferValue] = React.useState(item.PersonalizedOffer.split(','));//item.PersonalizedOffer.split(',')
-  const [errorPersonalizedOfferValue, setErrorPersonalizedOfferValue] = React.useState(false);
+  const arPersonalizedOffer = item.PersonalizedOffer.split(",");
+  const [personalizedToAdd, setPersonalizedToAdd] = React.useState("");
+  const [personalizedToRemove, setPersonalizedToRemove] = React.useState("");
+  const [personalizedOfferValue, setPersonalizedOfferValue] =
+    React.useState(arPersonalizedOffer);
+  const [errorPersonalizedOfferValue, setErrorPersonalizedOfferValue] =
+    React.useState(false);
+  const [isWalletsEditable, setIsWalletsEditable] = React.useState(false);
+
+  function walletsEditableHandler() {
+    setIsWalletsEditable(!isWalletsEditable);
+    console.log(isWalletsEditable);
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -314,6 +332,17 @@ function Row_normal(props) {
       })
     */
   }, []);
+
+  useEffect(() => {
+    let personalizedOld = arPersonalizedOffer;
+    let personalizedNew = personalizedOfferValue;
+    setPersonalizedToAdd(
+      personalizedNew.filter((x) => !personalizedOld.includes(x)).join(",")
+    );
+    setPersonalizedToRemove(
+      personalizedOld.filter((x) => !personalizedNew.includes(x)).join(",")
+    );
+  }, [personalizedOfferValue]);
 
   return (
     <React.Fragment>
@@ -353,7 +382,6 @@ function Row_normal(props) {
           <label className="mobileLabel">Valid Until</label>
           {wrapEpochToDate(item.OfferValidUntil)}
         </StyledTableCell>
-
       </StyledTableRow>
 
       <StyledTableRow>
@@ -379,38 +407,51 @@ function Row_normal(props) {
                   <div className="listItemValue">{item.OfferDescription}</div>
                 </div>
 
-                  {/* show the personalized list  */}
+                {/* show the personalized list  */}
 
-                  {/* have a field to add to the list  */}
+                {/* have a field to add to the list  */}
 
-                  {/* have a field to remove from the list  */}
+                {/* have a field to remove from the list  */}
 
-                  {/* have a submit button to update the list */}
+                {/* have a submit button to update the list */}
 
-                  <div className="listDataItem">
-                    <div>
-                      <div className="listItemLabel">Wallets Allowed to Accept</div>
-                      <div className="listItemValue">{item.PersonalizedOffer}</div>
-                    </div>
-                    <div>Edit</div>
-
-                    <div>
-                      <WalletAddressField name="PersonalizedOffer"
-                        inputValue={personalizedOfferValue}
-                        setInputValue={setPersonalizedOfferValue}
-                        errorValue={errorPersonalizedOfferValue}
-                        setErrorValue={setErrorPersonalizedOfferValue}
-                        resetField={resetField}
-                      />
-
-                      <div className='fieldError'>
-                        {errorPersonalizedOfferValue && (
-                          <p>Invalid Wallet Address.</p>
-                        )}
+                <div className="listDataItem">
+                  <div className="listItemLabel">Wallets Allowed to Accept</div>
+                  <div className="listItemValue">
+                    {isWalletsEditable === false ? (
+                      <div className="walletListEditable">
+                        <div className="listOfWallets">
+                          {item.PersonalizedOffer &&
+                            item.PersonalizedOffer.split(",").map(
+                              (chip, i) =>
+                                chip != "" && <span key={i}>{chip}</span>
+                            )}
+                        </div>
+                        <div className="listAction">
+                          <EditIc
+                            size="22"
+                            color="#2F499D"
+                            onClick={walletsEditableHandler}
+                          />
+                        </div>
                       </div>
-                    </div>
-
-                    ADD: <input
+                    ) : (
+                      <div className="editWalletsContainer">
+                        <WalletAddressField
+                          name="PersonalizedOffer"
+                          inputValue={personalizedOfferValue}
+                          setInputValue={setPersonalizedOfferValue}
+                          errorValue={errorPersonalizedOfferValue}
+                          setErrorValue={setErrorPersonalizedOfferValue}
+                          // register={register}
+                          resetField={resetField}
+                        />
+                        <div className="fieldError">
+                          {errorPersonalizedOfferValue && (
+                            <p>Invalid Wallet Address.</p>
+                          )}
+                        </div>
+                        {/* ADD: <input
                       className="formInput"
                       id="personalizedToAdd"
                       type="text"
@@ -424,58 +465,94 @@ function Row_normal(props) {
                       type="text"
                       name="personalizedToRemove"
                     ></input>
-                    <br></br>
+                    */}
+                        {/* <br></br> */}
+                        <input
+                          className="button primary rounded mt-15"
+                          type="submit"
+                          value="Update PersonalizedOffer"
+                          onClick={() =>
+                            UpdatePersonalizedOffer_Moralis(
+                              item.index,
+                              true,
+                              personalizedToAdd, // document.getElementById("personalizedToAdd").value,
+                              personalizedToRemove // document.getElementById("personalizedToRemove").value
+                            )
+                              .then(async (transactionHash) => {
+                                // show the feedback text
+                                document.getElementById(
+                                  "submitFeedback"
+                                ).style.display = "inline";
+                                document.getElementById(
+                                  "submitFeedback"
+                                ).innerText = "Updating Personalized...";
 
-                    <input
-                      className="button primary rounded"
-                      type="submit"
-                      value="Update PersonalizedOffer"
-                      onClick={() =>
-                        UpdatePersonalizedOffer_Moralis(
-                          item.index, 
-                          true, 
-                          document.getElementById("personalizedToAdd").value,
-                          document.getElementById("personalizedToRemove").value
-                          )
-                          .then(async (transactionHash) => {
-                            // show the feedback text
-                            document.getElementById("submitFeedback").style.display = "inline";
-                            document.getElementById("submitFeedback").innerText = "Updating Personalized...";
+                                var formData = new FormData();
+                                formData.append(
+                                  "SellerWallet",
+                                  item.SellerWallet
+                                );
+                                formData.append(
+                                  "transactionHash",
+                                  transactionHash
+                                );
+                                formData.append("isBuyer", "true");
+                                formData.append(
+                                  "PersonalizedToAdd",
+                                  personalizedToAdd
+                                ); //document.getElementById("personalizedToAdd").value);
+                                formData.append(
+                                  "PersonalizedToRemove",
+                                  personalizedToRemove
+                                ); // document.getElementById("personalizedToRemove").value);
+                                formData.append("objectId", item.objectId);
 
-                            var formData = new FormData();
-                            formData.append("SellerWallet", item.SellerWallet);                   
-                            formData.append("transactionHash", transactionHash);
-                            formData.append("isBuyer", "true");
-                            formData.append("PersonalizedToAdd", document.getElementById("personalizedToAdd").value);
-                            formData.append("PersonalizedToRemove", document.getElementById("personalizedToRemove").value);
-                            formData.append("objectId", item.objectId);
-
-                            var xhr = new XMLHttpRequest();
-                            xhr.open("POST", "/api/api-updatePersonalized", false);
-                            xhr.onload = function () {
-                              // update the feedback text
-                              document.getElementById("submitFeedback").style.display = "inline";
-                              document.getElementById("submitFeedback").innerText = "PersonalizedOffer updated";
-                              console.log("personalizedOffer updated");
-                            };
-                            xhr.send(formData);
-                          })
-                          .catch((error) => {
-                            console.error(error);
-                            console.log("accept offer error code: " + error.code);
-                            console.log("accept offer error message: " + error.message);
-                            if (error.data && error.data.message) {
-                              document.getElementById("submitFeedback").innerText = error.data.message;
-                            } else {
-                              document.getElementById("submitFeedback").innerText = error.message;
-                            }
-                            document.getElementById("submitFeedback").style.visibility = "visible";
-                            process.exitCode = 1;
-                          })
-                      }
-                    ></input>
+                                var xhr = new XMLHttpRequest();
+                                xhr.open(
+                                  "POST",
+                                  "/api/api-updatePersonalized",
+                                  false
+                                );
+                                xhr.onload = function () {
+                                  // update the feedback text
+                                  document.getElementById(
+                                    "submitFeedback"
+                                  ).style.display = "inline";
+                                  document.getElementById(
+                                    "submitFeedback"
+                                  ).innerText = "PersonalizedOffer updated";
+                                  console.log("personalizedOffer updated");
+                                };
+                                xhr.send(formData);
+                              })
+                              .catch((error) => {
+                                console.error(error);
+                                console.log(
+                                  "accept offer error code: " + error.code
+                                );
+                                console.log(
+                                  "accept offer error message: " + error.message
+                                );
+                                if (error.data && error.data.message) {
+                                  document.getElementById(
+                                    "submitFeedback"
+                                  ).innerText = error.data.message;
+                                } else {
+                                  document.getElementById(
+                                    "submitFeedback"
+                                  ).innerText = error.message;
+                                }
+                                document.getElementById(
+                                  "submitFeedback"
+                                ).style.visibility = "visible";
+                                process.exitCode = 1;
+                              })
+                          }
+                        ></input>
+                      </div>
+                    )}
                   </div>
-
+                </div>
               </div>
             </Box>
           </Collapse>

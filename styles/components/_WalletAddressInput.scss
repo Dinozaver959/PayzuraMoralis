@@ -4,6 +4,7 @@
   @include BorderRadius($FormControlRadius);
   border: 1px solid $BorderDark;
   background-color: transparent;
+  white-space: normal;
 
   .enteredValidatedWallets {
     // display: none;
