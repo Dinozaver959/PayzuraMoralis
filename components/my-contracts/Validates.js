@@ -141,7 +141,7 @@ function ValidatesContainer(props) {
     );
 
     // Wallet Address Filter
-    let checkAddress = ""; //currentAccount.toLowerCase()
+    let checkAddress = currentAccount.toLowerCase();
     if (filterWalletAddress !== "" && filterWalletAddress !== undefined) {
       checkAddress = filterWalletAddress.toLowerCase();
     }
