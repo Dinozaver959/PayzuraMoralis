@@ -5,11 +5,16 @@
 
 
 Moralis.Cloud.define("GetMaxJobsID", async (request) => {
+
+  const pipeline = [ 
+    { project: { id_: 1 } },
+    { sort : { id_: -1 } }
+  ];
+
   const query = new Moralis.Query("Jobs");
+  const res = await query.aggregate(pipeline);
 
-  /// NEED TO ADJUST THIS TO ACTUALLY GET MAX ID 
-
-  return (await query.find()).length;
+  return res[0].id_;
 });
 
 Moralis.Cloud.define("GetTotalNumberOfJobs", async (request) => {
@@ -29,18 +34,9 @@ Moralis.Cloud.define("GetUserJobs", async (request) => {
 });
 
 Moralis.Cloud.define("GetJob", async (request) => {
-  //const query = new Moralis.Query("Jobs");
-  //query.equalTo("id_", request.params.JobID);
-  //return await query.find();
-
-
-
   const pipeline = [{ match: { id_: request.params.JobID } }];
   const query = new Moralis.Query("Jobs");
-  return await query.aggregate(pipeline);
-  
-
-
+  return await query.aggregate(pipeline);  
 });
 
 
