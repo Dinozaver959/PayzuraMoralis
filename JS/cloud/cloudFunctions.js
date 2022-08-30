@@ -183,35 +183,5 @@ Moralis.Cloud.define("GetUsersDetails", async (request) => {
   return await querySeller.find();
 });
 
-//------------------------------------------------------------------------------------------------
-//                                    Get all Messages
-//------------------------------------------------------------------------------------------------
-
-
-// Moralis.Cloud.define("getAllMessages", async (request) => {
-  
-//   const query = new Moralis.Query("Messages");
-//   const result = await query.find();
-
-//   const userQuery = new Moralis.Query(Moralis.User);
-//   const userResult = await userQuery.find({ userMasterKey : true });
-
-//   const messages = result.map((data) => {
-//     return userResult.map((res) => {
-//       if (data.attributes.userId === res.id) {
-//         return {
-//           data,
-//           userId: res.id,
-//           userName: res.attributes.userName,
-//           ethAddress: res.attributes.ethAddress,
-//         };
-//       }
-//     }).filter(n => n);
-//   });
-  
-// });
-
-
-
 // to update the file run 
 // moralis-admin-cli watch-cloud-folder --moralisApiKey NJb8ptNvFULrAUZ --moralisApiSecret Lk8NN6ShmEEoLx0 --mo...main rbfqybjb4vga.usemoralis.com --autoSave 1 --moralisCloudfolder D:\Test\Payzura\payzura\JS\cloud
