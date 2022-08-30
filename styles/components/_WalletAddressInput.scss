@@ -16,6 +16,7 @@
       padding: 8px 10px;
       margin-bottom: 5px;
       @include Transition(0.1s);
+      margin-right: 7px;
 
       &:hover {
         background: rgba($BorderDark, 1);
