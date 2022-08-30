@@ -99,7 +99,7 @@ export default function Navigation(props) {
             arrow
           >
             <li>
-              <Link href=''>
+              <Link href="/">
                 Earn
               </Link>
             </li>
@@ -179,30 +179,30 @@ export default function Navigation(props) {
                     <span>Inbox</span>
                   </Button>
                 </li>
-                <li onClick={() => setDropdownOpen(false)}>
+                {/* <li onClick={() => setDropdownOpen(false)}>
                   <Button link='/contracts-listed'>
                     <i>
                       <ServicesListedIc />
                     </i>
                     <span>Contracts Listed</span>
                   </Button>
-                </li>
-                <li onClick={() => setDropdownOpen(false)}>
+                </li> */}
+                {/* <li onClick={() => setDropdownOpen(false)}>
                   <Button link='/handle-disputes'>
                     <i>
                       <DisputeIc />
                     </i>
                     <span>Handle Disputes</span>
                   </Button>
-                </li>
-                <li onClick={() => setDropdownOpen(false)}>
+                </li> */}
+                {/* <li onClick={() => setDropdownOpen(false)}>
                   <Button link='/personalized-contracts'>
                     <i>
                       <PersonlaizedContractsIc />
                     </i>
                     <span>Personalized Contracts</span>
                   </Button>
-                </li>
+                </li> */}
                 <li onClick={() => setDropdownOpen(false)}>
                   <Button link='/my-contracts'>
                     <i>

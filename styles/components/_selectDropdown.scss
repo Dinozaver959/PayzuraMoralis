@@ -1,0 +1,84 @@
+.selectDropdown {
+  width: 100%;
+  position: relative;
+
+  .selectedOption {
+    border: 1px solid $BorderDark;
+    padding: 8px 10px;
+    @include Font(null, 0.9rem, $FontColorDark, null, 400);
+    @include BorderRadius(3px);
+    cursor: pointer;
+    position: relative;
+
+    &::after {
+      content: "";
+      @include Size(18px, 18px);
+      @include Absolute($Right: 6px, $Top: 50%);
+      transform: translateY(-50%);
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' %3E%3Cpath fill='%23000000' d='M12 13.172l4.95-4.95 1.414 1.414L12 16 5.636 9.636 7.05 8.222z' /%3E%3C/svg%3E");
+    }
+  }
+
+  .dropdownContainer {
+    width: 100%;
+    @include Absolute($Left: 0, $Top: 100%);
+    background: $WhiteColor;
+    border: 1px solid $BorderDark;
+    z-index: 99;
+    @include BorderRadius(0 0 3px 3px);
+    @include BoxShadow(1px 1px 10px rgba($BlackColor, 0.15));
+    max-height: 150px;
+    overflow: auto;
+
+    .dropdownList {
+      .dropdownListItems {
+        padding: 8px 10px;
+        cursor: pointer;
+        border-bottom: 1px solid $BorderDark;
+        @include Transition(0.2s);
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &:hover {
+          background: rgba($BlackColor, 0.03);
+          @include Transition(0.2s);
+        }
+
+        &.selected {
+          background: rgba($BlackColor, 0.1);
+          color: $BlackColor;
+        }
+      }
+    }
+  }
+}
+
+.darkMode {
+  .selectDropdown {
+    .selectedOption {
+      border-color: $BorderLight;
+      color: $FontColorLight;
+
+      &::after {
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' %3E%3Cpath fill='%23FFFFFF' d='M12 13.172l4.95-4.95 1.414 1.414L12 16 5.636 9.636 7.05 8.222z' /%3E%3C/svg%3E");
+      }
+    }
+
+    .dropdownContainer {
+      background: $DarkBg;
+      border-color: $BorderLight;
+
+      .dropdownList {
+        .dropdownListItems {
+          border-bottom-color: $BorderLight;
+
+          &:hover {
+            background: rgba($BlackColor, 0.2);
+          }
+        }
+      }
+    }
+  }
+}

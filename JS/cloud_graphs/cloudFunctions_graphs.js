@@ -3,15 +3,40 @@
 //             Functions for JobZura / job marketplace (separate project for now)
 //-----------------------------------------------------------------------------------------------
 
-Moralis.Cloud.define("GetUserGigs", async (request) => {
-  const query = new Moralis.Query("Gigs");
-  query.equalTo("BuyerWallet", request.params.UserWallet);
+
+Moralis.Cloud.define("GetMaxJobsID", async (request) => {
+
+  const pipeline = [ 
+    { project: { id_: 1 } },
+    { sort : { id_: -1 } }
+  ];
+
+  const query = new Moralis.Query("Jobs");
+  const res = await query.aggregate(pipeline);
+
+  return res[0].id_;
+});
+
+Moralis.Cloud.define("GetTotalNumberOfJobs", async (request) => {
+  const query = new Moralis.Query("Jobs");
+  return (await query.find()).length;
+});
+
+Moralis.Cloud.define("GetAllJobs", async (request) => {
+  const query = new Moralis.Query("Jobs");
   return await query.find();
 });
 
-Moralis.Cloud.define("GetAllGigs", async (request) => {
-  const query = new Moralis.Query("Gigs");
+Moralis.Cloud.define("GetUserJobs", async (request) => {
+  const query = new Moralis.Query("Jobs");
+  query.equalTo("Seller", request.params.UserWallet);
   return await query.find();
+});
+
+Moralis.Cloud.define("GetJob", async (request) => {
+  const pipeline = [{ match: { id_: request.params.JobID } }];
+  const query = new Moralis.Query("Jobs");
+  return await query.aggregate(pipeline);  
 });
 
 

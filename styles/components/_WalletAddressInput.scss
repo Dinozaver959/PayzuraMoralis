@@ -1,0 +1,90 @@
+.walletInputParent {
+  @include Size(100%, auto);
+  padding: 5px 10px;
+  @include BorderRadius($FormControlRadius);
+  border: 1px solid $BorderDark;
+  background-color: transparent;
+
+  .enteredValidatedWallets {
+    // display: none;
+
+    .walletChip {
+      @extend %FlexRow-CenterStart;
+      display: inline-flex;
+      @include BorderRadius(50px);
+      background: rgba($BorderDark, 0.7);
+      padding: 8px 10px;
+      margin-bottom: 5px;
+      @include Transition(0.1s);
+
+      &:hover {
+        background: rgba($BorderDark, 1);
+        @include Transition(0.1s);
+      }
+
+      > span {
+        padding: 0 5px;
+      }
+
+      > i {
+        cursor: pointer;
+
+        .linkButton {
+          @extend %FlexRow-CenterCenter;
+        }
+      }
+    }
+  }
+
+  .fieldWithPlus {
+    @extend %FlexRow-CenterBetween;
+
+    .walletInputField {
+      @include Size(100%, 32px);
+      border: none;
+      background: none;
+
+      + .linkButton {
+        @extend %FlexCol-CenterCenter;
+      }
+    }
+  }
+}
+
+.darkMode {
+  .walletInputParent {
+    border-color: $BorderLight;
+
+    .enteredValidatedWallets {
+      .walletChip {
+        background: rgba($BorderLight, 0.7);
+
+        .linkButton {
+          svg {
+            path {
+              fill: $WhiteColor;
+            }
+          }
+        }
+
+        &:hover {
+          background: rgba($BorderLight, 1);
+        }
+      }
+    }
+
+    .fieldWithPlus {
+      .walletInputField {
+        color: $FontColorLight;
+
+        + .linkButton {
+          svg {
+            path {
+              fill: $WhiteColor;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -35,10 +35,12 @@ import Image from "next/image";
 import DownArrowIc from "../components/icons/DownArrow";
 import CurrencyList from "../components/contract-creation/currency-list";
 import WalletAddressField from "../components/ui/WalletAddress-Input";
+import RadioGroup from "../components/ui/RadioGroup";
 
 export default function Description(props) {
   // SUBMIT - validation
   const {
+    resetField,
     register,
     handleSubmit,
     formState: { errors },
@@ -57,7 +59,7 @@ export default function Description(props) {
   });
 
   const [personalizedOfferValue, setPersonalizedOfferValue] = React.useState([]);
-  const [arbitersValue, setArbitersValue] = React.useState([PayzuraCentealizedArbiter]);
+  const [arbitersValue, setArbitersValue] = React.useState([]);
   const [errorPersonalizedOfferValue, setErrorPersonalizedOfferValue] = React.useState(false);
   const [errorArbitersValue, setErrorArbitersValue] = React.useState(false);
 
@@ -75,6 +77,7 @@ export default function Description(props) {
   }
 
   async function SubmitForm() {
+    let arbiters = (arbitersValidate === 'Trusted 3rd') ? arbitersValue.join(",") : PayzuraCentealizedArbiter; // document.getElementById("Arbiters").value
     CreateEscrow_Moralis(
       (selectContractType == "buyer") ? true : false,
       (await GetWallet_NonMoralis())[0],
@@ -84,7 +87,7 @@ export default function Description(props) {
       sha256(document.getElementById("OfferDescription").value),
       OfferValidUntil.getTime() / 1000,
       personalizedOfferValue.join(","), // document.getElementById("PersonalizedOffer").value,
-      arbitersValue.join(",") // document.getElementById("Arbiters").value
+      arbiters
     )
       .then(async (transactionHash) => {
         // show the feedback text
@@ -262,7 +265,7 @@ export default function Description(props) {
   const [showCustomDuration, setShowCustomDuration] = React.useState(false);
   const [selectCurrency, setSelectCurrency] = React.useState("ETH");
   const [selectContractType, setSelectContractType] = React.useState("seller");
-  const [arbitersValidate, setArbitersValidate] = React.useState(PayzuraCentealizedArbiter);
+  const [arbitersValidate, setArbitersValidate] = React.useState("Centralized");
 
   function handleCurrencyChange(e) {
     setSelectCurrency(e.target.value);
@@ -342,20 +345,6 @@ export default function Description(props) {
       }
 
       updateOfferDurationVariable(days);
-    }
-  };
-
-  const arbitersValidityHandler = (event, selectedValidity) => {
-    setArbitersValidate(selectedValidity);
-
-    if(selectedValidity === 'Trusted 3rd')
-    {
-      //Address Custom
-      setArbitersValue([]);
-    }
-    else
-    {
-      setArbitersValue([selectedValidity]);
     }
   };
 
@@ -843,6 +832,8 @@ export default function Description(props) {
                           setInputValue={setPersonalizedOfferValue}
                           errorValue={errorPersonalizedOfferValue}
                           setErrorValue={setErrorPersonalizedOfferValue}
+                          register={register}
+                          resetField={resetField}
                         />
 
                         <div className='fieldError'>
@@ -868,33 +859,33 @@ export default function Description(props) {
                         </Tooltip>
                       </div>
                       <div className="formField">
-                        <ToggleButtonGroup
-                          value={arbitersValidate}
-                          exclusive
-                          onChange={arbitersValidityHandler}
-                          aria-label="all arbitersValidate"
-                        >
-                          <ToggleButton
-                            value={PayzuraCentealizedArbiter}
-                            aria-label="arbitersValidate"
-                          >
-                            Centralized
-                          </ToggleButton>
-                          <ToggleButton
-                            value="Trusted 3rd" /*Set Custom*/
-                            onChange={arbitersValidityHandler}
-                            aria-label="arbitersValidate"
-                          >
-                            Trusted 3rd
-                          </ToggleButton>
-                          <ToggleButton
-                            value="Decentralized"
-                            aria-label="arbitersValidate"
-                            disabled={true}
-                          >
-                            Decentralized
-                          </ToggleButton>
-                        </ToggleButtonGroup>
+                      <RadioGroup
+                          selectedRadio={arbitersValidate}
+                          setSelectedRadio={setArbitersValidate}
+                          values={
+                            [
+                              {
+                                name: "arbitersValidate",
+                                label: "Decentralized",
+                                value: "Decentralized",
+                                availability: false,
+                                tooltip: "Coming soon",
+                              },
+                              {
+                                name: "arbitersValidate",
+                                label: "Centralized",
+                                value: "Centralized",
+                                availability: true,
+                              },
+                              {
+                                name: "arbitersValidate",
+                                label: "Trusted 3rd",
+                                value: "Trusted 3rd",
+                                availability: true,
+                              }
+                            ]
+                          }
+                        />
 
                         {arbitersValidate == 'Trusted 3rd' && (
                           <div className="mt-10">
@@ -905,22 +896,17 @@ export default function Description(props) {
                               setErrorValue={setErrorArbitersValue}
                               isRequire={true}
                               register={register}
-                              // {...register(
-                              //   "Arbiters",
-                              //   {
-                              //     required: true,
-                              //   }
-                              // )}
+                              resetField={resetField}
                             />
                           </div>
                         )}
 
                         <div className='fieldError'>
-                          {errorArbitersValue && (
-                            <p>Invalid Wallet Address.</p>
-                          )}
-                          {errors.Arbiters && (
+                        {errors.Arbiters && errors.Arbiters.type === "required" && (
                             <p>Please enter at least one wallet.</p>
+                          )}
+                          {errors.Arbiters && errors.Arbiters.type === "pattern" && (
+                            <p>Invalid Wallet Address.</p>
                           )}
                         </div>
                       </div>

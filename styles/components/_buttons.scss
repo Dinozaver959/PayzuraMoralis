@@ -247,11 +247,24 @@
     &.primary {
       background: $LightBlueColor;
       border-color: $LightBlueColor;
+      color: $WhiteColor;
 
       &:hover {
         background: darken($LightBlueColor, 7%);
         border-color: darken($LightBlueColor, 7%);
         @include BoxShadow(2px 2px 5px rgba($BlackColor, 0.2));
+      }
+    }
+
+    &.default {
+      background: darken($DarkBg, 5%);
+      border-color: darken($DarkBg, 5%);
+      color: $FontColorLight;
+
+      &:hover {
+        background: darken($DarkBg, 10%);
+        border-color: darken($DarkBg, 10%);
+        @include BoxShadow(2px 2px 5px rgba($DarkBg, 0.5));
       }
     }
   }

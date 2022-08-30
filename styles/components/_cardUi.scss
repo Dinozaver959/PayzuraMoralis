@@ -2,7 +2,6 @@
   @include Size(100%, auto);
   background: $WhiteColor;
   border: 1px solid $WhiteColor;
-  padding: 24px;
   @include BorderRadius($CardRounded);
   @include BoxShadow(0px 0px $CardRounded rgba($PrimaryColor, 0.15));
 
@@ -14,6 +13,8 @@
   .cardHeader {
     padding-bottom: 18px;
     @extend %FlexRow-CenterBetween;
+    padding: 17px 24px;
+    border-bottom: 1px solid $BorderDark;
 
     @include RespondTo(MobileDevices) {
       padding-bottom: 18px;
@@ -22,6 +23,7 @@
 
     .cardTitle {
       flex: 2;
+      @include Font(null, 1.1rem, $FontColorDark, null, 600);
 
       h2 {
         margin: 0;
@@ -48,6 +50,7 @@
 
   .cardBody {
     width: 100%;
+    padding: 24px;
   }
 
   &.cardInnerSplit {
@@ -91,8 +94,11 @@
     box-shadow: none;
 
     .cardHeader {
+      border-bottom-color: $BorderLight;
+
       .cardTitle {
         flex: 2;
+        color: $WhiteColor;
       }
     }
 

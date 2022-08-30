@@ -1,0 +1,88 @@
+.TabsUiMain {
+  .headerTabs {
+    @extend %FlexRow-CenterStart;
+
+    .tabItem {
+      border-bottom: none;
+      @include BorderRadius($CardRounded $CardRounded 0 0);
+      // background: rgba($BlackColor, 0.03);
+      border: 1px solid transparent;
+      border-bottom: none;
+
+      + .tabItem {
+        margin-left: 5px;
+      }
+
+      &.active {
+        background: $WhiteColor;
+        border-color: $WhiteColor;
+
+        button {
+          color: $PrimaryColor;
+          font-weight: 500;
+          position: relative;
+        }
+      }
+
+      > button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        @include Font(null, 1rem, $FontColorDark, null, 500);
+        padding: 12px 25px;
+      }
+    }
+  }
+
+  .tabsContainerMain {
+    @include Size(100%, auto);
+    background: $WhiteColor;
+    border: 1px solid $WhiteColor;
+    padding: 24px;
+    @include BorderRadius(0 $CardRounded $CardRounded $CardRounded);
+    @include BoxShadow(0px 0px $CardRounded rgba($PrimaryColor, 0.15));
+
+    @include RespondTo(MobileDevices) {
+      padding: 20px;
+      border-radius: 14px;
+    }
+
+    .tabContent {
+      padding-top: 1rem;
+    }
+  }
+}
+
+.darkMode {
+  .TabsUiMain {
+    .headerTabs {
+      .tabItem {
+        &.active {
+          background: $DarkBg;
+          border-color: $FontColorDark;
+          position: relative;
+
+          &::after {
+            content: '';
+            height: 1px;
+            @include Absolute($Left: 0, $Right: 0, $Bottom: -1px);
+            background: $DarkBg;
+          }
+
+          button {
+            color: $LightBlueColor;
+          }
+        }
+
+        > button {
+          color: $FontColorLight;
+        }
+      }
+    }
+
+    .tabsContainerMain {
+      background: transparent;
+      border-color: $FontColorDark;
+    }
+  }
+}

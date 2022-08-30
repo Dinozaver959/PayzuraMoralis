@@ -14,8 +14,8 @@ body {
 }
 
 body {
-  @include Font(null, $FontMedium, $FontColorDark, normal, 500);
-  letter-spacing: 0.5px;
+  @include Font(null, $FontMedium, $FontColorDark, normal, 400);
+  letter-spacing: 0.2px;
 
   @include RespondTo(MobileDevices) {
     letter-spacing: 0;
@@ -41,7 +41,7 @@ button {
 // Common
 .pageHeader {
   h1 {
-    @include Font(null, 1.7rem, $BlackColor, 44px, 500);
+    @include Font(null, 1.7rem, $BlackColor, 44px, 600);
 
     @include RespondTo(MobileDevices) {
       font-size: 1.4rem;
@@ -58,7 +58,7 @@ button {
 
 .noData {
   h2 {
-    @include Font(null, 1rem, $FontColorDark, null, 500);
+    @include Font(null, 1rem, $FontColorDark, null, 600);
 
     @include RespondTo(MobileDevices) {
       font-size: 0.8rem;
@@ -68,7 +68,7 @@ button {
 
 // Buttons
 .button {
-  @include Font(null, 0.8rem, null, null, 500);
+  @include Font(null, 0.8rem, null, null, 600);
   letter-spacing: 0.5px;
 
   @include RespondTo(MobileDevices) {
@@ -109,7 +109,7 @@ button {
   .cardHeader {
     .cardTitle {
       h2 {
-        @include Font(null, 1.4rem, $BlackColor, null, 500);
+        @include Font(null, 1.4rem, $BlackColor, null, 600);
 
         @include RespondTo(MobileDevices) {
           font-size: 1rem;
@@ -169,7 +169,7 @@ button {
   .MuiTableCell-root.MuiTableCell-head {
     color: rgba($FontColorDark, 0.75) !important;
     font-family: $PrimaryFont !important;
-    font-weight: 500;
+    font-weight: 600;
 
     @include RespondTo(MobileDevices) {
       font-size: 0.7rem;

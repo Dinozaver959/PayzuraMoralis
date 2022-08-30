@@ -36,8 +36,6 @@ http://www.payzura.com
 @import "componets/accountModel";
 @import "componets/messagingUsersList";
 @import "componets/chatInput";
-@import "componets/messages";
-@import "componets/message";
 
 /* Layout */
 @import "layout/header";
@@ -48,6 +46,6 @@ http://www.payzura.com
 @import "pages/Login";
 @import "pages/ContractsListed";
 @import "pages/CreateContract";
+@import "pages/MyContracts";
 @import "pages/ProfilePage";
 @import "pages/MessagingId";
-

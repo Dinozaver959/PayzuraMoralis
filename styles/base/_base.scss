@@ -33,9 +33,9 @@ body {
 }
 
 .containerMain {
-  @include Size(100%, calc(100vh - 64px));
+  @include Size(100%, calc(100vh - 50px));
   padding: 1.7rem 2%;
-  overflow: auto;
+  overflow: scroll;
 
   @include RespondTo(MobileDevices) {
     padding: 1.5rem 4%;
