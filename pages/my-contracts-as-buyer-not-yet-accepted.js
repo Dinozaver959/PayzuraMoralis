@@ -32,6 +32,7 @@ import ETHIcon from "../components/images/ETH.webp";
 import USDCIcon from "../components/images/USDC.webp";
 import WalletAddressField from "../components/ui/WalletAddress-Input";
 import EditIc from "../components/icons/Edit";
+import ModalUi from "../components/ui/ModalUi";
 
 const StyledTableRow = styled(TableRow)({
   //'&:nth-of-type(odd)': {
@@ -85,6 +86,13 @@ export default function ContractsCreatedByBuyer(props) {
   const [dataInitializedandPaid, setDataInitializedandPaid] = useState([]);
   const [dataAwaitSellerAccepts, setDataAwaitSellerAccepts] = useState([]);
   const [placeholder, setPlaceholder] = useState(true);
+  const [modelData, setModelData] = React.useState({ show: false, type: "alert", status: "Error", message: "" });
+
+  function closeModelDataHandler() {
+    setModelData({
+      show: false,
+    });
+  }
 
   // load options using API call
   async function getCollectionsDetails() {
@@ -153,7 +161,7 @@ export default function ContractsCreatedByBuyer(props) {
                 <LoadingPlaceholder extraStyles={{ position: "absolute" }} />
               </div>
             ) : dataInitializedandPaid[0] && dataInitializedandPaid ? (
-              <Table_normal data={dataInitializedandPaid} />
+              <Table_normal data={dataInitializedandPaid} setModelData={setModelData} />
             ) : (
               <div className="noData">
                 <i>
@@ -192,7 +200,7 @@ export default function ContractsCreatedByBuyer(props) {
                 <LoadingPlaceholder extraStyles={{ position: "absolute" }} />
               </div>
             ) : dataAwaitSellerAccepts[0] && dataAwaitSellerAccepts ? (
-              <Table_normal data={dataAwaitSellerAccepts} />
+              <Table_normal data={dataAwaitSellerAccepts} setModelData={setModelData} />
             ) : (
               <div className="noData">
                 <i>
@@ -212,6 +220,11 @@ export default function ContractsCreatedByBuyer(props) {
           </div>
         </div>
       </div>
+
+      <ModalUi
+        content={modelData}
+        closeModelFn={closeModelDataHandler}
+      />
     </Fragment>
   );
 }
@@ -258,7 +271,7 @@ async function hasTheConnectedWalletAlreadyApprovedERC20(listApprovedBy) {
 }
 
 function Table_normal(props) {
-  const { data } = props;
+  const { data, setModelData } = props;
 
   return (
     <>
@@ -275,7 +288,7 @@ function Table_normal(props) {
           </TableHead>
           <TableBody>
             {data.map((item) => (
-              <Row_normal key={item.id} item={item.name} />
+              <Row_normal key={item.id} item={item.name} setModelData={setModelData} />
             ))}
           </TableBody>
         </Table>
@@ -287,7 +300,7 @@ function Table_normal(props) {
 }
 
 function Row_normal(props) {
-  const { item } = props;
+  const { item, setModelData } = props;
   const [open, setOpen] = React.useState(false);
   const [approvedERC20, setApprovedERC20] = useState(false); // need to force update on   A) wallet change
 
@@ -295,10 +308,8 @@ function Row_normal(props) {
   const arPersonalizedOffer = item.PersonalizedOffer.split(",");
   const [personalizedToAdd, setPersonalizedToAdd] = React.useState("");
   const [personalizedToRemove, setPersonalizedToRemove] = React.useState("");
-  const [personalizedOfferValue, setPersonalizedOfferValue] =
-    React.useState(arPersonalizedOffer);
-  const [errorPersonalizedOfferValue, setErrorPersonalizedOfferValue] =
-    React.useState(false);
+  const [personalizedOfferValue, setPersonalizedOfferValue] = React.useState(arPersonalizedOffer);
+  const [errorPersonalizedOfferValue, setErrorPersonalizedOfferValue] = React.useState(false);
   const [isWalletsEditable, setIsWalletsEditable] = React.useState(false);
 
   function walletsEditableHandler() {
@@ -407,14 +418,6 @@ function Row_normal(props) {
                   <div className="listItemValue">{item.OfferDescription}</div>
                 </div>
 
-                {/* show the personalized list  */}
-
-                {/* have a field to add to the list  */}
-
-                {/* have a field to remove from the list  */}
-
-                {/* have a submit button to update the list */}
-
                 <div className="listDataItem">
                   <div className="listItemLabel">Wallets Allowed to Accept</div>
                   <div className="listItemValue">
@@ -479,13 +482,12 @@ function Row_normal(props) {
                               personalizedToRemove // document.getElementById("personalizedToRemove").value
                             )
                               .then(async (transactionHash) => {
-                                // show the feedback text
-                                document.getElementById(
-                                  "submitFeedback"
-                                ).style.display = "inline";
-                                document.getElementById(
-                                  "submitFeedback"
-                                ).innerText = "Updating Personalized...";
+                                setModelData({
+                                  show: true,
+                                  type: "alert",
+                                  status: "Pending",
+                                  message: "Updating Personalized...",
+                                });
 
                                 var formData = new FormData();
                                 formData.append(
@@ -514,13 +516,13 @@ function Row_normal(props) {
                                   false
                                 );
                                 xhr.onload = function () {
-                                  // update the feedback text
-                                  document.getElementById(
-                                    "submitFeedback"
-                                  ).style.display = "inline";
-                                  document.getElementById(
-                                    "submitFeedback"
-                                  ).innerText = "PersonalizedOffer updated";
+                                  setModelData({
+                                    show: true,
+                                    type: "alert",
+                                    status: "Success",
+                                    message: "PersonalizedOffer updated",
+                                    transactionHash: transactionHash,
+                                  });
                                   console.log("personalizedOffer updated");
                                 };
                                 xhr.send(formData);
@@ -534,17 +536,20 @@ function Row_normal(props) {
                                   "accept offer error message: " + error.message
                                 );
                                 if (error.data && error.data.message) {
-                                  document.getElementById(
-                                    "submitFeedback"
-                                  ).innerText = error.data.message;
+                                  setModelData({
+                                    show: true,
+                                    type: "alert",
+                                    status: "Error",
+                                    message: error.data.message,
+                                  });
                                 } else {
-                                  document.getElementById(
-                                    "submitFeedback"
-                                  ).innerText = error.message;
+                                  setModelData({
+                                    show: true,
+                                    type: "alert",
+                                    status: "Error",
+                                    message: error.message,
+                                  });
                                 }
-                                document.getElementById(
-                                  "submitFeedback"
-                                ).style.visibility = "visible";
                                 process.exitCode = 1;
                               })
                           }
