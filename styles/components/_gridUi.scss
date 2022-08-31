@@ -82,11 +82,16 @@
 
     @include RespondTo(MobileDevices) {
       padding: 5px 0;
+      width: 100%;
     }
 
     &:first-child {
       width: 30px !important;
       padding: 0px !important;
+
+      @include RespondTo(MobileDevices) {
+        width: 100% !important;
+      }
     }
 
     .button {
@@ -97,12 +102,20 @@
 
     &.actionCol {
       width: 50px;
+
+      @include RespondTo(MobileDevices) {
+        width: 100%;
+      }
     }
 
     .MuiButtonBase-root.MuiIconButton-root {
       background: $LightBlueBg !important;
       border-radius: 4px;
       @include Size(30px, 30px);
+
+      @include RespondTo(MobileDevices) {
+        width: 100%;
+      }
 
       svg {
         path:last-child {
