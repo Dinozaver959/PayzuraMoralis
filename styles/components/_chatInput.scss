@@ -4,8 +4,53 @@
   justify-content: space-between;
   margin-right: 7em;
 
+  .inbox__message__input__icons {
+    display: flex;
+    justify-content: space-between;
+    width: 80px;
+    position: relative;
+
+    .inbox__message__input__icon {
+      margin: 1em .5em 0 .5em;
+      cursor: pointer;
+    }
+    
+    .inbox__message__input__file {
+      position: absolute;
+      left: -120px;
+      bottom: 65px;
+      width: 350px;
+
+      .inbox__message__input__file__remove {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        cursor: pointer;
+        color: $FontColorLight;
+        opacity: .75;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+      
+      img {
+        @include BorderRadius(0 $CardRounded $CardRounded $CardRounded);
+        @include BoxShadow(0px 0px $CardRounded rgba($PrimaryColor, 0.60));
+        border-radius: 10px;
+        max-height: 400px;
+        object-fit: contain;
+      }
+    }
+
+    .inbox__message__input__picker {
+      position: absolute;
+      bottom: 55px;
+    }
+  }
+
   input {
-    width: 80%;
+    width: 75%;
     padding: 1rem;
     outline: none;
     font-size: 0.8rem;      
@@ -30,7 +75,7 @@
 .darkMode {
   .inbox__message__input {
     input {
-      background: none;
+      background: $DarkBg;
       color: $LightBg;
     }
     input::placeholder {
@@ -45,6 +90,17 @@
     align-items: center;
     width: 100%;
     margin-right: 3em;
+
+    .inbox__message__input__icons {
+      display: flex;
+      justify-content: space-between;
+      width: 80px;
+  
+      .inbox__message__input__icon {
+        margin-top: 1em;
+        cursor: pointer;
+      }
+    }
 
     input {
       width: 100%;

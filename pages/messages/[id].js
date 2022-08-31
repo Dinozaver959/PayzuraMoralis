@@ -42,7 +42,7 @@ const index = (props) => {
             <Link href="/messages">
               <BsChevronLeft size={24} className="inbox__message__back__button"/>
             </Link>
-            <h2>userAddress</h2>
+            <h2>Receiver's userAddress</h2>
           </div>
           <div className="inbox__message__content">
             <Messages currentAccount={currentAccount} userAddress={userAddress}/>

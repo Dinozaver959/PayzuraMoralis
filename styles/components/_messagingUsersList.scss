@@ -17,6 +17,12 @@
   display: flex;
   flex-direction: column;
   
+  .inbox__user__list__blurred {
+    filter: blur(5px);
+    user-select: none;
+    pointer-events: none;
+  }
+
   .inbox__users__mobile {
     h2 {
       font-size: 1.5rem;
