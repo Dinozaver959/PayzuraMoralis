@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
+import { useForm } from "react-hook-form";
 
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -24,6 +25,7 @@ import {
   ConfirmDelivery_Moralis,
   CancelBuyerContract_Moralis,
   CancelSellerContract_Moralis,
+  UpdatePersonalizedOffer_Moralis,
 } from "./../../JS/local_web3_Moralis";
 
 import PlaceholderIc from "../icons/Placeholder";
@@ -37,6 +39,8 @@ import ETHIcon from "./../images/ETH.webp";
 import USDCIcon from "./../images/USDC.webp";
 
 import FilterBar from "./FilterBar";
+import WalletAddressField from "../ui/WalletAddress-Input";
+import EditIc from "../icons/Edit";
 
 const StyledTableRow = styled(TableRow)({
   fontFamily: "inherit",
@@ -426,6 +430,31 @@ function Table_normal(props) {
 function Row_normal(props) {
   const { item, isBuyer, setModelData } = props;
   const [open, setOpen] = React.useState(false);
+
+  const { resetField } = useForm();
+  const arPersonalizedOffer = item.PersonalizedOffer.split(",");
+
+  const [personalizedToAdd, setPersonalizedToAdd] = React.useState("");
+  const [personalizedToRemove, setPersonalizedToRemove] = React.useState("");
+  const [personalizedOfferValue, setPersonalizedOfferValue] = React.useState(arPersonalizedOffer);
+  const [errorPersonalizedOfferValue, setErrorPersonalizedOfferValue] = React.useState(false);
+  const [isWalletsEditable, setIsWalletsEditable] = React.useState(false);
+
+  function walletsEditableHandler() {
+    setIsWalletsEditable(!isWalletsEditable);
+    console.log(isWalletsEditable);
+  }
+
+  useEffect(() => {
+    let personalizedOld = arPersonalizedOffer;
+    let personalizedNew = personalizedOfferValue;
+    setPersonalizedToAdd(
+      personalizedNew.filter((x) => !personalizedOld.includes(x)).join(",")
+    );
+    setPersonalizedToRemove(
+      personalizedOld.filter((x) => !personalizedNew.includes(x)).join(",")
+    );
+  }, [personalizedOfferValue]);
 
   return (
     <React.Fragment>
@@ -985,8 +1014,151 @@ function Row_normal(props) {
                 </div>
                 <div className="listDataItem">
                   <div className="listItemLabel">Wallets Allowed to Accept</div>
-                  <div className="listItemValue">
+                  {/* <div className="listItemValue">
                     {wrapArbiters(item.PersonalizedOffer)}
+                  </div> */}
+                  <div className="listItemValue">
+                    {isWalletsEditable === false ? (
+                      <>
+                        {item.PersonalizedOffer === "" ? (
+                          <div className="listOfWallets">Payzura Platform</div>
+                        ) : (
+                          <div className="walletListEditable">
+                            <div className="listOfWallets">
+                              {item.PersonalizedOffer &&
+                                item.PersonalizedOffer.split(",").map(
+                                  (chip, i) =>
+                                    chip != "" && <span key={i}>{chip}</span>
+                                )}
+                            </div>
+                            <div className="listAction">
+                              <EditIc
+                                size="22"
+                                color="#2F499D"
+                                onClick={walletsEditableHandler}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="editWalletsContainer">
+                        <WalletAddressField
+                          name="PersonalizedOffer"
+                          inputValue={personalizedOfferValue}
+                          setInputValue={setPersonalizedOfferValue}
+                          errorValue={errorPersonalizedOfferValue}
+                          setErrorValue={setErrorPersonalizedOfferValue}
+                          // register={register}
+                          resetField={resetField}
+                        />
+                        <div className="fieldError">
+                          {errorPersonalizedOfferValue && (
+                            <p>Invalid Wallet Address.</p>
+                          )}
+                        </div>
+                        {/* ADD: <input
+                      className="formInput"
+                      id="personalizedToAdd"
+                      type="text"
+                      name="personalizedToAdd"
+                    ></input>
+                    <br></br>
+
+                    REMOVE: <input
+                      className="formInput"
+                      id="personalizedToRemove"
+                      type="text"
+                      name="personalizedToRemove"
+                    ></input>
+                    */}
+                        {/* <br></br> */}
+                        <input
+                          className="button primary rounded small mt-15"
+                          type="submit"
+                          value="Update PersonalizedOffer"
+                          onClick={() =>
+                            UpdatePersonalizedOffer_Moralis(
+                              item.index,
+                              true,
+                              personalizedToAdd, // document.getElementById("personalizedToAdd").value,
+                              personalizedToRemove // document.getElementById("personalizedToRemove").value
+                            )
+                              .then(async (transactionHash) => {
+                                setModelData({
+                                  show: true,
+                                  type: "alert",
+                                  status: "Pending",
+                                  message: "Updating Personalized...",
+                                });
+
+                                var formData = new FormData();
+                                formData.append(
+                                  "SellerWallet",
+                                  item.SellerWallet
+                                );
+                                formData.append(
+                                  "transactionHash",
+                                  transactionHash
+                                );
+                                formData.append("isBuyer", "true");
+                                formData.append(
+                                  "PersonalizedToAdd",
+                                  personalizedToAdd
+                                ); //document.getElementById("personalizedToAdd").value);
+                                formData.append(
+                                  "PersonalizedToRemove",
+                                  personalizedToRemove
+                                ); // document.getElementById("personalizedToRemove").value);
+                                formData.append("objectId", item.objectId);
+
+                                var xhr = new XMLHttpRequest();
+                                xhr.open(
+                                  "POST",
+                                  "/pages/api/api-updatePersonalized",
+                                  false
+                                );
+                                xhr.onload = function () {
+                                  setModelData({
+                                    show: true,
+                                    type: "alert",
+                                    status: "Success",
+                                    message: "PersonalizedOffer updated",
+                                    transactionHash: transactionHash,
+                                  });
+                                  console.log("personalizedOffer updated");
+                                };
+                                xhr.send(formData);
+                              })
+                              .catch((error) => {
+                                console.error(error);
+                                console.log(
+                                  "accept offer error code: " + error.code
+                                );
+                                console.log(
+                                  "accept offer error message: " + error.message
+                                );
+                                if (error.data && error.data.message) {
+                                  setModelData({
+                                    show: true,
+                                    type: "alert",
+                                    status: "Error",
+                                    message: error.data.message,
+                                  });
+                                } else {
+                                  setModelData({
+                                    show: true,
+                                    type: "alert",
+                                    status: "Error",
+                                    message: error.message,
+                                  });
+                                }
+                                process.exitCode = 1;
+                              })
+                          }
+                        ></input>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="listDataItem">
