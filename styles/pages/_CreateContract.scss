@@ -307,6 +307,7 @@
   width: 100%;
   max-width: 780px;
   padding: 20px 0;
+  position: relative;
 
   .formLabel {
     i {
@@ -435,6 +436,15 @@
       }
     }
   }
+}
+
+.sendingData {
+  @include Size(100%, 100%);
+  @include Absolute($Left: 0px, $Top: 0px);
+  @extend %FlexCol-CenterCenter;
+  overflow: hidden;
+  z-index: 1;
+  background-color: rgba($WhiteColor, 0.7);
 }
 
 .darkMode {
@@ -598,5 +608,9 @@
         }
       }
     }
+  }
+
+  .sendingData {
+    background-color: rgba($DarkBg, 0.8);
   }
 }

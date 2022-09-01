@@ -146,8 +146,8 @@
   }
 
   &.statusInProgress {
-    color: $ErrorColor;
-    background-color: rgba($ErrorColor, 0.1);
+    color: $OrangeColor;
+    background-color: rgba($OrangeColor, 0.1);
   }
 
   &.statusCanceled {
@@ -164,6 +164,38 @@
     color: $ErrorColor;
     background-color: rgba($ErrorColor, 0.1);
   }
+}
+
+.walletListEditable {
+  width: 100%;
+  @extend %FlexRow-StartBetween;
+
+  .listOfWallets {
+    flex: 2;
+    @include Flexbox;
+    @include FlexFlow(wrap);
+
+    > span {
+      font-size: 0.85rem;
+      @extend %FlexRow-CenterStart;
+      display: inline-flex;
+      @include BorderRadius(50px);
+      background: rgba($BorderDark, 0.7);
+      padding: 6px 12px;
+      margin-bottom: 5px;
+      @include Transition(0.1s);
+      margin-right: 5px;
+    }
+  }
+
+  .listAction {
+    margin-left: 10px;
+  }
+}
+
+.editWalletsContainer {
+  padding-top: 7px;
+  font-size: 0.9rem;
 }
 
 .darkMode {
@@ -201,6 +233,11 @@
     &.statusAvailableBuyers {
       color: $LightBlueColor;
       background-color: rgba($LightBlueColor, 0.1);
+    }
+  
+    &.statusCanceled {
+      color: rgba($FontColorLight, 0.7);
+      background-color: rgba($FontColorLight, 0.1);
     }
   }
 }

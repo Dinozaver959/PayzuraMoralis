@@ -13,11 +13,10 @@ function WalletAddressField(props) {
     resetField,
     register,
   } = props;
-  const [addrText, setAddrText] = React.useState('');
-
+  const [addrText, setAddrText] = React.useState("");
 
   const handleAddWallet = (e) => {
-    let txtInput = document.getElementById(name+"inputText"); // e.target;
+    let txtInput = document.getElementById(name + "inputText"); // e.target;
     let enteredValue = txtInput.value;
 
     if (enteredValue.length !== 0) {
@@ -30,7 +29,7 @@ function WalletAddressField(props) {
         setErrorValue(false);
         setInputValue([...inputValue, enteredValue]);
       }
-      setAddrText('');
+      setAddrText("");
       resetField(name);
     } else {
       setErrorValue(false);
@@ -49,14 +48,20 @@ function WalletAddressField(props) {
       <div className="walletInputParent">
         {inputValue && (
           <div className="enteredValidatedWallets">
-            {inputValue.map((chip, i) => (
-              <div className="walletChip" key={i}>
-                <span>{chip}</span>
-                <i>
-                  <CloseIc size={16} onClick={() => handleRemoveWallet(i)} />
-                </i>
-              </div>
-            ))}
+            {inputValue.map(
+              (chip, i) =>
+                chip !== "" && (
+                  <div className="walletChip" key={i}>
+                    <span>{chip}</span>
+                    <i>
+                      <CloseIc
+                        size={16}
+                        onClick={() => handleRemoveWallet(i)}
+                      />
+                    </i>
+                  </div>
+                )
+            )}
           </div>
         )}
         <div className="fieldWithPlus">
@@ -65,10 +70,10 @@ function WalletAddressField(props) {
               className="walletInputField"
               type="text"
               placeholder="Wallets..."
-              id={name+"inputText"}
+              id={name + "inputText"}
               value={addrText}
               {...register(name, {
-                required: inputValue.length<=0,
+                required: inputValue.length <= 0,
                 pattern: /^0x[a-fA-F0-9]{40}$/g,
                 onBlur: handleAddWallet,
                 onChange: (e) => setAddrText(e.target.value),
@@ -79,10 +84,10 @@ function WalletAddressField(props) {
               className="walletInputField"
               type="text"
               placeholder="Wallets..."
-              id={name+"inputText"}
+              id={name + "inputText"}
               onBlur={handleAddWallet}
               value={addrText}
-              onChange= { (e) => setAddrText(e.target.value) }
+              onChange={(e) => setAddrText(e.target.value)}
             />
           )}
           <PlusIc size={16} onClick={handleAddWallet} />

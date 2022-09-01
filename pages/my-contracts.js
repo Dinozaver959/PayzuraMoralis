@@ -14,7 +14,15 @@ export default function MyAgreements(props) {
   const [dataContractsOffered, setDataContractsOffered] = useState([]);
   const [dataContractsToValidate, setDataContractsToValidate] = useState([]);
   const [placeholder, setPlaceholder] = useState(true);
+  const [isFiltersOpen, setFiltersOpen] = useState(false);
 
+  // Responsive show/hide filters function
+  function toggleFiltersHandler() {
+    setFiltersOpen(!isFiltersOpen);
+    console.log(isFiltersOpen);
+  }
+
+  // APIs
   async function getCollectionsDetails() {
     const connectedAddress = await GetWallet_NonMoralis();
 
@@ -63,7 +71,6 @@ export default function MyAgreements(props) {
       />
 
       <div className="containerMain">
-
         <TabsUi
           titles={["My Contracts", "Offers", "Validate"]}
           details={[
@@ -72,18 +79,24 @@ export default function MyAgreements(props) {
               dataGetMyContracts={dataGetMyContracts}
               placeholder={placeholder}
               currentAccount={props.currentAccount}
+              isFiltersOpen={isFiltersOpen}
+              toggleFiltersFn={toggleFiltersHandler}
             />,
             <OffersContainer
               key="1"
               dataContractsOffered={dataContractsOffered}
               placeholder={placeholder}
               currentAccount={props.currentAccount}
+              isFiltersOpen={isFiltersOpen}
+              toggleFiltersFn={toggleFiltersHandler}
             />,
             <ValidatesContainer
               key="2"
               dataContractsToValidate={dataContractsToValidate}
               placeholder={placeholder}
               currentAccount={props.currentAccount}
+              isFiltersOpen={isFiltersOpen}
+              toggleFiltersFn={toggleFiltersHandler}
             />,
           ]}
         />

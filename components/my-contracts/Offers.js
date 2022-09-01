@@ -45,7 +45,7 @@ const StyledInnerTableCell = styled(TableCell)({
 });
 
 function OffersContainer(props) {
-  const { dataContractsOffered, placeholder, currentAccount } = props;
+  const { dataContractsOffered, placeholder, currentAccount, isFiltersOpen, toggleFiltersFn } = props;
 
   const currencyOptionsValues = [
     {
@@ -304,6 +304,8 @@ function OffersContainer(props) {
         selectCurrency={selectCurrency}
         setSelectCurrency={setSelectCurrency}
         currencyOptionsValues={currencyOptionsValues}
+        isFiltersOpen={isFiltersOpen}
+        toggleFiltersFn={toggleFiltersFn}
       />
 
       <div className="filtersContainer">
