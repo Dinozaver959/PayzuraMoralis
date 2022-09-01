@@ -18,36 +18,85 @@
       margin: 0;
       border-bottom: 1px solid $BorderDark;
       padding-bottom: 10px;
-    }
+      @extend %FlexRow-CenterBetween;
 
-    .filterOption {
-      padding-top: 15px;
+      .filterAction {
+        display: none;
 
-      .filterTitle {
-        @include Font(null, 0.9rem, $FontColorDark, null, 600);
-        margin-bottom: 5px;
-        background: rgba($BlackColor, 0.05);
-        padding: 5px 8px;
-        @include BorderRadius(3px);
-        @extend %FlexRow-CenterBetween;
+        @include RespondTo(IpadDevices) {
+          display: inline-block;
+        }
 
-        span.priceRight {
-          color: rgba($FontColorDark, 0.75);
+        svg {
+          path {
+            fill: $FontColorDark;
+          }
         }
       }
+    }
 
-      .radioGroupMain {
-        .radioItem {
-          .radioInput {
-            + .radioLabel {
-              padding: 7px 10px;
-            }
+    .filtersBody {
+      display: block;
+
+      @include RespondTo(IpadDevices) {
+        @include Size(100%, calc(100vh - 64px));
+        @include Fixed($Left: 0, $Top: 64px);
+        background: rgba($WhiteColor, 0.95);
+        padding: 5rem;
+        z-index: 3;
+        overflow: auto;
+      }
+
+      @include RespondTo(MobileDevices) {
+        height: calc(100vh - 52px);
+        top: 52px;
+        padding: 2.5rem;
+      }
+
+      .filterCloseIc {
+        display: none;
+
+        @include RespondTo(IpadDevices) {
+          display: inline-block;
+          @include Fixed($Right: 20px, $Top: 80px);
+        }
+
+        svg {
+          path {
+            fill: $FontColorDark;
           }
         }
       }
 
-      .dropdownContainer {
-        height: 140px;
+      .filterOption {
+        padding-top: 15px;
+
+        .filterTitle {
+          @include Font(null, 0.9rem, $FontColorDark, null, 600);
+          margin-bottom: 5px;
+          background: rgba($BlackColor, 0.05);
+          padding: 5px 8px;
+          @include BorderRadius(3px);
+          @extend %FlexRow-CenterBetween;
+
+          span.priceRight {
+            color: rgba($FontColorDark, 0.75);
+          }
+        }
+
+        .radioGroupMain {
+          .radioItem {
+            .radioInput {
+              + .radioLabel {
+                padding: 7px 10px;
+              }
+            }
+          }
+        }
+
+        .dropdownContainer {
+          height: 140px;
+        }
       }
     }
   }
@@ -83,12 +132,34 @@
       .sidebarHeader {
         color: $FontColorLight;
         border-bottom-color: $BorderLight;
+
+        .filterAction {
+          svg {
+            path {
+              fill: $FontColorLight;
+            }
+          }
+        }
       }
 
-      .filterOption {
-        .filterTitle {
-          color: $FontColorLight;
-          background: rgba($BlackColor, 0.25);
+      .filtersBody {
+        @include RespondTo(IpadDevices) {
+          background: rgba($BlackColor, 0.95);
+        }
+
+        .filterCloseIc {
+          svg {
+            path {
+              fill: $FontColorLight;
+            }
+          }
+        }
+
+        .filterOption {
+          .filterTitle {
+            color: $FontColorLight;
+            background: rgba($BlackColor, 0.25);
+          }
         }
       }
     }

@@ -74,7 +74,7 @@ function tickerToIcon(ticker) {
 }
 
 function MyContractsContainer(props) {
-  const { dataGetMyContracts, placeholder, currentAccount } = props;
+  const { dataGetMyContracts, placeholder, currentAccount, isFiltersOpen, toggleFiltersFn } = props;
 
   const currencyOptionsValues = [
     {
@@ -338,6 +338,8 @@ function MyContractsContainer(props) {
         selectCurrency={selectCurrency}
         setSelectCurrency={setSelectCurrency}
         currencyOptionsValues={currencyOptionsValues}
+        isFiltersOpen={isFiltersOpen}
+        toggleFiltersFn={toggleFiltersFn}
       />
 
       <div className="filtersContainer">

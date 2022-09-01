@@ -41,7 +41,7 @@ const StyledTableCell = styled(TableCell)({
 });
 
 function ValidatesContainer(props) {
-  const { dataContractsToValidate, placeholder, currentAccount } = props;
+  const { dataContractsToValidate, placeholder, currentAccount, isFiltersOpen, toggleFiltersFn } = props;
 
   const currencyOptionsValues = [
     {
@@ -209,6 +209,8 @@ function ValidatesContainer(props) {
         selectCurrency={selectCurrency}
         setSelectCurrency={setSelectCurrency}
         currencyOptionsValues={currencyOptionsValues}
+        isFiltersOpen={isFiltersOpen}
+        toggleFiltersFn={toggleFiltersFn}
       />
 
       <div className="filtersContainer">
