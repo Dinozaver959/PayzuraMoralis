@@ -45,12 +45,17 @@
         padding: 5rem;
         z-index: 3;
         overflow: auto;
+        display: none;
       }
 
       @include RespondTo(MobileDevices) {
         height: calc(100vh - 52px);
         top: 52px;
         padding: 2.5rem;
+      }
+
+      &.show {
+        display: block;
       }
 
       .filterCloseIc {
