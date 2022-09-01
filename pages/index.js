@@ -207,7 +207,7 @@ export default function Home(props) {
     });
 
     setFrequencyOfDisputesDoughnutChart({
-      labels: ["all contracts", "disputes"],
+      labels: ["undisputed contracts", "disputes"],
       datasets: [{
         label: "Frequency of Disputes...",
         data: [ totalNumberOfContracts, totalNumberOfDisputesStarted ],
@@ -373,6 +373,7 @@ export default function Home(props) {
         {/* MORALIS EVENT SYNC ChartS */}
         <div className="dashboardBlocks">
 
+
           <div className="blockMain">
             <div className="blockIcon">
               <ETHIc size="52" color="white" />
@@ -419,6 +420,7 @@ export default function Home(props) {
             </div>
           </div>
 
+
         </div>
 
         <div className="chartContainer">
@@ -450,29 +452,6 @@ export default function Home(props) {
             </div>
            */}
 
-          <div className="card" /* fullWidth */>
-            <div className="cardHeader">
-              <div className="cardTitle">Contracts Made and Disputes solved</div>
-            </div>
-            <div className="cardBody">
-              <LineChart chartData={ContractsMadeAndDisputedLineChart} 
-                options={{            
-                  maintainAspectRatio: false,
-                  scales: {y: {beginAtZero: true}},
-                  plugins:{
-                    title: {display: false, text: 'Contracts Made and Disputes solved'},
-                    legend: {position: 'top', align: 'end',
-                      labels: {boxWidth: 10, boxHeight: 10,
-                        font: {
-                          weight: 100
-                        }
-                      },
-                    },
-                  },
-                }}
-              />
-            </div>
-          </div>
 
 
           <div className="card">
@@ -498,6 +477,30 @@ export default function Home(props) {
                     },
                   },
                   cutout: 90,
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="card" /* fullWidth */>
+            <div className="cardHeader">
+              <div className="cardTitle">Contracts Made and Disputes solved</div>
+            </div>
+            <div className="cardBody">
+              <LineChart chartData={ContractsMadeAndDisputedLineChart} 
+                options={{            
+                  maintainAspectRatio: false,
+                  scales: {y: {beginAtZero: true}},
+                  plugins:{
+                    title: {display: false, text: 'Contracts Made and Disputes solved'},
+                    legend: {position: 'top', align: 'end',
+                      labels: {boxWidth: 10, boxHeight: 10,
+                        font: {
+                          weight: 100
+                        }
+                      },
+                    },
+                  },
                 }}
               />
             </div>
