@@ -30,6 +30,11 @@
         cursor: pointer;
         @include Font(null, 1rem, $FontColorDark, null, 500);
         padding: 12px 25px;
+
+        @include RespondTo(MobileDevices) {
+          font-size: 0.7rem;
+          padding: 10px 15px;
+        }
       }
     }
   }
@@ -42,13 +47,22 @@
     @include BorderRadius(0 $CardRounded $CardRounded $CardRounded);
     @include BoxShadow(0px 0px $CardRounded rgba($PrimaryColor, 0.15));
 
-    @include RespondTo(MobileDevices) {
+    @include RespondTo(IpadDevices) {
       padding: 20px;
+    }
+
+    @include RespondTo(MobileDevices) {
+      padding: 16px;
       border-radius: 14px;
+      @include BorderRadius(0 $CardRounded $CardRounded $CardRounded);
     }
 
     .tabContent {
       padding-top: 1rem;
+
+      @include RespondTo(IpadDevices) {
+        padding-top: 0;
+      }
     }
   }
 }

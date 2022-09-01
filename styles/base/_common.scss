@@ -146,8 +146,8 @@
   }
 
   &.statusInProgress {
-    color: $ErrorColor;
-    background-color: rgba($ErrorColor, 0.1);
+    color: $OrangeColor;
+    background-color: rgba($OrangeColor, 0.1);
   }
 
   &.statusCanceled {
@@ -233,6 +233,11 @@
     &.statusAvailableBuyers {
       color: $LightBlueColor;
       background-color: rgba($LightBlueColor, 0.1);
+    }
+  
+    &.statusCanceled {
+      color: rgba($FontColorLight, 0.7);
+      background-color: rgba($FontColorLight, 0.1);
     }
   }
 }

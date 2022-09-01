@@ -77,6 +77,7 @@ export default function Description(props) {
   }
 
   async function SubmitForm() {
+    setIsFormSubmitting(!isFormSubmitting);
     let arbiters = (arbitersValidate === 'Trusted 3rd') ? arbitersValue.join(",") : PayzuraCentealizedArbiter; // document.getElementById("Arbiters").value
     CreateEscrow_Moralis(
       (selectContractType == "buyer") ? true : false,
@@ -97,6 +98,7 @@ export default function Description(props) {
           status: "Pending",
           message: "Creating offer...",
         });
+        setIsFormSubmitting(false);
 
         var form = document.querySelector("form");
         var formData = new FormData(form);
@@ -137,6 +139,7 @@ export default function Description(props) {
             message: "Offer created",
             transactionHash: transactionHash,
           });
+          setIsFormSubmitting(false);
 
           // prevent the Submit button to be clickable and functionable
           removeHover();
@@ -159,6 +162,7 @@ export default function Description(props) {
             status: "Error",
             message: error.data.message,
           });
+          setIsFormSubmitting(false);
         } else {
           setModelData({
             show: true,
@@ -166,6 +170,7 @@ export default function Description(props) {
             status: "Error",
             message: error.message,
           });
+          setIsFormSubmitting(false);
         }
         process.exitCode = 1;
       });
@@ -266,6 +271,8 @@ export default function Description(props) {
   const [selectCurrency, setSelectCurrency] = React.useState("ETH");
   const [selectContractType, setSelectContractType] = React.useState("seller");
   const [arbitersValidate, setArbitersValidate] = React.useState("Centralized");
+
+  const [isFormSubmitting, setIsFormSubmitting] = React.useState(false);
 
   function handleCurrencyChange(e) {
     setSelectCurrency(e.target.value);
@@ -450,6 +457,11 @@ export default function Description(props) {
 
             <div className="cardBody">
               <div className="contractCreationFormMain">
+                {isFormSubmitting === true && (
+                  <div className="sendingData">
+                    <div className="spinnerLoading">Loading...</div>
+                  </div>
+                )}
                 <form
                   id="formToSubmit"
                   method="post"
