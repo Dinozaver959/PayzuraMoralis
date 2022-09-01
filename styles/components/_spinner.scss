@@ -5,11 +5,31 @@
   margin: 0 auto;
   text-indent: -9999em;
   background: $WhiteColor;
-  background: -moz-linear-gradient(left, $PrimaryColor 10%, rgba($PrimaryColor, 0) 42%);
-  background: -webkit-linear-gradient(left, $PrimaryColor 10%, rgba($PrimaryColor, 0) 42%);
-  background: -o-linear-gradient(left, $PrimaryColor 10%, rgba($PrimaryColor, 0) 42%);
-  background: -ms-linear-gradient(left, $PrimaryColor 10%, rgba($PrimaryColor, 0) 42%);
-  background: linear-gradient(to right, $PrimaryColor 10%, rgba($PrimaryColor, 0) 42%);
+  background: -moz-linear-gradient(
+    left,
+    $PrimaryColor 10%,
+    rgba($PrimaryColor, 0) 42%
+  );
+  background: -webkit-linear-gradient(
+    left,
+    $PrimaryColor 10%,
+    rgba($PrimaryColor, 0) 42%
+  );
+  background: -o-linear-gradient(
+    left,
+    $PrimaryColor 10%,
+    rgba($PrimaryColor, 0) 42%
+  );
+  background: -ms-linear-gradient(
+    left,
+    $PrimaryColor 10%,
+    rgba($PrimaryColor, 0) 42%
+  );
+  background: linear-gradient(
+    to right,
+    $PrimaryColor 10%,
+    rgba($PrimaryColor, 0) 42%
+  );
   position: relative;
   -webkit-animation: loadingAnim 0.7s infinite linear;
   animation: loadingAnim 0.7s infinite linear;
@@ -17,7 +37,8 @@
   -ms-transform: translateZ(0);
   transform: translateZ(0);
 
-  &::before, &::after {
+  &::before,
+  &::after {
     content: "";
     @include Absolute($Left: 0px, $Top: 0px);
   }
@@ -54,9 +75,28 @@
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
   }
-  
+
   100% {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
+  }
+}
+
+.darkMode {
+  .spinnerLoading {
+    background: $LightBlueColor;
+    background: -moz-linear-gradient(left, $LightBlueColor 10%, rgba($LightBlueColor, 0) 42%);
+    background: -webkit-linear-gradient(left, $LightBlueColor 10%, rgba($LightBlueColor, 0) 42%);
+    background: -o-linear-gradient(left, $LightBlueColor 10%, rgba($LightBlueColor, 0) 42%);
+    background: -ms-linear-gradient(left, $LightBlueColor 10%, rgba($LightBlueColor, 0) 42%);
+    background: linear-gradient(to right, $LightBlueColor 10%, rgba($LightBlueColor, 0) 42%);
+
+    &::before {
+      background: $LightBlueColor;
+    }
+
+    &::after {
+      background: $DarkBg;
+    }
   }
 }
