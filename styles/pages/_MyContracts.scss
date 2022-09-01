@@ -103,6 +103,20 @@
           height: 140px;
         }
       }
+
+      .filtersAction {
+        display: none;
+
+        &.show {
+          @include RespondTo(IpadDevices) {
+            border-top: 1px solid $LightBlueBg;
+            display: block;
+            padding-top: 15px;
+            margin-top: 15px;
+            text-align: right;
+          }
+        }
+      }
     }
   }
 
@@ -164,6 +178,14 @@
           .filterTitle {
             color: $FontColorLight;
             background: rgba($BlackColor, 0.25);
+          }
+        }
+
+        .filtersAction {
+          &.show {
+            @include RespondTo(IpadDevices) {
+              border-top-color: $DarkBlueBg;
+            }
           }
         }
       }
