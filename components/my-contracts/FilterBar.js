@@ -3,6 +3,7 @@ import FiltersIc from "../icons/Filters";
 import MultiRangeSlider from "../ui/MultiRangeSlider";
 import RadioGroup from "../ui/RadioGroup";
 import SelectDropdown from "../ui/SelectDropdown";
+import Button from "./../ui/Button";
 
 function FilterBar(props) {
   const {
@@ -35,12 +36,11 @@ function FilterBar(props) {
         </span>
       </h2>
 
-      <div
-        className={isFiltersOpen ? "filtersBody show" : "filtersBody"}
-      >
+      <div className={isFiltersOpen ? "filtersBody show" : "filtersBody"}>
         <div className="filterCloseIc">
           <CloseIc size="20" onClick={toggleFiltersFn} />
         </div>
+
         {/* Filter with Price */}
         <div className="filterOption">
           <h4 className="filterTitle">Price</h4>
@@ -109,6 +109,10 @@ function FilterBar(props) {
             />
           </div>
         )}
+
+        <div className={isFiltersOpen ? "filtersAction show" : "filtersAction"}>
+          <Button classes="button secondary" onClick={toggleFiltersFn}>Apply</Button>
+        </div>
       </div>
     </div>
   );
