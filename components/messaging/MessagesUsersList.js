@@ -1,9 +1,9 @@
 import React from 'react'
 import Link from "next/link";
-import { useMoralis, useMoralisQuery } from "react-moralis";
+import { useMoralisQuery } from "react-moralis";
 
-export const MessagesUsersList = () => {
-  const { Moralis } = useMoralis();
+export const MessagesUsersList = (props) => {
+  const { userAddress } = props;
 
   const { data } = useMoralisQuery(
     "UserParticipationData",
@@ -12,6 +12,12 @@ export const MessagesUsersList = () => {
     [],
     { live: true }
   );
+
+  const user = data.find((user) => user.get("userAddress") === userAddress);
+
+  console.log("user", user);
+  console.log("userAddress", userAddress);
+
 
   return (
     <div>

@@ -10,6 +10,7 @@ function MyApp({ Component, pageProps }) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [hasMenuDrawer, setMenuDrawer] = useState(false);
     const [currentAccount, setCurrentAccount] = useState("");
+    const [userAddress, setUserAddress] = useState("");
 
     // Light and Dark Mode function
     function changeDarkModeHalndler() {
@@ -82,7 +83,8 @@ function MyApp({ Component, pageProps }) {
                     hasMenuDrawer={hasMenuDrawer}
                     setMenuDrawer={setMenuDrawer}
                     mobileDrawerFn={toggleMobileDrawerHandler}
-
+                    userAddress={userAddress}
+                    setUserAddress={setUserAddress}
                     currentAccount={currentAccount}
                     setCurrentAccount={setCurrentAccount}
                 />

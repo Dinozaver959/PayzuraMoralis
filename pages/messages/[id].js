@@ -3,20 +3,16 @@ import Navigation from "../../components/Navigation";
 import { BsChevronLeft } from "react-icons/bs";
 import Link from "next/link";
 import Messages from "../../components/messaging/Messages";
-import { useMoralisQuery } from "react-moralis";
+import { useRouter } from 'next/router';
 import { MessagesUsersList } from "../../components/messaging/MessagesUsersList";
 
 const index = (props) => {
   const { currentAccount } = props;
-  const userAddress = props.userAddress;
-  const { data } = useMoralisQuery(
-    "UserParticipationData",
-    (query) =>
-      query.ascending("createdAt"),
-    [],
-    { live: true }
-  );
+  const router = useRouter();
+  const userAddress = router.query.id;
 
+  // truncate userAddress to 5 chars and add ... at the end
+  const truncateAccountAddress = userAddress ? userAddress.slice(0, 5) + "..." + userAddress.slice(-4) : "";
 
   return (
     <Fragment>
@@ -30,19 +26,21 @@ const index = (props) => {
       setMenuDrawer={props.setMenuDrawer}
       mobileDrawerFn={props.mobileDrawerFn}
       currentAccount={props.currentAccount}
+      userAddress={props.userAddress}
+      setUserAddress={props.setUserAddress}
       setCurrentAccount={props.setCurrentAccount}
     />
     <div className="containerMain">
       <div className="inbox">
         <div className="inbox__users">
-          <MessagesUsersList />
+          <MessagesUsersList userAddress={userAddress}/>
         </div>
         <div className="inbox__message">
           <div className="inbox__message__title">
             <Link href="/messages">
               <BsChevronLeft size={24} className="inbox__message__back__button"/>
             </Link>
-            <h2>Receiver's userAddress</h2>
+            <h2>{truncateAccountAddress}</h2>
           </div>
           <div className="inbox__message__content">
             <Messages currentAccount={currentAccount} userAddress={userAddress}/>

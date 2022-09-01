@@ -2,9 +2,18 @@
   display: flex;
   align-items: flex-end;
 
+  .chatbox__message__box {
+    margin: 1rem;
+  
+    .timestamp {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+
   .chatbox__message__innerdiv {
     padding: 1rem;
-    margin: 1rem;
+    margin-bottom: .5rem;
     color: $WhiteColor;
     display: flex;
     background-color: $LightBlueColor;

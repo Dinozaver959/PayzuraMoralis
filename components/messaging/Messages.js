@@ -9,8 +9,7 @@ import data from '@emoji-mart/data'
 
 const Messages = (props) => {
   const { Moralis } = useMoralis();
-  const currentAccount = props.currentAccount;
-  const userAddress = props.userAddress;
+  const { currentAccount, userAddress } = props;
   const [message, setMessage] = useState("");
   const [showEmojis, setShowEmojis] = useState(false)
   const filePickerRef = useRef(null);
@@ -41,7 +40,6 @@ const Messages = (props) => {
     }
   }
 
-
   const sendMessage = (e) => {
     e.preventDefault();
     const Messages = Moralis.Object.extend("Messages");
@@ -69,10 +67,18 @@ const Messages = (props) => {
   const { data: messageData } = useMoralisQuery(
     "Messages",
     (query) =>
-      query.ascending("createdAt"),
+      query.ascending("createdAt")
+      .equalTo("sender", currentAccount)
+      .equalTo("receiver", userAddress),
     [],
     { live: true }
   );
+
+  const lastMessage = messageData[messageData.length - 1];
+  const lastMessageContent = lastMessage ? lastMessage.get("message") : "";
+  const lastMessageSender = lastMessage ? lastMessage.get("sender") : "";
+
+  console.log("lastMessage", lastMessageContent);
 
 
   return (
@@ -82,6 +88,7 @@ const Messages = (props) => {
           key={message.id}
           message={message}
           currentAccount={currentAccount}
+          userAddress={userAddress}
         />
       ))}
 
