@@ -4,6 +4,19 @@
 //-----------------------------------------------------------------------------------------------
 
 
+Moralis.Cloud.define("GetMaxJobzuraAgreementID", async (request) => {
+
+  const pipeline = [ 
+    { project: { id_: 1 } },
+    { sort : { id_: -1 } }
+  ];
+
+  const query = new Moralis.Query("Jobzura_Agreements");
+  const res = await query.aggregate(pipeline);
+
+  return res[0].id_;
+});
+
 Moralis.Cloud.define("GetMaxJobsID", async (request) => {
 
   const pipeline = [ 
@@ -39,7 +52,11 @@ Moralis.Cloud.define("GetJob", async (request) => {
   return await query.aggregate(pipeline);  
 });
 
-
+Moralis.Cloud.define("GetContract", async (request) => {
+  const pipeline = [{ match: { id_: request.params.ContractID } }];
+  const query = new Moralis.Query("Jobzura_Agreements");
+  return await query.aggregate(pipeline);  
+});
 
 //------------------------------------------------------------------------------------------------
 //                                    Get all Messages
