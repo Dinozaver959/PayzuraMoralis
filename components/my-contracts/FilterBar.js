@@ -111,7 +111,7 @@ function FilterBar(props) {
         )}
 
         <div className={isFiltersOpen ? "filtersAction show" : "filtersAction"}>
-          <Button classes="button secondary" onClick={toggleFiltersFn}>Apply</Button>
+          <Button classes="button primary" onClick={toggleFiltersFn}>Apply</Button>
         </div>
       </div>
     </div>
