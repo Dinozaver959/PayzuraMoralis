@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import Navigation from "../../components/Navigation";
 import { BsChevronLeft } from "react-icons/bs";
 import Link from "next/link";
@@ -11,7 +11,6 @@ const index = (props) => {
   const router = useRouter();
   const userAddress = router.query.id;
 
-  // truncate userAddress to 5 chars and add ... at the end
   const truncateAccountAddress = userAddress ? userAddress.slice(0, 5) + "..." + userAddress.slice(-4) : "";
 
   return (
@@ -43,7 +42,7 @@ const index = (props) => {
             <h2>{truncateAccountAddress}</h2>
           </div>
           <div className="inbox__message__content">
-            <Messages currentAccount={currentAccount} userAddress={userAddress}/>
+            <Messages currentAccount={currentAccount} userAddress={userAddress} />
           </div>
         </div>
       </div>

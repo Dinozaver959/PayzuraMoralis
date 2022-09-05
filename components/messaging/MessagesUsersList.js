@@ -15,32 +15,31 @@ export const MessagesUsersList = (props) => {
 
   const user = data.find((user) => user.get("userAddress") === userAddress);
 
-  console.log("user", user);
-  console.log("userAddress", userAddress);
-
+  // console.log("user", user);
+  console.log("current /userAddress/", userAddress);
 
   return (
     <div>
       <div className="inbox__users__mobile">
       <h2>All Conversations</h2>
-      <div className="inbox__users__list">
-        {data.map((user) => (
-          <Link href={`/messages/${user.get("userAddress")}`}>
-            <div className="inbox__users__list__item">
-              <div className="inbox__users__list__item__header">
-                <div>
-                  <span className="inbox__users__list__item__username">{user.get("userAddress").slice(0, 5) + "..." + user.get("userAddress").slice(-5)}</span>
+        <div className="inbox__users__list">
+          {data.map((user) => (
+            <Link href={`/messages/${user.get("userAddress")}`}>
+              <div className="inbox__users__list__item">
+                <div className="inbox__users__list__item__header">
+                  <div>
+                    <span className="inbox__users__list__item__username">{user.get("userAddress").slice(0, 5) + "..." + user.get("userAddress").slice(-5)}</span>
+                  </div>
+                  <span>2 hours ago</span>
                 </div>
-                <span>2 hours ago</span>
+                <div className="inbox__users__list__item__message">
+                  <p>Here will be displayed the last message</p>
+                </div>
               </div>
-              <div className="inbox__users__list__item__message">
-                <p>Here will be displayed the last message</p>
-              </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
-  </div>
   )
 }

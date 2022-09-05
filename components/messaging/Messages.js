@@ -6,6 +6,7 @@ import { IoImagesOutline } from "react-icons/io5";
 import { FiX } from "react-icons/fi";
 import Picker from '@emoji-mart/react'
 import data from '@emoji-mart/data'
+import { useRouter } from "next/router";
 
 const Messages = (props) => {
   const { Moralis } = useMoralis();
@@ -15,11 +16,8 @@ const Messages = (props) => {
   const filePickerRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null)
   const endOfMessages = useRef(null);
+  const router = useRouter();
   const truncateAccountAddress = currentAccount ? currentAccount.slice(0, 5) + "..." + currentAccount.slice(-4) : "";
-
-  // useEffect(() => {
-  //   endOfMessages.current.scrollIntoView({ behavior: "smooth" });
-  // }, []);
 
   const addEmoji = (e) => {
     let sym = e.unified.split('-')
@@ -60,8 +58,7 @@ const Messages = (props) => {
     setMessage("");
     setSelectedFile(null)
     setShowEmojis(false)
-
-    // endOfMessages.current.scrollIntoView({ behavior: "smooth"});
+    // scrollToBottom();
   }
 
   const { data: messageData } = useMoralisQuery(
@@ -74,16 +71,21 @@ const Messages = (props) => {
     { live: true }
   );
 
-  const lastMessage = messageData[messageData.length - 1];
-  const lastMessageContent = lastMessage ? lastMessage.get("message") : "";
-  const lastMessageSender = lastMessage ? lastMessage.get("sender") : "";
+  const scrollToBottom = () => {
+    endOfMessages.current.scrollIntoView({ behavior: "smooth" });
+  };
 
-  console.log("lastMessage", lastMessageContent);
+  useEffect(() => {
+    scrollToBottom();
+  } , [messageData]);
 
+
+  const filteredMessages = messageData && messageData.filter((message) => message.get("receiver") === userAddress);
+  console.log("filteredMessages", filteredMessages);
 
   return (
     <div className="chatbox">
-      {messageData.map((message) => (
+      {filteredMessages.map((message) => (
         <Message
           key={message.id}
           message={message}
@@ -92,7 +94,7 @@ const Messages = (props) => {
         />
       ))}
 
-      {/* scroll to the last message in the bottom */}
+      {/* scroll to the last message */}
       <div ref={endOfMessages}></div>
 
       <div className="inbox__message__footer">
@@ -139,4 +141,4 @@ const Messages = (props) => {
   )
 }
 
-export default Messages
+export default Messages;

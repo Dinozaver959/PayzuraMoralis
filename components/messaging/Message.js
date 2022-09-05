@@ -14,7 +14,7 @@ const Message = (props) => {
         </div>
         <small className="timestamp">
           <Moment 
-            format='DD/MM/YYYY - HH:mm A'
+            format='DD/MM/YYYY - HH:mm'
             fromNow 
           >
             {message.get("createdAt")}
