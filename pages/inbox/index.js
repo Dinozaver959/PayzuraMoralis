@@ -2,8 +2,8 @@ import React, { Fragment, useState } from "react";
 import Navigation from "../../components/Navigation";
 import { ethers } from "ethers";
 import { ImBubbles2 } from "react-icons/im";
-import { MessagesUsersList } from "../../components/messaging/MessagesUsersList";
 import { useEffect } from "react";
+import Messages from "../../components/messaging/Messages";
 
 const Web3 = require("web3");
 
@@ -71,25 +71,20 @@ const index = (props) => {
       />
       <div className="containerMain">
         <div className="inbox">
-          {!currentAccount ? (
-            <>
-              <div className="inbox__user__list__blurred">
-                <MessagesUsersList userAddress={userAddress}/>
-              </div> 
-              <div className="inbox__chat">
-                <ImBubbles2 size={100}/>
-                <h1>Connect with your wallet to access your messages</h1>
-              </div>
-            </>
-            ) : ( 
-              <>
-                <MessagesUsersList userAddress={userAddress}/>
-                <div className="inbox__chat">
-                  <ImBubbles2 size={100}/>
-                  <h1>Select a Conversation</h1>
-                </div>
-              </>
-            )}
+        {currentAccount ? (
+          <div className="inbox__message">
+            <div className="inbox__message__content">
+              <Messages currentAccount={currentAccount}/>
+            </div>
+          </div>
+        ) : (
+          <div className="inbox__message">
+            <div className="inbox__chat">
+              <ImBubbles2 size={100}/>
+              <h1>Connect with your wallet to access your messages</h1>
+            </div>
+          </div>
+        )}
         </div>
       </div>
     </Fragment>

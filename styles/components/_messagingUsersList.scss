@@ -12,6 +12,7 @@
   }
 
   width: 80%;
+  height: 85%;
   margin: 0 auto;
   border-radius: 10px;
   display: flex;
@@ -68,10 +69,15 @@
   .inbox__message {
     position: relative;
   }
+
   .inbox__chat {
-    display: none;
-  }
-  
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+  }  
 }
 
 .backButton {
@@ -98,15 +104,7 @@
 @media screen and (min-width: 1200px) {
   .inbox {
     flex-direction: row;
-    .inbox__chat {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      justify-content: center;
-      align-items: center;
-      padding: 1rem;
-      width: auto;
-    }
+
     .inbox__users__mobile {
       width: 450px;
       border-radius: 10px 0 0 10px;

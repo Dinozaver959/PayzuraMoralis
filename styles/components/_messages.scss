@@ -1,6 +1,23 @@
 .chatbox {
   height: 600px;
   overflow: auto;
+
+  .container{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0 20px 0 20px;
+  }
+  
+  .border{
+    border-bottom: 1px solid $BorderDark;
+    width: 100%;
+  }
+  
+  .content {
+    width: 400px;
+    text-align: center;
+  }
 }
 
 @media screen and (max-width: 768px) {

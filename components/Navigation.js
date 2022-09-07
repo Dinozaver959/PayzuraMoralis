@@ -172,7 +172,7 @@ export default function Navigation(props) {
                 <li
                   onClick={props.mobileDrawerFn}
                 >
-                  <Button link='/messages'>
+                  <Button link='/inbox'>
                     <i>
                       <DisputeIc />
                     </i>
