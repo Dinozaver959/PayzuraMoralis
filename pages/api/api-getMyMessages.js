@@ -1,6 +1,6 @@
 import middleware from '../../middleware/middleware'
 import nextConnect from 'next-connect'
-import {GetUserMessages} from '../../JS/DB-cloudFunctions'
+import {GetUserMessagesPair} from '../../JS/DB-cloudFunctions'
 import {ParsePathGiveMessageSender, ParsePathGiveMessageReceiver} from "../../JS/BackendFunctions";
 
 const apiRoute = nextConnect()
@@ -20,7 +20,7 @@ apiRoute.get(async (req, res) => {
 
   
   console.log("messageReceiver: " + messageReceiver);
-  const offers = await GetUserMessages(messageSender.toLowerCase(), messageReceiver.toLowerCase());
+  const offers = await GetUserMessagesPair(messageSender.toLowerCase(), messageReceiver.toLowerCase());
 
   
   var packagedOffers = []

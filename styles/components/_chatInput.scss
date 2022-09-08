@@ -36,7 +36,7 @@
       
       img {
         @include BorderRadius(0 $CardRounded $CardRounded $CardRounded);
-        @include BoxShadow(0px 0px $CardRounded rgba($PrimaryColor, 0.60));
+        @include BoxShadow(0px 0px $CardRounded rgba($PrimaryColor, 0.40));
         border-radius: 10px;
         max-height: 400px;
         object-fit: contain;
@@ -54,6 +54,9 @@
     padding: 1rem;
     outline: none;
     font-size: 0.8rem;      
+    border: 1px solid $BorderLight;
+    border-radius: 8px;
+    @include BoxShadow(0px 0px $CardRounded rgba($PrimaryColor, 0.1));
   }
 
   button {
@@ -61,13 +64,13 @@
     padding: 0.5rem;
     outline: none;
     font-size: 0.8rem;
-    background-color: #f5f5f5;
-    border: none;
     cursor: pointer;
-    border-radius: 3px;
+    border-radius: 8px;
+    border: 1px solid $BorderLight;
 
     &:hover {
-      background-color: #e5e5e5;
+      background-color: $PrimaryColor;
+      color: $WhiteColor;
     }
   }
 }
@@ -81,6 +84,19 @@
     input::placeholder {
       color: $LightBg;
     }
+    button {
+      background-color: $DarkBlueBg;
+      color: $LightBg;
+
+      &:hover {
+        background-color: $PrimaryColor;
+      }
+
+      &:disabled {
+        color: rgba(255, 255, 255, 0.2);
+      }
+    }
+
   }
 }
 
