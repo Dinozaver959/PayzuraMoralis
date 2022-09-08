@@ -12,6 +12,8 @@ const Messages = (props) => {
   const { Moralis } = useMoralis();
   const { currentAccount, userAddress } = props;
   const [message, setMessage] = useState("");
+  const [messageSenderData, setMessageSenderData] = useState(null);
+  const [messageReceiverData, setMessageReceiverData] = useState(null);
   const [showEmojis, setShowEmojis] = useState(false)
   const filePickerRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null)
@@ -37,16 +39,18 @@ const Messages = (props) => {
       setSelectedFile(readerEvent.target.result)
     }
   }
+  
+  const messageSender = currentAccount.toLowerCase();
+  const messageReceiver = userAddress?.toLowerCase();
 
-  const sendMessage = (e) => {
-    e.preventDefault();
+  const sendMessage = () => {
     const Messages = Moralis.Object.extend("Messages");
     const newMessage = new Messages();
-    
+
     newMessage.save({
       message: message,
-      sender: currentAccount,
-      receiver: userAddress,
+      sender: messageSender,
+      receiver: messageReceiver,
     }).then((message) => {
       console.log("New message created with objectId: " + message.id);
       console.log("receiver :", message.get("receiver"));
@@ -61,36 +65,53 @@ const Messages = (props) => {
     // scrollToBottom();
   }
 
-  const { data: messageData } = useMoralisQuery(
-    "Messages",
-    (query) =>
-      query.ascending("createdAt")
-      .equalTo("sender", currentAccount)
-      .equalTo("receiver", userAddress),
-    [],
-    { live: true }
-  );
+  async function getMessages() {
+    const data = await fetch(`/api/api-getMyMessages?sender=${messageSender}&receiver=${messageReceiver}`)
+    .then((res) => res.json())
+    .then((json) => setMessageSenderData(json))
 
+
+    const data2 = await fetch(`/api/api-getMyMessages?sender=${messageReceiver}&receiver=${messageSender}`)
+    .then((res2) => res2.json())
+    .then((json) => setMessageReceiverData(json))
+    
+    return data, data2
+  }
+
+  // show messages in chatbox without refreshing page on new message sent 
+  useEffect(() => {
+    getMessages()
+  }, [messageSender, messageReceiver])
+
+  // concat messageSenderData and messageReceiverData 
+  const concatMessages = messageSenderData?.concat(messageReceiverData?.sort((a, b) => a.createdAt - b.createdAt))
+  
+  // increment key of each message to be the message id
+  const messages = concatMessages?.map((message, index) => {
+    return {
+      ...message,
+      id: index
+    }
+  })
+  
   const scrollToBottom = () => {
     endOfMessages.current.scrollIntoView({ behavior: "smooth" });
   };
-
+  
+  
   useEffect(() => {
     scrollToBottom();
-  } , [messageData]);
-
-
-  const filteredMessages = messageData && messageData.filter((message) => message.get("receiver") === userAddress);
-  console.log("filteredMessages", filteredMessages);
+  }, [messages]);
 
   return (
     <div className="chatbox">
-      {filteredMessages.map((message) => (
+
+      {messages && messages.map((message) => (
         <Message
           key={message.id}
           message={message}
-          currentAccount={currentAccount}
-          userAddress={userAddress}
+          messageSender={messageSender}
+          messageReceiver={messageReceiver}
         />
       ))}
 

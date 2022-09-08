@@ -1,42 +1,58 @@
 .chatbox__message {
   display: flex;
-  align-items: flex-end;
+  justify-content: flex-start;
+
+  &--right {
+    display: flex;
+    justify-content: flex-end;
+  }
 
   .chatbox__message__box {
     margin: 1rem;
   
     .timestamp {
       display: flex;
-      justify-content: flex-end;
+      justify-content: flex-start;
+
+      &--right {
+        display: flex;
+        justify-content: flex-end;
+      }
     }
-  }
 
-  .chatbox__message__innerdiv {
-    padding: 1rem;
-    margin-bottom: .5rem;
-    color: $WhiteColor;
-    display: flex;
-    background-color: $LightBlueColor;
-    border-radius: 8px;
-    flex-direction: column;
-    align-items: flex-start;
-    max-width: 550px;
+    .chatbox__message__innerdiv {
+      margin-bottom: .5rem;
+      color: $WhiteColor;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      max-width: 550px;
 
-    small {
-      color: $FontColorDark;
+
+      &--right {
+        background-color: $LightBlueColor;
+        border-radius: 8px 0 8px 8px;
+        padding: 1rem;
+
+        small {
+          color: $FontColorDark;
+        }
+        
+        .truncateAdress {
+          display: flex;
+          justify-content: flex-end;
+        }
+      }
+
+      &--left {
+        background-color: #30336b;
+        border-radius: 0 8px 8px 8px;
+        padding: 1rem;
+
+        small {
+          color: $FontColorLight;
+        }
+      }
     }
-  }
-}
-
-.chatbox__message, .chatbox__message__outerdiv {
-  display: flex;
-  justify-content: flex-end;
-
-  .chatbox__message__innerdiv, .chatbox__message__receiver {
-    // border-top-left-radius: 0;
-  }
-
-  .chatbox__message__innerdiv, .chatbox__message__sender {
-    border-top-right-radius: 0;
   }
 }

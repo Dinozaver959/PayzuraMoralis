@@ -1,25 +1,49 @@
 import Moment from "react-moment";
 
 const Message = (props) => {
-  const { currentAccount, message } = props;
-  const isUserMessage = message.get("sender") === currentAccount;
-  const truncateAccountAddress = message.get("sender") ? message.get("sender").slice(0, 5) + "..." + message.get("sender").slice(-4) : "";
+  const { messageSender, messageReceiver, message } = props;
 
+  const messageContent = message.name?.message
+  const messageSenderLower = message.name?.sender
+  const messageDate = message.name?.createdAt
+
+  const isSender = messageSender === messageSenderLower;
+  const truncateSenderAdress = messageSender ? messageSender.slice(0, 5) + "..." + messageSender.slice(-4) : "";
+  const truncateReceiverAdress = messageReceiver ? messageReceiver.slice(0, 5) + "..." + messageReceiver.slice(-4) : "";
+
+  
   return (
-    <div className={`chatbox__message ${isUserMessage && "chatbox__message__outerdiv"}`}>
+    <div className={`chatbox__message ${isSender ? "chatbox__message--right" : "chatbox__message--left"}`}>
       <div className="chatbox__message__box">
-        <div className={`chatbox__message__innerdiv ${isUserMessage ? "chatbox__message__sender" : "chatbox__message__receiver"}`}>
-          <small>{truncateAccountAddress}</small>
-          <p>{message.get("message")}</p>
+        <div className={`chatbox__message__innerdiv`}>
+        {isSender ? (
+            <div className='chatbox__message__innerdiv--right'>
+              <small className="truncateAdress">{truncateSenderAdress}</small>
+                <p>{messageContent}</p>
+              <small className="timestamp--right">
+                <Moment 
+                  format='DD/MM/YYYY - HH:mm'
+                  fromNow 
+                  >
+                  {messageDate}
+                </Moment>
+              </small>
+            </div>
+          ) : (
+            <div className='chatbox__message__innerdiv--left'>
+              <small>{truncateReceiverAdress}</small>
+                <p>{messageContent}</p>
+              <small className="timestamp">
+                <Moment 
+                  format='DD/MM/YYYY - HH:mm'
+                  fromNow 
+                  >
+                  {messageDate}
+                </Moment>
+              </small>
+            </div>
+          )}
         </div>
-        <small className="timestamp">
-          <Moment 
-            format='DD/MM/YYYY - HH:mm'
-            fromNow 
-          >
-            {message.get("createdAt")}
-          </Moment>
-        </small>
       </div>
     </div>
   )

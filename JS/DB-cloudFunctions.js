@@ -12,6 +12,19 @@ Moralis.start({ serverUrl, appId });
 
 
 //-----------------------------------------------------------------------------------------------
+//                                  Message Functions
+//-----------------------------------------------------------------------------------------------
+
+export async function GetUserMessages(messageSender, messageReceiver){
+  const params = { messageSender : messageSender, messageReceiver : messageReceiver };
+
+  console.log(`messageSender: ${messageSender}`);
+  console.log(`messageReceiver: ${messageReceiver}`);
+
+  return Moralis.Cloud.run("GetUserMessages", params);
+}
+
+//-----------------------------------------------------------------------------------------------
 //                             Functions for new /my-contracts page
 //-----------------------------------------------------------------------------------------------
 
