@@ -32,7 +32,7 @@ const index = (props) => {
     <div className="containerMain">
       <div className="inbox">
         <div className="inbox__users">
-          <MessagesUsersList userAddress={userAddress}/>
+          <MessagesUsersList currentAccount={currentAccount} userAddress={userAddress}/>
         </div>
         <div className="inbox__message">
           <div className="inbox__message__title">

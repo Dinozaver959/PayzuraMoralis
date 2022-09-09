@@ -56,8 +56,8 @@ const Messages = (props) => {
       sender: messageSender,
       receiver: messageReceiver,
     }).then((message) => {
-      // console.log("New message created with objectId: " + message.id);
-      // console.log("receiver :", message.get("receiver"));
+      console.log("New message created with objectId: " + message.id);
+      console.log("receiver :", message.get("receiver"));
     },
 
     (error) => {
@@ -67,7 +67,6 @@ const Messages = (props) => {
     setMessage("");
     setSelectedFile(null)
     setShowEmojis(false)
-    // scrollToBottom();
   }
 
 
@@ -79,23 +78,17 @@ const Messages = (props) => {
     return data
   }
 
-  // show messages in chatbox without refreshing page on new message sent 
   useEffect(() => {
     getMessages()
-  }, [messageSender, messageReceiver])
-  
-  const scrollToBottom = () => {
-    endOfMessages.current.scrollIntoView({ behavior: "smooth" });
-  };
-  
-  
+  }, [messageReceiver])
+
   useEffect(() => {
-    scrollToBottom();
+    endOfMessages.current.scrollIntoView({ behavior: "smooth" });
   }, [messageData]);
 
+    
   return (
     <div className="chatbox">
-
       {messageData && messageData.map((message) => (
         <Message
           key={message.id}
@@ -105,9 +98,7 @@ const Messages = (props) => {
         />
       ))}
 
-      {/* scroll to the last message */}
       <div ref={endOfMessages}></div>
-
       <div className="inbox__message__footer">
         <form className='inbox__message__input'>
           <input type="text" value={message} placeholder={`Type a message to ${truncateReceiverAddress}`} onChange={e => setMessage(e.target.value)} />

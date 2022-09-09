@@ -74,7 +74,7 @@ const index = (props) => {
           {!currentAccount ? (
             <>
               <div className="inbox__user__list__blurred">
-                <MessagesUsersList userAddress={userAddress}/>
+                <MessagesUsersList currentAccount={currentAccount} userAddress={userAddress} />
               </div> 
               <div className="inbox__chat">
                 <ImBubbles2 size={100}/>
@@ -83,7 +83,7 @@ const index = (props) => {
             </>
             ) : ( 
               <>
-                <MessagesUsersList userAddress={userAddress}/>
+                <MessagesUsersList currentAccount={currentAccount} userAddress={userAddress}/>
                 <div className="inbox__chat">
                   <ImBubbles2 size={100}/>
                   <h1>Select a Conversation</h1>
