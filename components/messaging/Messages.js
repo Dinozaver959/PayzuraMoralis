@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, Suspense } from "react";
 import { useMoralis, useMoralisQuery } from "react-moralis";
 import Message from './Message';
 import{ BsEmojiSmile } from "react-icons/bs";
@@ -6,17 +6,23 @@ import { IoImagesOutline } from "react-icons/io5";
 import { FiX } from "react-icons/fi";
 import Picker from '@emoji-mart/react'
 import data from '@emoji-mart/data'
+import useSWR from "swr";
+
+const fetcher = async (...args) => fetch(...args).then(res => res.json())
 
 const Messages = (props) => {
   const { Moralis } = useMoralis();
   const { currentAccount, userAddress } = props;
   const [message, setMessage] = useState("");
-  const [messageData, setMessageData] = useState(null);
   const [showEmojis, setShowEmojis] = useState(false)
   const filePickerRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null)
   const endOfMessages = useRef(null);
   const truncateReceiverAddress = userAddress ? userAddress.slice(0, 5) + "..." + userAddress.slice(-4) : "";
+  const messageSender = currentAccount.toLowerCase();
+  const messageReceiver = userAddress?.toLowerCase();
+  const apiUrl = `/api/api-getMyMessages?sender=${messageSender}&receiver=${messageReceiver}`
+  const { data: messages, error } = useSWR(apiUrl, fetcher, { refreshInterval: 1000 });
 
   const addEmoji = (e) => {
     let sym = e.unified.split('-')
@@ -37,9 +43,6 @@ const Messages = (props) => {
     }
   }
   
-  const messageSender = currentAccount.toLowerCase();
-  const messageReceiver = userAddress?.toLowerCase();
-
   const sendMessage = async () => {
     const Messages = Moralis.Object.extend("Messages");
     const newMessage = new Messages();
@@ -69,27 +72,13 @@ const Messages = (props) => {
     setShowEmojis(false)
   }
 
-
-  async function getMessages() {
-    const data = await fetch(`/api/api-getMyMessages?sender=${messageSender}&receiver=${messageReceiver}`)
-    .then((res) => res.json())
-    .then((json) => setMessageData(json))
-
-    return data
-  }
-
-  useEffect(() => {
-    getMessages()
-  }, [messageReceiver])
-
   useEffect(() => {
     endOfMessages.current.scrollIntoView({ behavior: "smooth" });
-  }, [messageData]);
+  }, [messages]);
 
-    
   return (
     <div className="chatbox">
-      {messageData && messageData.map((message) => (
+      {messages && messages.map((message) => (
         <Message
           key={message.id}
           message={message}

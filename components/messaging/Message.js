@@ -56,6 +56,7 @@ const Message = (props) => {
               </small>
             </div>
           )}
+
         </div>
       </div>
     </div>

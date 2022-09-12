@@ -12,6 +12,13 @@ const index = (props) => {
   const userAddress = router.query.id;
 
   const truncateAccountAddress = userAddress ? userAddress.slice(0, 5) + "..." + userAddress.slice(-4) : "";
+  const lowerCaseCurrentAccount = currentAccount.toLowerCase();
+
+  useEffect(() => {
+    if (lowerCaseCurrentAccount === userAddress) {
+      router.push("/messages");
+    }
+  }, [lowerCaseCurrentAccount, userAddress]);
 
   return (
     <Fragment>

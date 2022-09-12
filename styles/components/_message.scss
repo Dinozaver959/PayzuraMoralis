@@ -6,20 +6,9 @@
     display: flex;
     justify-content: flex-end;
   }
-
+  
   .chatbox__message__box {
     margin: 1rem;
-  
-    .timestamp--left {
-      display: flex;
-      justify-content: flex-start;
-
-      &--right {
-        display: flex;
-        justify-content: flex-end;
-      }
-    
-    }
 
     .chatbox__message__innerdiv {
       margin-bottom: .5rem;
@@ -54,6 +43,11 @@
         }
         
         .truncateAdress {
+          display: flex;
+          justify-content: flex-end;
+        }
+
+        .timestamp--right {
           display: flex;
           justify-content: flex-end;
         }

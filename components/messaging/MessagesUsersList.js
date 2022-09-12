@@ -1,12 +1,21 @@
 import React from 'react'
 import Link from "next/link";
 import { useMoralisQuery } from "react-moralis";
+import Moment from "react-moment";
 
 export const MessagesUsersList = (props) => {
-  const { currentAccount } = props;
+  const { currentAccount, userAddress } = props;
 
   const { data } = useMoralisQuery(
     "UserParticipationData",
+    (query) =>
+      query.ascending("createdAt"),
+    [],
+    { live: true }
+  );
+
+  const { data: messages} = useMoralisQuery(
+    "Messages",
     (query) =>
       query.ascending("createdAt"),
     [],
@@ -20,54 +29,106 @@ export const MessagesUsersList = (props) => {
     return lowerCaseUser !== lowerCaseCurrentAccount;
   });
 
-  const { data: messages} = useMoralisQuery(
-    "Messages",
-    (query) =>
-      query.ascending("createdAt"),
-    [],
-    { live: true }
-  );
+    
+  const getUsersList = (users) => {
+    const usersWithMessages = users?.map((user) => {
+      const lowerCaseUser = user.attributes.userAddress.toLowerCase();
 
-  const usersWithMessages = users?.map((user) => {
-    const lowerCaseUser = user.attributes.userAddress.toLowerCase();
-    const userMessages = messages?.filter((message) => {
-      const lowerCaseSender = message.attributes.sender.toLowerCase();
-      const lowerCaseReceiver = message.attributes.receiver.toLowerCase();
-      return lowerCaseSender === lowerCaseUser || lowerCaseReceiver === lowerCaseUser;
+      const userMessages = messages?.filter((message) => {
+        const lowerCaseSender = message.attributes.sender.toLowerCase();
+        const lowerCaseReceiver = message.attributes.receiver.toLowerCase();
+        return lowerCaseSender === lowerCaseUser || lowerCaseReceiver === lowerCaseUser;
+      });
+      return {
+        ...user,
+        messages: userMessages,
+        currentUser: lowerCaseCurrentAccount,
+      };
     });
-    return {
-      ...user,
-      messages: userMessages,
-    };
+    
+    const usersWithMessagesSorted = usersWithMessages?.sort((a, b) => {
+      return b.messages.length - a.messages.length;
+    });
+    
+    const usersWithMessagesSortedFiltered  = usersWithMessagesSorted?.filter((user) => {
+      return user.messages.length > 0;
+    });
+    
+    return usersWithMessagesSortedFiltered;
+  };
+
+  const usersList = getUsersList(users);
+
+  const filteredUsersList = usersList?.filter((user) => {
+    const lowerCaseUser = user.currentUser;
+    const lowerCaseReceiver = user.messages[0].attributes.receiver;
+    const lowerCaseSender = user.messages[0].attributes.sender;
+
+    return lowerCaseUser === lowerCaseReceiver || lowerCaseUser === lowerCaseSender;
   });
 
-  // future features to add:
-  // - sort users' list by last message sent/received
-  // - show last message's content of each user
-  // - show last message's timestamp of each user
-  // - show unread messages
+  const messagesReceiver = filteredUsersList?.map((user) => {
+    const lowerCaseUser = user.currentUser;
+    const lowerCaseReceiver = user.messages[0].attributes.receiver;
+    const lowerCaseSender = user.messages[0].attributes.sender;
+
+    if (lowerCaseUser === lowerCaseReceiver) {
+      return user.messages[0].attributes.sender;
+    } else if (lowerCaseUser === lowerCaseSender) {
+      return user.messages[0].attributes.receiver;
+    }
+  });
   
+  const lastMessageContent = filteredUsersList?.map((user) => {
+    return user.messages[user.messages.length - 1].attributes.message;
+  });
+  
+  const lastMessageContentWithYou = lastMessageContent?.map((message, index) => {
+    const lowerCaseUser = filteredUsersList[index].currentUser;
+    const lowerCaseSender = filteredUsersList[index].messages[filteredUsersList[index].messages.length - 1].attributes.sender;
+    if (lowerCaseUser === lowerCaseSender) {
+      return "You : " + message;
+    } else {
+      return message;
+    }
+  });
+
+  const lastMessageTimestamp = filteredUsersList?.map((user) => {
+    return user.messages[user.messages.length - 1].attributes.createdAt;
+  });
+
   return (
-    <div>
-      <div className="inbox__users__mobile">
+    <div className="inbox__users__mobile">
       <h2>All Conversations</h2>
-        <div className="inbox__users__list">
-          {users.map((user) => (
-            <Link href={`/messages/${user.get("userAddress")}`}>
-              <div className="inbox__users__list__item">
-                <div className="inbox__users__list__item__header">
-                  <div>
-                    <span className="inbox__users__list__item__username">{user.get("userAddress").slice(0, 5) + "..." + user.get("userAddress").slice(-5)}</span>
-                  </div>
-                  <span>2 hours ago</span>
+      <div className="inbox__users__list">
+        {filteredUsersList.map((user, index) => (
+          <Link
+            href={`/messages/${messagesReceiver[index]}`}
+          >
+            <div className="inbox__users__list__item">
+              <div className="inbox__users__list__item__header">
+                <div>
+                  <span className="inbox__users__list__item__username">
+                    {messagesReceiver[index].slice(0, 6) + "..." + messagesReceiver[index].slice(-6)}
+                  </span>
                 </div>
-                <div className="inbox__users__list__item__message">
-                  <span>Hey, how are you?</span>
-                </div>
+                <Moment 
+                  fromNow 
+                >
+                  {lastMessageTimestamp[index]}
+                </Moment>
               </div>
-            </Link>
-          ))}
-        </div>
+              <div className="inbox__users__list__item__message">
+                <span>
+                  <b>last message</b> : {' '}
+                  <em>
+                    {lastMessageContentWithYou[index]}
+                  </em>
+                </span>
+              </div>
+            </div>
+          </Link>
+        ))}
       </div>
     </div>
   )
