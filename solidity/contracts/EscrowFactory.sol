@@ -17,8 +17,8 @@ contract EscrowFactory is ReentrancyGuard {
     uint256 public clonedContractsIndex = 0;
 
     // Agreement Creation
-    event OfferCreatedBuyer(uint256 indexed clonedContractsIndex, address indexed buyer, uint256 indexed price, address[] personalizedOffer, address[] arbiters);
-    event OfferCreatedSeller(uint256 indexed clonedContractsIndex, address indexed seller, uint256 indexed price, address[] personalizedOffer, address[] arbiters);
+    event OfferCreatedBuyer(uint256 indexed clonedContractsIndex, address indexed buyer, address[] personalizedOffer, address[] arbiters);
+    event OfferCreatedSeller(uint256 indexed clonedContractsIndex, address indexed seller, address[] personalizedOffer, address[] arbiters);
     // Agreement Acceptance
     event OfferAcceptedBuyer(uint256 indexed clonedContractsIndex, address indexed buyer, uint256 price, address tokenCurrency);
     event OfferAcceptedSeller(uint256 indexed clonedContractsIndex, address indexed seller, uint256 price, address tokenCurrency);
@@ -56,6 +56,7 @@ contract EscrowFactory is ReentrancyGuard {
         address[] calldata arbiters,
         uint256 price,
         address tokenContractAddress,
+        address referrerAddress,
         uint256 timeToDeliver,
         string memory hashOfDescription,
         uint256 offerValidUntil,
@@ -83,10 +84,13 @@ contract EscrowFactory is ReentrancyGuard {
             personalizedOffer
         );
 
+        Escrow(clone).InitializeSellerPart2(referrerAddress);
+
+
         clonedContracts[clonedContractsIndex] = clone;
         clonedContractsIndex++;
 
-        emit OfferCreatedSeller(clonedContractsIndex, msg.sender, price, personalizedOffer, arbiters);
+        emit OfferCreatedSeller(clonedContractsIndex, msg.sender, personalizedOffer, arbiters);
     }
 
 
@@ -95,6 +99,7 @@ contract EscrowFactory is ReentrancyGuard {
         address[] calldata arbiters,
         uint256 price,
         address tokenContractAddress,
+        address referrerAddress,
         uint256 timeToDeliver,
         string memory hashOfDescription,
         uint256 offerValidUntil,
@@ -123,6 +128,8 @@ contract EscrowFactory is ReentrancyGuard {
             personalizedOffer
         );
 
+        Escrow(clone).InitializeBuyerPart2(referrerAddress);
+
         clonedContracts[clonedContractsIndex] = clone;
 
 
@@ -149,7 +156,7 @@ contract EscrowFactory is ReentrancyGuard {
 
         clonedContractsIndex++;
 
-        emit OfferCreatedBuyer(clonedContractsIndex, msg.sender, price, personalizedOffer, arbiters);
+        emit OfferCreatedBuyer(clonedContractsIndex, msg.sender, personalizedOffer, arbiters);
     }
 
 
@@ -248,7 +255,7 @@ contract EscrowFactory is ReentrancyGuard {
     // WRITE FUNCTIONS
 
     // new buyer accepts the agreement
-    function AcceptOfferBuyer(uint256 index) external payable{
+    function AcceptOfferBuyer(uint256 index, uint256 _referralCommision, address referrerAddress) external payable{
 
       address tokenContractAddress = Escrow(clonedContracts[index]).tokenContractAddress();
       uint256 price = Escrow(clonedContracts[index]).price();
@@ -263,15 +270,15 @@ contract EscrowFactory is ReentrancyGuard {
 
 
       // call the instance and finish the accept offer
-      Escrow(clonedContracts[index]).acceptOfferBuyer{value: msg.value}(payable(msg.sender));
+      Escrow(clonedContracts[index]).acceptOfferBuyer{value: msg.value}(payable(msg.sender), _referralCommision, referrerAddress);
       emit OfferAcceptedBuyer(clonedContractsIndex, msg.sender, price, tokenContractAddress);
     }
 
-    function AcceptOfferSeller(uint256 index) external {
+    function AcceptOfferSeller(uint256 index, uint256 _referralCommision, address referrerAddress) external {
         address tokenContractAddress = Escrow(clonedContracts[index]).tokenContractAddress();
         uint256 price = Escrow(clonedContracts[index]).price();
 
-        Escrow(clonedContracts[index]).acceptOfferSeller(payable(msg.sender));
+        Escrow(clonedContracts[index]).acceptOfferSeller(payable(msg.sender), _referralCommision, referrerAddress);
         emit OfferAcceptedSeller(clonedContractsIndex, msg.sender, price, tokenContractAddress);
     } 
 

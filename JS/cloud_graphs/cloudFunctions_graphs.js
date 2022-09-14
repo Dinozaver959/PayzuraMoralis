@@ -58,6 +58,37 @@ Moralis.Cloud.define("GetContract", async (request) => {
   return await query.aggregate(pipeline);  
 });
 
+
+
+Moralis.Cloud.define("GetReferralCode", async (request) => {
+  const query = new Moralis.Query("ReferralCodes");
+  query.equalTo("UserAddress", request.params.UserWallet);
+  return (await query.find())[0].ReferralCodeUsed;
+});
+
+Moralis.Cloud.define("IsUserAlreadyInDB", async (request) => {
+  const query = new Moralis.Query(request.params.Table);
+  query.equalTo("UserAddress", request.params.UserWallet);
+  const res = await query.find();
+  return (res.length > 0) ? true : false;
+});
+
+Moralis.Cloud.define("GetReferredBy", async (request) => {
+  const query = new Moralis.Query("ReferralCodes");
+
+  // basically need to find which row contains `ReferralCodeUsed`
+  query.contains("ReferralCodesCreated", request.params.ReferralCodeUsed);    // maybe:  equalTo
+
+  const res = await query.find();
+  if (res.length > 0) {
+    return res[0].UserAddress;
+  }
+    
+  return res;
+});
+
+
+
 //------------------------------------------------------------------------------------------------
 //                                    Get all Messages
 //------------------------------------------------------------------------------------------------
@@ -86,6 +117,28 @@ Moralis.Cloud.define("getAllMessages", async (request) => {
   
 });
 
+
+
+Moralis.Cloud.define("GetUserMessages", async (request) => {
+  const pipeline = [{ match: { sender: request.params.messageSender, receiver: request.params.messageReceiver } }];
+  const query = new Moralis.Query("Messages");
+  return await query.aggregate(pipeline);  
+});
+
+
+Moralis.Cloud.define("GetUserMessagesPair", async (request) => {
+
+  const q1 = new Moralis.Query("Messages");
+  q1.equalTo("sender", request.params.messageSender);
+  q1.equalTo("receiver", request.params.messageReceiver);
+
+  const q2 = new Moralis.Query("Messages");
+  q2.equalTo("receiver", request.params.messageSender);
+  q2.equalTo("sender", request.params.messageReceiver);
+  
+  const mainQuery = Moralis.Query.or(q1, q2);
+  return await mainQuery.find();
+});
 
 
 
@@ -281,6 +334,7 @@ Moralis.Cloud.define("getAllOffersCreated", async (request) => {
 
 Moralis.Cloud.define("getAllAggregateData", async (request) => {
   const query = new Moralis.Query("AggregatedEvents");
+  query.ascending("block_day");
   return await query.find();
 });
 

@@ -11,6 +11,10 @@ contract Escrow is ReentrancyGuard {
     uint256 public price;
     address public tokenContractAddress;   // address(0) -> ETH, other currencies have their contracts
 
+    address private sellerReferrerAddress;
+    address private buyerReferrerAddress;
+
+
     uint256 public deadline;
     uint256 public timeToDeliver;
     uint256 public offerValidUntil;
@@ -19,6 +23,7 @@ contract Escrow is ReentrancyGuard {
     uint256 public immutable gracePeriod = 0;
 
     uint256 public immutable commision = 10; // 1000 = 100%
+    uint256 public referralCommision;
     address public immutable payzuraWallet = 0x1591C783EfB2Bf91b348B6b31F2B04De1442836c;
     
     address payable public buyer;
@@ -141,6 +146,10 @@ contract Escrow is ReentrancyGuard {
         }
     }
 
+    function InitializeSellerPart2(address _referrerAddress) public {
+        sellerReferrerAddress = _referrerAddress;
+    }
+
 
     function InitializeBuyer (
       address payable _FactoryAddress,
@@ -181,6 +190,10 @@ contract Escrow is ReentrancyGuard {
         for(uint256 i = 0; i < _arbiters.length; i++) {
             arbiters.push(_arbiters[i]);
         }
+    }
+
+    function InitializeBuyerPart2(address _referrerAddress) public {
+        buyerReferrerAddress = _referrerAddress;
     }
 
 
@@ -236,17 +249,22 @@ contract Escrow is ReentrancyGuard {
         return (uint256(price) / uint256(1000)) * uint256(commision);
     }
 
+    function GetBuyerSellerReferrerCommision() public view returns(uint256){
+        return (uint256(price) / uint256(1000)) * uint256(referralCommision);   // have it only be a static number for now (TODO: add a 12Months linear falling pattern)
+    }
+
  
 
     // ---------------------------------------------------------------------------
     //                             WRITE FUNCTIONS
     // ---------------------------------------------------------------------------
 
-    // new buyer accepts the agreement
-    function acceptOfferBuyer(address payable _buyer) instate(State.await_payment) external payable {
+    // new buyer accepts the agreement    -- later change the `_referralCommision` to be more complex so we can authenticate where the request came from
+    function acceptOfferBuyer(address payable _buyer, uint256 _referralCommision, address _referrerAddress) instate(State.await_payment) external payable {
 
         require(isOfferValid(), "offer is not valid anymore");
         require(isWalletEligibleToAcceptOffer(_buyer), "wallet is not eligible to accept");
+        require(_referralCommision >= 0 && _referralCommision <= 40, "referral commision should be 4% at the most");
 
         if(tokenContractAddress == address(0)){
             // payment in ETH
@@ -256,19 +274,24 @@ contract Escrow is ReentrancyGuard {
         }
 
         buyer = _buyer; 
+        buyerReferrerAddress = _referrerAddress;
         deadline = block.timestamp + 3600 * timeToDeliver;
         state = State.paid;
+        referralCommision = _referralCommision;
     }
 
     // Seller accepts on agreement made by a Buyer
-    function acceptOfferSeller(address payable _seller) instate(State.await_seller_accepts) external {
+    function acceptOfferSeller(address payable _seller, uint256 _referralCommision, address _referrerAddress) instate(State.await_seller_accepts) external {
 
         require(isOfferValid(), "offer is not valid anymore");
         require(isWalletEligibleToAcceptOffer(_seller), "wallet is not eligible to accept");
+        require(_referralCommision >= 0 && _referralCommision <= 40, "referral commision should be 4% at the most");
 
         seller = _seller; 
+        sellerReferrerAddress = _referrerAddress;
         deadline = block.timestamp + 3600 * timeToDeliver;
         state = State.paid;
+        referralCommision = _referralCommision;
     }
 
     // not sure if needed
@@ -292,8 +315,20 @@ contract Escrow is ReentrancyGuard {
         if(tokenContractAddress == address(0)){
             // transfer ETH
                 
+            // referralCommision
+
             // transfer commision to the Payzura wallet
             payable(payzuraWallet).transfer(GetCommision());
+
+            uint256 OneSideReferralCommision = GetBuyerSellerReferrerCommision() / 2;
+
+            if(buyerReferrerAddress != address(0)){
+                payable(buyerReferrerAddress).transfer(OneSideReferralCommision);
+            }
+            
+            if(sellerReferrerAddress != address(0)){
+                payable(sellerReferrerAddress).transfer(OneSideReferralCommision);                
+            }
 
             // transfer the remaining amount to the receiver
             receiver.transfer(address(this).balance);
@@ -307,8 +342,28 @@ contract Escrow is ReentrancyGuard {
             require(transferred, "ERC20 tokens failed to transfer to payzuraWallet");
             emit TransferSent(address(this), payzuraWallet, commision_);
 
+
+            uint256 OneSideReferralCommision = GetBuyerSellerReferrerCommision() / 2;
+
+            if(buyerReferrerAddress != address(0)){
+                bool transferredBR = tokenContract.transfer(buyerReferrerAddress, OneSideReferralCommision);
+                require(transferredBR, "ERC20 tokens failed to transfer to buyerReferrerAddress");
+                emit TransferSent(address(this), buyerReferrerAddress, OneSideReferralCommision);   
+
+                commision_ += OneSideReferralCommision; // total Commision        
+            }
+
+            if(sellerReferrerAddress != address(0)){
+                bool transferredSR = tokenContract.transfer(sellerReferrerAddress, OneSideReferralCommision);
+                require(transferredSR, "ERC20 tokens failed to transfer to sellerReferrerAddress");
+                emit TransferSent(address(this), sellerReferrerAddress, OneSideReferralCommision);          
+
+                commision_ += OneSideReferralCommision; // total Commision                     
+            }
+
+
             //bool transferred_2 = tokenContract.transferFrom(address(this), receiver, price);
-            bool transferred_2 = tokenContract.transfer(receiver, price - commision_);
+            bool transferred_2 = tokenContract.transfer(receiver, price - commision_);  // based on total Commision
             require(transferred_2, "ERC20 tokens failed to transfer to receiver");
             emit TransferSent(address(this), receiver, price - commision_);
         }
