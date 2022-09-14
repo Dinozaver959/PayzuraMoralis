@@ -1,4 +1,5 @@
 import "../styles/globals.scss";
+import 'react-image-lightbox/style.css';
 import Head from "next/head";
 import { MoralisProvider } from "react-moralis";
 import React, { useState } from "react";

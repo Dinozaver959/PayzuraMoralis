@@ -42,22 +42,17 @@ const Messages = (props) => {
       setSelectedFile(readerEvent.target.result)
     }
   }
-  
-  const sendMessage = async () => {
+
+  const sendMessage = async (e) => {
+    e.preventDefault();
     const Messages = Moralis.Object.extend("Messages");
     const newMessage = new Messages();
-
-    if (selectedFile) {
-      const base64 = selectedFile;
-      const file = new Moralis.File("image.png", { base64 });
-      await file.saveIPFS();
-      newMessage.set("image", file);
-    }
 
     newMessage.save({
       message: message,
       sender: messageSender,
       receiver: messageReceiver,
+      image: selectedFile,
     }).then((message) => {
       console.log("New message created with objectId: " + message.id);
       console.log("receiver :", message.get("receiver"));
@@ -76,6 +71,8 @@ const Messages = (props) => {
     endOfMessages.current.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  const isDisabled = !message.trim() && !selectedFile;
+  
   return (
     <div className="chatbox">
       {messages && messages.map((message) => (
@@ -110,8 +107,8 @@ const Messages = (props) => {
                 </div>
                 <img
                   src={selectedFile}
-                  alt=""
-                  className=""
+                  alt="selected file"
+                  accept="image/*" 
                 />
             </div>
             )}
@@ -125,7 +122,7 @@ const Messages = (props) => {
               </div>
             )}
           </div>
-          <button type='submit' onClick={sendMessage} disabled={!message.trim()}>Send</button>
+          <button type='submit' onClick={sendMessage} disabled={isDisabled}>Send</button>
         </form>
       </div>
     </div>

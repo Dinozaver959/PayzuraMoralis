@@ -87,7 +87,11 @@ export const MessagesUsersList = (props) => {
     const lowerCaseUser = filteredUsersList[index].currentUser;
     const lowerCaseSender = filteredUsersList[index].messages[filteredUsersList[index].messages.length - 1].attributes.sender;
     if (lowerCaseUser === lowerCaseSender) {
-      return "You : " + message;
+      if(message === "") {
+        return "You : (sent an image)";
+      } else {
+        return "You : " + message;
+      }
     } else {
       return message;
     }

@@ -1,4 +1,5 @@
 var Moralis = require("moralis/node");
+// import { GetUserMessagesPair } from "./DB-cloudFunctions.js";
 
 
 // ETH Server
@@ -10,7 +11,33 @@ const serverUrl = "https://gbmvbywfzibe.usemoralis.com:2053/server";
 const appId = "6KNO1YxYUUp26EgElEHsfQ8ywPTJfs6D1C2H2yMR";
 Moralis.start({ serverUrl, appId });
 
-
+// export async function SaveMessageToMoralisDB(
+//     message,
+//     sender,
+//     receiver,
+//     image
+// ) {
+//     const maxMessageID = await GetUserMessagesPair();
+//     const Messages = Moralis.Object.extend("Messages");
+//     const newMessage = new Messages();
+//     newMessage.set("message", message.toLowerCase());
+//     newMessage.set("sender", sender);
+//     newMessage.set("receiver", receiver);
+//     newMessage.set("image", image);
+//     newMessage.set("id_", maxMessageID + 1);
+    
+//     await newMessage.save().then(
+//         (message) => {
+//         console.log("New object created with objectId: " + message.id);
+//         },
+//         (error) => {
+//         console.log(
+//             "Failed to create new object, with error code: " + error.message
+//         );
+//         }
+//     );
+// }
+      
 
 // ERC20 Approval
 export async function UpdateContracts_ERC20ApprovalList(wallet, objectId) {
