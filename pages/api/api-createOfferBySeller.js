@@ -1,6 +1,6 @@
 import middleware from '../../middleware/middleware'
 import nextConnect from 'next-connect'
-import { UpdateContracts_ContractCreatedBySeller, UpdateUserParticipationData } from '../../JS/DB-pushFunctions';
+import { UpdateContracts_ContractCreatedBySeller, UpdateUserParticipationData, UpdateNotifications } from '../../JS/DB-pushFunctions';
 
 const DOMPurify = require('isomorphic-dompurify');
 
@@ -77,6 +77,7 @@ apiRoute.post(async (req, res) => {
         await UpdateUserParticipationData(SellerWallet, "PersonalizedContractsCreatedAsSeller");
     }
 
+    await UpdateNotifications(SellerWallet, "New offer created as a seller");
     res.status(201).end("Offer created");
 })
 

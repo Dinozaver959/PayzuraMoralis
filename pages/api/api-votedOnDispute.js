@@ -1,6 +1,6 @@
 import middleware from '../../middleware/middleware'
 import nextConnect from 'next-connect'
-import { UpdateContracts_EndDispute, UpdateUserParticipationData } from '../../JS/DB-pushFunctions';
+import { UpdateContracts_EndDispute, UpdateUserParticipationData, UpdateNotifications } from '../../JS/DB-pushFunctions';
 
 
 const DOMPurify = require('isomorphic-dompurify');
@@ -43,9 +43,10 @@ apiRoute.post(async (req, res) => {
             await UpdateUserParticipationData(SellerWallet, "DisputesWon");
         }
 
+        await UpdateNotifications(SellerWallet, `Dispute (${objectId}) concluded ${votedForBuyer ? "in favor for buyer" : "in favor for seller"}`);
     }
-
-    res.status(201).end("Offer created");
+    // await UpdateNotifications(ArbiterWallet, "Voted on dispute");
+    res.status(201).end("Dispute voted");
 })
 
 export const config = {

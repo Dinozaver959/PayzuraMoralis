@@ -482,3 +482,33 @@ export async function UpdateUserParticipationData(BuyerWallet, Property){
     } 
 }
 
+//------------------------------------------------------------------------------------------------
+//                                    Notifications
+//------------------------------------------------------------------------------------------------
+
+export async function UpdateNotifications(Wallet, Description) {
+    const Notifications = Moralis.Object.extend("Notifications");
+    const notification = new Notifications();
+    notification.set("Wallet", Wallet.toLowerCase());
+    notification.set("Description", Description);
+
+    await notification.save()
+    .then((notification) => {
+        console.log('New object created with objectId: ' + notification.id);
+    }, (error) => {
+        console.log('Failed to create new object, with error code: ' + error.message);
+    });
+}
+
+export async function SetNotificationsAsRead(Wallet) {
+    const query = new Moralis.Query("Notifications"); 
+    query.equalTo("Wallet", Wallet);
+    query.equalTo("Read", 0);
+    var result = await query.find();
+
+    for (const notification of result) {
+        notification.set("Read", 1);
+        await notification.save()
+    }
+    console.log('Success');
+}

@@ -1,6 +1,6 @@
 import middleware from '../../middleware/middleware'
 import nextConnect from 'next-connect'
-import { UpdateContracts_CancelContract, UpdateUserParticipationData } from '../../JS/DB-pushFunctions';
+import { UpdateContracts_CancelContract, UpdateUserParticipationData, UpdateNotifications } from '../../JS/DB-pushFunctions';
 
 const DOMPurify = require('isomorphic-dompurify');
 
@@ -21,8 +21,9 @@ apiRoute.post(async (req, res) => {
     
     await UpdateContracts_CancelContract(objectId, transactionHash);
     await UpdateUserParticipationData(userWallet, "ContractsCanceled");
-    
-    res.status(201).end("Offer created");
+
+    await UpdateNotifications(userWallet, "Canceled Contract");
+    res.status(201).end("Canceled Contract");
 })
 
 export const config = {

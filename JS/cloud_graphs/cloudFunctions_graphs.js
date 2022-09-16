@@ -741,6 +741,27 @@ Moralis.Cloud.beforeSave("AggregatedEvents", async (request) => {
 
 
 //------------------------------------------------------------------------------------------------
+//                                    Notifications
+//------------------------------------------------------------------------------------------------
+
+
+Moralis.Cloud.define("GetMyNotifications", async (request) => {
+  const query = new Moralis.Query("Notifications");
+  query.equalTo("Wallet", request.params.UserWallet);
+  query.descending("updatedAt")
+  
+  return await query.find();
+});
+Moralis.Cloud.define("GetMyNotificationUnreadCount", async (request) => {
+  const query = new Moralis.Query("Notifications");
+  query.equalTo("Wallet", request.params.UserWallet);
+  query.equalTo("Read", 0);
+  const result = await query.find();
+  return result.length
+});
+
+
+//------------------------------------------------------------------------------------------------
 
 
 

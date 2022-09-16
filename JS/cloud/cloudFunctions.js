@@ -211,7 +211,5 @@ Moralis.Cloud.define("getAllMessages", async (request) => {
   
 });
 
-
-
 // to update the file run 
 // moralis-admin-cli watch-cloud-folder --moralisApiKey NJb8ptNvFULrAUZ --moralisApiSecret Lk8NN6ShmEEoLx0 --mo...main rbfqybjb4vga.usemoralis.com --autoSave 1 --moralisCloudfolder D:\Test\Payzura\payzura\JS\cloud

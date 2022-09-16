@@ -126,3 +126,16 @@ export async function GetAllAggregateData(){
 export async function AggregateData(){ 
   await Moralis.Cloud.run("aggregateData");
 }
+
+//
+//
+//
+
+export async function GetMyNotifications(UserWallet){
+  const params =  { UserWallet : UserWallet };
+  return Moralis.Cloud.run("GetMyNotifications", params);
+}
+export async function GetMyNotificationUnreadCount(UserWallet){
+  const params =  { UserWallet : UserWallet };
+  return Moralis.Cloud.run("GetMyNotificationUnreadCount", params);
+}

@@ -1,6 +1,6 @@
 import middleware from '../../middleware/middleware'
 import nextConnect from 'next-connect'
-import { UpdateContracts_ClaimFunds } from '../../JS/DB-pushFunctions';
+import { UpdateContracts_ClaimFunds, claimFunds } from '../../JS/DB-pushFunctions';
 
 const DOMPurify = require('isomorphic-dompurify');
 
@@ -22,7 +22,8 @@ apiRoute.post(async (req, res) => {
     
     await UpdateContracts_ClaimFunds(objectId, transactionHash)
 
-    res.status(201).end("Offer created");
+    await UpdateNotifications(SellerWallet, "Funds claimed");
+    res.status(201).end("Funds claimed");
 })
 
 export const config = {
