@@ -22,8 +22,8 @@ apiRoute.post(async (req, res) => {
     await UpdateContracts_CancelContract(objectId, transactionHash);
     await UpdateUserParticipationData(userWallet, "ContractsCanceled");
 
-    await UpdateNotifications(userWallet, "Canceled Contract");
-    res.status(201).end("Canceled Contract");
+    await UpdateNotifications(userWallet, "Canceled contract");
+    res.status(201).end("Canceled contract");
 })
 
 export const config = {

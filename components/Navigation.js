@@ -51,9 +51,6 @@ export default function Navigation(props) {
 
   const [modelData, setModelData] = React.useState({
     show: false,
-    type: "alert",
-    status: "Error",
-    message: "",
   });
 
   function closeModelDataHandler() {

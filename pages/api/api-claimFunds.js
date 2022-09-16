@@ -1,6 +1,6 @@
 import middleware from '../../middleware/middleware'
 import nextConnect from 'next-connect'
-import { UpdateContracts_ClaimFunds, claimFunds } from '../../JS/DB-pushFunctions';
+import { UpdateContracts_ClaimFunds, UpdateNotifications } from '../../JS/DB-pushFunctions';
 
 const DOMPurify = require('isomorphic-dompurify');
 

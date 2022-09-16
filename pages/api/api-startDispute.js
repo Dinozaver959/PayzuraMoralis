@@ -27,8 +27,8 @@ apiRoute.post(async (req, res) => {
     await UpdateUserParticipationData(BuyerWallet, "DisputesInvolvedInAsBuyer");
     await UpdateUserParticipationData(SellerWallet, "DisputesInvolvedInAsSeller");
     
-    await UpdateNotifications(BuyerWallet, "New Dispute");
-    await UpdateNotifications(SellerWallet, "New Dispute");
+    await UpdateNotifications(BuyerWallet, `New Dispute ${objectId}`);
+    await UpdateNotifications(SellerWallet, `New Dispute ${objectId}`);
     res.status(201).end("Dispute started");
 })
 
