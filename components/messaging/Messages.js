@@ -37,10 +37,11 @@ const Messages = (props) => {
     if (e.target.files[0]) {
       reader.readAsDataURL(e.target.files[0])
     }
-
+    
     reader.onload = (readerEvent) => {
       setSelectedFile(readerEvent.target.result)
     }
+    filePickerRef.current.value = "";
   }
 
   const sendMessage = async (e) => {
@@ -72,7 +73,7 @@ const Messages = (props) => {
   }, [messages]);
 
   const isDisabled = !message.trim() && !selectedFile;
-  
+
   return (
     <div className="chatbox">
       {messages && messages.map((message) => (
@@ -96,6 +97,7 @@ const Messages = (props) => {
               ref={filePickerRef}
               hidden
               onChange={addImageToPost}
+              accept="image/png, image/jpeg, image/jpg" 
             />
             {selectedFile && (
               <div className="inbox__message__input__file">
@@ -107,8 +109,7 @@ const Messages = (props) => {
                 </div>
                 <img
                   src={selectedFile}
-                  alt="selected file"
-                  accept="image/*" 
+                  alt="selected file"                
                 />
             </div>
             )}

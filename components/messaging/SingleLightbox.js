@@ -8,13 +8,11 @@ const SingleLightbox = ({ src, className, messageContent }) => {
 
   return (
     <>
-      <Image
+      <img
         src={src}
         alt="message image"
         className={className}
         onClick={() => setIsOpen(true)}
-        width={300}
-        height={300}
       />
       {isOpen && (
         <Lightbox

@@ -3,7 +3,6 @@ import { BsCheckAll } from "react-icons/bs";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import SingleLightbox from "./SingleLightbox";
-import Image from "next/image";
 
 const Message = (props) => {
   const { messageSender, messageReceiver, message } = props;
