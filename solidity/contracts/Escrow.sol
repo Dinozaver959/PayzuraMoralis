@@ -11,8 +11,8 @@ contract Escrow is ReentrancyGuard {
     uint256 public price;
     address public tokenContractAddress;   // address(0) -> ETH, other currencies have their contracts
 
-    address private sellerReferrerAddress;
-    address private buyerReferrerAddress;
+    address[] private sellerReferrerAddress;
+    address[] private buyerReferrerAddress;
 
 
     uint256 public deadline;
@@ -22,9 +22,10 @@ contract Escrow is ReentrancyGuard {
     //uint256 public immutable gracePeriod = 86400;   // 24h
     uint256 public immutable gracePeriod = 0;
 
-    uint256 public immutable commision = 10; // 1000 = 100%
-    uint256 public referralCommision;
+    uint256 public immutable commision = 125; // 10000 = 100%
+    //uint256 public referralCommision;
     address public immutable payzuraWallet = 0x1591C783EfB2Bf91b348B6b31F2B04De1442836c;
+    address public immutable jobzura = 0x1591C783EfB2Bf91b348B6b31F2B04De1442836c;
     
     address payable public buyer;
     address[] public arbiters;
@@ -50,8 +51,10 @@ contract Escrow is ReentrancyGuard {
      */
     State public state;
       
-    event TransferSent(address _from, address _destAddr, uint _amount);
-    event TransferReceived(address _from, uint _amount);
+    //event MoneyEarned(address _token, address _from, address _destAddr, uint _amount);
+    //event MoneyEarnedReferral(address _token, address _from, address _destAddr, uint _amount);
+    //event FundsTransfered(address _token, address _from, address _destAddr, uint _amount);
+
 
 
     // --------------------------------------
@@ -113,14 +116,11 @@ contract Escrow is ReentrancyGuard {
     function InitializeSeller (  
         address payable _FactoryAddress,
         address payable _seller,
-        address[] calldata _arbiters, 
         uint256 _price,
         address _tokenContractAddress,
         uint256 _timeAllowedInHours,
         string memory _hashOfDescription,       // calldata?
-        uint256 _offerValidUntil,
-        address[] calldata _personalizedOffer
-        
+        uint256 _offerValidUntil
         ) public {
 
         FactoryAddress = _FactoryAddress;
@@ -131,8 +131,16 @@ contract Escrow is ReentrancyGuard {
         hashOfDescription = _hashOfDescription;
         timeToDeliver = _timeAllowedInHours;      
         offerValidUntil = _offerValidUntil;
+    }
 
+    function InitializeSellerPart2(address[] calldata _arbiters, address[] calldata _personalizedOffer, address[] calldata _referrerAddress) public {
+        
         // loop through to copy all
+        // arbiters
+        for(uint256 i = 0; i < _arbiters.length; i++) {
+            arbiters.push(_arbiters[i]);
+        }
+
         // personalizedOffer
         personalizedOfferCounter = _personalizedOffer.length;
         for(uint256 i = 0; i < _personalizedOffer.length; i++) {
@@ -140,27 +148,22 @@ contract Escrow is ReentrancyGuard {
             personalizedOfferCounter += 1;
         }
 
-        // arbiters
-        for(uint256 i = 0; i < _arbiters.length; i++) {
-            arbiters.push(_arbiters[i]);
-        }
-    }
+      require(_referrerAddress.length <= 3, "at most 3 levels of referrals");
 
-    function InitializeSellerPart2(address _referrerAddress) public {
-        sellerReferrerAddress = _referrerAddress;
+      for(uint256 i = 0; i < _referrerAddress.length; i++) {
+        sellerReferrerAddress.push(_referrerAddress[i]);
+      } 
     }
 
 
     function InitializeBuyer (
       address payable _FactoryAddress,
       address payable _buyer,
-      address[] calldata _arbiters, 
       uint256 _price,
       address _tokenContractAddress,
       uint256 _timeAllowedInHours,
       string memory _hashOfDescription,       // calldata?
-      uint256 _offerValidUntil,
-      address[] calldata _personalizedOffer
+      uint256 _offerValidUntil      
     ) public payable {
         FactoryAddress = _FactoryAddress;
         state = State.buyer_initialized_and_paid;
@@ -175,25 +178,32 @@ contract Escrow is ReentrancyGuard {
             require(msg.value >= _price, "not enough ETH send");        // only for ETH  
         }
         
+
+    }
+
+    function InitializeBuyerPart2(address[] calldata _arbiters, address[] calldata _personalizedOffer, address[] calldata _referrerAddress) public {
+
         if(_personalizedOffer.length > 0){
             state = State.await_seller_accepts;
         }
 
-        // loop through to copy all
+         // loop through to copy all
+        // arbiters
+        for(uint256 i = 0; i < _arbiters.length; i++) {
+            arbiters.push(_arbiters[i]);
+        } 
+        
         // personalizedOffer
         personalizedOfferCounter = _personalizedOffer.length;
         for(uint256 i = 0; i < _personalizedOffer.length; i++) {
             personalizedOffer[_personalizedOffer[i]] = true;
         }
 
-        // arbiters
-        for(uint256 i = 0; i < _arbiters.length; i++) {
-            arbiters.push(_arbiters[i]);
-        }
-    }
+      require(_referrerAddress.length <= 3, "at most 3 levels of referrals");
 
-    function InitializeBuyerPart2(address _referrerAddress) public {
-        buyerReferrerAddress = _referrerAddress;
+      for(uint256 i = 0; i < _referrerAddress.length; i++) {
+        buyerReferrerAddress.push(_referrerAddress[i]);
+      } 
     }
 
 
@@ -246,11 +256,22 @@ contract Escrow is ReentrancyGuard {
     }
 
     function GetCommision() public view returns(uint256){
-        return (uint256(price) / uint256(1000)) * uint256(commision);
+        return (uint256(price) / uint256(10000)) * uint256(commision);
     }
 
-    function GetBuyerSellerReferrerCommision() public view returns(uint256){
-        return (uint256(price) / uint256(1000)) * uint256(referralCommision);   // have it only be a static number for now (TODO: add a 12Months linear falling pattern)
+
+
+    function GetBuyerSellerReferrerCommision(uint256 deployed) public view returns(uint256){
+      return (uint256(price) / uint256(10000)) * GetReferralCommission(deployed);   // have it only be a static number for now (TODO: add a 12Months linear falling pattern)
+    }
+
+    function GetReferralCommission(uint256 deployed) internal view returns(uint256){
+      // initial = 200; // 2% 
+      // then it falls every 90 days by 0.25%, until it reaches 0.5% where is stabilizes
+
+      uint256 _90dayPeriods = (block.timestamp - deployed) / 7776000;   // 90 days = 7.776.000s
+      uint256 current = 200 - 25 * _90dayPeriods;
+      return (current >= 50) ? current : 50;
     }
 
  
@@ -260,11 +281,12 @@ contract Escrow is ReentrancyGuard {
     // ---------------------------------------------------------------------------
 
     // new buyer accepts the agreement    -- later change the `_referralCommision` to be more complex so we can authenticate where the request came from
-    function acceptOfferBuyer(address payable _buyer, uint256 _referralCommision, address _referrerAddress) instate(State.await_payment) external payable {
-
+    //function acceptOfferBuyer(address payable _buyer, uint256 _referralCommision, address[] calldata _referrerAddress) instate(State.await_payment) external payable {
+    function acceptOfferBuyer(address payable _buyer, address[] calldata _referrerAddress) instate(State.await_payment) external payable {
         require(isOfferValid(), "offer is not valid anymore");
         require(isWalletEligibleToAcceptOffer(_buyer), "wallet is not eligible to accept");
-        require(_referralCommision >= 0 && _referralCommision <= 40, "referral commision should be 4% at the most");
+        //require(_referralCommision >= 0 && _referralCommision <= 400, "referral commision should be 4% at the most");
+        require(_referrerAddress.length <= 3, "at most 3 levels of referrals");
 
         if(tokenContractAddress == address(0)){
             // payment in ETH
@@ -273,25 +295,33 @@ contract Escrow is ReentrancyGuard {
           // done on upper level - EscrowFactory
         }
 
+        for(uint256 i = 0; i < _referrerAddress.length; i++) {
+          buyerReferrerAddress.push(_referrerAddress[i]);
+        } 
+
         buyer = _buyer; 
-        buyerReferrerAddress = _referrerAddress;
         deadline = block.timestamp + 3600 * timeToDeliver;
         state = State.paid;
-        referralCommision = _referralCommision;
+        //referralCommision = _referralCommision;
     }
 
     // Seller accepts on agreement made by a Buyer
-    function acceptOfferSeller(address payable _seller, uint256 _referralCommision, address _referrerAddress) instate(State.await_seller_accepts) external {
+    //function acceptOfferSeller(address payable _seller, uint256 _referralCommision, address[] calldata _referrerAddress) instate(State.await_seller_accepts) external {
+    function acceptOfferSeller(address payable _seller, address[] calldata _referrerAddress) instate(State.await_seller_accepts) external {
 
-        require(isOfferValid(), "offer is not valid anymore");
+        require(isOfferValid(), "offer is not valid anymore");  
         require(isWalletEligibleToAcceptOffer(_seller), "wallet is not eligible to accept");
-        require(_referralCommision >= 0 && _referralCommision <= 40, "referral commision should be 4% at the most");
+        //require(_referralCommision >= 0 && _referralCommision <= 400, "referral commision should be 4% at the most");
+        require(_referrerAddress.length <= 3, "at most 3 levels of referrals");
+
+        for(uint256 i = 0; i < _referrerAddress.length; i++) {
+          sellerReferrerAddress.push(_referrerAddress[i]);
+        } 
 
         seller = _seller; 
-        sellerReferrerAddress = _referrerAddress;
         deadline = block.timestamp + 3600 * timeToDeliver;
         state = State.paid;
-        referralCommision = _referralCommision;
+        //referralCommision = _referralCommision;
     }
 
     // not sure if needed
@@ -310,28 +340,60 @@ contract Escrow is ReentrancyGuard {
         state = State.paid;
     }
 
-    function TransferFunds(address payable receiver) internal {
+    function TransferFunds(address payable receiver, uint256 deployed) internal {
 
         if(tokenContractAddress == address(0)){
             // transfer ETH
-                
-            // referralCommision
 
             // transfer commision to the Payzura wallet
-            payable(payzuraWallet).transfer(GetCommision());
+            uint256 payzuraCommision = GetCommision();
+            payable(payzuraWallet).transfer(payzuraCommision);
+            //console.log("transfered to payzura", payzuraCommision);
+            //emit FundsTransfered(address(0), address(this), payzuraWallet, payzuraCommision);
 
-            uint256 OneSideReferralCommision = GetBuyerSellerReferrerCommision() / 2;
+            uint256 OneSideReferralCommision = GetBuyerSellerReferrerCommision(deployed) / 2;
 
-            if(buyerReferrerAddress != address(0)){
-                payable(buyerReferrerAddress).transfer(OneSideReferralCommision);
+            if(OneSideReferralCommision != 0)
+            {
+
+              // Buyer Side referral commision
+              if(buyerReferrerAddress.length > 0){
+                TransferReferralCommisionETH(buyerReferrerAddress[1], (OneSideReferralCommision * 65) / 100);
+
+                if(buyerReferrerAddress.length > 1){
+                  TransferReferralCommisionETH(buyerReferrerAddress[1], (OneSideReferralCommision * 25) / 100);
+                  
+                  if(buyerReferrerAddress.length > 2){
+                    TransferReferralCommisionETH(buyerReferrerAddress[2], (OneSideReferralCommision * 10) / 100);
+                  }
+                }
+              }
+              
+
+              // Seller side referral commision
+              if(sellerReferrerAddress.length > 0){
+                TransferReferralCommisionETH(sellerReferrerAddress[0], (OneSideReferralCommision * 65) / 100);
+
+                if(sellerReferrerAddress.length > 1){
+                  TransferReferralCommisionETH(sellerReferrerAddress[1], (OneSideReferralCommision * 25) / 100);
+                  
+                  if(sellerReferrerAddress.length > 2){
+                    TransferReferralCommisionETH(sellerReferrerAddress[2], (OneSideReferralCommision * 10) / 100);
+                  }
+                }
+              }
+
+
+
+              // Jobzura commision: 275 - GetReferralCommission
+              TransferReferralCommisionETH(jobzura, ((uint256(price) / uint256(10000)) * (275 - GetReferralCommission(deployed))));
             }
-            
-            if(sellerReferrerAddress != address(0)){
-                payable(sellerReferrerAddress).transfer(OneSideReferralCommision);                
-            }
+
 
             // transfer the remaining amount to the receiver
-            receiver.transfer(address(this).balance);
+            //emit MoneyEarned(address(0), address(this), receiver, address(this).balance);
+            //console.log("transfering the rest to receiver", address(this).balance); 
+            receiver.transfer(address(this).balance);   
         
         } else {
 
@@ -340,37 +402,55 @@ contract Escrow is ReentrancyGuard {
             //bool transferred = tokenContract.transferFrom(address(this), payzuraWallet, commision_);                    // think we might need to set the approval for the EscrowFactory to move ERC20 of the contract instance (we set the approval when creating the escrow contract instance)
             bool transferred = tokenContract.transfer(payzuraWallet, commision_);
             require(transferred, "ERC20 tokens failed to transfer to payzuraWallet");
-            emit TransferSent(address(this), payzuraWallet, commision_);
+            //emit FundsTransfered(tokenContractAddress, address(this), payzuraWallet, commision_);
 
 
-            uint256 OneSideReferralCommision = GetBuyerSellerReferrerCommision() / 2;
+            uint256 OneSideReferralCommision = GetBuyerSellerReferrerCommision(deployed) / 2;
 
-            if(buyerReferrerAddress != address(0)){
-                bool transferredBR = tokenContract.transfer(buyerReferrerAddress, OneSideReferralCommision);
-                require(transferredBR, "ERC20 tokens failed to transfer to buyerReferrerAddress");
-                emit TransferSent(address(this), buyerReferrerAddress, OneSideReferralCommision);   
+            if(OneSideReferralCommision != 0)
+            {
+              // Buyer Side referral commision
+              commision_ += TransferReferralCommisionERC20(buyerReferrerAddress[2], (OneSideReferralCommision * 10) / 100, tokenContract);
+              commision_ += TransferReferralCommisionERC20(buyerReferrerAddress[1], (OneSideReferralCommision * 25) / 100, tokenContract);
+              commision_ += TransferReferralCommisionERC20(buyerReferrerAddress[0], (OneSideReferralCommision * 65) / 100, tokenContract);
 
-                commision_ += OneSideReferralCommision; // total Commision        
-            }
+              // Seller Side referral commision
+              commision_ += TransferReferralCommisionERC20(sellerReferrerAddress[2], (OneSideReferralCommision * 10) / 100, tokenContract);
+              commision_ += TransferReferralCommisionERC20(sellerReferrerAddress[1], (OneSideReferralCommision * 25) / 100, tokenContract);
+              commision_ += TransferReferralCommisionERC20(sellerReferrerAddress[0], (OneSideReferralCommision * 65) / 100, tokenContract);
 
-            if(sellerReferrerAddress != address(0)){
-                bool transferredSR = tokenContract.transfer(sellerReferrerAddress, OneSideReferralCommision);
-                require(transferredSR, "ERC20 tokens failed to transfer to sellerReferrerAddress");
-                emit TransferSent(address(this), sellerReferrerAddress, OneSideReferralCommision);          
-
-                commision_ += OneSideReferralCommision; // total Commision                     
+              // Jobzura commision: 275 - GetReferralCommission
+              commision_ += TransferReferralCommisionERC20(jobzura, ((uint256(price) / uint256(10000)) * (275 - GetReferralCommission(deployed))), tokenContract);
             }
 
 
             //bool transferred_2 = tokenContract.transferFrom(address(this), receiver, price);
             bool transferred_2 = tokenContract.transfer(receiver, price - commision_);  // based on total Commision
             require(transferred_2, "ERC20 tokens failed to transfer to receiver");
-            emit TransferSent(address(this), receiver, price - commision_);
+            //emit MoneyEarned(tokenContractAddress, address(this), receiver, price - commision_);
         }
 
         // change from 'transferFrom' function to 'transfer' function
         // deploy on Polygon and test on payzura local 
     }
+
+    function TransferReferralCommisionETH(address receiver, uint256 amount) internal {
+      if(receiver != address(0)){
+        payable(receiver).transfer(amount);   // 10% for 3rd lvl referral
+        //emit MoneyEarnedReferral(address(0), address(this), receiver, amount);
+        //console.log("transfered", amount);
+      }
+    }
+
+    function TransferReferralCommisionERC20(address receiver, uint256 amount, IERC20 tokenContract) internal returns(uint256){
+      if(receiver != address(0)){
+        bool transferredBR = tokenContract.transfer(receiver, amount);
+        require(transferredBR, "ERC20 tokens failed to transfer to receiver");
+        //emit MoneyEarnedReferral(tokenContractAddress, address(this), receiver, amount);   
+        return amount;       
+      }
+      return 0;
+    } 
 
 
     function TransferFundsNoCommision(address payable receiver) internal {
@@ -385,7 +465,7 @@ contract Escrow is ReentrancyGuard {
                 bool transferred = tokenContract.transfer(receiver, balance);
                 //bool transferred = tokenContract.transferFrom(address(this), receiver, balance);
                 require(transferred, "ERC20 tokens failed to transfer to receiver");
-                emit TransferSent(address(this), receiver, balance);                
+                //emit TransferSent(address(this), receiver, balance);    //it wasn't earned               
             }
         }
     }
@@ -395,16 +475,16 @@ contract Escrow is ReentrancyGuard {
     // --------------------------------------
 
     // seller can claim the funds if no dispute and the (deadline + gracePeriod) has passed
-    function claimFunds(address _seller) instate(State.paid) onlySellerOrDelegate(_seller) external payable {
+    function claimFunds(address _seller, uint256 deployed) instate(State.paid) onlySellerOrDelegate(_seller) external payable {
         require(block.timestamp > deadline + gracePeriod, "Not able to claim yet. Buyer still has time to open dispute");
-        TransferFunds(seller);
+        TransferFunds(seller, deployed);
         state = State.complete;
         return;
     }
 
     // seller can return the payment and cancel the agreement
     function returnPayment(address _seller) instate(State.paid) onlySellerOrDelegate(_seller) external payable {
-        TransferFunds(buyer);
+        TransferFundsNoCommision(buyer);
         state = State.complete;
         return;
     }
@@ -456,8 +536,9 @@ contract Escrow is ReentrancyGuard {
     }
 
     // buyer can release the funds - work was done and confirmed
-    function confirmDelivery(address _buyer) instate(State.paid) onlyBuyerOrDelegate(_buyer) external payable { 
-        TransferFunds(seller);
+    function confirmDelivery(address _buyer, uint256 deployed) instate(State.paid) onlyBuyerOrDelegate(_buyer) external payable { 
+        //console.log("inside confirmDelivery");
+        TransferFunds(seller, deployed);
         state = State.complete;
         return;
     }
@@ -508,7 +589,10 @@ contract Escrow is ReentrancyGuard {
     //             ONLY ARBITER
     // --------------------------------------
 
-    function handleDispute(address _arbiter, bool returnFundsToBuyer) instate(State.dispute) onlyArbiters(_arbiter) external payable returns(bool){
+
+  /*
+
+    function handleDispute(address _arbiter, bool returnFundsToBuyer, uint256 deployed) instate(State.dispute) onlyArbiters(_arbiter) external payable returns(bool){
         
         // add a vote
         if(returnFundsToBuyer){
@@ -531,11 +615,13 @@ contract Escrow is ReentrancyGuard {
         if(votes[2] > votes[1] + votes[0]){
             // send funds to the seller
             //seller.transfer(address(this).balance);
-            TransferFunds(seller);
+            TransferFunds(seller, deployed);
             state = State.complete;
             return true;
         }
 
         return false;
     }
+
+    */
 }

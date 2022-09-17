@@ -8,6 +8,8 @@ const hre = require("hardhat");
 
 async function main() {
 
+  console.log("Starting Hardhat scripts/deploy.....");
+
   // deploy the contract template
   const Escrow = await hre.ethers.getContractFactory("Escrow");
   const escrow = await Escrow.deploy();
@@ -28,35 +30,37 @@ async function main() {
   //------------------------------------------------------------------------------
 
 
-  await escrowFactory.CreateEscrowSeller(
-    ["0xdD870fA1b7C4700F2BD7f44238821C26f7392148", "0x583031D1113aD414F02576BD6afaBfb302140225", "0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB"], 
-    hre.ethers.utils.parseEther("0.001"), 
-    "0x0000000000000000000000000000000000000000", 
-    1, 
-    "a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6", 
-    1784214826, 
-    []
-  );
+  /*
 
-  // get index of totalSupply
-  let numberOfContracts = await escrowFactory.clonedContractsIndex();
-  console.log(`numberOfContracts: ${numberOfContracts}`);
+    await escrowFactory.CreateEscrowSeller(
+      ["0xdD870fA1b7C4700F2BD7f44238821C26f7392148", "0x583031D1113aD414F02576BD6afaBfb302140225", "0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB"], 
+      hre.ethers.utils.parseEther("0.001"), 
+      "0x0000000000000000000000000000000000000000", 
+      1, 
+      "a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6", 
+      1784214826, 
+      []
+    );
 
-  let addressOfContract0 = await escrowFactory.GetAddress(0);
-  console.log(`addressOfContract0: ${addressOfContract0}`);
+    // get index of totalSupply
+    let numberOfContracts = await escrowFactory.clonedContractsIndex();
+    console.log(`numberOfContracts: ${numberOfContracts}`);
 
-  // buyer accepts the contract
-  await escrowFactory.AcceptOfferBuyer(
-    numberOfContracts - 1, 
-    { value: hre.ethers.utils.parseEther("0.001") }
-  );
-  console.log(`Contract Accepted: ${addressOfContract0}`);
+    let addressOfContract0 = await escrowFactory.GetAddress(0);
+    console.log(`addressOfContract0: ${addressOfContract0}`);
 
-  // buyer confirms delivery
-  await escrowFactory.ConfirmDelivery(numberOfContracts - 1);
-  console.log(`Delivery Confirmed: ${addressOfContract0}`);
+    // buyer accepts the contract
+    await escrowFactory.AcceptOfferBuyer(
+      numberOfContracts - 1, 
+      { value: hre.ethers.utils.parseEther("0.001") }
+    );
+    console.log(`Contract Accepted: ${addressOfContract0}`);
 
+    // buyer confirms delivery
+    await escrowFactory.ConfirmDelivery(numberOfContracts - 1);
+    console.log(`Delivery Confirmed: ${addressOfContract0}`);
 
+  */
 
   //------------------------------------------------------------------------------
   //                  create a buyer -> seller contract (ETH)
@@ -64,37 +68,62 @@ async function main() {
 
 
   await escrowFactory.CreateEscrowBuyer(
-    ["0xdD870fA1b7C4700F2BD7f44238821C26f7392148", "0x583031D1113aD414F02576BD6afaBfb302140225", "0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB"], 
-    hre.ethers.utils.parseEther("0.001"), 
+    ["0x976EA74026E726554dB657fA54763abd0C3a0aa9", "0x14dC79964da2C08b23698B3D3cc7Ca32193d9955", "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"], 
+    hre.ethers.utils.parseEther("100"), // 0.001 
     "0x0000000000000000000000000000000000000000", 
+    ["0x70997970C51812dc3A010C7d01b50e0d17dc79C8", "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC", "0x90F79bf6EB2c4f870365E785982E1f101E93b906"],
     1, 
     "a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6", 
     1784214826, 
-    [],
-    { value: hre.ethers.utils.parseEther("0.001") }
+    ["0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"],
+    { value: hre.ethers.utils.parseEther("100") } // 0.001
   );
 
   numberOfContracts = await escrowFactory.clonedContractsIndex();
   console.log(`numberOfContracts: ${numberOfContracts}`);
 
-  let addressOfContract1 = await escrowFactory.GetAddress(1);
+  let addressOfContract1 = await escrowFactory.GetAddress(0);
   console.log(`addressOfContract1: ${addressOfContract1}`);
 
-  let stateOfContract1 = await escrowFactory.GetState(1);
+  let stateOfContract1 = await escrowFactory.GetState(0);
   console.log(`stateOfContract1: ${stateOfContract1}`);
 
   // buyer needs to select sellers
-  let sender = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
-  console.log(`sender: ${sender}`);
-  await escrowFactory.AddBuyerPersonalizedOffer(numberOfContracts - 1, [sender]);
-
-  stateOfContract1 = await escrowFactory.GetState(1);
-  console.log(`stateOfContract1: ${stateOfContract1}`);
+  //let sender = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
+  //console.log(`sender: ${sender}`);
+  //await escrowFactory.AddBuyerPersonalizedOffer(numberOfContracts - 1, [sender]);
+  //stateOfContract1 = await escrowFactory.GetState(1);
+  //console.log(`stateOfContract1: ${stateOfContract1}`);
 
   // seller accepts the contract
-  await escrowFactory.AcceptOfferSeller(numberOfContracts - 1);
+  await escrowFactory.AcceptOfferSeller(
+    numberOfContracts - 1,
+    //275, // 4%                                // remove this - lets just have a Jobzura implementation of the Escrow contract - EscrowFactory can have more than 1 implementation (make it so it is a stack of implementations so we can later add new ones)
+    [] //["0x70997970C51812dc3A010C7d01b50e0d17dc79C8", "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC", "0x90F79bf6EB2c4f870365E785982E1f101E93b906"] //["0x80038953cE1CdFCe7561Abb73216dE83F8baAEf0", "0x1591C783EfB2Bf91b348B6b31F2B04De1442836c", "0xfDB177128E6DBc71b7012761984558123CCD5224"]
+  );
+
+
+  // buyer confirms delivery
+  await escrowFactory.ConfirmDelivery(numberOfContracts - 1);
+
+
+
 
   
+  // get balances of local accounts
+  const accounts = await hre.ethers.getSigners();
+  const provider = hre.ethers.provider;
+
+  for (const account of accounts) {
+    console.log(
+      "%s (%i ETH)",
+      account.address,
+      //hre.ethers.utils.formatEther(
+        // getBalance returns wei amount, format to ETH amount
+        await provider.getBalance(account.address)
+      //)
+    );
+  }
 
 }
 

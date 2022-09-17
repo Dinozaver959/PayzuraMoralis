@@ -13,6 +13,7 @@ contract EscrowFactory is ReentrancyGuard {
 
     address public admin;
     address public implementation;
+    uint256 public deployed;
     mapping (uint256 => address) clonedContracts;
     uint256 public clonedContractsIndex = 0;
 
@@ -40,6 +41,7 @@ contract EscrowFactory is ReentrancyGuard {
     constructor (address _implementation) {
         implementation = _implementation;
         admin = msg.sender;
+        deployed = block.timestamp;
     }
 
     function SetImplementation (address _implementation) onlyAdmin public {
@@ -56,7 +58,7 @@ contract EscrowFactory is ReentrancyGuard {
         address[] calldata arbiters,
         uint256 price,
         address tokenContractAddress,
-        address referrerAddress,
+        address[] calldata referrerAddress,
         uint256 timeToDeliver,
         string memory hashOfDescription,
         uint256 offerValidUntil,
@@ -70,25 +72,25 @@ contract EscrowFactory is ReentrancyGuard {
         // ["0xdD870fA1b7C4700F2BD7f44238821C26f7392148", "0x583031D1113aD414F02576BD6afaBfb302140225", "0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB"], 100000000000000000, "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", 1, a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6, 1784214826, []
 
     ) external {
-        address clone = Clones.clone(implementation);
+        {
+            address clone = Clones.clone(implementation);
 
-        Escrow(clone).InitializeSeller(
-            payable(address(this)),         // the Factory contract
-            payable(msg.sender),            // seller,
-            arbiters,
-            price,
-            tokenContractAddress,
-            timeToDeliver,
-            hashOfDescription,
-            offerValidUntil,
-            personalizedOffer
-        );
+            Escrow(clone).InitializeSeller(
+                payable(address(this)),         // the Factory contract
+                payable(msg.sender),            // seller,
+                price,
+                tokenContractAddress,
+                timeToDeliver,
+                hashOfDescription,
+                offerValidUntil
+            );
 
-        Escrow(clone).InitializeSellerPart2(referrerAddress);
+            Escrow(clone).InitializeSellerPart2(arbiters, personalizedOffer, referrerAddress);
 
 
-        clonedContracts[clonedContractsIndex] = clone;
-        clonedContractsIndex++;
+            clonedContracts[clonedContractsIndex] = clone;
+            clonedContractsIndex++;
+        } // this is block scoping to avoid stack too deep for the code that follows later: https://soliditydeveloper.com/stacktoodeep
 
         emit OfferCreatedSeller(clonedContractsIndex, msg.sender, personalizedOffer, arbiters);
     }
@@ -99,7 +101,7 @@ contract EscrowFactory is ReentrancyGuard {
         address[] calldata arbiters,
         uint256 price,
         address tokenContractAddress,
-        address referrerAddress,
+        address[] calldata referrerAddress,
         uint256 timeToDeliver,
         string memory hashOfDescription,
         uint256 offerValidUntil,
@@ -113,27 +115,25 @@ contract EscrowFactory is ReentrancyGuard {
         // ["0xdD870fA1b7C4700F2BD7f44238821C26f7392148", "0x583031D1113aD414F02576BD6afaBfb302140225", "0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB"], 100000000000000000, "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", 1, a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6, 1784214826, []
         // 100000000000000000
 
-    ) external payable{
+    ) external payable {
+       {        
         address clone = Clones.clone(implementation);
-
+ 
         Escrow(clone).InitializeBuyer{value: msg.value}(
             payable(address(this)),         // the Factory contract
             payable(msg.sender),            // buyer,
-            arbiters,
-            price,
+            price, 
             tokenContractAddress,
             timeToDeliver,
             hashOfDescription,
-            offerValidUntil,
-            personalizedOffer
+            offerValidUntil
         );
 
-        Escrow(clone).InitializeBuyerPart2(referrerAddress);
+        Escrow(clone).InitializeBuyerPart2(arbiters, personalizedOffer, referrerAddress);
 
         clonedContracts[clonedContractsIndex] = clone;
 
 
-        // transfer ERC20 (ETH is transfered at the contract instance level)
         if(tokenContractAddress != address(0)){
           // payment in tokenContractAddress currency
           IERC20 tokenContract = IERC20(tokenContractAddress);
@@ -141,8 +141,16 @@ contract EscrowFactory is ReentrancyGuard {
           require(transferred, "ERC20 tokens failed to transfer to contract wallet");
         }
 
+        /* 
+        // transfer ERC20 (ETH is transfered at the contract instance level)
+        if(tokenContractAddress != address(0)){
+          // payment in tokenContractAddress currency
+          IERC20 tokenContract = IERC20(tokenContractAddress);
+          bool transferred = tokenContract.transferFrom(msg.sender, GetAddress(clonedContractsIndex), price);   // transfer to the contract instance    +  make sure user gives UNLIMITED approval to the main EscrowFactory before hand
+          require(transferred, "ERC20 tokens failed to transfer to contract wallet");
+        }
+        */
 
-        
 
         // 1st prefered option is to do the payment transfer inside the InitializeBuyer, on the Escrow level
         // coded - need to test it now
@@ -155,9 +163,13 @@ contract EscrowFactory is ReentrancyGuard {
         // Escrow(clonedContracts[clonedContractsIndex]).getArbiters();
 
         clonedContractsIndex++;
+        } // this is block scoping to avoid stack too deep for the code that follows later: https://soliditydeveloper.com/stacktoodeep
 
         emit OfferCreatedBuyer(clonedContractsIndex, msg.sender, personalizedOffer, arbiters);
     }
+
+
+
 
 
 
@@ -250,13 +262,11 @@ contract EscrowFactory is ReentrancyGuard {
     }
 
 
-
-
     // WRITE FUNCTIONS
 
     // new buyer accepts the agreement
-    function AcceptOfferBuyer(uint256 index, uint256 _referralCommision, address referrerAddress) external payable{
-
+    //function AcceptOfferBuyer(uint256 index, uint256 _referralCommision, address[] calldata referrerAddress) external payable{
+    function AcceptOfferBuyer(uint256 index, address[] calldata referrerAddress) external payable{
       address tokenContractAddress = Escrow(clonedContracts[index]).tokenContractAddress();
       uint256 price = Escrow(clonedContracts[index]).price();
 
@@ -270,15 +280,16 @@ contract EscrowFactory is ReentrancyGuard {
 
 
       // call the instance and finish the accept offer
-      Escrow(clonedContracts[index]).acceptOfferBuyer{value: msg.value}(payable(msg.sender), _referralCommision, referrerAddress);
+      Escrow(clonedContracts[index]).acceptOfferBuyer{value: msg.value}(payable(msg.sender), referrerAddress);
       emit OfferAcceptedBuyer(clonedContractsIndex, msg.sender, price, tokenContractAddress);
     }
 
-    function AcceptOfferSeller(uint256 index, uint256 _referralCommision, address referrerAddress) external {
+    //function AcceptOfferSeller(uint256 index, uint256 _referralCommision, address[] calldata referrerAddress) external {
+    function AcceptOfferSeller(uint256 index, address[] calldata referrerAddress) external {
         address tokenContractAddress = Escrow(clonedContracts[index]).tokenContractAddress();
         uint256 price = Escrow(clonedContracts[index]).price();
 
-        Escrow(clonedContracts[index]).acceptOfferSeller(payable(msg.sender), _referralCommision, referrerAddress);
+        Escrow(clonedContracts[index]).acceptOfferSeller(payable(msg.sender), referrerAddress);
         emit OfferAcceptedSeller(clonedContractsIndex, msg.sender, price, tokenContractAddress);
     } 
 
@@ -353,7 +364,7 @@ contract EscrowFactory is ReentrancyGuard {
         address tokenContractAddress = Escrow(clonedContracts[index]).tokenContractAddress();
         uint256 price = Escrow(clonedContracts[index]).price();
 
-        Escrow(clonedContracts[index]).claimFunds(msg.sender);
+        Escrow(clonedContracts[index]).claimFunds(msg.sender, deployed);
         emit FundsClaimed(clonedContractsIndex, msg.sender, price, tokenContractAddress);
     } 
 
@@ -403,7 +414,7 @@ contract EscrowFactory is ReentrancyGuard {
         address tokenContractAddress = Escrow(clonedContracts[index]).tokenContractAddress();
         uint256 price = Escrow(clonedContracts[index]).price();
 
-        Escrow(clonedContracts[index]).confirmDelivery(msg.sender);
+        Escrow(clonedContracts[index]).confirmDelivery(msg.sender, deployed);
         emit DeliveryConfirmed(clonedContractsIndex, msg.sender, price, tokenContractAddress);
     } 
 
@@ -437,12 +448,12 @@ contract EscrowFactory is ReentrancyGuard {
     }
 
 
-
+  /*
 
     // ONLY ARBITER
     function HandleDispute(uint256 index, bool returnFundsToBuyer) external payable {
 
-        bool caseClosed = Escrow(clonedContracts[index]).handleDispute(msg.sender, returnFundsToBuyer);
+        bool caseClosed = Escrow(clonedContracts[index]).handleDispute(msg.sender, returnFundsToBuyer, deployed);
         emit DisputeVoted(clonedContractsIndex, msg.sender, returnFundsToBuyer);
 
         if(caseClosed){
@@ -453,5 +464,7 @@ contract EscrowFactory is ReentrancyGuard {
             emit DisputeClosed(clonedContractsIndex, returnFundsToBuyer, price, tokenContractAddress);
         }
     }
+
+    */
 
 }

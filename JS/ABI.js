@@ -225,5 +225,5 @@ export const ABI_ERC20 = [
 ]
 
 // to get new ABI files, run:
-// solcjs --abi -o output EscrowFactory.sol
+// solcjs --abi --optimize -o output EscrowFactory.sol
 

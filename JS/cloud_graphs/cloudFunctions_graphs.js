@@ -75,18 +75,68 @@ Moralis.Cloud.define("IsUserAlreadyInDB", async (request) => {
 
 Moralis.Cloud.define("GetReferredBy", async (request) => {
   const query = new Moralis.Query("ReferralCodes");
-
-  // basically need to find which row contains `ReferralCodeUsed`
-  query.contains("ReferralCodesCreated", request.params.ReferralCodeUsed);    // maybe:  equalTo
+  query.equalTo("ReferralCodeGenerated", request.params.ReferralCodeUsed);
 
   const res = await query.find();
   if (res.length > 0) {
-    return res[0].UserAddress;
+    return res[0].get("UserAddress");
   }
-    
   return res;
 });
 
+
+Moralis.Cloud.define("GetReferralChain3", async (request) => {
+
+  var referralChain = [];
+
+  const q1 = new Moralis.Query("Referrals");
+  q1.equalTo("UserAddress", request.params.UserWallet);
+
+  const res = await q1.find();
+  if (res.length > 0) {
+    const ref = res[0].get("ReferredBy");
+    
+    if (ref.length > 0) { // some data - probably need a better check
+      referralChain.push(ref);
+
+
+      
+      // do 2 more loops for lvl 2 and lvl 3 ...
+      const q2 = new Moralis.Query("Referrals");
+      q2.equalTo("UserAddress", ref);
+
+      const res2 = await q2.find();
+      if (res2.length > 0) {
+        
+        const ref2 = res2[0].get("ReferredBy");
+        
+        if (ref2.length > 0) { // some data - probably need a better check
+          referralChain.push(ref2);
+
+
+          
+          // do loop for lvl 3 ...
+          const q3 = new Moralis.Query("Referrals");
+          q3.equalTo("UserAddress", ref2);
+    
+          const res3 = await q3.find();
+          if (res3.length > 0) {
+            
+            const ref3 = res3[0].get("ReferredBy");
+            
+            if (ref3.length > 0) { // some data - probably need a better check
+              referralChain.push(ref3);
+            }
+            
+          }
+        }
+        
+      }
+
+    }
+  }
+  return referralChain;
+});
 
 
 //------------------------------------------------------------------------------------------------
