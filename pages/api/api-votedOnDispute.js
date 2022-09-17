@@ -1,3 +1,4 @@
+import {Moralis} from '../../JS/DB-cloudFunctions'
 import middleware from '../../middleware/middleware'
 import nextConnect from 'next-connect'
 import { UpdateContracts_EndDispute, UpdateUserParticipationData, UpdateNotifications } from '../../JS/DB-pushFunctions';
@@ -42,8 +43,12 @@ apiRoute.post(async (req, res) => {
         } else {
             await UpdateUserParticipationData(SellerWallet, "DisputesWon");
         }
-
-        await UpdateNotifications(SellerWallet, `Dispute (${objectId}) concluded ${votedForBuyer ? "in favor for buyer" : "in favor for seller"}`);
+        const query = new Moralis.Query("Agreements");
+        query.equalTo("objectId", objectId);
+        const agreement = await query.first();
+        
+        await UpdateNotifications(SellerWallet, `Dispute on "${agreement.get("ContractTitle")}" contract concluded ${votedForBuyer ? "in favor for buyer" : "in favor for seller"}`);
+        await UpdateNotifications(BuyerWallet, `Dispute on "${agreement.get("ContractTitle")}" contract concluded ${votedForBuyer ? "in favor for buyer" : "in favor for seller"}`);
     }
     // await UpdateNotifications(ArbiterWallet, "Voted on dispute");
     res.status(201).end("Dispute voted");

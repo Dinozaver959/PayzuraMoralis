@@ -1,3 +1,4 @@
+import {Moralis} from '../../JS/DB-cloudFunctions'
 import middleware from '../../middleware/middleware'
 import nextConnect from 'next-connect'
 import { UpdateContracts_ContractCreatedBySeller, UpdateUserParticipationData, UpdateNotifications } from '../../JS/DB-pushFunctions';
@@ -77,7 +78,7 @@ apiRoute.post(async (req, res) => {
         await UpdateUserParticipationData(SellerWallet, "PersonalizedContractsCreatedAsSeller");
     }
 
-    await UpdateNotifications(SellerWallet, "New offer created as a seller");
+    await UpdateNotifications(SellerWallet, `New offer created as a seller: "${ContractTitle}"`);
     res.status(201).end("Offer created");
 })
 

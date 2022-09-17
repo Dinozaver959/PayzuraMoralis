@@ -1,3 +1,4 @@
+import {Moralis} from '../../JS/DB-cloudFunctions'
 import middleware from '../../middleware/middleware'
 import nextConnect from 'next-connect'
 import { UpdateContracts_StartDispute, UpdateUserParticipationData, UpdateNotifications } from '../../JS/DB-pushFunctions';
@@ -27,8 +28,12 @@ apiRoute.post(async (req, res) => {
     await UpdateUserParticipationData(BuyerWallet, "DisputesInvolvedInAsBuyer");
     await UpdateUserParticipationData(SellerWallet, "DisputesInvolvedInAsSeller");
     
-    await UpdateNotifications(BuyerWallet, `New Dispute ${objectId}`);
-    await UpdateNotifications(SellerWallet, `New Dispute ${objectId}`);
+    const query = new Moralis.Query("Agreements");
+    query.equalTo("objectId", objectId);
+    const agreement = await query.first();
+
+    await UpdateNotifications(BuyerWallet, `New Dispute for "${agreement.get("ContractTitle")}" contract`);
+    await UpdateNotifications(SellerWallet, `New Dispute for "${agreement.get("ContractTitle")}" contract`);
     res.status(201).end("Dispute started");
 })
 

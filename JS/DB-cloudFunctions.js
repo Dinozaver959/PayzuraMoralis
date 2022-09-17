@@ -1,4 +1,4 @@
-var Moralis = require("moralis/node");
+export var Moralis = require("moralis/node");
 
 // ETH Server
 //const serverUrl = "https://rbfqybjb4vga.usemoralis.com:2053/server";
@@ -8,8 +8,6 @@ var Moralis = require("moralis/node");
 const serverUrl = "https://gbmvbywfzibe.usemoralis.com:2053/server";
 const appId = "6KNO1YxYUUp26EgElEHsfQ8ywPTJfs6D1C2H2yMR";
 Moralis.start({ serverUrl, appId });
-
-
 
 //-----------------------------------------------------------------------------------------------
 //                             Functions for new /my-contracts page

@@ -180,7 +180,6 @@ export default function Navigation(props) {
             <NotificationIc 
               onClick={() =>
                 {
-                  setNotificationsRead(true)
                   setModelData({
                     show: true,
                     type: "modal",
@@ -189,6 +188,7 @@ export default function Navigation(props) {
                       <Notifications/>
                     ),
                   })
+                  setNotificationsRead(true)
                 }
               }
             />

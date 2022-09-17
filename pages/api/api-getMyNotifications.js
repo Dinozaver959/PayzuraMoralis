@@ -1,3 +1,4 @@
+import {Moralis} from '../../JS/DB-cloudFunctions'
 import middleware from '../../middleware/middleware'
 import nextConnect from 'next-connect'
 import {GetMyNotifications} from '../../JS/DB-cloudFunctions'
@@ -16,7 +17,10 @@ apiRoute.get(async (req, res) => {
 
     console.log("UserWallet: " + UserWallet);
     const notifications = await GetMyNotifications(UserWallet);
-    await SetNotificationsAsRead(UserWallet)
+
+    // set read to notifications, use delay so strict mode does not interfere
+    setTimeout(() => SetNotificationsAsRead(UserWallet), 1000)
+    
     
 
     console.log("server, UserWallet: " + UserWallet);

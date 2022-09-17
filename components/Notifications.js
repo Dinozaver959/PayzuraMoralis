@@ -7,6 +7,8 @@ import Avatar from '@mui/material/Avatar';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
 
+import NotificationIc from "./icons/Notification";
+
 import { GetWallet_NonMoralis } from "../JS/local_web3_Moralis";
 import React, { useState, useEffect, Fragment } from "react";
 
@@ -23,13 +25,12 @@ function Notifications() {
     )
       .then((res) => res.json())
       .then((json) => {
-        console.log(json)
         setDataNotifications(json)
       });
   }
 
   useEffect(() => {
-    apis() 
+    apis()
   }, [])
 
   /* const exampleData = [
@@ -48,12 +49,20 @@ function Notifications() {
       aria-label="Notifications"
     >
       {dataNotifications.map((item) => (
-        <ListItem disablePadding>
+        <ListItem disablePadding key={item.objectId}>
           <ListItemButton>
             <ListItemAvatar>
-              <Avatar>
-                Icon
-              </Avatar>
+            { item.Read ? (
+              <div className='notificationReadIc'>
+                <NotificationIc />
+              </div>
+                
+              ) : (
+                <div className='notificationUnreadIc'>
+                <NotificationIc />
+              </div>
+              )
+            }
             </ListItemAvatar>
             <ListItemText 
             primary={item.Description} 
@@ -67,7 +76,7 @@ function Notifications() {
                 >
                   text
                 </Typography>-->*/}
-                {item.createdAt}
+                {(new Date(item.createdAt)).toLocaleDateString() + ', ' + (new Date(item.createdAt)).toLocaleTimeString()}
               </React.Fragment> 
             }
             />
