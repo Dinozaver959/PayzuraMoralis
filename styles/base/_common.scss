@@ -117,6 +117,23 @@
   @include BorderRadius(40px);
 }
 
+.notificationReadIc {
+  @include Size(24px, 24px);
+  @extend %FlexCol-CenterCenter;
+
+  path {
+    fill: $PrimaryColor;
+  }
+}
+.notificationUnreadIc {
+  @include Size(24px, 24px);
+  @extend %FlexCol-CenterCenter;
+
+  path {
+    fill: $SecondaryColor;
+  }
+}
+
 .hideSmallerThanIpad {
   @include RespondTo(IpadDevices) {
     display: none !important;

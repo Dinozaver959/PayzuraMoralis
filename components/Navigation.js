@@ -1,4 +1,6 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { GetWallet_NonMoralis } from "../JS/local_web3_Moralis";
+
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Tooltip from "@mui/material/Tooltip";
@@ -21,6 +23,8 @@ import MobileMenuIc from "./icons/MobileMenu";
 import PlusIc from "./icons/Plus";
 
 import ConnectWallet from "./../components/ConnectWallet";
+import Notifications from "./../components/Notifications";
+import ModalUi from "./ui/ModalUi";
 import ServicesListedIc from "./icons/ServicesListed";
 
 export default function Navigation(props) {
@@ -39,11 +43,38 @@ export default function Navigation(props) {
   useOutsideClick(dropdownRef, () => {
     if (dropdownOpen) setDropdownOpen(false);
   });
-
+ 
   const drawerRef = useRef();
   useOutsideClick(drawerRef, () => {
     if (hasMenuDrawer === false) setMenuDrawer(false);
   });
+
+  const [modelData, setModelData] = React.useState({
+    show: false,
+  });
+
+  function closeModelDataHandler() {
+    setModelData({
+      show: false,
+    });
+  }
+  
+  const [notificationsRead, setNotificationsRead] = useState(true);
+
+  async function apis() {
+    const connectedAddress = await GetWallet_NonMoralis();
+    const dataNotifications = await fetch(
+      `./api/api-getMyNotificationUnreadCount` + "?UserWallet=" + connectedAddress
+    )
+      .then((res) => res.json())
+      .then((count) => { //
+        setNotificationsRead(count > 0 ? false : true)
+      });
+  }
+
+  useEffect(() => {
+    apis() 
+  }, [])
 
   return (
     <header className={hasMenuDrawer ? "drawerOpen" : ""}>
@@ -146,8 +177,22 @@ export default function Navigation(props) {
         </div>
         <div className='headerNotification'>
           <div className='notiIc'>
-            <NotificationIc />
-            <div className='notiIndicator'></div>
+            <NotificationIc 
+              onClick={() =>
+                {
+                  setModelData({
+                    show: true,
+                    type: "modal",
+                    title: "Notifications",
+                    body: (
+                      <Notifications/>
+                    ),
+                  })
+                  setNotificationsRead(true)
+                }
+              }
+            />
+            <div className={notificationsRead ? "" : "notiIndicator"} ></div>
           </div>
         </div>
         <div className='headerUser' ref={dropdownRef}>
@@ -240,6 +285,11 @@ export default function Navigation(props) {
           <MobileMenuIc onClick={props.mobileDrawerFn} />
         </div>
       </div>
+
+      <ModalUi
+        content={modelData}
+        closeModelFn={closeModelDataHandler}
+      />
     </header>
   );
 }

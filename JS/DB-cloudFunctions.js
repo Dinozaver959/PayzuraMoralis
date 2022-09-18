@@ -1,4 +1,4 @@
-var Moralis = require("moralis/node");
+export var Moralis = require("moralis/node");
 
 // ETH Server
 //const serverUrl = "https://rbfqybjb4vga.usemoralis.com:2053/server";
@@ -8,8 +8,6 @@ var Moralis = require("moralis/node");
 const serverUrl = "https://gbmvbywfzibe.usemoralis.com:2053/server";
 const appId = "6KNO1YxYUUp26EgElEHsfQ8ywPTJfs6D1C2H2yMR";
 Moralis.start({ serverUrl, appId });
-
-
 
 //-----------------------------------------------------------------------------------------------
 //                             Functions for new /my-contracts page
@@ -125,4 +123,17 @@ export async function GetAllAggregateData(){
 
 export async function AggregateData(){ 
   await Moralis.Cloud.run("aggregateData");
+}
+
+//
+//
+//
+
+export async function GetMyNotifications(UserWallet){
+  const params =  { UserWallet : UserWallet };
+  return Moralis.Cloud.run("GetMyNotifications", params);
+}
+export async function GetMyNotificationUnreadCount(UserWallet){
+  const params =  { UserWallet : UserWallet };
+  return Moralis.Cloud.run("GetMyNotificationUnreadCount", params);
 }

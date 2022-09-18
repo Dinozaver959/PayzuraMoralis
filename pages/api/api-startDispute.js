@@ -1,6 +1,7 @@
+import {Moralis} from '../../JS/DB-cloudFunctions'
 import middleware from '../../middleware/middleware'
 import nextConnect from 'next-connect'
-import { UpdateContracts_StartDispute, UpdateUserParticipationData } from '../../JS/DB-pushFunctions';
+import { UpdateContracts_StartDispute, UpdateUserParticipationData, UpdateNotifications } from '../../JS/DB-pushFunctions';
 
 const DOMPurify = require('isomorphic-dompurify');
 
@@ -27,7 +28,13 @@ apiRoute.post(async (req, res) => {
     await UpdateUserParticipationData(BuyerWallet, "DisputesInvolvedInAsBuyer");
     await UpdateUserParticipationData(SellerWallet, "DisputesInvolvedInAsSeller");
     
-    res.status(201).end("Offer created");
+    const query = new Moralis.Query("Agreements");
+    query.equalTo("objectId", objectId);
+    const agreement = await query.first();
+
+    await UpdateNotifications(BuyerWallet, `New Dispute for "${agreement.get("ContractTitle")}" contract`);
+    await UpdateNotifications(SellerWallet, `New Dispute for "${agreement.get("ContractTitle")}" contract`);
+    res.status(201).end("Dispute started");
 })
 
 export const config = {

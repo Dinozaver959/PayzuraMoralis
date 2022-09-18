@@ -1,6 +1,7 @@
+import {Moralis} from '../../JS/DB-cloudFunctions'
 import middleware from '../../middleware/middleware'
 import nextConnect from 'next-connect'
-import { UpdateContracts_ContractCreatedByBuyer, UpdateUserParticipationData } from '../../JS/DB-pushFunctions';
+import { UpdateContracts_ContractCreatedByBuyer, UpdateUserParticipationData, UpdateNotifications } from '../../JS/DB-pushFunctions';
 
 const DOMPurify = require('isomorphic-dompurify');
 
@@ -77,6 +78,7 @@ apiRoute.post(async (req, res) => {
         await UpdateUserParticipationData(BuyerWallet, "PersonalizedContractsCreatedAsBuyer");
     }
 
+    await UpdateNotifications(BuyerWallet, `New offer created as a buyer: "${ContractTitle}"`);
     res.status(201).end("Offer created");
 })
 
