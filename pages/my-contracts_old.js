@@ -677,6 +677,7 @@ function Row_normal(props) {
                                     var formData = new FormData();
                                     const connectedAddress = await GetWallet_NonMoralis();
                                     formData.append("SellerWallet", connectedAddress);
+                                    formData.append("BuyerWallet", item.buyerWallet);
                                     formData.append("transactionHash", transactionHash);
                                     formData.append("objectId", item.objectId);
 

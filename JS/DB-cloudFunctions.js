@@ -137,3 +137,8 @@ export async function GetMyNotificationUnreadCount(UserWallet){
   const params =  { UserWallet : UserWallet };
   return Moralis.Cloud.run("GetMyNotificationUnreadCount", params);
 }
+
+export async function GetAgreementsTitle(objectId){
+  const params =  { objectId : objectId };
+  return Moralis.Cloud.run("GetAgreementsTitle", params);
+}

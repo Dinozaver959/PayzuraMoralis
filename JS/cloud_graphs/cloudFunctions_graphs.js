@@ -802,6 +802,7 @@ Moralis.Cloud.define("GetMyNotifications", async (request) => {
   
   return await query.find();
 });
+
 Moralis.Cloud.define("GetMyNotificationUnreadCount", async (request) => {
   const query = new Moralis.Query("Notifications");
   query.equalTo("Wallet", request.params.UserWallet);
@@ -810,6 +811,12 @@ Moralis.Cloud.define("GetMyNotificationUnreadCount", async (request) => {
   return result.length
 });
 
+
+Moralis.Cloud.define("GetAgreementsTitle", async (request) => {
+  const query = new Moralis.Query("Agreements");
+  query.equalTo("objectId", request.params.objectId);
+  return await query.first();
+});
 
 //------------------------------------------------------------------------------------------------
 
