@@ -58,8 +58,6 @@ Moralis.Cloud.define("GetContract", async (request) => {
   return await query.aggregate(pipeline);  
 });
 
-
-
 Moralis.Cloud.define("GetReferralCode", async (request) => {
   const query = new Moralis.Query("ReferralCodes");
   query.equalTo("UserAddress", request.params.UserWallet);
@@ -138,6 +136,40 @@ Moralis.Cloud.define("GetReferralChain3", async (request) => {
   return referralChain;
 });
 
+Moralis.Cloud.define("GetMaxReviewsID", async (request) => {
+  // create a pipeline to get the max id and check if the id_ is defined (not null)
+  const pipeline = [
+    { project: { id_: 1 } },
+    { sort : { id_: -1 } }
+  ];
+
+  const query = new Moralis.Query("Ratings");
+  const res = await query.aggregate(pipeline);
+
+  return res[0].id_;
+});
+
+Moralis.Cloud.define("GetTotalNumberOfReviews", async (request) => {
+  const query = new Moralis.Query("Ratings");
+  return (await query.find()).length;
+});
+
+Moralis.Cloud.define("GetAllReviews", async (request) => {
+  const query = new Moralis.Query("Ratings");
+  return await query.find();
+});
+
+Moralis.Cloud.define("GetUserReviews", async (request) => {
+  const query = new Moralis.Query("Ratings");
+  query.equalTo("JobSeller", request.params.UserWallet);
+  return await query.find();
+});
+
+Moralis.Cloud.define("GetReview", async (request) => {
+  const pipeline = [{ match: { id_: request.params.ReviewID } }];
+  const query = new Moralis.Query("Ratings");
+  return await query.aggregate(pipeline);
+});
 
 //------------------------------------------------------------------------------------------------
 //                                    Get all Messages
@@ -821,8 +853,8 @@ Moralis.Cloud.define("GetAgreementsTitle", async (request) => {
 //------------------------------------------------------------------------------------------------
 
 
-
-
-
 // to update the file run 
 // moralis-admin-cli watch-cloud-folder --moralisApiKey NJb8ptNvFULrAUZ --moralisApiSecret Lk8NN6ShmEEoLx0 --moralisSubdomain gbmvbywfzibe.usemoralis.com --autoSave 1 --moralisCloudfolder D:\Test\Payzura\payzura\JS\cloud_graphs
+
+// for Jules
+// moralis-admin-cli watch-cloud-folder --moralisApiKey NJb8ptNvFULrAUZ --moralisApiSecret Lk8NN6ShmEEoLx0 --moralisSubdomain gbmvbywfzibe.usemoralis.com --autoSave 1 --moralisCloudfolder ./JS/cloud_graphs
