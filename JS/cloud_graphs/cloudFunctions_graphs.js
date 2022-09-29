@@ -136,6 +136,36 @@ Moralis.Cloud.define("GetReferralChain3", async (request) => {
   return referralChain;
 });
 
+
+
+//-----------------------------------------------------------------------------------------------
+//                        JobZura - Front-Back end secure connection
+//-----------------------------------------------------------------------------------------------
+
+
+Moralis.Cloud.define("GetWalletFromAlias", async (request) => {
+  const query = new Moralis.Query("Aliases");
+  query.equalTo("Alias", request.params.Alias);
+
+  const res = await query.find();
+  return (res.length > 0) ? res[0].get("Address") : "";
+});
+
+Moralis.Cloud.define("DoesAliasBelongToWallet", async (request) => {
+  const query = new Moralis.Query("Aliases");
+  query.equalTo("Address", request.params.Address);
+  query.equalTo("Alias", request.params.Alias);
+
+  const res = await query.find();
+  return (res.length > 0) ? true : false;
+});
+
+
+//-----------------------------------------------------------------------------------------------
+//                                     JobZura - reviews
+//-----------------------------------------------------------------------------------------------
+
+
 Moralis.Cloud.define("GetMaxReviewsID", async (request) => {
   // create a pipeline to get the max id and check if the id_ is defined (not null)
   const pipeline = [
