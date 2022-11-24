@@ -10,6 +10,10 @@ async function main() {
 
   console.log("Starting Hardhat scripts/deploy.....");
 
+  //const EscrowFactory = await hre.ethers.getContractFactory("EscrowFactory");
+  //const escrowFactory = await EscrowFactory.attach("0x1dbb2E7CE98FD5D5815331A62238A545f97aD81E");
+
+  
   // deploy the contract template
   const Escrow = await hre.ethers.getContractFactory("Escrow");
   const escrow = await Escrow.deploy();
@@ -22,7 +26,7 @@ async function main() {
   const escrowFactory = await EscrowFactory.deploy(escrow.address);
   await escrowFactory.deployed();
   console.log(`escrowFactory deployed to: ${escrowFactory.address}`);
-
+/* */
 
 
   //------------------------------------------------------------------------------
@@ -66,27 +70,35 @@ async function main() {
   //                  create a buyer -> seller contract (ETH)
   //------------------------------------------------------------------------------
 
-
+/*  
   await escrowFactory.CreateEscrowBuyer(
     ["0x976EA74026E726554dB657fA54763abd0C3a0aa9", "0x14dC79964da2C08b23698B3D3cc7Ca32193d9955", "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"], 
-    hre.ethers.utils.parseEther("100"), // 0.001 
+    1000000000000000, // hre.ethers.utils.parseEther("100"), // 0.001 
     "0x0000000000000000000000000000000000000000", 
-    ["0x70997970C51812dc3A010C7d01b50e0d17dc79C8", "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC", "0x90F79bf6EB2c4f870365E785982E1f101E93b906"],
-    1, 
+    ["0x70997970C51812dc3A010C7d01b50e0d17dc79C8"], // , "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"], //, "0x90F79bf6EB2c4f870365E785982E1f101E93b906"],   // referrals
+    0, 
     "a23e5fdcd7b276bdd81aa1a0b7b963101863dd3f61ff57935f8c5ba462681ea6", 
     1784214826, 
-    ["0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"],
-    { value: hre.ethers.utils.parseEther("100") } // 0.001
+    ["0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0x80038953cE1CdFCe7561Abb73216dE83F8baAEf0", "0x1591C783EfB2Bf91b348B6b31F2B04De1442836c"],
+    { value: 1000000000000000  } // 0.001   hre.ethers.utils.parseEther("100") 
   );
+
 
   numberOfContracts = await escrowFactory.clonedContractsIndex();
   console.log(`numberOfContracts: ${numberOfContracts}`);
 
-  let addressOfContract1 = await escrowFactory.GetAddress(0);
+  let addressOfContract1 = await escrowFactory.GetAddress(numberOfContracts - 1);
   console.log(`addressOfContract1: ${addressOfContract1}`);
 
-  let stateOfContract1 = await escrowFactory.GetState(0);
+  let stateOfContract1 = await escrowFactory.GetState(numberOfContracts - 1);
   console.log(`stateOfContract1: ${stateOfContract1}`);
+
+  let isEligible1 = await escrowFactory.GetIsWalletEligibleToAcceptOffer(numberOfContracts - 1, "0x80038953cE1CdFCe7561Abb73216dE83F8baAEf0")
+  console.log(`is eligible to accept: ${isEligible1}`);
+  let isEligible2 = await escrowFactory.GetIsWalletEligibleToAcceptOffer(numberOfContracts - 1, "0x1591C783EfB2Bf91b348B6b31F2B04De1442836c")
+  console.log(`is eligible to accept: ${isEligible2}`);
+
+
 
   // buyer needs to select sellers
   //let sender = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
@@ -95,21 +107,42 @@ async function main() {
   //stateOfContract1 = await escrowFactory.GetState(1);
   //console.log(`stateOfContract1: ${stateOfContract1}`);
 
+
   // seller accepts the contract
+  console.log("about to accept the contract");
+
+
   await escrowFactory.AcceptOfferSeller(
     numberOfContracts - 1,
-    //275, // 4%                                // remove this - lets just have a Jobzura implementation of the Escrow contract - EscrowFactory can have more than 1 implementation (make it so it is a stack of implementations so we can later add new ones)
-    [] //["0x70997970C51812dc3A010C7d01b50e0d17dc79C8", "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC", "0x90F79bf6EB2c4f870365E785982E1f101E93b906"] //["0x80038953cE1CdFCe7561Abb73216dE83F8baAEf0", "0x1591C783EfB2Bf91b348B6b31F2B04De1442836c", "0xfDB177128E6DBc71b7012761984558123CCD5224"]
+    ["0x70997970C51812dc3A010C7d01b50e0d17dc79C8", "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC", "0x90F79bf6EB2c4f870365E785982E1f101E93b906"] //["0x80038953cE1CdFCe7561Abb73216dE83F8baAEf0", "0x1591C783EfB2Bf91b348B6b31F2B04De1442836c", "0xfDB177128E6DBc71b7012761984558123CCD5224"]
   );
+
+
+  console.log("Seller Accepted the contract");
+  let stateOfContract2 = await escrowFactory.GetState(numberOfContracts - 1);
+  console.log(`stateOfContract1: ${stateOfContract2}`);
+
+
+
+
+  let sellerReferrals = await escrowFactory.GetSellerReferrals(numberOfContracts - 1);
+  console.log(`sellerReferrals: ${sellerReferrals}`);
+
+  let buyerReferrals = await escrowFactory.GetBuyerReferrals(numberOfContracts - 1);
+  console.log(`buyerReferrals: ${buyerReferrals}`);
 
 
   // buyer confirms delivery
   await escrowFactory.ConfirmDelivery(numberOfContracts - 1);
+  console.log("Buyer confirmed the delivery");
+  let stateOfContract3 = await escrowFactory.GetState(numberOfContracts - 1);
+  console.log(`stateOfContract1: ${stateOfContract3}`);
+
+*/
 
 
 
-
-  
+  /*
   // get balances of local accounts
   const accounts = await hre.ethers.getSigners();
   const provider = hre.ethers.provider;
@@ -124,6 +157,7 @@ async function main() {
       //)
     );
   }
+  */
 
 }
 
@@ -149,5 +183,5 @@ main().catch((error) => {
 // npx hardhat run --network mumbai scripts/deploy.js
 // npx hardhat verify --network matic 0xB9dE927100AA625B75Ac05FF907555a1Aec61F41
 // to start a local node:   npx hardhat node   (localhost network)
-// run on localc node: npx hardhat run --network localhost scripts/deploy.js
+// run on local node: npx hardhat run --network localhost scripts/deploy.js
 // run quick in memory and delete (only console.log will be visible): npx hardhat run scripts/deploy.js

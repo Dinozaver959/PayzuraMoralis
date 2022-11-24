@@ -5,7 +5,7 @@
 // will compile your contracts, add the Hardhat Runtime Environment's members to the
 // global scope, and execute the script.
 const hre = require("hardhat");
-const {ABI_ERC20} = require("../../JS/ABI.js");
+//const {ABI_ERC20} = require("../../JS/ABI.js");
 const USDCPolygonAddress = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
 const pk = "";
 const provider = new hre.ethers.providers.getDefaultProvider("rinkeby");
@@ -34,7 +34,7 @@ async function main() {
   //                  create a seller -> buyer contract (USDC)
   //------------------------------------------------------------------------------
 
-
+  /*
   await escrowFactory.CreateEscrowSeller(
     ["0xdD870fA1b7C4700F2BD7f44238821C26f7392148", "0x583031D1113aD414F02576BD6afaBfb302140225", "0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB"], 
     1000, // 0.001 USDC 
@@ -70,7 +70,7 @@ async function main() {
   await escrowFactory.ConfirmDelivery(numberOfContracts - 1);
   console.log(`Delivery Confirmed: ${addressOfContract0}`);
 
-
+*/
 
   //------------------------------------------------------------------------------
   //                  create a buyer -> seller contract (USDC)
